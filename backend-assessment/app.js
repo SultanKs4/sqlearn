@@ -1,25 +1,35 @@
 const express = require("express");
-const logger = require('morgan')
+const logger = require("morgan");
 
 const dotenv = require("dotenv");
 dotenv.config();
 
-const { createConnectionDB, getConnection, destroyConnection, MAX_TIMEOUT } = require('./config/database');
+const {
+    createConnectionDB,
+    getConnection,
+    destroyConnection,
+    MAX_TIMEOUT,
+} = require("./config/database");
 const compareQueryResult = require("./lib/compareQueryResult");
-const { createDb, dropDb, descTable, selectTable } = require("./lib/dbFunction");
+const {
+    createDb,
+    dropDb,
+    descTable,
+    selectTable,
+} = require("./lib/dbFunction");
 const getSimilarity = require("./lib/getSimilarity");
 
-const router = require("./config/routes")
+const router = require("./config/routes");
 const app = express();
 
-app.use(logger('tiny'))
-app.use(express.json())
+app.use(logger("tiny"));
+app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("Hello");
 });
 
-app.post("/createDB/:dbname", (req, res) => {
+/* app.post("/createDB/:dbname", (req, res) => {
 
     createDb(req.params.dbname)
         .then(() => {
@@ -41,9 +51,9 @@ app.post("/createDB/:dbname", (req, res) => {
     //         // getConnection().end()
     //     }
     // );
-});
+}); */
 
-app.post("/dropDB/:dbname", (req, res) => {
+/* app.post("/dropDB/:dbname", (req, res) => {
 
     dropDb(req.params.dbname)
         .then(() => {
@@ -66,18 +76,18 @@ app.post("/dropDB/:dbname", (req, res) => {
     //         // getConnection().end()
     //     }
     // );
-});
+}); */
 
 app.get("/desc_table/:dbname", (req, res) => {
-    const { dbname } = req.params
+    const { dbname } = req.params;
 
     descTable(dbname)
         .then((result) => {
-            res.json(result)
+            res.json(result);
         })
         .catch(() => {
-            res.json({ success: false })
-        })
+            res.json({ success: false });
+        });
 
     // if (!getConnection(dbname)) {
     //     createConnectionDB(dbname)
@@ -91,15 +101,15 @@ app.get("/desc_table/:dbname", (req, res) => {
 });
 
 app.get("/select/:dbname/:table", (req, res) => {
-    const { dbname, table } = req.params
+    const { dbname, table } = req.params;
 
     selectTable(dbname, table)
         .then((result) => {
-            res.json(result)
+            res.json(result);
         })
         .catch(() => {
-            res.json({ success: false })
-        })
+            res.json({ success: false });
+        });
 
     // if (!getConnection(dbname)) {
     //     createConnectionDB(dbname)
@@ -113,47 +123,52 @@ app.get("/select/:dbname/:table", (req, res) => {
 });
 
 app.post("/assess/:dbname", (req, res) => {
-    const { dbname } = req.params
-    const { queryMhs, queryKey, threshold } = req.body
+    const { dbname } = req.params;
+    const { queryMhs, queryKey, threshold } = req.body;
 
-    const queryLowerCase = queryMhs.toLowerCase()
+    const queryLowerCase = queryMhs.toLowerCase();
 
-    if (queryLowerCase.includes("insert ") || queryLowerCase.includes("update ") || queryLowerCase.includes("delete ")) {
+    if (
+        queryLowerCase.includes("insert ") ||
+        queryLowerCase.includes("update ") ||
+        queryLowerCase.includes("delete ")
+    ) {
         return res.json({
             similarity: -1,
             success: false,
             message: "Sistem hanya membatasi query SELECT",
-            isEqual: false
-        })
+            isEqual: false,
+        });
     }
 
-    const similarities = queryKey.map(key => {
-        const { success, similarity } = getSimilarity(queryMhs, key)
-        const querySimilarity = (success) ? similarity : -1
+    const similarities = queryKey.map((key) => {
+        const { success, similarity } = getSimilarity(queryMhs, key);
+        const querySimilarity = success ? similarity : -1;
         return {
             similarity: querySimilarity,
-            query: key
-        }
-    })
+            query: key,
+        };
+    });
 
     function arrayMax(arr) {
-        let len = arr.length, max = -Infinity;
-        let maxId = arr.length - 1
+        let len = arr.length,
+            max = -Infinity;
+        let maxId = arr.length - 1;
         while (len--) {
             if (arr[len].similarity > max) {
                 max = arr[len].similarity;
-                maxId = len
+                maxId = len;
             }
         }
 
         // console.log(maxId)
         return {
             similarity: max,
-            query: arr[maxId].query
+            query: arr[maxId].query,
         };
-    };
+    }
 
-    const { similarity, query } = arrayMax(similarities)
+    const { similarity, query } = arrayMax(similarities);
 
     // const { success, similarity } = getSimilarity(queryMhs, queryKey)
 
@@ -164,52 +179,58 @@ app.post("/assess/:dbname", (req, res) => {
             similarity,
             success: false,
             message: "Query yang diinputkan tidak sesuai dengan kriteria soal",
-            isEqual: false
+            isEqual: false,
         });
     }
 
     if (!getConnection(dbname)) {
-        createConnectionDB(dbname)
+        createConnectionDB(dbname);
     }
 
-    let resQueryMhs, resQueryKey
-    getConnection(dbname).query({ sql: `${queryMhs}`, timeout: MAX_TIMEOUT }, function (err, result) {
-        if (err) {
-            destroyConnection(dbname)
-            let message = (err.sqlMessage) ? err.sqlMessage : "Terjadi error dalam pengeksekusian query"
-            if (err.code === 'PROTOCOL_SEQUENCE_TIMEOUT') {
-                message = "Query berjalan melebihi batas timeout"
+    let resQueryMhs, resQueryKey;
+    getConnection(dbname).query(
+        { sql: `${queryMhs}`, timeout: MAX_TIMEOUT },
+        function (err, result) {
+            if (err) {
+                destroyConnection(dbname);
+                let message = err.sqlMessage
+                    ? err.sqlMessage
+                    : "Terjadi error dalam pengeksekusian query";
+                if (err.code === "PROTOCOL_SEQUENCE_TIMEOUT") {
+                    message = "Query berjalan melebihi batas timeout";
+                }
+                return res.json({
+                    similarity,
+                    success: false,
+                    message: message,
+                    isEqual: false,
+                });
             }
-            return res.json({
-                similarity,
-                success: false,
-                message: message,
-                isEqual: false
+
+            resQueryMhs = result;
+            getConnection(dbname).query(`${query}`, function (err, result) {
+                if (err)
+                    return res.json({
+                        similarity,
+                        success: false,
+                        message: err.sqlMessage,
+                        isEqual: false,
+                    });
+
+                resQueryKey = result;
+                const isEqual = compareQueryResult(resQueryMhs, resQueryKey);
+
+                return res.json({
+                    similarity,
+                    success: true,
+                    message: "Query executed successfully",
+                    isEqual,
+                    resQuery: resQueryMhs,
+                });
             });
         }
-
-        resQueryMhs = result
-        getConnection(dbname).query(`${query}`, function (err, result) {
-            if (err) return res.json({
-                similarity,
-                success: false,
-                message: err.sqlMessage,
-                isEqual: false
-            });
-
-            resQueryKey = result
-            const isEqual = compareQueryResult(resQueryMhs, resQueryKey)
-
-            return res.json({
-                similarity,
-                success: true,
-                message: 'Query executed successfully',
-                isEqual,
-                resQuery: resQueryMhs
-            })
-        })
-    })
-})
+    );
+});
 
 // app.post("/select/:dbname", (req, res) => {
 //     const { dbname } = req.params
@@ -245,7 +266,7 @@ app.post("/assess/:dbname", (req, res) => {
 //     })
 // })
 
-app.use(router)
+app.use(router);
 
 const PORT = process.env.PORT || 8081;
 app.listen(PORT, () =>
