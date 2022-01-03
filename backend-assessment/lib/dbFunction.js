@@ -1,65 +1,33 @@
 const { createConnectionDB, getConnection } = require("../config/database");
 
+async function executeDb(dbname, query) {
+    if (!getConnection(dbname)) {
+        createConnectionDB(dbname);
+    }
+
+    return new Promise((resolve, reject) => {
+        getConnection(dbname).query(query, function (err, result) {
+            if (err) reject(err);
+            resolve(result);
+        });
+    });
+}
+
 module.exports = {
-    createDb: function (dbname) {
-        if (!getConnection()) {
-            createConnectionDB();
-        }
-
-        return new Promise((resolve, reject) => {
-            getConnection().query(
-                `CREATE DATABASE ${dbname}`,
-                function (err, result) {
-                    if (err) reject(false);
-                    resolve(true);
-                }
-            );
-        });
+    createDb: async function (dbname) {
+        const query = `CREATE DATABASE ${dbname}`;
+        return await executeDb(null, query);
     },
-    dropDb: function (dbname) {
-        if (!getConnection()) {
-            createConnectionDB();
-        }
-
-        return new Promise((resolve, reject) => {
-            getConnection().query(
-                `DROP DATABASE ${dbname}`,
-                function (err, result) {
-                    if (err) reject(false);
-
-                    resolve(true);
-                }
-            );
-        });
+    dropDb: async function (dbname) {
+        const query = `DROP DATABASE ${dbname}`;
+        return await executeDb(null, query);
     },
-    descTable: function (dbname) {
-        if (!getConnection(dbname)) {
-            createConnectionDB(dbname);
-        }
-
-        return new Promise((resolve, reject) => {
-            getConnection(dbname).query(
-                `SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE table_schema = '${dbname}' ORDER BY table_name, ordinal_position;`,
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
+    descTable: async function (dbname) {
+        const query = `SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE table_schema = '${dbname}' ORDER BY table_name, ordinal_position;`;
+        return await executeDb(dbname, query);
     },
-    selectTable: function (dbname, table) {
-        if (!getConnection(dbname)) {
-            createConnectionDB(dbname);
-        }
-
-        return new Promise((resolve, reject) => {
-            getConnection(dbname).query(
-                `SELECT * FROM  ${table};`,
-                function (err, result) {
-                    if (err) reject(err);
-                    resolve(result);
-                }
-            );
-        });
+    selectTable: async function (dbname, table) {
+        const query = `SELECT * FROM  ${table};`;
+        return await executeDb(dbname, query);
     },
 };

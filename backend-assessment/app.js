@@ -11,12 +11,6 @@ const {
     MAX_TIMEOUT,
 } = require("./config/database");
 const compareQueryResult = require("./lib/compareQueryResult");
-const {
-    createDb,
-    dropDb,
-    descTable,
-    selectTable,
-} = require("./lib/dbFunction");
 const getSimilarity = require("./lib/getSimilarity");
 
 const router = require("./config/routes");
@@ -27,99 +21,6 @@ app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("Hello");
-});
-
-/* app.post("/createDB/:dbname", (req, res) => {
-
-    createDb(req.params.dbname)
-        .then(() => {
-            res.json({ success: true })
-        })
-        .catch(() => {
-            res.json({ success: false })
-        })
-    // if (!getConnection()) {
-    //     createConnectionDB()
-    // }
-
-    // getConnection().query(
-    //     `CREATE DATABASE ${req.params.dbname}`,
-    //     function (err, result) {
-    //         if (err) return res.json({ success: false });
-
-    //         return res.json({ success: true });
-    //         // getConnection().end()
-    //     }
-    // );
-}); */
-
-/* app.post("/dropDB/:dbname", (req, res) => {
-
-    dropDb(req.params.dbname)
-        .then(() => {
-            res.json({ success: true })
-        })
-        .catch(() => {
-            res.json({ success: false })
-        })
-
-    // if (!getConnection()) {
-    //     createConnectionDB()
-    // }
-
-    // getConnection().query(
-    //     `DROP DATABASE ${req.params.dbname}`,
-    //     function (err, result) {
-    //         if (err) return res.json({ success: false });
-
-    //         return res.json({ success: true });
-    //         // getConnection().end()
-    //     }
-    // );
-}); */
-
-app.get("/desc_table/:dbname", (req, res) => {
-    const { dbname } = req.params;
-
-    descTable(dbname)
-        .then((result) => {
-            res.json(result);
-        })
-        .catch(() => {
-            res.json({ success: false });
-        });
-
-    // if (!getConnection(dbname)) {
-    //     createConnectionDB(dbname)
-    // }
-
-    // getConnection(dbname).query(`SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE table_schema = '${req.params.dbname}' ORDER BY table_name, ordinal_position;`, function (err, result) {
-    //     if (err) throw err;
-    //     res.json(result);
-    //     // getConnection(dbname).end()
-    // });
-});
-
-app.get("/select/:dbname/:table", (req, res) => {
-    const { dbname, table } = req.params;
-
-    selectTable(dbname, table)
-        .then((result) => {
-            res.json(result);
-        })
-        .catch(() => {
-            res.json({ success: false });
-        });
-
-    // if (!getConnection(dbname)) {
-    //     createConnectionDB(dbname)
-    // }
-
-    // getConnection(dbname).query(`SELECT * FROM  ${table};`, function (err, result) {
-    //     if (err) throw err;
-    //     res.json(result);
-    //     // getConnection(dbname).end()
-    // });
 });
 
 app.post("/assess/:dbname", (req, res) => {
