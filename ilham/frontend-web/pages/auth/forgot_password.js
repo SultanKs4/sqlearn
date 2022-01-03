@@ -3,14 +3,14 @@ import { Form, Input, Button, Radio, Card, Row, Col, Typography } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Head from "next/head";
 
-import "antd/dist/antd.css";
 import { useRouter } from "next/router";
 
-const ForgotPassword = () => {
+const ForgotPassword = (props) => {
   const router = useRouter();
 
   const [form] = Form.useForm();
 
+  console.log(props)
   return (
     <>
       <Head>
@@ -35,16 +35,20 @@ const ForgotPassword = () => {
               required
               tooltip="This is a required field"
             >
-              <Input placeholder="Input Username..." />
+              <Input placeholder="Input Username . . ." />
             </Form.Item>
             <Form.Item
-              label="Password"
+              label="Password Baru"
               tooltip={{
                 title: "Tooltip with customize icon",
                 icon: <InfoCircleOutlined />
               }}
             >
-              <Input type="password" required placeholder="input password" />
+              <Input
+                type="password"
+                required
+                placeholder="input password baru . . ."
+              />
             </Form.Item>
             <Row justify="space-between">
               <Col>

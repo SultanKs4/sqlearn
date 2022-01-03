@@ -3,7 +3,6 @@ import { Form, Input, Button, Radio, Card, Row, Col, Typography } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import Head from "next/head";
 
-import "antd/dist/antd.css";
 import { useRouter } from "next/router";
 
 const Register = () => {
@@ -18,9 +17,9 @@ const Register = () => {
 
   return (
     <>
-        <Head>
-          <title>SQLearn | Register </title>
-        </Head>
+      <Head>
+        <title>SQLearn | Register </title>
+      </Head>
       <Row
         align="middle"
         justify="center"
@@ -88,7 +87,7 @@ const Register = () => {
           </Form>
         </Card>
       </Row>
-      </>
+    </>
   );
 };
 

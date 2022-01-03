@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Radio, Card, Row, Col, Typography } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
-import "antd/dist/antd.css";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
