@@ -1,8 +1,22 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Radio, Card, Row, Col, Typography } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { Form, Input, Button, Radio, Card, Row, Checkbox, Col } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
+
+const mockValidate = valueInput => {
+  if (valueInput.loginTypeValue === "mahasiswa")
+    return valueInput.username === "1841720076" &&
+      valueInput.password === "1841720076"
+      ? true
+      : false;
+  else {
+    return valueInput.username === "dosencoba" &&
+      valueInput.password === "dosencoba"
+      ? true
+      : false;
+  }
+};
 
 const Login = () => {
   const router = useRouter();
@@ -12,6 +26,15 @@ const Login = () => {
 
   const onRequiredTypeChange = ({ loginTypeValue }) => {
     setLoginTypeType(loginTypeValue);
+  };
+
+  const onFinish = values => {
+    console.log("Received values of form: ", values);
+    if (mockValidate(values)) {
+      if (values.loginTypeValue === "mahasiswa")
+        router.push("/mahasiswa/beranda");
+      else router.push("/dosen/jadwal");
+    }
   };
 
   return (
@@ -27,13 +50,15 @@ const Login = () => {
           }}
         >
           <Form
-            form={form}
-            layout="vertical"
+            name="normal_login"
+            className="login-form"
             initialValues={{
+              remember: true,
               loginTypeValue: loginType
             }}
+            form={form}
             onValuesChange={onRequiredTypeChange}
-            loginType={loginType}
+            onFinish={onFinish}
           >
             <Form.Item label="Login sebagai" name="loginTypeValue">
               <Radio.Group>
@@ -42,36 +67,82 @@ const Login = () => {
               </Radio.Group>
             </Form.Item>
             <Form.Item
-              label={`Username ${loginType}`}
-              required
-              tooltip="This is a required field"
+              name="username"
+              tooltip={{
+                title: `Bisa menggunakan ${
+                  loginType === "mahasiswa" ? "NIM" : "NIDN"
+                }`
+              }}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Username!"
+                }
+              ]}
             >
-              <Input placeholder="Input Username..." />
+              <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
+                placeholder={`Username ${loginType} . . .`}
+              />
             </Form.Item>
             <Form.Item
-              label="Password"
-              tooltip={{
-                title: "Tooltip with customize icon",
-                icon: <InfoCircleOutlined />
-              }}
+              name="password"
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your Password!"
+                }
+              ]}
             >
-              <Input type="password" required placeholder="input password" />
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                placeholder="Password"
+              />
             </Form.Item>
-            <Row justify="space-between">
-              <Col>
-                <Button type="primary">Submit</Button>
-              </Col>
-              <Col>
-                <Typography.Text
-                  underline
-                  onClick={() => {
-                    router.push("/auth/forgot_password");
-                  }}
-                >
-                  Lupa Password
-                </Typography.Text>
-              </Col>
-            </Row>
+            <Form.Item>
+              <Row justify="space-between">
+                <Col>
+                  <Form.Item name="remember" valuePropName="checked" noStyle>
+                    <Checkbox>Remember me</Checkbox>
+                  </Form.Item>
+                </Col>
+                <Col>
+                  <a
+                    className="login-form-forgot"
+                    onClick={() => {
+                      router.push("/auth/forgot_password");
+                    }}
+                  >
+                    Forgot password
+                  </a>
+                </Col>
+              </Row>
+            </Form.Item>
+
+            <Form.Item>
+              <Row justify="space-between">
+                <Col>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="login-form-button"
+                  >
+                    Log in
+                  </Button>
+                </Col>
+                <Col>
+                  Or{" "}
+                  <a
+                    onClick={() => {
+                      router.push("/auth/register");
+                    }}
+                  >
+                    Register now!
+                  </a>
+                </Col>
+              </Row>
+            </Form.Item>
           </Form>
         </Card>
       </Row>

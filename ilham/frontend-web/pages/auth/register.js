@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import { Form, Input, Button, Radio, Card, Row, Col, Typography } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import {
+  InfoCircleOutlined,
+  UserOutlined,
+  LockOutlined
+} from "@ant-design/icons";
 import Head from "next/head";
 
 import { useRouter } from "next/router";
@@ -56,6 +60,7 @@ const Register = () => {
               tooltip="This is a required field"
             >
               <Input
+                prefix={<UserOutlined className="site-form-item-icon" />}
                 placeholder={`Input Username / ${
                   RegisterType === "mahasiswa" ? "NIM" : "NIDN"
                 } `}
@@ -68,7 +73,12 @@ const Register = () => {
                 icon: <InfoCircleOutlined />
               }}
             >
-              <Input type="password" required placeholder="input password" />
+              <Input
+                prefix={<LockOutlined className="site-form-item-icon" />}
+                type="password"
+                required
+                placeholder="input password"
+              />
             </Form.Item>
             <Row justify="space-between">
               <Col>

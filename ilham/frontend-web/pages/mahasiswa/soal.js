@@ -6,25 +6,21 @@ import Head from "next/head";
 
 const { Content, Footer } = Layout;
 
-function Jadwal() {
+function SoalMahasiswa() {
   return (
     <>
       <Head>
-        <title>SQLearn | Dosen - Jadwal </title>
+        <title>SQLearn | Mahasiswa - Soal </title>
       </Head>
       <Layout style={{ minHeight: "100vh" }}>
-        <SiderComponent role="dosen" />
+        <SiderComponent role="mahasiswa" />
         <Layout className="site-layout">
           <Content style={{ margin: "0 16px" }}>
-            <Breadcrumb style={{ margin: "16px 0" }}>
-              <Breadcrumb.Item>User</Breadcrumb.Item>
-              <Breadcrumb.Item>Bill</Breadcrumb.Item>
-            </Breadcrumb>
             <div
               className="site-layout-background"
               style={{ padding: 24, minHeight: 360 }}
             >
-              Ini jadwal
+              Ini Soal mahasiswa
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
@@ -36,4 +32,4 @@ function Jadwal() {
   );
 }
 
-export default Jadwal;
+export default SoalMahasiswa;
