@@ -1,35 +1,17 @@
 import React from "react";
 
-import { Layout, Breadcrumb } from "antd";
-import SiderComponent from "../../components/Sider";
 import Head from "next/head";
+import PageLayout from "../../components/PageLayout";
 
-const { Content, Footer } = Layout;
-
-function NilaiMahasiswa() {
+function LihatNilai() {
   return (
     <>
       <Head>
-        <title>SQLearn | Mahasiswa - Lihat Nilai </title>
+        <title>SQLearn | Mahasiswa - Nilai </title>
       </Head>
-      <Layout style={{ minHeight: "100vh" }}>
-        <SiderComponent role="mahasiswa" />
-        <Layout className="site-layout">
-          <Content style={{ margin: "0 16px" }}>
-            <div
-              className="site-layout-background"
-              style={{ padding: 24, minHeight: 360 }}
-            >
-              Ini Lihat Nilai
-            </div>
-          </Content>
-          <Footer style={{ textAlign: "center" }}>
-            Ant Design ©2018 Created by Ant UED
-          </Footer>
-        </Layout>
-      </Layout>
+      <PageLayout role="mahasiswa">Ini Nilai siswa</PageLayout>
     </>
   );
 }
 
-export default NilaiMahasiswa;
+export default LihatNilai;

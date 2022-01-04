@@ -1,10 +1,14 @@
 import { Layout, Menu } from "antd";
 import {
-  DesktopOutlined,
   PieChartOutlined,
-  FileOutlined,
+  CalendarOutlined,
+  LaptopOutlined,
+  DatabaseOutlined,
+  FileTextOutlined,
+  CodeSandboxOutlined,
   TeamOutlined,
-  UserOutlined
+  HomeOutlined,
+  BarChartOutlined
 } from "@ant-design/icons";
 
 import { React, useState, useEffect } from "react";
@@ -31,7 +35,7 @@ function SiderComponent({ role }) {
         >
           <Menu.Item
             key="jadwal"
-            icon={<PieChartOutlined />}
+            icon={<CalendarOutlined />}
             onClick={() => {
               router.push("/dosen/jadwal");
             }}
@@ -40,7 +44,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="kelas"
-            icon={<DesktopOutlined />}
+            icon={<LaptopOutlined />}
             onClick={() => {
               router.push("/dosen/kelas");
             }}
@@ -49,7 +53,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="studi-kasus"
-            icon={<DesktopOutlined />}
+            icon={<DatabaseOutlined />}
             onClick={() => {
               router.push("/dosen/studi-kasus");
             }}
@@ -58,7 +62,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="soal"
-            icon={<DesktopOutlined />}
+            icon={<FileTextOutlined />}
             onClick={() => {
               router.push("/dosen/soal");
             }}
@@ -67,7 +71,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="paket-soal"
-            icon={<DesktopOutlined />}
+            icon={<CodeSandboxOutlined />}
             onClick={() => {
               router.push("/dosen/paket-soal");
             }}
@@ -76,7 +80,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="nilai-mahasiswa"
-            icon={<FileOutlined />}
+            icon={<TeamOutlined />}
             onClick={() => {
               router.push("/dosen/nilai-mahasiswa");
             }}
@@ -93,7 +97,7 @@ function SiderComponent({ role }) {
         >
           <Menu.Item
             key="beranda"
-            icon={<PieChartOutlined />}
+            icon={<HomeOutlined />}
             onClick={() => {
               router.push("/mahasiswa/beranda");
             }}
@@ -103,7 +107,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="soal"
-            icon={<PieChartOutlined />}
+            icon={<FileTextOutlined />}
             onClick={() => {
               router.push("/mahasiswa/soal");
             }}
@@ -113,7 +117,7 @@ function SiderComponent({ role }) {
           </Menu.Item>
           <Menu.Item
             key="lihat-nilai"
-            icon={<PieChartOutlined />}
+            icon={<BarChartOutlined />}
             onClick={() => {
               router.push("/mahasiswa/lihat-nilai");
             }}
