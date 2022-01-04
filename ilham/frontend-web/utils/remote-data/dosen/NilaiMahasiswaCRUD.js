@@ -11,17 +11,17 @@ const getNilaiMhsByID = async username => {
 };
 
 const postNilaiMhs = async () => {
-  let response = await axios.get("");
+  let response = await axios.post("");
   return response.data;
 };
 
 const updateNilaiMhs = async () => {
-  let response = await axios.get("");
+  let response = await axios.put("");
   return response.data;
 };
 
 const deleteNilaiMhs = async () => {
-  let response = await axios.get("");
+  let response = await axios.delete("");
   return response.data;
 };
 

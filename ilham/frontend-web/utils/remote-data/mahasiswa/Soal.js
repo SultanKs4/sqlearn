@@ -36,7 +36,7 @@ const testQuery = async sqlQuery => {
 const submitJawaban = async (sqlQuery, timer, attempts, username) => {
   // TODO : API Request POST : URL ?username={username} data : {sqlQuery, timer, attempts }
 
-  let response = await axios.get("");
+  let response = await axios.post("");
   return response.data;
 };
 

@@ -1,7 +1,18 @@
-import React from "react";
+import { React, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
+
+import {
+  Skeleton,
+  Typography,
+  Row,
+  Col,
+  Button,
+  List,
+  Card,
+  Alert
+} from "antd";
 
 function HalamanNilai() {
   return (
@@ -10,7 +21,13 @@ function HalamanNilai() {
         <title>SQLearn | Dosen - Rekap Nilai </title>
       </Head>
       <PageLayout role="dosen">
-        Ini Halaman nilai mahasiswa oleh dosen
+        <Row justify="space-between">
+          <Col>
+            <Typography.Title level={2}>Rekap Nilai </Typography.Title>
+          </Col>
+        </Row>
+
+        {/* Content asli... */}
       </PageLayout>
     </>
   );

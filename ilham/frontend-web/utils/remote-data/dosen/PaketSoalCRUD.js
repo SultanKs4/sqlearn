@@ -11,17 +11,17 @@ const getPaketSoalByID = async paketID => {
 };
 
 const postPaketSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.post("");
   return response.data;
 };
 
 const updatePaketSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.put("");
   return response.data;
 };
 
 const deletePaketSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.delete("");
   return response.data;
 };
 

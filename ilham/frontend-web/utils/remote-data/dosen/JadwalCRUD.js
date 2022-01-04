@@ -11,17 +11,17 @@ const getJadwalByID = async jadwalID => {
 };
 
 const postJadwal = async () => {
-  let response = await axios.get("");
+  let response = await axios.post("");
   return response.data;
 };
 
 const updateJadwal = async () => {
-  let response = await axios.get("");
+  let response = await axios.put("");
   return response.data;
 };
 
 const deleteJadwal = async () => {
-  let response = await axios.get("");
+  let response = await axios.delete("");
   return response.data;
 };
 

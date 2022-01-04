@@ -11,17 +11,17 @@ const getSoalByID = async soalID => {
 };
 
 const postSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.post("");
   return response.data;
 };
 
 const updateSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.put("");
   return response.data;
 };
 
 const deleteSoal = async () => {
-  let response = await axios.get("");
+  let response = await axios.delete("");
   return response.data;
 };
 
