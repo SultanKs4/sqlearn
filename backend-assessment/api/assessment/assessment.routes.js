@@ -5,5 +5,6 @@ const verifyQuery = require("../../middlewares/verifyQuery.middleware");
 
 router.use(verifyQuery);
 router.post("/multi_key/:dbname", assessmentController.multiKey);
+router.post("/single_key/:dbname", assessmentController.singleKey);
 
 module.exports = router;

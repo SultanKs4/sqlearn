@@ -3,7 +3,6 @@ const databaseService = require("./database.service");
 module.exports = {
     createDb: async (req, res) => {
         const responseObj = await databaseService.createDb(req.params.dbname);
-        console.log(responseObj);
 
         if (responseObj.status != "succcess") return res.status(500).json(responseObj);
 
