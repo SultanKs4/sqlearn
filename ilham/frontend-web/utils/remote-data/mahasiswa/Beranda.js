@@ -26,4 +26,15 @@ const getFinishedPractices = async username => {
   return response.data;
 };
 
-export { getUserInfo, getStudiKasus, getFinishedPractices };
+const getAvailablePractices = async username => {
+  // TODO : API Request GET : ?username={username}
+  let response = await axios.get("");
+  return response.data;
+};
+
+export {
+  getUserInfo,
+  getStudiKasus,
+  getFinishedPractices,
+  getAvailablePractices
+};

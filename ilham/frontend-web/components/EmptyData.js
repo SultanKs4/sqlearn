@@ -1,10 +1,17 @@
 import React from "react";
 import { Empty, Button } from "antd";
 
+import { useRouter } from "next/router";
+
 function EmptyData({
   image = Empty.PRESENTED_IMAGE_SIMPLE,
-  description = "Empty Data"
+  description = "Empty Data",
+  withAction = true,
+  textAction = "Create Now",
+  toURL = ""
 }) {
+  const router = useRouter();
+
   return (
     <>
       <Empty
@@ -14,9 +21,12 @@ function EmptyData({
         }}
         description={description}
       >
-        <Button type="primary">Create Now</Button>
+        {withAction && (
+          <Button type="primary" onClick={() => router.push(toURL)}>
+            {textAction}
+          </Button>
+        )}
       </Empty>
-      ,
     </>
   );
 }

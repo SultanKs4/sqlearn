@@ -1,6 +1,5 @@
 import { Layout, Menu } from "antd";
 import {
-  PieChartOutlined,
   CalendarOutlined,
   LaptopOutlined,
   DatabaseOutlined,
@@ -11,20 +10,28 @@ import {
   BarChartOutlined
 } from "@ant-design/icons";
 
-import { React, useState, useEffect } from "react";
+import { React } from "react";
 import { useRouter } from "next/router";
+
+import styles from "../styles/components/Sider.module.css";
 
 const { Sider } = Layout;
 
-function SiderComponent({ role }) {
+function SiderComponent({ role, collapsed, setCollapsed }) {
   const router = useRouter();
-
-  const [collapsed, setCollapsed] = useState(false);
 
   const onCollapse = statusCollapse => setCollapsed(statusCollapse);
 
   return (
-    <Sider collapsible collapsed={collapsed} onCollapse={onCollapse}>
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      className={styles.sticky_sider}
+      style={{
+        zIndex: collapsed ? 1 : 2
+      }}
+    >
       <div className="logo" />
       {role === "dosen" ? (
         <Menu

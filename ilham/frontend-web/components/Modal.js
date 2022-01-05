@@ -34,20 +34,27 @@ function ModalCustom({
       onOk={handleOk}
       confirmLoading={confirmLoading}
       onCancel={handleCancel}
-      footer={[
-        <Button key="back" onClick={handleCancel}>
-          Cancel
-        </Button>,
-
-        <Button
-          key="submit"
-          type="primary"
-          loading={confirmLoading}
-          onClick={handleOk}
-        >
-          Submit
-        </Button>
-      ]}
+      footer={
+        role !== "preview" ? (
+          [
+            <Button key="back" onClick={handleCancel}>
+              Cancel
+            </Button>,
+            <Button
+              key="submit"
+              type="primary"
+              loading={confirmLoading}
+              onClick={handleOk}
+            >
+              Submit
+            </Button>
+          ]
+        ) : (
+          <Button key="back" onClick={handleCancel}>
+            Cancel
+          </Button>
+        )
+      }
     >
       <p>{modalText}</p>
     </Modal>
