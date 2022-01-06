@@ -1,4 +1,4 @@
-import "axios";
+import axios from "axios";
 
 const getStudiKasus = async () => {
   let response = await axios.get("");

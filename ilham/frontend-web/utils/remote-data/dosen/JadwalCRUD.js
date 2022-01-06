@@ -1,4 +1,4 @@
-import "axios";
+import axios from "axios";
 
 const getJadwal = async () => {
   let response = await axios.get("");

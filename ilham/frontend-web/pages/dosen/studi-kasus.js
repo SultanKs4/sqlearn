@@ -16,13 +16,39 @@ import {
 
 import {
   PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone
+  ConsoleSqlOutlined,
+  SearchOutlined,
+  EditOutlined,
+  FieldTimeOutlined,
+  DeleteOutlined
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
 
+import { getHours } from "../../utils/common";
+
+const mockStudiKasus = [
+  {
+    nama: "Studi Kasus A",
+    jumlahSoal: 5,
+    durasi: 120
+  },
+  {
+    nama: "Studi Kasus B",
+    jumlahSoal: 5,
+    durasi: 120
+  },
+  {
+    nama: "Studi Kasus C",
+    jumlahSoal: 5,
+    durasi: 120
+  }
+];
+
 function StudiKasus() {
+  const [data, setData] = useState(mockStudiKasus);
+  const [isDataLoaded, setDataLoaded] = useState(false);
+
   const [currentStudiKasus, setCurrentStudiKasus] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -38,6 +64,12 @@ function StudiKasus() {
   const handleToggleModal = () => setIsModalVisible(true);
   const handleToggleAlert = () => setIsAlertActive(true);
 
+  const previewStudiKasus = studiKasusObj => {
+    setModalRole("preview");
+    handleToggleModal();
+    setModalText(`Ini  ${studiKasusObj.nama}`);
+  };
+
   const tambahStudiKasus = () => {
     setModalRole("tambah");
     handleToggleModal();
@@ -52,6 +84,7 @@ function StudiKasus() {
     setModalRole("edit");
     setCurrentStudiKasus(studiKasusObj);
     handleToggleModal();
+    setModalText(`Ini  ${studiKasusObj.nama}`);
 
     // Mungkin ini nanti dibagian modal
     // TODO : Call PUT API request dari StudiKasusCRUD.js
@@ -65,6 +98,7 @@ function StudiKasus() {
     setModalRole("delete");
     setCurrentStudiKasus(studiKasusObj);
     handleToggleModal();
+    setModalText(`Ini  ${studiKasusObj.nama}`);
 
     // Mungkin ini nanti dibagian modal
     // TODO : Call DELETE API request dari StudiKasusCRUD.js
@@ -114,8 +148,63 @@ function StudiKasus() {
             setModalText={setModalText}
           />
         )}
+        <Card>
+          <List
+            itemLayout="horizontal"
+            dataSource={data}
+            renderItem={item => (
+              <List.Item>
+                <Row justify="space-around" style={{ width: "100vw" }}>
+                  <Col span={18}>
+                    <Row gutter={[50]}>
+                      <Col>{item.nama}</Col>
+                      <Col>
+                        {" "}
+                        <ConsoleSqlOutlined
+                          style={{ fontSize: "1.5em" }}
+                        />{" "}
+                        {item.jumlahSoal} Pertanyaan{" "}
+                      </Col>
+                      <Col>
+                        <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
+                        {getHours(item.durasi)} Jam
+                      </Col>
+                    </Row>
+                  </Col>
 
-        {/* Content asli... */}
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<SearchOutlined />}
+                          size={"medium"}
+                          onClick={() => previewStudiKasus(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => editStudiKasus(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => deleteStudiKasus(item)}
+                        ></Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </List.Item>
+            )}
+          />
+        </Card>
       </PageLayout>
     </>
   );

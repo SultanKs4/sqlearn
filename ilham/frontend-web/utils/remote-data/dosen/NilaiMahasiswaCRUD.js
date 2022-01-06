@@ -1,7 +1,16 @@
-import "axios";
+import axios from "axios";
 
-const getNilaiMhs = async () => {
+import { mockAPIURL } from "../api";
+
+const getNilaiMhs = async lecturerID => {
   let response = await axios.get("");
+  return response.data;
+};
+
+const mockKelasDiajar = async lecturerID => {
+  let response = await axios.get(
+    `${mockAPIURL}/kelas?lecturerID=${lecturerID}`
+  );
   return response.data;
 };
 
@@ -26,6 +35,7 @@ const deleteNilaiMhs = async () => {
 };
 
 export {
+  mockKelasDiajar,
   getNilaiMhs,
   getNilaiMhsByID,
   postNilaiMhs,

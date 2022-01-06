@@ -1,4 +1,4 @@
-import "axios";
+import axios from "axios";
 
 /* TODO beberapa fitur untuk Soal.js:
     1. Fetch Data Soal -> @param id

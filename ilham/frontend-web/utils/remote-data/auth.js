@@ -1,4 +1,4 @@
-import "axios";
+import axios from "axios";
 
 const login = async ({ username, password }) => {
   /* TODO:

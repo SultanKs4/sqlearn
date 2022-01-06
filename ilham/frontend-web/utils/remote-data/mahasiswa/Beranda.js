@@ -1,4 +1,4 @@
-import "axios";
+import axios from "axios";
 
 const getUserInfo = async username => {
   // TODO : API Request GET : ?username={username}
