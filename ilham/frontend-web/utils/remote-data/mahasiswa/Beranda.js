@@ -1,4 +1,5 @@
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 const getUserInfo = async username => {
   // TODO : API Request GET : ?username={username}
@@ -32,9 +33,43 @@ const getAvailablePractices = async username => {
   return response.data;
 };
 
+const mockGetAllPractices = async username => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            id: uuidv4(),
+            jumlahSoal: 3,
+            durasi: "2 jam",
+            deadline: "12 jam lagi",
+            status: "tersedia"
+          },
+          {
+            id: uuidv4(),
+            jumlahSoal: 5,
+            durasi: "2 jam",
+            deadline: "-",
+            status: "selesai",
+            nilai: 100
+          },
+          {
+            id: uuidv4(),
+            jumlahSoal: 1,
+            durasi: "2 jam",
+            deadline: "10 jam lagi",
+            status: "tersedia"
+          }
+        ]
+      });
+    }, 1000);
+  });
+};
+
 export {
   getUserInfo,
   getStudiKasus,
   getFinishedPractices,
-  getAvailablePractices
+  getAvailablePractices,
+  mockGetAllPractices
 };

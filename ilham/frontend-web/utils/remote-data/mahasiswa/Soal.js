@@ -12,8 +12,86 @@ const getAllSoal = async studiKasusID => {
   return response.data;
 };
 
+const mockGetSoalByID = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        id: 1 /* idSoal */,
+        studi_kasus: "" /* Soal nya */,
+
+        sql_components: [
+          {
+            id: 1,
+            content: "SELECT"
+          },
+          {
+            id: 2,
+            content: "COUNT"
+          },
+          {
+            id: 3,
+            content: "nama"
+          },
+          {
+            id: 4,
+            content: "FROM"
+          },
+          {
+            id: 5,
+            content: "MAHASISWA"
+          },
+          {
+            id: 6,
+            content: "Employee"
+          },
+          {
+            id: 7,
+            content: "STUDENTS"
+          }
+        ],
+        correct_answer: "SELECT COUNT nama FROM STUDENTS"
+      });
+    }, 1000);
+  });
+};
+
 const getSoalByID = async soalID => {
   let response = await axios.get("");
+  //   ? Output :
+  /* 
+    {
+      sql-components : [
+        {
+        id : 1,
+        content : "SELECT"
+      },
+      {
+        id : 2,
+        content : "COUNT"
+      },
+      {
+        id : 3,
+        content : "nama"
+      },
+      {
+        id : 4,
+        content : "FROM"
+      },
+      {
+        id : 5,
+        content : "MAHASISWA"
+      },
+      {
+        id : 6,
+        content : "Employee"
+      },
+      {
+        id : 7,
+        content : "STUDENTS"
+      },
+    ],
+    }  
+  */
   return response.data;
 };
 
@@ -40,4 +118,4 @@ const submitJawaban = async (sqlQuery, timer, attempts, username) => {
   return response.data;
 };
 
-export { getAllSoal, getSoalByID, testQuery, submitJawaban };
+export { getAllSoal, getSoalByID, testQuery, submitJawaban, mockGetSoalByID };

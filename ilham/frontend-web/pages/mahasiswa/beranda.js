@@ -5,25 +5,24 @@ import PageLayout from "../../components/PageLayout";
 import EmptyData from "../../components/EmptyData";
 import ModalCustom from "../../components/Modal";
 
-import {
-  Typography,
-  Row,
-  Col,
-  Divider,
-  Card,
-  Tabs} from "antd";
+import { Typography, Row, Col, Divider, Card, Tabs } from "antd";
 
 import {} from "@ant-design/icons";
 
 import ProfilMahasiswa from "../../components/mahasiswa/ProfilMahasiswa";
 import StudiKasusBeranda from "../../components/mahasiswa/StudiKasusBeranda";
+import { mockGetAllPractices } from "../../utils/remote-data/mahasiswa/Beranda";
+import ListComponent from "../../components/List";
 
 const { TabPane } = Tabs;
 
 function Beranda() {
   const [dataProfile, setDataProfile] = useState([]);
   const [dataLatihan, setDataLatihan] = useState([]);
+  const [dataFilteredLatihan, setDataFilteredLatihan] = useState([]);
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
+
+  const [activeFilterLatihan, setActiveFilterLatihan] = useState("tersedia");
 
   const [isDataProfileLoaded, setIsDataProfileLoaded] = useState(false);
   const [isDataLatihanLoaded, setIsDataLatihanLoaded] = useState(false);
@@ -42,19 +41,32 @@ function Beranda() {
     setModalText(`Ini  ${studObj.nama}`);
   };
 
-  // ? status : "done" || "available"
+  // ? key = status : "tersedia" || "selesai"
   const switchTabPractice = key => {
     let status = key;
-    console.log(status);
     // TODO : Kalau sudah bikin di mockapi ini diuncomment
-    //  setDataLatihan(prev=> prev.filter(item => item.status === status))
+    setActiveFilterLatihan(status);
+    setDataFilteredLatihan(dataLatihan.filter(item => item.status === status));
   };
 
   useEffect(() => {
     // TODO : Consume Data Profil (State Loading dan Data)
+
     // TODO : Consume Data Latihan (State Loading dan Data)
+    mockGetAllPractices().then(responseData => {
+      setDataLatihan(responseData.data);
+      setIsDataLatihanLoaded(true);
+      setDataFilteredLatihan(
+        responseData.data.filter(item => item.status === activeFilterLatihan)
+      );
+    });
+
     // TODO : Consume Data Studi Kasus (State Loading dan Data)
-  });
+  }, []);
+
+  useEffect(() => {
+    console.log(dataFilteredLatihan);
+  }, [dataFilteredLatihan, dataLatihan]);
 
   return (
     <>
@@ -62,37 +74,51 @@ function Beranda() {
         <title>SQLearn | Mahasiswa - Beranda </title>
       </Head>
       <PageLayout role="mahasiswa">
-        {isModalVisible && (
-          <ModalCustom
-            role={modalRole}
-            entity="Studi Kasus"
-            visible={isModalVisible}
-            setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
-            modalText={modalText}
-            setModalText={setModalText}
-          />
-        )}
+        <ModalCustom
+          role={modalRole}
+          entity="Studi Kasus"
+          visible={isModalVisible}
+          setVisible={setIsModalVisible}
+          confirmLoading={isModalLoading}
+          setConfirmLoading={setIsModalLoading}
+          modalText={modalText}
+          setModalText={setModalText}
+        />
 
         <Row gutter={[10, 10]}>
           <Col sm={24} md={10} lg={10}>
             <ProfilMahasiswa />
           </Col>
           <Col sm={24} md={14} lg={14}>
-            <Card style={{ minHeight: "60vh" }}>
+            <Card style={{ height: "100vh" }}>
               <Typography.Title level={2}> Latihan </Typography.Title>
-              <Tabs defaultActiveKey="1" onChange={switchTabPractice}>
-                <TabPane tab="Tersedia" key="available">
-                  {dataLatihan.length === 0 && (
-                    <EmptyData
-                      description="Tidak ada latihan tersedia"
-                      withAction={false}
-                    />
+              <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
+                <TabPane tab="Tersedia" key="tersedia">
+                  {dataFilteredLatihan.length > 0 ? (
+                    <>
+                      <ListComponent
+                        dataSource={dataFilteredLatihan}
+                        isLoading={!isDataLatihanLoaded}
+                        role="sesi-latihan-mahasiswa"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <EmptyData
+                        description="Tidak ada latihan tersedia"
+                        withAction={false}
+                      />
+                    </>
                   )}
                 </TabPane>
-                <TabPane tab="Selesai" key="done">
-                  {dataLatihan.length === 0 && (
+                <TabPane tab="Selesai" key="selesai">
+                  {dataFilteredLatihan.length > 0 ? (
+                    <ListComponent
+                      dataSource={dataFilteredLatihan}
+                      isLoading={!isDataLatihanLoaded}
+                      role="sesi-latihan-mahasiswa"
+                    />
+                  ) : (
                     <EmptyData
                       description="Tidak ada Latihan yang telah dikerjakan"
                       withAction={true}

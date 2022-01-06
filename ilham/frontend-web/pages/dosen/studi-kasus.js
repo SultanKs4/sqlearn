@@ -26,6 +26,7 @@ import {
 import ModalCustom from "../../components/Modal";
 
 import { getHours } from "../../utils/common";
+import ListComponent from "../../components/List";
 
 const mockStudiKasus = [
   {
@@ -47,7 +48,8 @@ const mockStudiKasus = [
 
 function StudiKasus() {
   const [data, setData] = useState(mockStudiKasus);
-  const [isDataLoaded, setDataLoaded] = useState(false);
+  // ! Mock : dataLoaded = true
+  const [isDataLoaded, setDataLoaded] = useState(true);
 
   const [currentStudiKasus, setCurrentStudiKasus] = useState({});
 
@@ -136,73 +138,25 @@ function StudiKasus() {
           />
         )}
 
-        {isModalVisible && (
-          <ModalCustom
-            role={modalRole}
-            entity="Studi Kasus"
-            visible={isModalVisible}
-            setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
-            modalText={modalText}
-            setModalText={setModalText}
-          />
-        )}
-        <Card>
-          <List
-            itemLayout="horizontal"
-            dataSource={data}
-            renderItem={item => (
-              <List.Item>
-                <Row justify="space-around" style={{ width: "100vw" }}>
-                  <Col span={18}>
-                    <Row gutter={[50]}>
-                      <Col>{item.nama}</Col>
-                      <Col>
-                        {" "}
-                        <ConsoleSqlOutlined
-                          style={{ fontSize: "1.5em" }}
-                        />{" "}
-                        {item.jumlahSoal} Pertanyaan{" "}
-                      </Col>
-                      <Col>
-                        <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
-                        {getHours(item.durasi)} Jam
-                      </Col>
-                    </Row>
-                  </Col>
+        <ModalCustom
+          role={modalRole}
+          entity="Studi Kasus"
+          visible={isModalVisible}
+          setVisible={setIsModalVisible}
+          confirmLoading={isModalLoading}
+          setConfirmLoading={setIsModalLoading}
+          modalText={modalText}
+          setModalText={setModalText}
+        />
 
-                  <Col span={6}>
-                    <Row gutter={20} justify="end">
-                      <Col>
-                        <Button
-                          type="primary"
-                          icon={<SearchOutlined />}
-                          size={"medium"}
-                          onClick={() => previewStudiKasus(item)}
-                        ></Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => editStudiKasus(item)}
-                        ></Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          type="danger"
-                          icon={<DeleteOutlined />}
-                          size={"medium"}
-                          onClick={() => deleteStudiKasus(item)}
-                        ></Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </List.Item>
-            )}
+        <Card>
+          <ListComponent
+            isLoading={!isDataLoaded}
+            dataSource={data}
+            role={"studi-kasus"}
+            previewStudiKasus={previewStudiKasus}
+            editStudiKasus={editStudiKasus}
+            deleteStudiKasus={deleteStudiKasus}
           />
         </Card>
       </PageLayout>

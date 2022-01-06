@@ -1,5 +1,5 @@
 import { Skeleton, List, Row, Col, Button, Avatar } from "antd";
-import { getHours } from "../utils/common";
+import { getHours, ucfirst } from "../utils/common";
 
 import {
   PlusCircleOutlined,
@@ -118,6 +118,57 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
                         size={"medium"}
                         onClick={() => props.previewDetailNilai(item)}
                       ></Button>
+                    </Col>
+                  </Row>
+                </Col>
+              </Row>
+            </List.Item>
+          )}
+        />
+      );
+    case "sesi-latihan-mahasiswa":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={item => (
+            <List.Item key={item.id}>
+              <Row justify="space-around" style={{ width: "100vw" }}>
+                <Col span={18}>
+                  <Row gutter={[50]}>
+                    <Col span={8}>
+                      {" "}
+                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />{" "}
+                      {item.jumlahSoal} Pertanyaan{" "}
+                    </Col>
+                    <Col span={8}>
+                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
+                      {item.hasOwnProperty("nilai")
+                        ? item.durasi
+                        : item.deadline}
+                    </Col>
+                    {!item.hasOwnProperty("nilai") && (
+                      <Col span={6}>{ucfirst(item.status)}</Col>
+                    )}
+                  </Row>
+                </Col>
+
+                <Col span={6}>
+                  <Row gutter={20} justify="end">
+                    <Col>
+                      {item.hasOwnProperty("nilai") ? (
+                        <>{ucfirst(item.status)}</>
+                      ) : (
+                        <Button
+                          ghost
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.previewDetailNilai(item)}
+                        >
+                          Kerjakan
+                        </Button>
+                      )}
                     </Col>
                   </Row>
                 </Col>
