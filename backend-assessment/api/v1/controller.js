@@ -1,7 +1,7 @@
-const { createConnectionDB, getConnection, destroyConnection, MAX_TIMEOUT } = require("./config/database");
-const compareQueryResult = require("./lib/compareQueryResult");
-const { createDb, dropDb, descTable, selectTable } = require("./lib/dbFunction");
-const getSimilarity = require("./lib/getSimilarity");
+const { createConnectionDB, getConnection, destroyConnection, MAX_TIMEOUT } = require("../../config/database");
+const compareQueryResult = require("../../lib/compareQueryResult");
+const { createDb, dropDb, descTable, selectTable } = require("../../lib/dbFunction");
+const getSimilarity = require("../../lib/getSimilarity");
 
 module.exports = {
     create_db: (req, res) => {

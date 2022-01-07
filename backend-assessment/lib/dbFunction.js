@@ -16,11 +16,15 @@ async function executeDb(dbname, query, timeout = false) {
 module.exports = {
     createDb: async (dbname) => {
         const query = `CREATE DATABASE ${dbname}`;
-        return await executeDb(null, query);
+        let response = await executeDb(null, query);
+        response["message"] = "database created";
+        return response;
     },
     dropDb: async (dbname) => {
         const query = `DROP DATABASE ${dbname}`;
-        return await executeDb(null, query);
+        let response = await executeDb(null, query);
+        response["message"] = "database deleted";
+        return response;
     },
     descTable: async (dbname) => {
         const query = `SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE table_schema = '${dbname}' ORDER BY table_name, ordinal_position;`;

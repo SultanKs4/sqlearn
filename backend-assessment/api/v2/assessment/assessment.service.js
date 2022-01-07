@@ -1,7 +1,7 @@
-const getSimilarity = require("../../lib/getSimilarity");
-const dbFunctions = require("../../lib/dbFunction");
-const responseObj = require("../../lib/responseObject");
-const compareQueryResult = require("./lib/compareQueryResult");
+const getSimilarity = require("../../../lib/getSimilarity");
+const dbFunctions = require("../../../lib/dbFunction");
+const responseObj = require("../../../lib/responseObject");
+const compareQueryResult = require("../../../lib/compareQueryResult");
 
 function calculateSimilarity(queryMhs, queryKey) {
     const { success, similarity } = getSimilarity(queryMhs, queryKey);
