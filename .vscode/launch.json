@@ -24,5 +24,12 @@
             "envFile": "${workspaceFolder}/sultan/backend-web/.env",
             "program": "${workspaceFolder}/sultan/backend-web/app.js"
         },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Run npm test backend assessment",
+            "cwd": "${workspaceFolder}/backend-assessment",
+            "command": "npm test",
+        }
     ]
 }
