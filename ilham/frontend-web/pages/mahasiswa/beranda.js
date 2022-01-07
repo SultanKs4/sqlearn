@@ -1,6 +1,8 @@
 import { React, useState, useEffect } from "react";
 
 import Head from "next/head";
+import { useRouter } from "next/router";
+
 import PageLayout from "../../components/PageLayout";
 import EmptyData from "../../components/EmptyData";
 import ModalCustom from "../../components/Modal";
@@ -17,6 +19,8 @@ import ListComponent from "../../components/List";
 const { TabPane } = Tabs;
 
 function Beranda() {
+  const router = useRouter();
+
   const [dataProfile, setDataProfile] = useState([]);
   const [dataLatihan, setDataLatihan] = useState([]);
   const [dataFilteredLatihan, setDataFilteredLatihan] = useState([]);
@@ -39,6 +43,10 @@ function Beranda() {
     setModalRole("preview");
     handleToggleModal();
     setModalText(`Ini  ${studObj.nama}`);
+  };
+
+  const handleKerjakanLatihan = id => {
+    router.push(`/mahasiswa/soal/${id}`);
   };
 
   // ? key = status : "tersedia" || "selesai"
@@ -90,25 +98,22 @@ function Beranda() {
             <ProfilMahasiswa />
           </Col>
           <Col sm={24} md={14} lg={14}>
-            <Card style={{ height: "100vh" }}>
+            <Card style={{ height: "60vh" }}>
               <Typography.Title level={2}> Latihan </Typography.Title>
               <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
                 <TabPane tab="Tersedia" key="tersedia">
                   {dataFilteredLatihan.length > 0 ? (
-                    <>
-                      <ListComponent
-                        dataSource={dataFilteredLatihan}
-                        isLoading={!isDataLatihanLoaded}
-                        role="sesi-latihan-mahasiswa"
-                      />
-                    </>
+                    <ListComponent
+                      dataSource={dataFilteredLatihan}
+                      isLoading={!isDataLatihanLoaded}
+                      role="sesi-latihan-mahasiswa"
+                      kerjakanLatihan={handleKerjakanLatihan}
+                    />
                   ) : (
-                    <>
-                      <EmptyData
-                        description="Tidak ada latihan tersedia"
-                        withAction={false}
-                      />
-                    </>
+                    <EmptyData
+                      description="Tidak ada latihan tersedia"
+                      withAction={false}
+                    />
                   )}
                 </TabPane>
                 <TabPane tab="Selesai" key="selesai">
@@ -117,6 +122,7 @@ function Beranda() {
                       dataSource={dataFilteredLatihan}
                       isLoading={!isDataLatihanLoaded}
                       role="sesi-latihan-mahasiswa"
+                      kerjakanLatihan={handleKerjakanLatihan}
                     />
                   ) : (
                     <EmptyData

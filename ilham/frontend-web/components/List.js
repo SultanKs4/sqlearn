@@ -164,7 +164,7 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
                           type="primary"
                           icon={<EditOutlined />}
                           size={"medium"}
-                          onClick={() => props.previewDetailNilai(item)}
+                          onClick={() => props.kerjakanLatihan(item.id)}
                         >
                           Kerjakan
                         </Button>
