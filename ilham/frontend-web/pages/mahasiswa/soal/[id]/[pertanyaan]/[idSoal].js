@@ -70,7 +70,7 @@ function LatihanSoal() {
   }, []);
 
   useEffect(() => {
-    console.log(boxes.sql_constructed.items.map(item => item.content));
+    console.log(boxes?.sql_constructed?.items?.map(item => item.content));
   }, [boxes]);
 
   return (

@@ -9,7 +9,7 @@ import {
   FieldTimeOutlined,
   DeleteOutlined,
   CheckOutlined,
-  FormOutlined
+  FormOutlined,
 } from "@ant-design/icons";
 
 function ListComponent({ isLoading, dataSource, role, ...props }) {
@@ -19,7 +19,7 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
       <List
         itemLayout="horizontal"
         dataSource={skeleton}
-        renderItem={item => <Skeleton loading={true} active avatar />}
+        renderItem={(item) => <Skeleton loading={true} active avatar />}
       />
     );
   }
@@ -30,7 +30,7 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
         <List
           itemLayout="horizontal"
           dataSource={dataSource}
-          renderItem={item => (
+          renderItem={(item) => (
             <List.Item>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
@@ -86,7 +86,7 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
         <List
           itemLayout="horizontal"
           dataSource={dataSource}
-          renderItem={item => (
+          renderItem={(item) => (
             <List.Item>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
@@ -131,17 +131,17 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
         <List
           itemLayout="horizontal"
           dataSource={dataSource}
-          renderItem={item => (
+          renderItem={(item) => (
             <List.Item key={item.id}>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
                   <Row gutter={[50]}>
-                    <Col span={8}>
+                    <Col span={9}>
                       {" "}
                       <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />{" "}
                       {item.jumlahSoal} Pertanyaan{" "}
                     </Col>
-                    <Col span={8}>
+                    <Col span={9}>
                       <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
                       {item.hasOwnProperty("nilai")
                         ? item.durasi

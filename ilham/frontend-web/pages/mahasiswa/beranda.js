@@ -39,33 +39,35 @@ function Beranda() {
 
   const handleToggleModal = () => setIsModalVisible(true);
 
-  const previewStudiKasus = studObj => {
+  const previewStudiKasus = (studObj) => {
     setModalRole("preview");
     handleToggleModal();
     setModalText(`Ini  ${studObj.nama}`);
   };
 
-  const handleKerjakanLatihan = id => {
+  const handleKerjakanLatihan = (id) => {
     router.push(`/mahasiswa/soal/${id}`);
   };
 
   // ? key = status : "tersedia" || "selesai"
-  const switchTabPractice = key => {
+  const switchTabPractice = (key) => {
     let status = key;
     // TODO : Kalau sudah bikin di mockapi ini diuncomment
     setActiveFilterLatihan(status);
-    setDataFilteredLatihan(dataLatihan.filter(item => item.status === status));
+    setDataFilteredLatihan(
+      dataLatihan.filter((item) => item.status === status)
+    );
   };
 
   useEffect(() => {
     // TODO : Consume Data Profil (State Loading dan Data)
 
     // TODO : Consume Data Latihan (State Loading dan Data)
-    mockGetAllPractices().then(responseData => {
+    mockGetAllPractices().then((responseData) => {
       setDataLatihan(responseData.data);
       setIsDataLatihanLoaded(true);
       setDataFilteredLatihan(
-        responseData.data.filter(item => item.status === activeFilterLatihan)
+        responseData.data.filter((item) => item.status === activeFilterLatihan)
       );
     });
 
@@ -98,7 +100,7 @@ function Beranda() {
             <ProfilMahasiswa />
           </Col>
           <Col sm={24} md={14} lg={14}>
-            <Card style={{ height: "60vh" }}>
+            <Card style={{ height: "100%" }}>
               <Typography.Title level={2}> Latihan </Typography.Title>
               <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
                 <TabPane tab="Tersedia" key="tersedia">

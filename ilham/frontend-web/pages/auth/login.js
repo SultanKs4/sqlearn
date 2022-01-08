@@ -1,10 +1,22 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Radio, Card, Row, Checkbox, Col } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  Row,
+  Checkbox,
+  Col,
+  Select,
+  Typography,
+} from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-const mockValidate = valueInput => {
+const { Option } = Select;
+
+const mockValidate = (valueInput) => {
   if (valueInput.loginTypeValue === "mahasiswa")
     return valueInput.username === "1841720076" &&
       valueInput.password === "1841720076"
@@ -22,13 +34,12 @@ const Login = () => {
   const router = useRouter();
 
   const [form] = Form.useForm();
-  const [loginType, setLoginTypeType] = useState("mahasiswa");
 
-  const onRequiredTypeChange = ({ loginTypeValue }) => {
-    setLoginTypeType(loginTypeValue);
-  };
+  const [loginType, setLoginType] = useState("mahasiswa");
 
-  const onFinish = values => {
+  const onRequiredTypeChange = (activeRole) => setLoginType(activeRole);
+
+  const onFinish = (values) => {
     console.log("Received values of form: ", values);
     if (mockValidate(values)) {
       if (values.loginTypeValue === "mahasiswa")
@@ -46,7 +57,7 @@ const Login = () => {
         <Card
           style={{
             boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-            width: "400px"
+            width: "400px",
           }}
         >
           <Form
@@ -54,30 +65,45 @@ const Login = () => {
             className="login-form"
             initialValues={{
               remember: true,
-              loginTypeValue: loginType
+              loginTypeValue: loginType,
             }}
             form={form}
-            onValuesChange={onRequiredTypeChange}
             onFinish={onFinish}
           >
-            <Form.Item label="Login sebagai" name="loginTypeValue">
-              <Radio.Group>
-                <Radio.Button value="mahasiswa">Mahasiswa</Radio.Button>
-                <Radio.Button value="dosen">Dosen</Radio.Button>
-              </Radio.Group>
-            </Form.Item>
+            <Row justify="space-between">
+              <Col>
+                {" "}
+                <Typography.Text style={{ fontWeight: "bold" }}>
+                  {" "}
+                  Login Sebagai{" "}
+                </Typography.Text>{" "}
+              </Col>
+              <Col>
+                <Form.Item name="loginTypeValue">
+                  <Select
+                    defaultValue="mahasiswa"
+                    onChange={onRequiredTypeChange}
+                    style={{ width: "150px" }}
+                  >
+                    <Option value="mahasiswa">Mahasiswa</Option>
+                    <Option value="dosen">Dosen</Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
+
             <Form.Item
               name="username"
               tooltip={{
                 title: `Bisa menggunakan ${
                   loginType === "mahasiswa" ? "NIM" : "NIDN"
-                }`
+                }`,
               }}
               rules={[
                 {
                   required: true,
-                  message: "Please input your Username!"
-                }
+                  message: "Please input your Username!",
+                },
               ]}
             >
               <Input
@@ -90,8 +116,8 @@ const Login = () => {
               rules={[
                 {
                   required: true,
-                  message: "Please input your Password!"
-                }
+                  message: "Please input your Password!",
+                },
               ]}
             >
               <Input
