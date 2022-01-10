@@ -9,42 +9,42 @@ import {
   Card,
   Tabs,
   Alert,
-  Avatar
+  Avatar,
 } from "antd";
 
 import {
   UserOutlined,
   ConsoleSqlOutlined,
   SearchOutlined,
-  FieldTimeOutlined
+  FieldTimeOutlined,
 } from "@ant-design/icons";
 
 import { getHours } from "../../utils/common";
 
-const mockStudiKasus = [
+const mockPaketSoal = [
   {
-    nama: "Studi Kasus A",
+    nama: "Paket Soal A",
     jumlahSoal: 5,
-    durasi: 120
+    durasi: 120,
   },
   {
-    nama: "Studi Kasus B",
+    nama: "Paket Soal B",
     jumlahSoal: 5,
-    durasi: 120
+    durasi: 120,
   },
   {
-    nama: "Studi Kasus C",
+    nama: "Paket Soal C",
     jumlahSoal: 5,
-    durasi: 120
-  }
+    durasi: 120,
+  },
 ];
 
-function StudiKasusBeranda({ data = mockStudiKasus, previewStudiKasus }) {
+function StudiKasusBeranda({ data = mockPaketSoal, previewStudiKasus }) {
   return (
     <List
       itemLayout="horizontal"
       dataSource={data}
-      renderItem={item => (
+      renderItem={(item) => (
         <List.Item>
           <Row justify="space-between" style={{ width: "100vw" }}>
             <Col>{item.nama}</Col>

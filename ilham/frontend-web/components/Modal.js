@@ -8,54 +8,17 @@ function ModalCustom({
   entity,
   visible,
   setVisible,
-  confirmLoading,
-  setConfirmLoading,
   modalText,
-  setModalText
+  modalContent,
 }) {
-  const handleOk = () => {
-    setModalText("The modal will be closed after two seconds");
-    setConfirmLoading(true);
-    setTimeout(() => {
-      setVisible(false);
-      setConfirmLoading(false);
-    }, 2000);
-  };
-
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
-
   return (
     <Modal
       title={`${ucfirst(role)} ${ucfirst(entity)}`}
       visible={visible}
-      onOk={handleOk}
-      confirmLoading={confirmLoading}
-      onCancel={handleCancel}
-      footer={
-        role !== "preview" ? (
-          [
-            <Button key="back" onClick={handleCancel}>
-              Cancel
-            </Button>,
-            <Button
-              key="submit"
-              type="primary"
-              loading={confirmLoading}
-              onClick={handleOk}
-            >
-              Submit
-            </Button>
-          ]
-        ) : (
-          <Button key="back" onClick={handleCancel}>
-            Cancel
-          </Button>
-        )
-      }
+      onCancel={() => setVisible(false)}
+      footer={null}
     >
+      {modalContent}
       <p>{modalText}</p>
     </Modal>
   );

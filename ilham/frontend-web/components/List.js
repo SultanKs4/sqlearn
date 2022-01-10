@@ -1,9 +1,10 @@
-import { Skeleton, List, Row, Col, Button, Avatar } from "antd";
+import { Skeleton, List, Row, Col, Button, Avatar, Typography } from "antd";
 import { getHours, ucfirst } from "../utils/common";
 
 import {
   PlusCircleOutlined,
   ConsoleSqlOutlined,
+  IssuesCloseOutlined,
   SearchOutlined,
   EditOutlined,
   FieldTimeOutlined,
@@ -12,7 +13,7 @@ import {
   FormOutlined,
 } from "@ant-design/icons";
 
-function ListComponent({ isLoading, dataSource, role, ...props }) {
+function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
   if (isLoading) {
     let skeleton = ["", "", "", ""];
     return (
@@ -23,6 +24,9 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
       />
     );
   }
+
+  // ? Untuk setiap role disini, mempunyai showDetail yang berbeda dan tidak mempengaruhi satu sama lain
+  // TODO : Perlu nambahi untuk showDetail di case "sesi-latihan-mahasiswa"
 
   switch (role) {
     case "studi-kasus":
@@ -37,12 +41,11 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
                   <Row gutter={[50]}>
                     <Col>{item.nama}</Col>
                     <Col>
-                      {" "}
-                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />{" "}
-                      {item.jumlahSoal} Pertanyaan{" "}
+                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />
+                      {item.jumlahSoal} Pertanyaan
                     </Col>
                     <Col>
-                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
+                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />
                       {getHours(item.durasi)} Jam
                     </Col>
                   </Row>
@@ -93,17 +96,16 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
                   <Row gutter={[50]}>
                     <Col span={6}>{item.nama}</Col>
                     <Col span={6}>
-                      {" "}
-                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />{" "}
-                      {item.jumlahLatihanDikerjakan} Pertanyaan{" "}
+                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />
+                      {item.jumlahLatihanDikerjakan} Pertanyaan
                       <CheckOutlined />
                     </Col>
                     <Col span={6}>
-                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
+                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />
                       {item.avgDurasi} menit
                     </Col>
                     <Col span={6}>
-                      <FormOutlined style={{ fontSize: "1.5em" }} /> Nilai :{" "}
+                      <FormOutlined style={{ fontSize: "1.5em" }} /> Nilai :
                       {item.avgNilai}
                     </Col>
                   </Row>
@@ -135,21 +137,52 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
             <List.Item key={item.id}>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
-                  <Row gutter={[50]}>
-                    <Col span={9}>
-                      {" "}
-                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />{" "}
-                      {item.jumlahSoal} Pertanyaan{" "}
+                  <Row gutter={[10]}>
+                    <Col span={showDetail ? 4 : 6}>
+                      <Typography.Text
+                        style={{ fontWeight: "bold" }}
+                        children={item.nama}
+                      />
                     </Col>
-                    <Col span={9}>
-                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
-                      {item.hasOwnProperty("nilai")
-                        ? item.durasi
-                        : item.deadline}
+                    <Col span={showDetail ? 6 : 9}>
+                      <ConsoleSqlOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />
+                      {item.jumlahSoal} Pertanyaan
                     </Col>
-                    {!item.hasOwnProperty("nilai") && (
-                      <Col span={6}>{ucfirst(item.status)}</Col>
+
+                    {item.hasOwnProperty("nilai") && showDetail && (
+                      <Col span={showDetail ? 6 : 9}>
+                        <FormOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        Skor : {item.nilai}
+                      </Col>
                     )}
+
+                    <Col span={showDetail ? 6 : 9}>
+                      {item.hasOwnProperty("nilai") ? (
+                        <>
+                          <IssuesCloseOutlined
+                            style={{
+                              fontSize: "1.2em",
+                              marginRight: ".5em",
+                            }}
+                          />
+                          {`${item.totalPercobaan}x percobaan`}
+                        </>
+                      ) : (
+                        <>
+                          <FieldTimeOutlined
+                            style={{
+                              fontSize: "1.2em",
+                              marginRight: ".5em",
+                            }}
+                          />
+                          {item.deadline}
+                        </>
+                      )}
+                    </Col>
                   </Row>
                 </Col>
 
@@ -157,7 +190,9 @@ function ListComponent({ isLoading, dataSource, role, ...props }) {
                   <Row gutter={20} justify="end">
                     <Col>
                       {item.hasOwnProperty("nilai") ? (
-                        <>{ucfirst(item.status)}</>
+                        <div style={{ color: "#52c41a" }}>
+                          {ucfirst(item.status)}
+                        </div>
                       ) : (
                         <Button
                           ghost

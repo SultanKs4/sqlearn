@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
@@ -10,16 +10,20 @@ import {
   Button,
   List,
   Card,
-  Alert
+  Alert,
+  Form,
 } from "antd";
 
 import {
   PlusCircleOutlined,
   EditTwoTone,
-  DeleteTwoTone
+  DeleteTwoTone,
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
+import FormTambahJadwal from "../../components/dosen/Jadwal/FormTambahJadwal";
+import FormEditJadwal from "../../components/dosen/Jadwal/FormEditJadwal";
+import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 
 function Jadwal() {
   const [currentJadwal, setCurrentJadwal] = useState({});
@@ -40,37 +44,40 @@ function Jadwal() {
   const tambahJadwal = () => {
     setModalRole("tambah");
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call POST API request dari JadwalCRUD.js
-    // setCurrentJadwal(JadwalDariForm)
-    // setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil ditambahkan`);
   };
 
-  const editJadwal = jadwalObj => {
+  const editJadwal = (jadwalObj) => {
     setModalRole("edit");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call PUT API request dari JadwalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil diubah`);
-    // handleToggleAlert();
   };
 
-  const deleteJadwal = jadwalObj => {
+  const deleteJadwal = (jadwalObj) => {
     setModalRole("delete");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
+  };
 
-    // Mungkin ini nanti dibagian modal
+  const aksiTambahJadwal = (formJadwal) => {
+    // TODO : Call POST API request dari JadwalCRUD.js
+    // ...
+    console.log("Hasil submit tambah", formJadwal);
+  };
+
+  const aksiEditJadwal = (formJadwal) => {
+    // TODO : Call PUT API request dari JadwalCRUD.js
+    // ...
+    setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil diubah`);
+    handleToggleAlert();
+    console.log("Data berhasil diedit", formJadwal);
+  };
+
+  const aksiDeleteJadwal = (formJadwal) => {
     // TODO : Call DELETE API request dari JadwalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil dihapus`);
-    // handleToggleAlert();
+    // ...
+    setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil dihapus`);
+    handleToggleAlert();
+    console.log("Data terhapus", formJadwal);
   };
 
   return (
@@ -110,6 +117,27 @@ function Jadwal() {
             confirmLoading={isModalLoading}
             setConfirmLoading={setIsModalLoading}
             modalText={modalText}
+            modalContent={
+              modalRole === "tambah" ? (
+                <FormTambahJadwal
+                  handleSubmit={aksiTambahJadwal}
+                  setVisible={setIsModalVisible}
+                  setCurrentJadwal={setCurrentJadwal}
+                />
+              ) : modalRole === "edit" ? (
+                <FormEditJadwal
+                  handleSubmit={aksiEditJadwal}
+                  setVisible={setIsModalVisible}
+                  setCurrentJadwal={setCurrentJadwal}
+                />
+              ) : (
+                <FormHapusJadwal
+                  handleSubmit={aksiDeleteJadwal}
+                  setVisible={setIsModalVisible}
+                  setCurrentJadwal={setCurrentJadwal}
+                />
+              )
+            }
             setModalText={setModalText}
           />
         )}

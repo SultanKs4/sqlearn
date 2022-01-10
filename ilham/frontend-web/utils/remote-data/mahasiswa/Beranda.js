@@ -1,7 +1,7 @@
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 
-const getUserInfo = async username => {
+const getUserInfo = async (username) => {
   // TODO : API Request GET : ?username={username}
   // ? Output :
   /*
@@ -21,46 +21,50 @@ const getStudiKasus = async (kelasID, sesiID) => {
   return response.data;
 };
 
-const getFinishedPractices = async username => {
+const getFinishedPractices = async (username) => {
   // TODO : API Request GET : ?username={username}
   let response = await axios.get("");
   return response.data;
 };
 
-const getAvailablePractices = async username => {
+const getAvailablePractices = async (username) => {
   // TODO : API Request GET : ?username={username}
   let response = await axios.get("");
   return response.data;
 };
 
-const mockGetAllPractices = async username => {
+const mockGetAllPractices = async (username) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
         data: [
           {
             id: uuidv4(),
+            nama: "Latihan 1",
             jumlahSoal: 3,
             durasi: "2 jam",
             deadline: "12 jam lagi",
-            status: "tersedia"
+            status: "tersedia",
           },
           {
             id: uuidv4(),
+            nama: "Latihan 2",
             jumlahSoal: 5,
             durasi: "2 jam",
             deadline: "-",
             status: "selesai",
-            nilai: 100
+            nilai: 100,
+            totalPercobaan: 4,
           },
           {
             id: uuidv4(),
+            nama: "Latihan 3",
             jumlahSoal: 1,
             durasi: "2 jam",
             deadline: "10 jam lagi",
-            status: "tersedia"
-          }
-        ]
+            status: "tersedia",
+          },
+        ],
       });
     }, 1000);
   });
@@ -71,5 +75,5 @@ export {
   getStudiKasus,
   getFinishedPractices,
   getAvailablePractices,
-  mockGetAllPractices
+  mockGetAllPractices,
 };

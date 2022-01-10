@@ -5,7 +5,7 @@ const getPaketSoal = async () => {
   return response.data;
 };
 
-const getPaketSoalByID = async paketID => {
+const getPaketSoalByID = async (paketID) => {
   let response = await axios.get("");
   return response.data;
 };
@@ -25,10 +25,37 @@ const deletePaketSoal = async () => {
   return response.data;
 };
 
+const mockGetAllCaseStudy = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            nama: "Paket Soal A",
+            jumlahSoal: 5,
+            durasi: 120,
+          },
+          {
+            nama: "Paket Soal B",
+            jumlahSoal: 5,
+            durasi: 120,
+          },
+          {
+            nama: "Paket Soal C",
+            jumlahSoal: 5,
+            durasi: 120,
+          },
+        ],
+      });
+    }, 1000);
+  });
+};
+
 export {
   getPaketSoal,
   getPaketSoalByID,
   postPaketSoal,
   updatePaketSoal,
-  deletePaketSoal
+  deletePaketSoal,
+  mockGetAllCaseStudy,
 };

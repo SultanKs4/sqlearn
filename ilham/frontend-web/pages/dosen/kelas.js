@@ -12,13 +12,13 @@ import {
   Button,
   List,
   Card,
-  Alert
+  Alert,
 } from "antd";
 
 import {
   PlusCircleOutlined,
   EditTwoTone,
-  DeleteTwoTone
+  DeleteTwoTone,
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
@@ -40,7 +40,7 @@ function DaftarKelas() {
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
-    getKelas(1).then(data => {
+    getKelas(1).then((data) => {
       setIsDataKelasLoaded(true);
       setDataKelas(data);
     });
@@ -59,7 +59,7 @@ function DaftarKelas() {
     // setAlertMessage(`Data Kelas ${currentKelas.nama} berhasil ditambahkan`);
   };
 
-  const editKelas = kelasObj => {
+  const editKelas = (kelasObj) => {
     setModalRole("edit");
     setCurrentKelas(kelasObj);
     handleToggleModal();
@@ -72,7 +72,7 @@ function DaftarKelas() {
     // handleToggleAlert();
   };
 
-  const deleteKelas = kelasObj => {
+  const deleteKelas = (kelasObj) => {
     setModalRole("delete");
     setCurrentKelas(kelasObj);
     handleToggleModal();
@@ -113,25 +113,23 @@ function DaftarKelas() {
           />
         )}
 
-        {isModalVisible && (
-          <ModalCustom
-            role={modalRole}
-            entity="Kelas"
-            visible={isModalVisible}
-            setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
-            modalText={modalText}
-            setModalText={setModalText}
-          />
-        )}
+        <ModalCustom
+          role={modalRole}
+          entity="Kelas"
+          visible={isModalVisible}
+          setVisible={setIsModalVisible}
+          confirmLoading={isModalLoading}
+          setConfirmLoading={setIsModalLoading}
+          modalText={modalText}
+          setModalText={setModalText}
+        />
 
         {isDataKelasLoaded ? (
           dataKelas.length > 0 ? (
             <List
               grid={{ gutter: 16, column: 4 }}
               dataSource={dataKelas}
-              renderItem={item => (
+              renderItem={(item) => (
                 <List.Item>
                   <Card>
                     <Row>
