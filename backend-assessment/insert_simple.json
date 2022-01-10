@@ -1,0 +1,32 @@
+{
+    "type": "insert",
+    "table": [
+        {
+            "db": null,
+            "table": "mahasiswa",
+            "as": null
+        }
+    ],
+    "columns": ["nama", "nim", "kelas"],
+    "values": [
+        {
+            "type": "expr_list",
+            "value": [
+                {
+                    "type": "single_quote_string",
+                    "value": "YASA"
+                },
+                {
+                    "type": "number",
+                    "value": 1123144
+                },
+                {
+                    "type": "single_quote_string",
+                    "value": "MI-2M"
+                }
+            ]
+        }
+    ],
+    "partition": null,
+    "on_duplicate_update": null
+}

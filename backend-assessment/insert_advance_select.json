@@ -1,0 +1,57 @@
+[
+    {
+        "type": "insert",
+        "table": [
+            {
+                "db": null,
+                "table": "tbl_temp2",
+                "as": null
+            }
+        ],
+        "columns": ["fld_id"],
+        "values": {
+            "with": null,
+            "type": "select",
+            "options": null,
+            "distinct": null,
+            "columns": [
+                {
+                    "expr": {
+                        "type": "column_ref",
+                        "table": "tbl_temp1",
+                        "column": "fld_order_id"
+                    },
+                    "as": null
+                }
+            ],
+            "from": [
+                {
+                    "db": null,
+                    "table": "tbl_temp1",
+                    "as": null
+                }
+            ],
+            "where": {
+                "type": "binary_expr",
+                "operator": ">",
+                "left": {
+                    "type": "column_ref",
+                    "table": "tbl_temp1",
+                    "column": "fld_order_id"
+                },
+                "right": {
+                    "type": "number",
+                    "value": 100
+                }
+            },
+            "groupby": null,
+            "having": null,
+            "orderby": null,
+            "limit": null,
+            "for_update": null,
+            "window": null
+        },
+        "partition": null,
+        "on_duplicate_update": null
+    }
+]
