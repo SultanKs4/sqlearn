@@ -15,27 +15,77 @@ function aliasString(prefix, aliases) {
 }
 
 function typeCheck(obj, arr = null) {
-    switch (obj.type) {
-        case "column_ref":
-            return obj.column;
-        case "binary_expr":
-            binaryExpr(obj, arr);
-            return arr;
-        case "single_quote_string":
-            return "constant";
-
-        default:
-            break;
+    const type = obj.type;
+    if (type == "column_ref") {
+        return obj.column;
+    } else if (type == "select") {
+        return "SubQuery";
+    } else if (type == "binary_expr") {
+        /* "type": "binary_expr",
+            "operator": "=",
+            "left": {
+                "type": "column_ref",
+                "table": null,
+                "column": "kelas"
+            },
+            "right": {
+                "type": "single_quote_string",
+                "value": "ti-4c"
+            } */
+        binaryExpr(obj, arr);
+        return arr;
+    } else if (type == "number") {
+        // do nothing
+    } else if (type == "function") {
+        /*         {
+            type: 'function',
+            name: func,
+            over: null,
+            args: {
+              type: 'expr_list',
+              value: []
+            } */
+    } else if (type == "aggr_func") {
+        /* {
+            type: 'aggr_func',
+            name: 'SUM',
+            over: null,
+            args: { expr: { type: 'column_ref', table: null, column: 'col2' } }
+          } */
+    } else if (type == "expr_list") {
+        /* type : 'expr_list',
+            value : [
+              { type: 'number', value: 1 },
+              { type: 'single_quote_string', value: 't' }
+            ] */
+    } else if (type == "param") {
+        // { type: 'param', value: 'my_param' }
+    } else if (type == "unary_expr") {
+        /* {
+            type: 'unary_expr',
+            operator: 'NOT',
+            expr: { type: 'bool', value: true }
+          } */
+    } else if (type == "bool") {
+        // { type: 'bool', value: 'bool' }
+    } else if (type == "null") {
+        // { type: 'null', value: 'null' }
+    } else if (type.includes("string")) {
+        return "constant";
     }
 }
 
-function selectColumns(distinct, columnsObjArr) {
-    let columns = columnsObjArr.map((e) => {
-        return typeCheck(e.expr);
-    });
+function selectColumns(distinct, columns) {
+    if (typeof columns == "string") {
+        return columns;
+    } else if (Array.isArray(columns)) {
+        columns = columns.map((e) => {
+            return typeCheck(e.expr);
+        });
 
-    if (distinct) {
-        columns = [distinct, ...columns];
+        if (distinct) {
+            columns = [distinct, ...columns];
+        }
     }
     return columns;
 }
