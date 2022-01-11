@@ -1,18 +1,28 @@
-function binaryExpr(obj) {
+function binaryExpr(obj, arr) {
+    const pattern = /[a-zA-Z]/g;
     const operator = obj.operator;
-    const left = obj.left;
-    const right = obj.right;
-    return left + operator + right;
+    const left = typeCheck(obj.left, arr);
+    const right = typeCheck(obj.right, arr);
+    if (pattern.test(operator)) {
+        arr.unshift(operator);
+    } else {
+        arr.push(left + "_" + operator + "_" + right);
+    }
 }
 
 function aliasString(prefix, aliases) {
     return `${prefix}_as_${aliases}`;
 }
 
-function typeCheck(obj) {
+function typeCheck(obj, arr = null) {
     switch (obj.type) {
         case "column_ref":
             return obj.column;
+        case "binary_expr":
+            binaryExpr(obj, arr);
+            return arr;
+        case "single_quote_string":
+            return "constant";
 
         default:
             break;
@@ -20,17 +30,14 @@ function typeCheck(obj) {
 }
 
 function selectColumns(distinct, columnsObjArr) {
-    let columns = [];
-
-    columnsObjArr.forEach((e) => {
-        let prefix = typeCheck(e.expr);
-        prefix = e.as ? aliasString(prefix, e.as) : prefix;
-        columns = [...columns, prefix];
+    let columns = columnsObjArr.map((e) => {
+        return typeCheck(e.expr);
     });
 
     if (distinct) {
         columns = [distinct, ...columns];
     }
+    return columns;
 }
 
 function getTable(tableObjArr) {
@@ -38,10 +45,7 @@ function getTable(tableObjArr) {
         let arr = [];
         if (e.join) {
             arr.push(e.join + "_" + e.table);
-            if (e.on) {
-                e.on.type == "binary_expr" ? binaryExpr(e.on) : null;
-            }
-            e.on ? arr.push(e.on.operator) : null;
+            e.on ? arr.push(typeCheck(e.on)) : null;
         } else arr.push(e.table);
         return arr;
     });
@@ -55,6 +59,7 @@ function parseFeatureNode(ast) {
         case "select":
             let selectColumn = selectColumns(ast.distinct, ast.columns);
             let from = getTable(ast.from);
+            let where = typeCheck(ast.where, []);
             break;
         case "insert":
             let insertColumn = ast.columns;
