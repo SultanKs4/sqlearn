@@ -35,6 +35,10 @@ function typeCheck(obj, arr = null) {
         binaryExpr(obj, arr);
         return arr;
     } else if (type == "number") {
+        /* {
+            "type": "number",
+            "value": 1123144
+        }, */
         // do nothing
     } else if (type == "function") {
         /*         {
