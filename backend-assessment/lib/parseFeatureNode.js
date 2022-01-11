@@ -1,31 +1,31 @@
-function parseFeatureNode(ast) {
-    const type = ast["type"];
-    let obj = {};
-    switch (type) {
-        case "select":
-            let selectColumns = selectColumns(ast["distinct"], ast["columns"]);
-            let from;
-            break;
-        case "insert":
-            break;
-    }
-    return {
-        type,
-    };
+function binaryExpr(obj) {
+    const operator = obj.operator;
+    const left = obj.left;
+    const right = obj.right;
+    return left + operator + right;
 }
 
-function selectColumns(distinct, columnsObj) {
+function aliasString(prefix, aliases) {
+    return `${prefix}_as_${aliases}`;
+}
+
+function typeCheck(obj) {
+    switch (obj.type) {
+        case "column_ref":
+            return obj.column;
+
+        default:
+            break;
+    }
+}
+
+function selectColumns(distinct, columnsObjArr) {
     let columns = [];
 
-    columnsObj.forEach((element) => {
-        switch (element["expr"]["type"]) {
-            case "column_ref":
-                columns = [...columns, getColumnRef(element["expr"])];
-                break;
-
-            default:
-                break;
-        }
+    columnsObjArr.forEach((e) => {
+        let prefix = typeCheck(e.expr);
+        prefix = e.as ? aliasString(prefix, e.as) : prefix;
+        columns = [...columns, prefix];
     });
 
     if (distinct) {
@@ -33,19 +33,36 @@ function selectColumns(distinct, columnsObj) {
     }
 }
 
-function insertColumns(params) {}
-
-function getColumnRef(columnsObj, tableAliases = null) {
-    return columnsObj["column"];
-}
-
-function getTable(tableObj) {
-    let table = [];
-    tableObj.forEach((element) => {
-        let tableString = element["as"] ? `${element["table"]}_${element["as"]}` : `${element["table"]}`;
-        table = [...table, tableString];
+function getTable(tableObjArr) {
+    let table = tableObjArr.flatMap((e) => {
+        let arr = [];
+        if (e.join) {
+            arr.push(e.join + "_" + e.table);
+            if (e.on) {
+                e.on.type == "binary_expr" ? binaryExpr(e.on) : null;
+            }
+            e.on ? arr.push(e.on.operator) : null;
+        } else arr.push(e.table);
+        return arr;
     });
     return table;
+}
+
+function parseFeatureNode(ast) {
+    const command = ast.type;
+    let obj = {};
+    switch (command) {
+        case "select":
+            let selectColumn = selectColumns(ast.distinct, ast.columns);
+            let from = getTable(ast.from);
+            break;
+        case "insert":
+            let insertColumn = ast.columns;
+            break;
+    }
+    return {
+        [command]: obj,
+    };
 }
 
 module.exports = parseFeatureNode;
