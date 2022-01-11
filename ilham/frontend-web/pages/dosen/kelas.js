@@ -22,12 +22,16 @@ import {
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
+import FormTambahKelas from "../../components/dosen/Kelas/FormTambahKelas";
+import FormHapusKelas from "../../components/dosen/Kelas/FormHapusKelas";
+import FormEditKelas from "../../components/dosen/Kelas/FormEditKelas";
 
 function DaftarKelas() {
   const [dataKelas, setDataKelas] = useState([]);
   const [isDataKelasLoaded, setIsDataKelasLoaded] = useState(false);
 
   const [currentKelas, setCurrentKelas] = useState({});
+  const [formObj, setFormObj] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -46,43 +50,50 @@ function DaftarKelas() {
     });
   }, []);
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
   const tambahKelas = () => {
     setModalRole("tambah");
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call POST API request dari KelasCRUD.js
-    // setCurrentKelas(kelasDariForm)
-    // setAlertMessage(`Data Kelas ${currentKelas.nama} berhasil ditambahkan`);
   };
 
   const editKelas = (kelasObj) => {
+    console.log("Selected, ", kelasObj);
     setModalRole("edit");
     setCurrentKelas(kelasObj);
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call PUT API request dari KelasCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Kelas ${currentKelas.nama} berhasil diubah`);
-    // handleToggleAlert();
   };
 
   const deleteKelas = (kelasObj) => {
     setModalRole("delete");
     setCurrentKelas(kelasObj);
     handleToggleModal();
+  };
 
-    // Mungkin ini nanti dibagian modal
+  const aksiTambahKelas = (formKelas) => {
+    // TODO : Call POST API request dari KelasCRUD.js
+    // ...
+    setAlertMessage(`Data ${formKelas.name} berhasil ditambahkan`);
+    console.log("Hasil submit tambah", formKelas);
+  };
+
+  const aksiEditKelas = (formKelas) => {
+    // TODO : Call PUT API request dari KelasCRUD.js
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data Kelas ${formKelas.name} berhasil diubah`);
+    handleToggleAlert();
+    console.log("Data berhasil diedit", formKelas);
+  };
+
+  const aksiDeleteKelas = (formKelas) => {
     // TODO : Call DELETE API request dari KelasCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Kelas ${currentKelas.nama} berhasil dihapus`);
-    // handleToggleAlert();
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data Kelas ${formKelas.name} berhasil dihapus`);
+    handleToggleAlert();
+    console.log("Data terhapus", formKelas);
   };
 
   return (
@@ -122,6 +133,28 @@ function DaftarKelas() {
           setConfirmLoading={setIsModalLoading}
           modalText={modalText}
           setModalText={setModalText}
+          modalContent={
+            modalRole === "tambah" ? (
+              <FormTambahKelas
+                handleSubmit={aksiTambahKelas}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+              />
+            ) : modalRole === "edit" ? (
+              <FormEditKelas
+                handleSubmit={aksiEditKelas}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+                currentKelas={currentKelas}
+              />
+            ) : (
+              <FormHapusKelas
+                handleSubmit={aksiDeleteKelas}
+                setVisible={setIsModalVisible}
+                currentKelas={currentKelas}
+              />
+            )
+          }
         />
 
         {isDataKelasLoaded ? (
@@ -135,12 +168,12 @@ function DaftarKelas() {
                     <Row>
                       <Col flex="1">{item.name}</Col>
                       <Col>
-                        <Button>
+                        <Button onClick={() => editKelas(item)}>
                           <EditTwoTone twoToneColor="#52c41a" />
                         </Button>
                       </Col>
                       <Col>
-                        <Button>
+                        <Button onClick={() => deleteKelas(item)}>
                           <DeleteTwoTone twoToneColor="#eb2f96" />
                         </Button>
                       </Col>

@@ -11,13 +11,13 @@ import {
   Button,
   List,
   Card,
-  Alert
+  Alert,
 } from "antd";
 
 import {
   PlusCircleOutlined,
   EditTwoTone,
-  DeleteTwoTone
+  DeleteTwoTone,
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
@@ -35,7 +35,7 @@ function HalamanSoal() {
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
   const tambahSoal = () => {
@@ -48,7 +48,7 @@ function HalamanSoal() {
     // setAlertMessage(`Data Soal ${currentSoal.nama} berhasil ditambahkan`);
   };
 
-  const editSoal = soalObj => {
+  const editSoal = (soalObj) => {
     setModalRole("edit");
     setCurrentSoal(soalObj);
     handleToggleModal();
@@ -61,7 +61,7 @@ function HalamanSoal() {
     // handleToggleAlert();
   };
 
-  const deleteSoal = soalObj => {
+  const deleteSoal = (soalObj) => {
     setModalRole("delete");
     setCurrentSoal(soalObj);
     handleToggleModal();

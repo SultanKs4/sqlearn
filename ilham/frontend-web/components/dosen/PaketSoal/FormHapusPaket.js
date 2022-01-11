@@ -1,15 +1,15 @@
 import { Button, Col, Form, Row } from "antd";
 
-function FormHapusJadwal({
+function FormHapusPaket({
   form,
-  currentJadwal,
+  currentPaket,
   setVisible,
   handleSubmit,
   ...props
 }) {
   return (
     <>
-      <Row justify="center">Apakah Anda yakin ingin menghapus jadwal ini ?</Row>
+      <Row justify="center">Apakah Anda yakin ingin menghapus Paket ini ?</Row>
       <Row justify="center" style={{ marginTop: "1em" }} gutter={10}>
         <Col>
           <Button ghost type="primary" onClick={() => setVisible(false)}>
@@ -17,7 +17,11 @@ function FormHapusJadwal({
           </Button>
         </Col>
         <Col>
-          <Button type="danger" ghost onClick={() => handleSubmit()}>
+          <Button
+            type="danger"
+            ghost
+            onClick={() => handleSubmit(currentPaket)}
+          >
             Ya, Hapus
           </Button>
         </Col>
@@ -26,4 +30,4 @@ function FormHapusJadwal({
   );
 }
 
-export default FormHapusJadwal;
+export default FormHapusPaket;

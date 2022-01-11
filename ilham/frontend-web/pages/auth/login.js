@@ -107,7 +107,7 @@ const Login = () => {
               ]}
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<UserOutlined />}
                 placeholder={`Username ${loginType} . . .`}
               />
             </Form.Item>
@@ -121,7 +121,7 @@ const Login = () => {
               ]}
             >
               <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={<LockOutlined />}
                 type="password"
                 placeholder="Password"
               />

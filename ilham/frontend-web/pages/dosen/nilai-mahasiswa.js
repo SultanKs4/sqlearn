@@ -10,7 +10,7 @@ import {
   Alert,
   Avatar,
   List,
-  Spin
+  Spin,
 } from "antd";
 
 import { mockKelasDiajar } from "../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
@@ -24,20 +24,20 @@ const mockNilaiMhs = [
     nama: "Muhammad Ilham Adhim",
     avgNilai: 88,
     avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20
+    jumlahLatihanDikerjakan: 20,
   },
   {
     nama: "Sultan A",
     avgNilai: 88,
     avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20
+    jumlahLatihanDikerjakan: 20,
   },
   {
     nama: "Ilham Rizky",
     avgNilai: 88,
     avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20
-  }
+    jumlahLatihanDikerjakan: 20,
+  },
 ];
 
 function HalamanNilai() {
@@ -52,9 +52,9 @@ function HalamanNilai() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
-  const previewNilaiMhs = nilaiMhsObj => {
+  const previewNilaiMhs = (nilaiMhsObj) => {
     setModalRole("preview");
     handleToggleModal();
     setModalText(
@@ -63,7 +63,7 @@ function HalamanNilai() {
   };
 
   useEffect(() => {
-    mockKelasDiajar(1).then(item => {
+    mockKelasDiajar(1).then((item) => {
       setData(item);
       setIsDataLoaded(true);
     });
@@ -111,7 +111,7 @@ function HalamanNilai() {
           <List
             itemLayout="horizontal"
             dataSource={isSearching ? searchResult : data}
-            renderItem={item => (
+            renderItem={(item) => (
               <Card style={{ marginBottom: "1em" }}>
                 <Typography.Title level={3}> {item.name} </Typography.Title>
                 <ListComponent

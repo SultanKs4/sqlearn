@@ -9,14 +9,15 @@ import {
   Select,
 } from "antd";
 import moment from "moment";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
-import { mockGetAllCaseStudy } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 
 function FormEditJadwal({
-  setCurrentJadwal,
+  currentJadwal,
+  setFormObj,
   setVisible,
   handleSubmit,
   ...props
@@ -34,11 +35,11 @@ function FormEditJadwal({
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
-    mockGetAllCaseStudy().then((response) => setDataPaket(response.data));
+    mockGetPaketSoal().then((response) => setDataPaket(response.data));
   }, []);
 
   const onFinish = (values) => {
-    setCurrentJadwal(values);
+    setFormObj(values);
     handleSubmit(values);
   };
 
@@ -69,10 +70,7 @@ function FormEditJadwal({
           },
         ]}
       >
-        <Input
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder={`Username . . .`}
-        />
+        <Input prefix={<ScheduleOutlined />} placeholder={` Jadwal . . .`} />
       </Form.Item>
       <Row gutter={20}>
         <Col>
@@ -89,6 +87,7 @@ function FormEditJadwal({
           >
             <DatePicker
               showTime
+              placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
             />
@@ -108,6 +107,7 @@ function FormEditJadwal({
           >
             <DatePicker
               showTime
+              placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
             />
@@ -171,7 +171,7 @@ function FormEditJadwal({
         </Col>
       </Row>
       <Divider />
-      <Row justify="end" style={{ padding: 0, margin: 0 }}>
+      <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>
           <Button key="back" onClick={handleCancel}>
             Cancel

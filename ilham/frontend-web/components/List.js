@@ -41,11 +41,15 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   <Row gutter={[50]}>
                     <Col>{item.nama}</Col>
                     <Col>
-                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />
+                      <ConsoleSqlOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />
                       {item.jumlahSoal} Pertanyaan
                     </Col>
                     <Col>
-                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />
+                      <FieldTimeOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />
                       {getHours(item.durasi)} Jam
                     </Col>
                   </Row>
@@ -96,17 +100,23 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   <Row gutter={[50]}>
                     <Col span={6}>{item.nama}</Col>
                     <Col span={6}>
-                      <ConsoleSqlOutlined style={{ fontSize: "1.5em" }} />
+                      <ConsoleSqlOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />
                       {item.jumlahLatihanDikerjakan} Pertanyaan
                       <CheckOutlined />
                     </Col>
                     <Col span={6}>
-                      <FieldTimeOutlined style={{ fontSize: "1.5em" }} />
+                      <FieldTimeOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />
                       {item.avgDurasi} menit
                     </Col>
                     <Col span={6}>
-                      <FormOutlined style={{ fontSize: "1.5em" }} /> Nilai :
-                      {item.avgNilai}
+                      <FormOutlined
+                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                      />{" "}
+                      Nilai :{item.avgNilai}
                     </Col>
                   </Row>
                 </Col>

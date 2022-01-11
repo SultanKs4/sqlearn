@@ -11,13 +11,13 @@ import {
   Button,
   List,
   Card,
-  Alert
+  Alert,
 } from "antd";
 
 import {
   PlusCircleOutlined,
   EditTwoTone,
-  DeleteTwoTone
+  DeleteTwoTone,
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
@@ -35,7 +35,7 @@ function PaketSoal() {
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
   const tambahPaket = () => {
@@ -48,7 +48,7 @@ function PaketSoal() {
     // setAlertMessage(`Data Paket ${currentPaket.nama} berhasil ditambahkan`);
   };
 
-  const editPaket = paketObj => {
+  const editPaket = (paketObj) => {
     setModalRole("edit");
     setCurrentSoal(paketObj);
     handleToggleModal();
@@ -61,7 +61,7 @@ function PaketSoal() {
     // handleToggleAlert();
   };
 
-  const deletePaket = paketObj => {
+  const deletePaket = (paketObj) => {
     setModalRole("delete");
     setCurrentSoal(paketObj);
     handleToggleModal();

@@ -103,7 +103,7 @@ const Register = () => {
               tooltip="This is a required field"
             >
               <Input
-                prefix={<UserOutlined className="site-form-item-icon" />}
+                prefix={<UserOutlined />}
                 placeholder={`Input Username / ${
                   registerType === "mahasiswa" ? "NIM" : "NIDN"
                 } `}
@@ -124,7 +124,7 @@ const Register = () => {
               }}
             >
               <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
+                prefix={<LockOutlined />}
                 type="password"
                 placeholder="input password"
               />

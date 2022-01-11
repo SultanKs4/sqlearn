@@ -25,7 +25,7 @@ const deletePaketSoal = async () => {
   return response.data;
 };
 
-const mockGetAllCaseStudy = async () => {
+const mockGetPaketSoal = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
@@ -57,5 +57,5 @@ export {
   postPaketSoal,
   updatePaketSoal,
   deletePaketSoal,
-  mockGetAllCaseStudy,
+  mockGetPaketSoal,
 };

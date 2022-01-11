@@ -1,56 +1,26 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert
-} from "antd";
+import { Typography, Row, Col, Button, Card, Alert } from "antd";
 
-import {
-  PlusCircleOutlined,
-  ConsoleSqlOutlined,
-  SearchOutlined,
-  EditOutlined,
-  FieldTimeOutlined,
-  DeleteOutlined
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
 
-import { getHours } from "../../utils/common";
 import ListComponent from "../../components/List";
-
-const mockStudiKasus = [
-  {
-    nama: "Studi Kasus A",
-    jumlahSoal: 5,
-    durasi: 120
-  },
-  {
-    nama: "Studi Kasus B",
-    jumlahSoal: 5,
-    durasi: 120
-  },
-  {
-    nama: "Studi Kasus C",
-    jumlahSoal: 5,
-    durasi: 120
-  }
-];
+import FormHapusStudiKasus from "../../components/dosen/StudiKasus/FormHapusStudiKasus";
+import FormEditStudiKasus from "../../components/dosen/StudiKasus/FormEditStudiKasus";
+import FormTambahStudiKasus from "../../components/dosen/StudiKasus/FormTambahStudiKasus";
+import PreviewStudiKasus from "../../components/dosen/StudiKasus/PreviewStudiKasus";
+import { mockGetAllStudiKasus } from "../../utils/remote-data/dosen/StudiKasus";
 
 function StudiKasus() {
-  const [data, setData] = useState(mockStudiKasus);
-  // ! Mock : dataLoaded = true
-  const [isDataLoaded, setDataLoaded] = useState(true);
+  const [data, setData] = useState([]);
+  const [isDataLoaded, setDataLoaded] = useState(false);
 
+  const [formObj, setFormObj] = useState({});
   const [currentStudiKasus, setCurrentStudiKasus] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -59,14 +29,22 @@ function StudiKasus() {
   const [modalText, setModalText] = useState("");
 
   const [isAlertActive, setIsAlertActive] = useState(true);
+
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  useEffect(() => {
+    mockGetAllStudiKasus().then((response) => {
+      setData(response.data);
+      setDataLoaded(true);
+    });
+  }, []);
+
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
-  const previewStudiKasus = studiKasusObj => {
+  const previewStudiKasus = (studiKasusObj) => {
     setModalRole("preview");
     handleToggleModal();
     setModalText(`Ini  ${studiKasusObj.nama}`);
@@ -75,39 +53,50 @@ function StudiKasus() {
   const tambahStudiKasus = () => {
     setModalRole("tambah");
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call POST API request dari StudiKasusCRUD.js
-    // setCurrentStudiKasus(StudiKasusDariForm)
-    // setAlertMessage(`DatastudiKasus ${currentStudiKasus.nama} berhasil ditambahkan`);
   };
 
-  const editStudiKasus = studiKasusObj => {
+  const editStudiKasus = (studiKasusObj) => {
     setModalRole("edit");
     setCurrentStudiKasus(studiKasusObj);
     handleToggleModal();
-    setModalText(`Ini  ${studiKasusObj.nama}`);
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call PUT API request dari StudiKasusCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`DatastudiKasus ${currentStudiKasus.nama} berhasil diubah`);
-    // handleToggleAlert();
   };
 
-  const deleteStudiKasus = studiKasusObj => {
+  const deleteStudiKasus = (studiKasusObj) => {
     setModalRole("delete");
     setCurrentStudiKasus(studiKasusObj);
     handleToggleModal();
-    setModalText(`Ini  ${studiKasusObj.nama}`);
+  };
 
-    // Mungkin ini nanti dibagian modal
+  const aksiTambahStudiKasus = (formStudiKasus) => {
+    // TODO : Call POST API request dari StudiKasusCRUD.js
+    // ...
+    handleToggleModal();
+    handleToggleAlert();
+
+    setAlertMessage(
+      `Data ${formStudiKasus.studi_kasus_nama} berhasil ditambahkan`
+    );
+
+    console.log("Hasil submit tambah", formStudiKasus);
+  };
+
+  const aksiEditStudiKasus = (formStudiKasus) => {
+    // TODO : Call PUT API request dari StudiKasusCRUD.js
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data ${formStudiKasus.studi_kasus_nama} berhasil diubah`);
+    handleToggleAlert();
+    console.log("Data berhasil diedit", formStudiKasus);
+  };
+
+  const aksiDeleteStudiKasus = (formStudiKasus) => {
     // TODO : Call DELETE API request dari StudiKasusCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`DatastudiKasus ${currentStudiKasus.nama} berhasil dihapus`);
-    // handleToggleAlert();
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data ${formStudiKasus.studi_kasus_nama} berhasil dihapus`);
+    handleToggleAlert();
+
+    console.log("Data terhapus", formStudiKasus);
   };
 
   return (
@@ -127,7 +116,7 @@ function StudiKasus() {
           </Col>
         </Row>
 
-        {isAlertActive && (
+        {isAlertActive ? (
           <Alert
             message={alertMessage}
             type={alertStatus}
@@ -136,7 +125,7 @@ function StudiKasus() {
             banner
             style={{ marginBottom: "1em" }}
           />
-        )}
+        ) : null}
 
         <ModalCustom
           role={modalRole}
@@ -147,6 +136,30 @@ function StudiKasus() {
           setConfirmLoading={setIsModalLoading}
           modalText={modalText}
           setModalText={setModalText}
+          modalContent={
+            modalRole === "tambah" ? (
+              <FormTambahStudiKasus
+                handleSubmit={aksiTambahStudiKasus}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+              />
+            ) : modalRole === "edit" ? (
+              <FormEditStudiKasus
+                handleSubmit={aksiEditStudiKasus}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+                currentStudiKasus={currentStudiKasus}
+              />
+            ) : modalRole === "preview" ? (
+              <PreviewStudiKasus />
+            ) : (
+              <FormHapusStudiKasus
+                handleSubmit={aksiDeleteStudiKasus}
+                setVisible={setIsModalVisible}
+                currentStudiKasus={currentStudiKasus}
+              />
+            )
+          }
         />
 
         <Card>

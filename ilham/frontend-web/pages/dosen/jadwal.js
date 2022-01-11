@@ -27,6 +27,7 @@ import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 
 function Jadwal() {
   const [currentJadwal, setCurrentJadwal] = useState({});
+  const [formObj, setFormObj] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -34,11 +35,12 @@ function Jadwal() {
   const [modalText, setModalText] = useState("");
 
   const [isAlertActive, setIsAlertActive] = useState(true);
+
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
   const tambahJadwal = () => {
@@ -61,6 +63,7 @@ function Jadwal() {
   const aksiTambahJadwal = (formJadwal) => {
     // TODO : Call POST API request dari JadwalCRUD.js
     // ...
+    setAlertMessage(`Data ${formJadwal.jadwal_nama} berhasil ditambahkan`);
     console.log("Hasil submit tambah", formJadwal);
   };
 
@@ -122,19 +125,19 @@ function Jadwal() {
                 <FormTambahJadwal
                   handleSubmit={aksiTambahJadwal}
                   setVisible={setIsModalVisible}
-                  setCurrentJadwal={setCurrentJadwal}
+                  setFormObj={setFormObj}
                 />
               ) : modalRole === "edit" ? (
                 <FormEditJadwal
                   handleSubmit={aksiEditJadwal}
                   setVisible={setIsModalVisible}
-                  setCurrentJadwal={setCurrentJadwal}
+                  setFormObj={setFormObj}
                 />
               ) : (
                 <FormHapusJadwal
                   handleSubmit={aksiDeleteJadwal}
                   setVisible={setIsModalVisible}
-                  setCurrentJadwal={setCurrentJadwal}
+                  currentJadwal={currentJadwal}
                 />
               )
             }

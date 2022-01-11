@@ -37,7 +37,7 @@ function Beranda() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const handleToggleModal = () => setIsModalVisible(true);
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
   const previewStudiKasus = (studObj) => {
     setModalRole("preview");

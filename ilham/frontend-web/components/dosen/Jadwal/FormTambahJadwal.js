@@ -8,15 +8,15 @@ import {
   Row,
   Select,
 } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
-import { mockGetAllCaseStudy } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 
 function FormTambahJadwal({
   form,
-  setCurrentJadwal,
+  setFormObj,
   setVisible,
   handleSubmit,
   ...props
@@ -24,21 +24,21 @@ function FormTambahJadwal({
   const { Option } = Select;
 
   const [dataKelas, setDataKelas] = useState([]);
-  const [dataPaket, setDataPaket] = useState([]);
+  const [dataStudiKasus, setDataStudiKasus] = useState([]);
 
   const [selectedKelas, setSelectedKelas] = useState({});
-  const [selectedPaket, setSelectedPaket] = useState({});
+  const [selectedStudiKasus, setSelectedStudiKasus] = useState({});
 
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangePaket = (paket) => setSelectedPaket(paket);
+  const onChangeStudiKasus = (StudiKasus) => setSelectedStudiKasus(StudiKasus);
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
-    mockGetAllCaseStudy().then((response) => setDataPaket(response.data));
+    mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
   }, []);
 
   const onFinish = (values) => {
-    setCurrentJadwal(values);
+    setFormObj(values);
     handleSubmit(values);
   };
 
@@ -59,10 +59,7 @@ function FormTambahJadwal({
           },
         ]}
       >
-        <Input
-          prefix={<UserOutlined className="site-form-item-icon" />}
-          placeholder={`Username . . .`}
-        />
+        <Input prefix={<ScheduleOutlined />} placeholder={` Jadwal . . .`} />
       </Form.Item>
       <Row gutter={20}>
         <Col>
@@ -79,6 +76,7 @@ function FormTambahJadwal({
           >
             <DatePicker
               showTime
+              placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
             />
@@ -98,6 +96,7 @@ function FormTambahJadwal({
           >
             <DatePicker
               showTime
+              placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
             />
@@ -134,26 +133,28 @@ function FormTambahJadwal({
         </Col>
         <Col>
           <Form.Item
-            name="paket_soal"
-            label="Paket Soal"
+            name="studi_kasus_soal"
+            label="StudiKasus Soal"
             tooltip={{
-              title: `Jadwal ini menggunakan paket soal ${
-                isObjectEmpty(selectedPaket) ? " yang dipilih " : selectedPaket
+              title: `Jadwal ini menggunakan StudiKasus soal ${
+                isObjectEmpty(selectedStudiKasus)
+                  ? " yang dipilih "
+                  : selectedStudiKasus
               }`,
             }}
             rules={[
               {
                 required: true,
-                message: "Mohon pilih paket soal!",
+                message: "Mohon pilih StudiKasus soal!",
               },
             ]}
           >
             <Select
               placeholder="Pilih kelas . . ."
-              onChange={onChangePaket}
+              onChange={onChangeStudiKasus}
               style={{ width: "200px" }}
             >
-              {dataPaket?.map((item) => (
+              {dataStudiKasus?.map((item) => (
                 <Option key={item.nama}>{item.nama}</Option>
               ))}
             </Select>
@@ -161,7 +162,7 @@ function FormTambahJadwal({
         </Col>
       </Row>
       <Divider />
-      <Row justify="end" style={{ padding: 0, margin: 0 }}>
+      <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>
           <Button key="back" onClick={handleCancel}>
             Cancel
