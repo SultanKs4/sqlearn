@@ -6,7 +6,7 @@ function binaryExpr(obj, arr) {
     if (pattern.test(operator)) {
         arr.unshift(operator);
     } else {
-        arr.push(left + "_" + operator + "_" + right);
+        arr.push(operator + "_" + left + "_" + right);
     }
 }
 
@@ -14,8 +14,8 @@ function aliasString(prefix, aliases) {
     return `${prefix}_as_${aliases}`;
 }
 
-function typeCheck(obj, arr = null) {
-    const type = obj.type;
+function typeCheck(obj, arr = []) {
+    const type = obj.type ? obj.type : null;
     if (type == "column_ref") {
         return obj.column;
     } else if (type == "select") {
@@ -62,29 +62,41 @@ function typeCheck(obj, arr = null) {
               { type: 'number', value: 1 },
               { type: 'single_quote_string', value: 't' }
             ] */
-    } else if (type == "param") {
+    } else if (type == "param" || type == "null" || type == "bool" || type == "origin") {
         // { type: 'param', value: 'my_param' }
+        return obj.value;
     } else if (type == "unary_expr") {
         /* {
             type: 'unary_expr',
             operator: 'NOT',
             expr: { type: 'bool', value: true }
           } */
-    } else if (type == "bool") {
-        // { type: 'bool', value: 'bool' }
-    } else if (type == "null") {
-        // { type: 'null', value: 'null' }
     } else if (type.includes("string")) {
         return "constant";
+    } else {
+        return type;
     }
 }
 
-function selectColumns(distinct, columns) {
+function exprCheck(exprObj) {
+    if (typeof exprObj == "object") {
+        let objPass = {};
+        if ("type" in exprObj) {
+            objPass = exprObj;
+        } else if ("ast" in exprObj) {
+            objPass = exprObj.ast;
+        }
+        return typeCheck(objPass);
+    }
+    return exprObj;
+}
+
+function getSelectColumns(distinct, columns) {
     if (typeof columns == "string") {
         return columns;
     } else if (Array.isArray(columns)) {
         columns = columns.map((e) => {
-            return typeCheck(e.expr);
+            return exprCheck(e.expr);
         });
 
         if (distinct) {
@@ -94,33 +106,60 @@ function selectColumns(distinct, columns) {
     return columns;
 }
 
-function getTable(tableObjArr) {
-    let table = tableObjArr.flatMap((e) => {
-        let arr = [];
-        if (e.join) {
-            arr.push(e.join + "_" + e.table);
-            e.on ? arr.push(typeCheck(e.on)) : null;
-        } else arr.push(e.table);
-        return arr;
+function getTable(tableArr) {
+    if (Array.isArray(tableArr)) {
+        return tableArr.flatMap((e) => {
+            let arr = [];
+            if (e.join) {
+                arr.push(e.join + "_" + e.table);
+                e.on ? arr.push(exprCheck(e.on)) : null;
+            } else arr.push(e.table);
+            return arr;
+        });
+    }
+    return tableArr;
+}
+
+function getByStatement(arr) {
+    if (Array.isArray(arr)) {
+        return arr.map((e) => {
+            exprCheck(e);
+        });
+    }
+    return arr;
+}
+
+function getLimit(obj) {
+    if (typeof obj != "object") return obj;
+    const separator = obj.separator;
+    let value = obj.value.map((e) => {
+        return exprCheck(e);
     });
-    return table;
+    return value.unshift(separator);
 }
 
 function parseFeatureNode(ast) {
-    const command = ast.type;
+    const statement = ast.type;
+    let column;
     let obj = {};
-    switch (command) {
+    switch (statement) {
         case "select":
-            let selectColumn = selectColumns(ast.distinct, ast.columns);
+            column = getSelectColumns(ast.distinct, ast.columns);
             let from = getTable(ast.from);
-            let where = typeCheck(ast.where, []);
+            let where = exprCheck(ast.where);
+            let having = exprCheck(ast.having);
+            let groupBy = getByStatement(ast.groupby);
+            let orderBy = getByStatement(ast.orderby);
+            let limit = getLimit(ast.limit);
+            obj = { from, where, groupBy, having, orderBy, limit };
             break;
         case "insert":
-            let insertColumn = ast.columns;
+            column = ast.columns;
             break;
     }
     return {
-        [command]: obj,
+        [statement]: column,
+        ...obj,
     };
 }
 
