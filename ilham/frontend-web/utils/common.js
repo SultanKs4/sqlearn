@@ -13,4 +13,6 @@ export const countTimeDifference = (startDate = moment(), endDate) => {
     : `${parseInt(duration.asDays())} hari lagi`;
 };
 
+export const getHours = (minutes) => minutes / 60;
+
 export const isObjectEmpty = (obj) => Object.entries(obj).length === 0;

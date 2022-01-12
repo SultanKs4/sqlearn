@@ -3,7 +3,7 @@ import { Layout, Menu, Dropdown, Row, Col } from "antd";
 import {
   UserOutlined,
   DownOutlined,
-  PoweroffOutlined
+  PoweroffOutlined,
 } from "@ant-design/icons";
 
 import { useRouter } from "next/router";
@@ -50,7 +50,7 @@ function PageLayout({ children, role, username = "1841720076" }) {
               <Dropdown overlay={menu} arrow>
                 <a
                   className="ant-dropdown-link"
-                  onClick={e => e.preventDefault()}
+                  onClick={(e) => e.preventDefault()}
                 >
                   <UserOutlined style={{ fontSize: "2em", color: "white" }} />
                   <DownOutlined style={{ fontSize: "1em", color: "white" }} />

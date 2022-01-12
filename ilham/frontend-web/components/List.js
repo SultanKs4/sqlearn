@@ -28,7 +28,7 @@ import {
 
 function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
   if (isLoading) {
-    let skeleton = ["", "", "", ""];
+    let skeleton = ["", ""];
     return (
       <List
         itemLayout="horizontal"
@@ -51,18 +51,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
                   <Row gutter={[50]}>
-                    <Col>{item.nama}</Col>
                     <Col>
-                      <ConsoleSqlOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      {item.jumlahSoal} Pertanyaan
+                      <Typography.Text style={{ fontWeight: "bold" }}>
+                        {item.nama}
+                      </Typography.Text>
                     </Col>
                     <Col>
-                      <FieldTimeOutlined
+                      <DatabaseOutlined
                         style={{ fontSize: "1.2em", marginRight: ".5em" }}
                       />
-                      {getHours(item.durasi)} Jam
+                      Database {item.database}
                     </Col>
                   </Row>
                 </Col>
@@ -75,14 +73,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         icon={<SearchOutlined />}
                         size={"medium"}
                         onClick={() => props.previewStudiKasus(item)}
-                      ></Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        size={"medium"}
-                        onClick={() => props.editStudiKasus(item)}
                       ></Button>
                     </Col>
                     <Col>
@@ -127,7 +117,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                     <Col span={6}>
                       <FormOutlined
                         style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />{" "}
+                      />
                       Nilai :{item.avgNilai}
                     </Col>
                   </Row>
@@ -246,10 +236,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   <Col span={18}>
                     <Row gutter={[50]}>
                       <Col span={4}>
-                        {" "}
                         <Typography.Text style={{ fontWeight: "bold" }}>
-                          {" "}
-                          {item.jadwal_nama}{" "}
+                          {item.jadwal_nama}
                         </Typography.Text>
                       </Col>
                       <Col span={4}>
@@ -321,34 +309,25 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           renderItem={(item) => (
             <List.Item style={{ padding: 0 }}>
               <Card style={{ width: "100vw" }}>
-                <Row justify="space-around">
+                <Row justify="space-between">
                   <Col span={18}>
                     <Row gutter={[50]}>
-                      <Col span={4}>
-                        {" "}
+                      <Col>
                         <Typography.Text style={{ fontWeight: "bold" }}>
-                          {" "}
-                          {item.jadwal_nama || "Item"}{" "}
+                          {item.nama}
                         </Typography.Text>
                       </Col>
-                      <Col span={4}>
-                        <LaptopOutlined
+                      <Col>
+                        <ConsoleSqlOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        {item.kelas_nama || "Item"}
+                        {item.jumlahSoal} Pertanyaan
                       </Col>
-                      <Col span={6}>
-                        <DatabaseOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item.studi_kasus_nama || "Item"}
-                      </Col>
-                      <Col span={8}>
+                      <Col>
                         <FieldTimeOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        {/* Durasi sebelum deadline */}
-                        <span>{item?.ghaha || "Item"}</span>
+                        {getHours(item.durasi)} Jam
                       </Col>
                     </Row>
                   </Col>

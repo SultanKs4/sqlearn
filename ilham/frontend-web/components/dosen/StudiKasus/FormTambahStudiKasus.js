@@ -5,10 +5,12 @@ import {
   Divider,
   Form,
   Input,
+  message,
   Row,
   Select,
+  Upload,
 } from "antd";
-import { ScheduleOutlined, DatabaseOutlined } from "@ant-design/icons";
+import { InboxOutlined, DatabaseOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
@@ -21,17 +23,7 @@ function FormTambahStudiKasus({
   handleSubmit,
   ...props
 }) {
-  const { Option } = Select;
-
-  const [dataPaket, setDataPaket] = useState([]);
-
-  const [selectedPaket, setSelectedPaket] = useState({});
-
-  const onChangePaket = (paket) => setSelectedPaket(paket);
-
-  useEffect(() => {
-    mockGetPaketSoal().then((response) => setDataPaket(response.data));
-  }, []);
+  const normFile = (e) => console.log("Upload event:", e);
 
   const onFinish = (values) => {
     setFormObj(values);
@@ -43,54 +35,54 @@ function FormTambahStudiKasus({
     setVisible(false);
   };
 
+  const validationSQLFile = (file) => {
+    if (!file.name.includes(".sql")) {
+      console.log("bukan sql");
+      message.error(`${file.name} is not a .sql file`);
+    }
+    return file.name.includes(".sql") ? true : Upload.LIST_IGNORE;
+  };
+
   return (
     <Form onFinish={onFinish} layout="vertical">
-      <Row gutter={20}>
-        <Col>
-          <Form.Item
-            name="studi_kasus_nama"
-            label="Nama Studi Kasus"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Studi Kasus!",
-              },
-            ]}
+      <Form.Item
+        name="studi_kasus_nama"
+        label="Nama Studi Kasus"
+        rules={[
+          {
+            required: true,
+            message: "Mohon masukkan nama Studi Kasus!",
+          },
+        ]}
+      >
+        <Input
+          prefix={<DatabaseOutlined />}
+          placeholder={` Studi Kasus . . .`}
+        />
+      </Form.Item>
+      <Form.Item label="Database">
+        <Form.Item
+          name="database"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+          noStyle
+        >
+          <Upload.Dragger
+            multiple={false}
+            beforeUpload={(file) => validationSQLFile(file)}
+            name="files"
+            action="/upload.do"
           >
-            <Input
-              prefix={<DatabaseOutlined />}
-              placeholder={` Studi Kasus . . .`}
-            />
-          </Form.Item>
-        </Col>
-        <Col>
-          <Form.Item
-            name="paket_soal"
-            label="Paket Soal"
-            tooltip={{
-              title: `StudiKasus ini menggunakan paket soal ${
-                isObjectEmpty(selectedPaket) ? " yang dipilih " : selectedPaket
-              }`,
-            }}
-            rules={[
-              {
-                required: true,
-                message: "Mohon pilih paket soal!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Pilih paket soal . . ."
-              onChange={onChangePaket}
-              style={{ width: "200px" }}
-            >
-              {dataPaket?.map((item) => (
-                <Option key={item.nama}>{item.nama}</Option>
-              ))}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload
+            </p>
+            <p className="ant-upload-hint">Hanya bisa upload file .sql </p>
+          </Upload.Dragger>
+        </Form.Item>
+      </Form.Item>
       <Divider />
       <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>

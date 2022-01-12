@@ -11,7 +11,6 @@ import ModalCustom from "../../components/Modal";
 
 import ListComponent from "../../components/List";
 import FormHapusStudiKasus from "../../components/dosen/StudiKasus/FormHapusStudiKasus";
-import FormEditStudiKasus from "../../components/dosen/StudiKasus/FormEditStudiKasus";
 import FormTambahStudiKasus from "../../components/dosen/StudiKasus/FormTambahStudiKasus";
 import PreviewStudiKasus from "../../components/dosen/StudiKasus/PreviewStudiKasus";
 import { mockGetAllStudiKasus } from "../../utils/remote-data/dosen/StudiKasus";
@@ -45,9 +44,9 @@ function StudiKasus() {
   const handleToggleAlert = () => setIsAlertActive(true);
 
   const previewStudiKasus = (studiKasusObj) => {
+    setCurrentStudiKasus(studiKasusObj);
     setModalRole("preview");
     handleToggleModal();
-    setModalText(`Ini  ${studiKasusObj.nama}`);
   };
 
   const tambahStudiKasus = () => {
@@ -78,15 +77,6 @@ function StudiKasus() {
     );
 
     console.log("Hasil submit tambah", formStudiKasus);
-  };
-
-  const aksiEditStudiKasus = (formStudiKasus) => {
-    // TODO : Call PUT API request dari StudiKasusCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Data ${formStudiKasus.studi_kasus_nama} berhasil diubah`);
-    handleToggleAlert();
-    console.log("Data berhasil diedit", formStudiKasus);
   };
 
   const aksiDeleteStudiKasus = (formStudiKasus) => {
@@ -134,7 +124,6 @@ function StudiKasus() {
           setVisible={setIsModalVisible}
           confirmLoading={isModalLoading}
           setConfirmLoading={setIsModalLoading}
-          modalText={modalText}
           setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (
@@ -143,15 +132,8 @@ function StudiKasus() {
                 setVisible={setIsModalVisible}
                 setFormObj={setFormObj}
               />
-            ) : modalRole === "edit" ? (
-              <FormEditStudiKasus
-                handleSubmit={aksiEditStudiKasus}
-                setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
-                currentStudiKasus={currentStudiKasus}
-              />
             ) : modalRole === "preview" ? (
-              <PreviewStudiKasus />
+              <PreviewStudiKasus currentStudiKasus={currentStudiKasus} />
             ) : (
               <FormHapusStudiKasus
                 handleSubmit={aksiDeleteStudiKasus}
