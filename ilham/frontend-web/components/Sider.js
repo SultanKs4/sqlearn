@@ -7,7 +7,7 @@ import {
   CodeSandboxOutlined,
   TeamOutlined,
   HomeOutlined,
-  BarChartOutlined
+  BarChartOutlined,
 } from "@ant-design/icons";
 
 import { React } from "react";
@@ -20,7 +20,7 @@ const { Sider } = Layout;
 function SiderComponent({ role, collapsed, setCollapsed }) {
   const router = useRouter();
 
-  const onCollapse = statusCollapse => setCollapsed(statusCollapse);
+  const onCollapse = (statusCollapse) => setCollapsed(statusCollapse);
 
   return (
     <Sider
@@ -29,7 +29,7 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
       onCollapse={onCollapse}
       className={styles.sticky_sider}
       style={{
-        zIndex: collapsed ? 1 : 2
+        zIndex: collapsed ? 1 : 2,
       }}
     >
       <div className="logo" />
@@ -68,15 +68,6 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             Studi Kasus
           </Menu.Item>
           <Menu.Item
-            key="soal"
-            icon={<FileTextOutlined />}
-            onClick={() => {
-              router.push("/dosen/soal");
-            }}
-          >
-            Soal
-          </Menu.Item>
-          <Menu.Item
             key="paket-soal"
             icon={<CodeSandboxOutlined />}
             onClick={() => {
@@ -85,6 +76,16 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           >
             Paket Soal
           </Menu.Item>
+          <Menu.Item
+            key="soal"
+            icon={<FileTextOutlined />}
+            onClick={() => {
+              router.push("/dosen/soal");
+            }}
+          >
+            Soal
+          </Menu.Item>
+
           <Menu.Item
             key="nilai-mahasiswa"
             icon={<TeamOutlined />}

@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
@@ -21,9 +21,18 @@ import {
 } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
+import { mockGetPaketSoal } from "../../utils/remote-data/dosen/PaketSoalCRUD";
+import ListComponent from "../../components/List";
+import FormTambahPaket from "../../components/dosen/PaketSoal/FormTambahPaket";
+import FormEditPaket from "../../components/dosen/PaketSoal/FormEditPaket";
+import FormHapusPaket from "../../components/dosen/PaketSoal/FormHapusPaket";
 
 function PaketSoal() {
-  const [currentSoal, setCurrentSoal] = useState({});
+  const [currentPaket, setCurrentPaket] = useState({});
+  const [formObj, setFormObj] = useState({});
+
+  const [dataPaket, setDataPaket] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -38,40 +47,53 @@ function PaketSoal() {
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
+  useEffect(() => {
+    mockGetPaketSoal().then((response) => {
+      setDataPaket(response.data);
+      setIsDataLoaded(true);
+    });
+  }, []);
+
   const tambahPaket = () => {
     setModalRole("tambah");
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call POST API request dari PaketSoalCRUD.js
-    // setCurrentPaket(PaketDariForm)
-    // setAlertMessage(`Data Paket ${currentPaket.nama} berhasil ditambahkan`);
   };
 
   const editPaket = (paketObj) => {
     setModalRole("edit");
-    setCurrentSoal(paketObj);
+    setCurrentPaket(paketObj);
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call PUT API request dari SoalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Paket${currentSoal.nama} berhasil diubah`);
-    // handleToggleAlert();
   };
 
   const deletePaket = (paketObj) => {
     setModalRole("delete");
-    setCurrentSoal(paketObj);
+    setCurrentPaket(paketObj);
     handleToggleModal();
+  };
 
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call DELETE API request dari SoalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Paket${currentSoal.nama} berhasil dihapus`);
-    // handleToggleAlert();
+  const aksiTambahPaket = (formPaket) => {
+    // TODO : Call POST API request dari PaketSoalCRUD.js
+    // ...
+    setAlertMessage(`Data ${formPaket.name} berhasil ditambahkan`);
+    console.log("Hasil submit tambah", formPaket);
+  };
+
+  const aksiEditPaket = (formPaket) => {
+    // TODO : Call PUT API request dari PaketSoalCRUD.js
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data Paket ${formPaket.name} berhasil diubah`);
+    handleToggleAlert();
+    console.log("Data berhasil diedit", formPaket);
+  };
+
+  const aksiDeletePaket = (formPaket) => {
+    // TODO : Call DELETE API request dari PaketSoalCRUD.js
+    // ...
+    handleToggleModal();
+    setAlertMessage(`Data Paket ${formPaket.name} berhasil dihapus`);
+    handleToggleAlert();
+    console.log("Data terhapus", formPaket);
   };
 
   return (
@@ -111,10 +133,39 @@ function PaketSoal() {
             setConfirmLoading={setIsModalLoading}
             modalText={modalText}
             setModalText={setModalText}
+            modalContent={
+              modalRole === "tambah" ? (
+                <FormTambahPaket
+                  handleSubmit={aksiTambahPaket}
+                  setVisible={setIsModalVisible}
+                  setFormObj={setFormObj}
+                />
+              ) : modalRole === "edit" ? (
+                <FormEditPaket
+                  handleSubmit={aksiEditPaket}
+                  setVisible={setIsModalVisible}
+                  setFormObj={setFormObj}
+                  currentPaket={currentPaket}
+                />
+              ) : (
+                <FormHapusPaket
+                  handleSubmit={aksiDeletePaket}
+                  setVisible={setIsModalVisible}
+                  currentPaket={currentPaket}
+                />
+              )
+            }
           />
         )}
 
         {/* Content asli... */}
+        <ListComponent
+          isLoading={!isDataLoaded}
+          dataSource={dataPaket}
+          role={"paket-soal-dosen"}
+          editPaket={editPaket}
+          deletePaket={deletePaket}
+        />
       </PageLayout>
     </>
   );

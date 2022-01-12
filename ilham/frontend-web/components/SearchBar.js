@@ -9,12 +9,12 @@ function SearchBar({
   dataSource,
   isSearching,
   setIsSearching,
-  setSearchResult
+  setSearchResult,
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [key] = useState(searchKey);
 
-  const onSearch = value => {
+  const onSearch = (value) => {
     if (value === "") {
       setIsSearching(false);
       setSearchResult(dataSource);
@@ -25,7 +25,7 @@ function SearchBar({
   const doSearch = useCallback(() => {
     if (isSearching)
       setSearchResult(
-        dataSource.filter(item =>
+        dataSource.filter((item) =>
           item[key].toLowerCase().includes(searchValue.toLowerCase())
         )
       );
@@ -41,7 +41,6 @@ function SearchBar({
         placeholder={`Cari ${searchKey} ${role} . . .`}
         allowClear
         onSearch={onSearch}
-        onClear
       />
     </Row>
   );

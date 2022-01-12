@@ -1,5 +1,16 @@
+import moment from "moment";
+
 export const ucfirst = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
-export const getHours = (number) => number / 60;
+export const countTimeDifference = (startDate = moment(), endDate) => {
+  let duration = moment.duration(endDate.diff(startDate));
+
+  if (duration.asHours() < 0)
+    return `Terlewat ${Math.abs(parseInt(duration.asHours()))} jam`;
+
+  return duration.asDays() < 1
+    ? `${parseInt(duration.asHours())} jam lagi`
+    : `${parseInt(duration.asDays())} hari lagi`;
+};
 
 export const isObjectEmpty = (obj) => Object.entries(obj).length === 0;

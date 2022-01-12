@@ -104,7 +104,9 @@ function HalamanNilai() {
             setSearchResult={setSearchResult}
           />
         ) : (
-          <Spin active />
+          <Row justify="center">
+            <Spin />
+          </Row>
         )}
 
         {isDataLoaded ? (

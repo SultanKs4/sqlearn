@@ -1,5 +1,16 @@
-import { Skeleton, List, Row, Col, Button, Avatar, Typography } from "antd";
-import { getHours, ucfirst } from "../utils/common";
+import {
+  Skeleton,
+  List,
+  Row,
+  Col,
+  Button,
+  Avatar,
+  Typography,
+  Card,
+  Tooltip,
+} from "antd";
+import { countTimeDifference, getHours, ucfirst } from "../utils/common";
+import moment from "moment";
 
 import {
   PlusCircleOutlined,
@@ -11,6 +22,8 @@ import {
   DeleteOutlined,
   CheckOutlined,
   FormOutlined,
+  LaptopOutlined,
+  DatabaseOutlined,
 } from "@ant-design/icons";
 
 function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
@@ -26,7 +39,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
   }
 
   // ? Untuk setiap role disini, mempunyai showDetail yang berbeda dan tidak mempengaruhi satu sama lain
-  // TODO : Perlu nambahi untuk showDetail di case "sesi-latihan-mahasiswa"
 
   switch (role) {
     case "studi-kasus":
@@ -104,7 +116,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         style={{ fontSize: "1.2em", marginRight: ".5em" }}
                       />
                       {item.jumlahLatihanDikerjakan} Pertanyaan
-                      <CheckOutlined />
+                      <CheckOutlined style={{ marginLeft: ".8em" }} />
                     </Col>
                     <Col span={6}>
                       <FieldTimeOutlined
@@ -218,6 +230,155 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Row>
                 </Col>
               </Row>
+            </List.Item>
+          )}
+        />
+      );
+    case "jadwal-dosen":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={[50]}>
+                      <Col span={4}>
+                        {" "}
+                        <Typography.Text style={{ fontWeight: "bold" }}>
+                          {" "}
+                          {item.jadwal_nama}{" "}
+                        </Typography.Text>
+                      </Col>
+                      <Col span={4}>
+                        <LaptopOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.kelas_nama}
+                      </Col>
+                      <Col span={6}>
+                        <DatabaseOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.studi_kasus_nama}
+                      </Col>
+                      <Col span={8}>
+                        <FieldTimeOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {/* Durasi sebelum deadline */}
+                        <span
+                          style={{
+                            color:
+                              countTimeDifference(moment(), item?.tanggal_akhir)
+                                .toLowerCase()
+                                .includes("terlewat") && "red",
+                          }}
+                        >
+                          {countTimeDifference(moment(), item?.tanggal_akhir)}
+                        </span>
+                      </Col>
+                    </Row>
+                  </Col>
+
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Tooltip title="Edit Jadwal">
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editJadwal(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                      <Col>
+                        <Tooltip title="Hapus Jadwal">
+                          <Button
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            size={"medium"}
+                            onClick={() => props.deleteJadwal(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
+      );
+    case "paket-soal-dosen":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={[50]}>
+                      <Col span={4}>
+                        {" "}
+                        <Typography.Text style={{ fontWeight: "bold" }}>
+                          {" "}
+                          {item.jadwal_nama || "Item"}{" "}
+                        </Typography.Text>
+                      </Col>
+                      <Col span={4}>
+                        <LaptopOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.kelas_nama || "Item"}
+                      </Col>
+                      <Col span={6}>
+                        <DatabaseOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.studi_kasus_nama || "Item"}
+                      </Col>
+                      <Col span={8}>
+                        <FieldTimeOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {/* Durasi sebelum deadline */}
+                        <span>{item?.ghaha || "Item"}</span>
+                      </Col>
+                    </Row>
+                  </Col>
+
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Tooltip title="Edit Paket Soal">
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editPaket(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                      <Col>
+                        <Tooltip title="Hapus Paket Soal">
+                          <Button
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            size={"medium"}
+                            onClick={() => props.deletePaket(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
             </List.Item>
           )}
         />

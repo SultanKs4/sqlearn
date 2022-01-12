@@ -133,10 +133,10 @@ function FormTambahJadwal({
         </Col>
         <Col>
           <Form.Item
-            name="studi_kasus_soal"
-            label="StudiKasus Soal"
+            name="studi_kasus_nama"
+            label="Studi Kasus"
             tooltip={{
-              title: `Jadwal ini menggunakan StudiKasus soal ${
+              title: `Jadwal ini menggunakan Studi Kasus ${
                 isObjectEmpty(selectedStudiKasus)
                   ? " yang dipilih "
                   : selectedStudiKasus
@@ -145,7 +145,7 @@ function FormTambahJadwal({
             rules={[
               {
                 required: true,
-                message: "Mohon pilih StudiKasus soal!",
+                message: "Mohon pilih Studi Kasus!",
               },
             ]}
           >

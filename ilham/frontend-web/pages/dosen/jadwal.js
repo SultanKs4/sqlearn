@@ -24,10 +24,15 @@ import ModalCustom from "../../components/Modal";
 import FormTambahJadwal from "../../components/dosen/Jadwal/FormTambahJadwal";
 import FormEditJadwal from "../../components/dosen/Jadwal/FormEditJadwal";
 import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
+import ListComponent from "../../components/List";
+import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
 
 function Jadwal() {
   const [currentJadwal, setCurrentJadwal] = useState({});
   const [formObj, setFormObj] = useState({});
+
+  const [dataJadwal, setDataJadwal] = useState([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
@@ -43,18 +48,27 @@ function Jadwal() {
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive(true);
 
+  useEffect(() => {
+    mockGetJadwal().then((response) => {
+      setDataJadwal(response.data);
+      setIsDataLoaded(true);
+    });
+  }, []);
+
   const tambahJadwal = () => {
     setModalRole("tambah");
     handleToggleModal();
   };
 
   const editJadwal = (jadwalObj) => {
+    console.log(jadwalObj);
     setModalRole("edit");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
   };
 
   const deleteJadwal = (jadwalObj) => {
+    console.log(jadwalObj);
     setModalRole("delete");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
@@ -129,15 +143,16 @@ function Jadwal() {
                 />
               ) : modalRole === "edit" ? (
                 <FormEditJadwal
+                  currentJadwal={currentJadwal}
                   handleSubmit={aksiEditJadwal}
                   setVisible={setIsModalVisible}
                   setFormObj={setFormObj}
                 />
               ) : (
                 <FormHapusJadwal
+                  currentJadwal={currentJadwal}
                   handleSubmit={aksiDeleteJadwal}
                   setVisible={setIsModalVisible}
-                  currentJadwal={currentJadwal}
                 />
               )
             }
@@ -146,6 +161,13 @@ function Jadwal() {
         )}
 
         {/* Content asli... */}
+        <ListComponent
+          isLoading={!isDataLoaded}
+          dataSource={dataJadwal}
+          role={"jadwal-dosen"}
+          editJadwal={editJadwal}
+          deleteJadwal={deleteJadwal}
+        />
       </PageLayout>
     </>
   );

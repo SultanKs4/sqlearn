@@ -8,12 +8,13 @@ import {
   Row,
   Select,
 } from "antd";
+
 import moment from "moment";
 import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 
 function FormEditJadwal({
   currentJadwal,
@@ -22,21 +23,33 @@ function FormEditJadwal({
   handleSubmit,
   ...props
 }) {
+  const [form] = Form.useForm();
+
   const { Option } = Select;
 
   const [dataKelas, setDataKelas] = useState([]);
-  const [dataPaket, setDataPaket] = useState([]);
+  const [dataStudiKasus, setDataStudiKasus] = useState([]);
 
   const [selectedKelas, setSelectedKelas] = useState({});
-  const [selectedPaket, setSelectedPaket] = useState({});
+  const [selectedStudiKasus, setSelectedStudiKasus] = useState({});
 
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangePaket = (paket) => setSelectedPaket(paket);
+  const onChangeStudiKasus = (studiKasus) => setSelectedStudiKasus(studiKasus);
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
-    mockGetPaketSoal().then((response) => setDataPaket(response.data));
+    mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
   }, []);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      jadwal_nama: currentJadwal?.jadwal_nama,
+      tanggal_mulai: currentJadwal?.tanggal_mulai,
+      tanggal_akhir: currentJadwal?.tanggal_akhir,
+      kelas_nama: currentJadwal?.kelas_nama,
+      studi_kasus_nama: currentJadwal?.studi_kasus_nama,
+    });
+  }, [currentJadwal]);
 
   const onFinish = (values) => {
     setFormObj(values);
@@ -49,17 +62,7 @@ function FormEditJadwal({
   };
 
   return (
-    <Form
-      initialValues={{
-        jadwal_nama: "Mock Jadwal 1",
-        tanggal_mulai: moment("2022-01-11 03:04"),
-        tanggal_akhir: moment("2022-01-11 23:59"),
-        kelas_nama: "TI-1C",
-        paket_soal: "Paket Soal A",
-      }}
-      onFinish={onFinish}
-      layout="vertical"
-    >
+    <Form form={form} onFinish={onFinish} layout="vertical">
       <Form.Item
         name="jadwal_nama"
         label="Nama Jadwal"
@@ -144,26 +147,28 @@ function FormEditJadwal({
         </Col>
         <Col>
           <Form.Item
-            name="paket_soal"
-            label="Paket Soal"
+            name="studi_kasus_nama"
+            label="Studi Kasus"
             tooltip={{
-              title: `Jadwal ini menggunakan paket soal ${
-                isObjectEmpty(selectedPaket) ? " yang dipilih " : selectedPaket
+              title: `Jadwal ini menggunakan Studi Kasus ${
+                isObjectEmpty(selectedStudiKasus)
+                  ? " yang dipilih "
+                  : selectedStudiKasus
               }`,
             }}
             rules={[
               {
                 required: true,
-                message: "Mohon pilih paket soal!",
+                message: "Mohon pilih Studi Kasus!",
               },
             ]}
           >
             <Select
               placeholder="Pilih kelas . . ."
-              onChange={onChangePaket}
+              onChange={onChangeStudiKasus}
               style={{ width: "200px" }}
             >
-              {dataPaket?.map((item) => (
+              {dataStudiKasus?.map((item) => (
                 <Option key={item.nama}>{item.nama}</Option>
               ))}
             </Select>

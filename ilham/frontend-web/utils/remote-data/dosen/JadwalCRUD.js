@@ -1,11 +1,13 @@
 import axios from "axios";
 
+import moment from "moment";
+
 const getJadwal = async () => {
   let response = await axios.get("");
   return response.data;
 };
 
-const getJadwalByID = async jadwalID => {
+const getJadwalByID = async (jadwalID) => {
   let response = await axios.get("");
   return response.data;
 };
@@ -25,4 +27,50 @@ const deleteJadwal = async () => {
   return response.data;
 };
 
-export { getJadwal, getJadwalByID, postJadwal, updateJadwal, deleteJadwal };
+const mockGetJadwal = async () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            jadwal_nama: "Jadwal 1",
+            tanggal_mulai: moment("2022-01-11 00:01"),
+            tanggal_akhir: moment("2022-01-12 23:59"),
+            kelas_nama: "TI-1C",
+            studi_kasus_nama: "Studi Kasus B",
+          },
+          {
+            jadwal_nama: "Jadwal 2",
+            tanggal_mulai: moment("2022-01-13 07:00"),
+            tanggal_akhir: moment("2022-01-14 23:59"),
+            kelas_nama: "TI-1G",
+            studi_kasus_nama: "Studi Kasus B",
+          },
+          {
+            jadwal_nama: "Jadwal 3",
+            tanggal_mulai: moment("2022-01-14 10:00"),
+            tanggal_akhir: moment("2022-01-16 23:59"),
+            kelas_nama: "TI-1H",
+            studi_kasus_nama: "Studi Kasus A",
+          },
+          {
+            jadwal_nama: "Jadwal 4",
+            tanggal_mulai: moment("2022-01-11 00:01"),
+            tanggal_akhir: moment("2022-01-10 23:59"),
+            kelas_nama: "TI-1C",
+            studi_kasus_nama: "Studi Kasus B",
+          },
+        ],
+      });
+    }, 1000);
+  });
+};
+
+export {
+  getJadwal,
+  getJadwalByID,
+  postJadwal,
+  updateJadwal,
+  deleteJadwal,
+  mockGetJadwal,
+};
