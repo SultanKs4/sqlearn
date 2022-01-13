@@ -31,19 +31,52 @@ const mockGetPaketSoal = async () => {
       resolve({
         data: [
           {
+            id_paket: 1,
             nama: "Paket Soal A",
-            jumlahSoal: 5,
             durasi: 120,
+            pertanyaan: [
+              {
+                id: 1,
+                nama: "Test nama soal 1",
+                soal: "Dosen ingin menampilkan semua data tentang mahasiswa.",
+                jawaban: "SELECT * FROM mahasiswa",
+                studi_kasus: "Studi Kasus A",
+                dosen_pembuat: "Dosen Coba",
+              },
+              {},
+            ],
           },
           {
+            id_paket: 2,
             nama: "Paket Soal B",
-            jumlahSoal: 5,
             durasi: 120,
+            pertanyaan: [
+              {
+                id: 2,
+                nama: "Test nama soal 2",
+                soal: "Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'",
+                jawaban: "SELECT * FROM mahasiswa WHERE nama LIKE 'D%'",
+                studi_kasus: "Studi Kasus C",
+                dosen_pembuat: "Dosen Coba",
+              },
+              {},
+            ],
           },
           {
+            id_paket: 3,
             nama: "Paket Soal C",
-            jumlahSoal: 5,
             durasi: 120,
+            pertanyaan: [
+              {
+                id: 3,
+                nama: "Test nama soal 3",
+                soal: "Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut",
+                jawaban: "SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC",
+                studi_kasus: "Studi Kasus C",
+                dosen_pembuat: "Dosen Coba",
+              },
+              {},
+            ],
           },
         ],
       });

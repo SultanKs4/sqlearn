@@ -1,7 +1,6 @@
 import { React, useEffect, useState } from "react";
 
 import Head from "next/head";
-import PageLayout from "../../components/PageLayout";
 
 import {
   Skeleton,
@@ -20,14 +19,18 @@ import {
   DeleteTwoTone,
 } from "@ant-design/icons";
 
-import ModalCustom from "../../components/Modal";
-import { mockGetPaketSoal } from "../../utils/remote-data/dosen/PaketSoalCRUD";
-import ListComponent from "../../components/List";
-import FormTambahPaket from "../../components/dosen/PaketSoal/FormTambahPaket";
-import FormEditPaket from "../../components/dosen/PaketSoal/FormEditPaket";
-import FormHapusPaket from "../../components/dosen/PaketSoal/FormHapusPaket";
+import PageLayout from "../../../components/PageLayout";
+import ModalCustom from "../../../components/Modal";
+import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import ListComponent from "../../../components/List";
+import FormTambahPaket from "../../../components/dosen/PaketSoal/FormTambahPaket";
+import FormEditPaket from "../../../components/dosen/PaketSoal/FormEditPaket";
+import FormHapusPaket from "../../../components/dosen/PaketSoal/FormHapusPaket";
+import { useRouter } from "next/router";
 
 function PaketSoal() {
+  const router = useRouter();
+
   const [currentPaket, setCurrentPaket] = useState({});
   const [formObj, setFormObj] = useState({});
 
@@ -54,14 +57,12 @@ function PaketSoal() {
     });
   }, []);
 
-  const tambahPaket = () => {
-    setModalRole("tambah");
-    handleToggleModal();
+  const previewPaket = (id) => {
+    router.push(`/dosen/paket-soal/${id}`);
   };
 
-  const editPaket = (paketObj) => {
-    setModalRole("edit");
-    setCurrentPaket(paketObj);
+  const tambahPaket = () => {
+    setModalRole("tambah");
     handleToggleModal();
   };
 
@@ -140,13 +141,6 @@ function PaketSoal() {
                   setVisible={setIsModalVisible}
                   setFormObj={setFormObj}
                 />
-              ) : modalRole === "edit" ? (
-                <FormEditPaket
-                  handleSubmit={aksiEditPaket}
-                  setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
-                  currentPaket={currentPaket}
-                />
               ) : (
                 <FormHapusPaket
                   handleSubmit={aksiDeletePaket}
@@ -163,7 +157,7 @@ function PaketSoal() {
           isLoading={!isDataLoaded}
           dataSource={dataPaket}
           role={"paket-soal-dosen"}
-          editPaket={editPaket}
+          previewPaket={previewPaket}
           deletePaket={deletePaket}
         />
       </PageLayout>

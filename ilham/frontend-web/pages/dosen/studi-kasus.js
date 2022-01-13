@@ -144,16 +144,14 @@ function StudiKasus() {
           }
         />
 
-        <Card>
-          <ListComponent
-            isLoading={!isDataLoaded}
-            dataSource={data}
-            role={"studi-kasus"}
-            previewStudiKasus={previewStudiKasus}
-            editStudiKasus={editStudiKasus}
-            deleteStudiKasus={deleteStudiKasus}
-          />
-        </Card>
+        <ListComponent
+          isLoading={!isDataLoaded}
+          dataSource={data}
+          role={"studi-kasus"}
+          previewStudiKasus={previewStudiKasus}
+          editStudiKasus={editStudiKasus}
+          deleteStudiKasus={deleteStudiKasus}
+        />
       </PageLayout>
     </>
   );

@@ -42,7 +42,7 @@ const mockGetJadwal = async () => {
           {
             jadwal_nama: "Jadwal 2",
             tanggal_mulai: moment("2022-01-13 07:00"),
-            tanggal_akhir: moment("2022-01-14 23:59"),
+            tanggal_akhir: moment("2022-01-13 21:59"),
             kelas_nama: "TI-1G",
             studi_kasus_nama: "Studi Kasus B",
           },

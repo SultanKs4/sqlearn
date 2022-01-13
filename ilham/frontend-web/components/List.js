@@ -1,3 +1,5 @@
+import moment from "moment";
+
 import {
   Skeleton,
   List,
@@ -8,9 +10,9 @@ import {
   Typography,
   Card,
   Tooltip,
+  Divider,
 } from "antd";
 import { countTimeDifference, getHours, ucfirst } from "../utils/common";
-import moment from "moment";
 
 import {
   PlusCircleOutlined,
@@ -39,7 +41,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
   }
 
   // ? Untuk setiap role disini, mempunyai showDetail yang berbeda dan tidak mempengaruhi satu sama lain
-
   switch (role) {
     case "studi-kasus":
       return (
@@ -47,45 +48,47 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
-            <List.Item>
-              <Row justify="space-around" style={{ width: "100vw" }}>
-                <Col span={18}>
-                  <Row gutter={[50]}>
-                    <Col>
-                      <Typography.Text style={{ fontWeight: "bold" }}>
-                        {item.nama}
-                      </Typography.Text>
-                    </Col>
-                    <Col>
-                      <DatabaseOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      Database {item.database}
-                    </Col>
-                  </Row>
-                </Col>
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={50}>
+                      <Col>
+                        <Typography.Text style={{ fontWeight: "bold" }}>
+                          {item.nama}
+                        </Typography.Text>
+                      </Col>
+                      <Col>
+                        <DatabaseOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        Database {item.database}
+                      </Col>
+                    </Row>
+                  </Col>
 
-                <Col span={6}>
-                  <Row gutter={20} justify="end">
-                    <Col>
-                      <Button
-                        type="primary"
-                        icon={<SearchOutlined />}
-                        size={"medium"}
-                        onClick={() => props.previewStudiKasus(item)}
-                      ></Button>
-                    </Col>
-                    <Col>
-                      <Button
-                        type="danger"
-                        icon={<DeleteOutlined />}
-                        size={"medium"}
-                        onClick={() => props.deleteStudiKasus(item)}
-                      ></Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<SearchOutlined />}
+                          size={"medium"}
+                          onClick={() => props.previewStudiKasus(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => props.deleteStudiKasus(item)}
+                        ></Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
             </List.Item>
           )}
         />
@@ -106,7 +109,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         style={{ fontSize: "1.2em", marginRight: ".5em" }}
                       />
                       {item.jumlahLatihanDikerjakan} Pertanyaan
-                      <CheckOutlined style={{ marginLeft: ".8em" }} />
                     </Col>
                     <Col span={6}>
                       <FieldTimeOutlined
@@ -321,7 +323,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <ConsoleSqlOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        {item.jumlahSoal} Pertanyaan
+                        {item.pertanyaan.length} Pertanyaan
                       </Col>
                       <Col>
                         <FieldTimeOutlined
@@ -335,12 +337,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   <Col span={6}>
                     <Row gutter={20} justify="end">
                       <Col>
-                        <Tooltip title="Edit Paket Soal">
+                        <Tooltip title="Lihat Paket Soal">
                           <Button
                             type="primary"
-                            icon={<EditOutlined />}
+                            icon={<SearchOutlined />}
                             size={"medium"}
-                            onClick={() => props.editPaket(item)}
+                            onClick={() => props.previewPaket(item?.id_paket)}
                           ></Button>
                         </Tooltip>
                       </Col>
@@ -355,6 +357,62 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         </Tooltip>
                       </Col>
                     </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
+      );
+    case "soal-tiap-paket-dosen":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw" }}>
+                <Row justify="space-between">
+                  <Col span={20}>
+                    <Row>
+                      <Col>
+                        <DatabaseOutlined />
+                        <Typography.Text
+                          style={{ fontWeight: "bold", marginLeft: "1em" }}
+                          children={item.studi_kasus}
+                        />
+                      </Col>
+                    </Row>
+                    <Row justify="space-between" style={{ margin: "1em 0" }}>
+                      <Col> {item.soal} </Col>
+                    </Row>
+                    <Row justify="space-between">
+                      <Col>
+                        <Typography.Text children={"Jawaban : "} />
+                        <Typography.Text children={item.jawaban} underline />
+                      </Col>
+                    </Row>
+                  </Col>
+
+                  <Col>
+                    <Row>
+                      <Tooltip title="Edit Soal">
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.editPilihSoal(item)}
+                        />
+                      </Tooltip>
+                    </Row>
+                    <Divider style={{ margin: 0, padding: 4 }} />
+                    <Tooltip title="Hapus Soal">
+                      <Button
+                        type="danger"
+                        icon={<DeleteOutlined />}
+                        onClick={() => props.deleteSoal(item)}
+                      />
+                    </Tooltip>
                   </Col>
                 </Row>
               </Card>
