@@ -41,10 +41,10 @@ function typeCheck(obj, arr = []) {
             "right": {}
         } */
         const operator = obj.operator;
-        const left = typeCheck(obj.left, arr);
-        const right = typeCheck(obj.right, arr);
+        const left = typeCheck(obj.left, []);
+        const right = typeCheck(obj.right, []);
         if (pattern.test(operator) && (operator == "AND" || operator == "OR")) {
-            arr.unshift(operator);
+            arr.push(operator, ...left, ...right);
         } else {
             arr.push(operator + "_" + left + "_" + right);
         }
@@ -55,21 +55,24 @@ function typeCheck(obj, arr = []) {
             operator: 'NOT',
             expr: { type: 'bool', value: true }
           } */
-        const operator = obj.operator;
+        let operator = obj.operator;
         if (!pattern.test(operator)) operator = "Equation";
-        return operator + "_ " + exprCheck(obj.expr);
+        arr.push(operator + "_" + exprCheck(obj.expr));
+        return arr;
     } else if (type == "expr_list") {
         /* type : 'expr_list',
         value : [
           { type: 'number', value: 1 },
           { type: 'single_quote_string', value: 't' }
         ] */
+        let res = type;
         if (Array.isArray(obj.value)) {
             arr = obj.value.map((e) => {
-                exprCheck(e);
+                return exprCheck(e);
             });
+            res = arr.join("_");
         }
-        return arr;
+        return res;
     } else if (type == "function" || type == "aggr_func") {
         /*         {
             type: 'function',
@@ -90,6 +93,8 @@ function typeCheck(obj, arr = []) {
         if (Array.isArray(result)) result.unshift(obj.name);
         else result = obj.name + "_" + result;
         return result;
+    } else if (type == "ASC" || type == "DESC") {
+        return type + "_" + exprCheck(obj.expr);
     } else {
         return type;
     }
@@ -112,7 +117,7 @@ function exprCheck(exprObj) {
 
 function getSelectColumns(distinct, columns) {
     if (typeof columns == "string") {
-        return columns;
+        return [columns];
     } else if (Array.isArray(columns)) {
         columns = columns.map((e) => {
             return exprCheck(e);
@@ -129,34 +134,37 @@ function getSelectColumns(distinct, columns) {
 
 function getTable(tableArr) {
     if (Array.isArray(tableArr)) {
-        return tableArr.map((e) => {
-            let arr = [];
-            if (e.join) {
-                arr.push(e.join + "_" + e.table);
-                e.on ? arr.push(exprCheck(e.on)) : null;
-            } else arr.push(e.table);
-            return arr;
-        });
+        return tableArr
+            .map((e) => {
+                let arr = [];
+                if (e.join) {
+                    arr.push(e.join + "_" + e.table);
+                    e.on ? arr.push(exprCheck(e.on)) : null;
+                } else arr.push(e.table);
+                return arr;
+            })
+            .flat(Infinity);
     }
-    return tableArr.flat(Infinity);
+    return tableArr;
 }
 
 function getByStatement(arr) {
     if (Array.isArray(arr)) {
-        return arr.map((e) => {
-            exprCheck(e);
+        let arrFlat = arr.map((e) => {
+            return exprCheck(e);
         });
+        return arrFlat.flat(Infinity);
     }
-    return arr.flat(Infinity);
+    return arr;
 }
 
 function getLimit(obj) {
     if (obj == null) return obj;
-    const separator = obj.separator;
+    const seperator = obj.seperator;
     let value = obj.value.map((e) => {
         return exprCheck(e);
     });
-    return value.unshift(separator).flat(Infinity);
+    return seperator === "" ? value : [seperator, ...value];
 }
 
 function parseFeatureNode(ast) {

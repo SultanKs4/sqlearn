@@ -8,8 +8,8 @@ const chai = require("chai"),
 
 describe("Similarity Test", () => {
     describe("Parse Query Test", () => {
+        const parser = new Parser();
         it("Should return object with select keys before get feature", () => {
-            const parser = new Parser();
             const data = [
                 "SELECT nama, nim FROM mahasiswa WHERE nama = 'Tomi' AND kelas = 'TI-4C'",
                 "SELECT DISTINCT a FROM b WHERE c = 0 GROUP BY d ORDER BY e ASC limit 10",
@@ -19,6 +19,18 @@ describe("Similarity Test", () => {
                 "SELECT * FROM tabla WHERE id = 1 AND name LIKE '%jos%' AND city_id = 'a'",
                 "select -1, -a, +b, +abc.e from abc",
                 "SELECT fun(d) FROM t",
+                "SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa",
+                "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00",
+                "SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00",
+                "SELECT * FROM mahasiswa WHERE ipk >= 3.00",
+                "SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2",
+                "SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2",
+                "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
+                "SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
+                "SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)",
+                "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)",
+                "SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1",
+                "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1",
             ];
             data.forEach((query) => {
                 const ast = parser.astify(query);
