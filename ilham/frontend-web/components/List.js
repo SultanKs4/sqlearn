@@ -11,6 +11,7 @@ import {
   Card,
   Tooltip,
   Divider,
+  Empty,
 } from "antd";
 import { countTimeDifference, getHours, ucfirst } from "../utils/common";
 
@@ -23,9 +24,13 @@ import {
   FieldTimeOutlined,
   DeleteOutlined,
   CheckOutlined,
-  FormOutlined,
+  CalendarOutlined,
   LaptopOutlined,
   DatabaseOutlined,
+  FileTextOutlined,
+  CodeSandboxOutlined,
+  TeamOutlined,
+  FormOutlined,
 } from "@ant-design/icons";
 
 function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
@@ -39,6 +44,61 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       />
     );
   }
+
+  let icon = <> </>;
+  let emptyDescription = "";
+
+  switch (role) {
+    case "studi-kasus":
+      emptyDescription = "Studi Kasus";
+      icon = <DatabaseOutlined style={{ fontSize: "3em" }} />;
+      break;
+    // case "list-kelas-dosen":
+    //   icon = <LaptopOutlined />;
+    //   break;
+
+    case "jadwal-dosen":
+      emptyDescription = "Jadwal";
+      icon = (
+        <CalendarOutlined
+          style={{ fontSize: "3em", color: "gray", marginTop: "1em" }}
+        />
+      );
+      break;
+    case "paket-soal-dosen":
+      emptyDescription = "Paket Soal";
+      icon = (
+        <CodeSandboxOutlined
+          style={{ fontSize: "3em", color: "gray", marginTop: "1em" }}
+        />
+      );
+      break;
+    case "soal-tiap-paket-dosen":
+      emptyDescription = "Soal";
+      icon = (
+        <FileTextOutlined
+          style={{ fontSize: "3em", color: "gray", marginTop: "1em" }}
+        />
+      );
+      break;
+
+    default:
+      break;
+  }
+
+  if (dataSource.length === 0)
+    return (
+      <Card>
+        <Empty
+          image={icon}
+          description={
+            <Typography.Text style={{ color: "gray", fontWeight: "bold" }}>
+              Tidak ada data {emptyDescription}
+            </Typography.Text>
+          }
+        />
+      </Card>
+    );
 
   // ? Untuk setiap role disini, mempunyai showDetail yang berbeda dan tidak mempengaruhi satu sama lain
   switch (role) {
@@ -323,7 +383,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <ConsoleSqlOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        {item.pertanyaan.length} Pertanyaan
+                        <Typography.Text
+                          style={{
+                            color: item.pertanyaan.length > 0 ? "black" : "red",
+                          }}
+                          children={`${item.pertanyaan.length} Pertanyaan`}
+                        />
                       </Col>
                       <Col>
                         <FieldTimeOutlined

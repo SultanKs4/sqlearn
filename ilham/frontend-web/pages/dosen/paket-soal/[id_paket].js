@@ -133,7 +133,7 @@ function PreviewPaket() {
               <Col>
                 {isDataLoaded ? (
                   <Typography.Title level={2}>
-                    {dataPaket.nama}
+                    {dataPaket?.nama}
                   </Typography.Title>
                 ) : (
                   <Skeleton
@@ -196,7 +196,7 @@ function PreviewPaket() {
         {/* Content asli */}
         <ListComponent
           isLoading={!isDataLoaded}
-          dataSource={dataPaket?.pertanyaan}
+          dataSource={dataPaket?.pertanyaan || []}
           role={"soal-tiap-paket-dosen"}
           editPilihSoal={editPilihSoal}
           deleteSoal={deleteSoal}

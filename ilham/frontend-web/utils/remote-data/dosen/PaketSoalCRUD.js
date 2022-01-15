@@ -66,6 +66,12 @@ const mockGetPaketSoal = async () => {
             id_paket: 3,
             nama: "Paket Soal C",
             durasi: 120,
+            pertanyaan: [],
+          },
+          {
+            id_paket: 4,
+            nama: "Paket Soal D",
+            durasi: 120,
             pertanyaan: [
               {
                 id: 3,

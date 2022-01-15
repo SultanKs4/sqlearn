@@ -77,8 +77,18 @@ function PreviewStudiKasus({ currentStudiKasus }) {
         </Collapse>
       ) : (
         <Row style={{ height: "20vh" }}>
-          <Skeleton.Input style={{ width: "38vw" }} active />
-          <Skeleton.Input style={{ width: "38vw" }} active />
+          <Skeleton
+            active
+            paragraph={false}
+            title={{ width: "30rem" }}
+            style={{ marginBottom: "1em" }}
+          />
+          <Skeleton
+            active
+            paragraph={false}
+            title={{ width: "30rem" }}
+            style={{ marginBottom: "1em" }}
+          />
         </Row>
       )}
     </>

@@ -45,21 +45,43 @@ function FormTambahStudiKasus({
 
   return (
     <Form onFinish={onFinish} layout="vertical">
-      <Form.Item
-        name="studi_kasus_nama"
-        label="Nama Studi Kasus"
-        rules={[
-          {
-            required: true,
-            message: "Mohon masukkan nama Studi Kasus!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<DatabaseOutlined />}
-          placeholder={` Studi Kasus . . .`}
-        />
-      </Form.Item>
+      <Row gutter={20}>
+        <Col span={12}>
+          <Form.Item
+            name="studi_kasus_nama"
+            label="Nama Studi Kasus"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan nama Studi Kasus!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<DatabaseOutlined />}
+              placeholder={` Studi Kasus . . .`}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            name="nama_database"
+            label="Nama Database"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan nama Database!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<DatabaseOutlined />}
+              placeholder={` Database . . .`}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Form.Item label="Database">
         <Form.Item
           name="database"
