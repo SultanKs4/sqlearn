@@ -9,7 +9,18 @@ const chai = require("chai"),
 describe("Similarity Test", () => {
     describe("Parse Query Test", () => {
         const parser = new Parser();
-        it("Should return object with select keys before get feature", () => {
+        it("Should return object from parse insert query", () => {
+            const data = [
+                "INSERT INTO MAHASISWA (nama,nim,kelas) VALUES ('YASA', 1123144, 'MI-2M'), ('YASA', 1123144, 'MI-2M')",
+                'INSERT into account partition(date, id) (id, name) values(123, "test"), (124, "test2") on duplicate key update id = 123, name = "test"',
+            ];
+            data.forEach((query) => {
+                const ast = parser.astify(query);
+                const result = parseFeatureNode(ast);
+                expect(result).to.include.keys(["insert", "values", "partition", "onDuplicateUpdate"]);
+            });
+        });
+        it("Should return object from parse select query", () => {
             const data = [
                 "SELECT nama, nim FROM mahasiswa WHERE nama = 'Tomi' AND kelas = 'TI-4C'",
                 "SELECT DISTINCT a FROM b WHERE c = 0 GROUP BY d ORDER BY e ASC limit 10",

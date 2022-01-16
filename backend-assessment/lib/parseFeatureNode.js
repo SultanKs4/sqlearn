@@ -148,7 +148,7 @@ function getTable(tableArr) {
     return tableArr;
 }
 
-function getByStatement(arr) {
+function getStatement(arr) {
     if (Array.isArray(arr)) {
         let arrFlat = arr.map((e) => {
             return exprCheck(e);
@@ -167,6 +167,15 @@ function getLimit(obj) {
     return seperator === "" ? value : [seperator, ...value];
 }
 
+function getOnDuplicateUpdate(obj) {
+    if (typeof obj == "object" && obj != null) {
+        return obj.set.map((e) => {
+            return e.column + "_" + exprCheck(e.obj);
+        });
+    }
+    return obj;
+}
+
 function parseFeatureNode(ast) {
     const statement = ast.type;
     let column;
@@ -177,13 +186,18 @@ function parseFeatureNode(ast) {
             let from = getTable(ast.from);
             let where = ast.where ? [exprCheck(ast.where)].flat(Infinity) : null;
             let having = ast.having ? [exprCheck(ast.having)].flat(Infinity) : null;
-            let groupBy = getByStatement(ast.groupby);
-            let orderBy = getByStatement(ast.orderby);
+            let groupBy = getStatement(ast.groupby);
+            let orderBy = getStatement(ast.orderby);
             let limit = getLimit(ast.limit);
             obj = { from, where, groupBy, having, orderBy, limit };
             break;
         case "insert":
-            column = ast.columns;
+            let table = getTable(ast.table);
+            column = ast.columns ? [...table, ...ast.columns] : table;
+            let values = getStatement(ast.values);
+            let partition = ast.partition;
+            let onDuplicateUpdate = getOnDuplicateUpdate(ast.on_duplicate_update);
+            obj = { values, partition, onDuplicateUpdate };
             break;
     }
     return {
