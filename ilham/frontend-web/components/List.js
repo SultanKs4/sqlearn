@@ -12,6 +12,7 @@ import {
   Tooltip,
   Divider,
   Empty,
+  Badge,
 } from "antd";
 import { countTimeDifference, getHours, ucfirst } from "../utils/common";
 
@@ -40,7 +41,11 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       <List
         itemLayout="horizontal"
         dataSource={skeleton}
-        renderItem={(item) => <Skeleton loading={true} active avatar />}
+        renderItem={(item) => (
+          <Card>
+            <Skeleton loading={true} active title />
+          </Card>
+        )}
       />
     );
   }
@@ -74,6 +79,14 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       );
       break;
     case "soal-tiap-paket-dosen":
+      emptyDescription = "Soal";
+      icon = (
+        <FileTextOutlined
+          style={{ fontSize: "3em", color: "gray", marginTop: "1em" }}
+        />
+      );
+      break;
+    case "data-soal-dosen":
       emptyDescription = "Soal";
       icon = (
         <FileTextOutlined
@@ -453,8 +466,14 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                     </Row>
                     <Row justify="space-between">
                       <Col>
-                        <Typography.Text children={"Jawaban : "} />
-                        <Typography.Text children={item.jawaban} underline />
+                        <Typography.Text children={"Opsi Jawaban : "} />
+                        <List
+                          size="small"
+                          dataSource={item.jawaban}
+                          locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
+                          renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
+                        />
+                        {/* <Typography.Text children={item.jawaban} underline /> */}
                       </Col>
                     </Row>
                   </Col>
@@ -481,6 +500,73 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
                 </Row>
               </Card>
+            </List.Item>
+          )}
+        />
+      );
+    case "data-soal-dosen":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Badge.Ribbon
+                text={item?.kategori === "-" ? "Kosong" : item?.kategori}
+                color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+                placement="start"
+              >
+                <Card style={{ width: "76vw", marginBottom: ".4em" }}>
+                  <Row justify="space-between">
+                    <Col span={20}>
+                      <Row>
+                        <Col style={{ paddingTop: "1em" }}>
+                          <DatabaseOutlined />
+                          <Typography.Text
+                            style={{ fontWeight: "bold", marginLeft: "1em" }}
+                            children={item.studi_kasus}
+                          />
+                        </Col>
+                      </Row>
+                      <Row justify="space-between" style={{ margin: "1em 0" }}>
+                        <Col> {item.teksSoal} </Col>
+                      </Row>
+                      <Row justify="space-between">
+                        <Col>
+                          <Typography.Text children={"Jawaban Query : "} />
+                          <List
+                            size="small"
+                            dataSource={item.jawaban}
+                            locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
+                            renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
+                          />
+                        </Col>
+                      </Row>
+                    </Col>
+
+                    <Col>
+                      <Row>
+                        <Tooltip title="Edit Soal">
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editSoal(item)}
+                          />
+                        </Tooltip>
+                      </Row>
+                      <Divider style={{ margin: 0, padding: 4 }} />
+                      <Tooltip title="Hapus Soal">
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          onClick={() => props.deleteSoal(item)}
+                        />
+                      </Tooltip>
+                    </Col>
+                  </Row>
+                </Card>
+              </Badge.Ribbon>
             </List.Item>
           )}
         />

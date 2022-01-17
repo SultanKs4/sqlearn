@@ -53,7 +53,7 @@ function PreviewPaket() {
     mockGetPaketSoal().then((response) => {
       setDataPaket(
         response?.data?.find(
-          (item) => parseInt(item.id_paket) === parseInt(router.query.id_paket)
+          (item) => parseInt(item?.id_paket) === parseInt(router.query.id_paket)
         )
       );
       setIsDataLoaded(true);
