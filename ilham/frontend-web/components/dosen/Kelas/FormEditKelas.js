@@ -1,4 +1,13 @@
-import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
+import {
+  Button,
+  Col,
+  Divider,
+  Form,
+  Input,
+  Row,
+  Select,
+  Typography,
+} from "antd";
 import { LaptopOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
@@ -10,7 +19,6 @@ function FormTambahKelas({
   ...props
 }) {
   const [form] = Form.useForm();
-  const { Option } = Select;
 
   const onFinish = (values) => {
     setFormObj(values);
@@ -22,31 +30,25 @@ function FormTambahKelas({
     setVisible(false);
   };
 
-  const [semester, setSemester] = useState("");
-
-  const onChangeSemester = (val) => setSemester(val);
-
   useEffect(() => {
     form.setFieldsValue({
-      kelas_nama: currentKelas?.name,
+      kelas_nama: currentKelas?.nama,
+      semester: currentKelas?.semester,
     });
   }, [currentKelas]);
 
   return (
-    <Form
-      form={form}
-      onFinish={onFinish}
-      layout="vertical"
-      initialValues={{
-        kelas_nama: currentKelas?.name,
-        semester: 1,
-      }}
-    >
+    <Form form={form} onFinish={onFinish} layout="vertical">
       <Row gutter={10}>
         <Col span={13}>
           <Form.Item
             name="kelas_nama"
             label="Nama Kelas"
+            extra={
+              <>
+                Format [Prodi]-[Kelas]-[Tahun] <br /> Contoh: TI-1A-2021
+              </>
+            }
             rules={[
               {
                 required: true,
@@ -54,7 +56,10 @@ function FormTambahKelas({
               },
             ]}
           >
-            <Input prefix={<LaptopOutlined />} placeholder={` Kelas . . .`} />
+            <Input
+              prefix={<LaptopOutlined />}
+              placeholder={` Format [Prodi]-[Kelas]-[Tahun] . . .`}
+            />
           </Form.Item>
         </Col>
         <Col>
@@ -70,11 +75,11 @@ function FormTambahKelas({
           >
             <Select
               placeholder="Pilih semester . . ."
-              onChange={onChangeSemester}
               style={{ width: "200px" }}
             >
-              <Option key={1}> 1 </Option>
-              <Option key={2}> 2 </Option>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                <Select.Option key={item}>{item}</Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>

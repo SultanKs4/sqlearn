@@ -1,14 +1,55 @@
 import axios from "axios";
 import { mockAPIURL } from "../api";
 
-const getKelas = async lecturerID => {
+const getKelas = async (lecturerID) => {
   let response = await axios.get(
     `${mockAPIURL}/kelas?lecturerID=${lecturerID}`
   );
   return response.data;
 };
 
-const getKelasByID = async kelasID => {
+const mockGetKelas = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: [
+          {
+            id: 1,
+            nama: "TI-1A-2021",
+            jumlahMhs: 25,
+            semester: 2,
+          },
+          {
+            id: 2,
+            nama: "TI-1G-2021",
+            jumlahMhs: 22,
+            semester: 4,
+          },
+          {
+            id: 3,
+            nama: "TI-2D-2020",
+            jumlahMhs: 25,
+            semester: 4,
+          },
+          {
+            id: 4,
+            nama: "TI-2E-2020",
+            jumlahMhs: 28,
+            semester: 1,
+          },
+          {
+            id: 5,
+            nama: "TI-2F-2020",
+            jumlahMhs: 30,
+            semester: 2,
+          },
+        ],
+      });
+    }, 1000);
+  });
+};
+
+const getKelasByID = async (kelasID) => {
   let response = await axios.get(`${mockAPIURL}/kelas/${kelasID}`);
   return response.data;
 };
@@ -28,4 +69,11 @@ const deleteKelas = async () => {
   return response.data;
 };
 
-export { getKelas, getKelasByID, postKelas, updateKelas, deleteKelas };
+export {
+  getKelas,
+  getKelasByID,
+  postKelas,
+  updateKelas,
+  deleteKelas,
+  mockGetKelas,
+};

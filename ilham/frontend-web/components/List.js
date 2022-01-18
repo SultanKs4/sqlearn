@@ -24,6 +24,7 @@ import {
   EditOutlined,
   FieldTimeOutlined,
   DeleteOutlined,
+  UserOutlined,
   CheckOutlined,
   CalendarOutlined,
   LaptopOutlined,
@@ -58,9 +59,9 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       emptyDescription = "Studi Kasus";
       icon = <DatabaseOutlined style={{ fontSize: "3em" }} />;
       break;
-    // case "list-kelas-dosen":
-    //   icon = <LaptopOutlined />;
-    //   break;
+    case "list-kelas-dosen":
+      icon = <LaptopOutlined />;
+      break;
 
     case "jadwal-dosen":
       emptyDescription = "Jadwal";
@@ -166,54 +167,132 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           )}
         />
       );
-    case "lihat-nilai":
+    case "list-kelas-dosen":
       return (
         <List
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
-            <List.Item>
-              <Row justify="space-around" style={{ width: "100vw" }}>
-                <Col span={18}>
-                  <Row gutter={[50]}>
-                    <Col span={6}>{item.nama}</Col>
-                    <Col span={6}>
-                      <ConsoleSqlOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      {item.jumlahLatihanDikerjakan} Pertanyaan
-                    </Col>
-                    <Col span={6}>
-                      <FieldTimeOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      {item.avgDurasi} menit
-                    </Col>
-                    <Col span={6}>
-                      <FormOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      Nilai :{item.avgNilai}
-                    </Col>
-                  </Row>
-                </Col>
+            <List.Item style={{ padding: 0, marginBottom: ".5em" }}>
+              <Card style={{ width: "100vw" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={50}>
+                      <Col>
+                        <LaptopOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        <Typography.Text style={{ fontWeight: "bold" }}>
+                          {item.nama}
+                        </Typography.Text>
+                      </Col>
+                      <Col>
+                        <UserOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item?.jumlahMhs} orang
+                      </Col>
+                    </Row>
+                  </Col>
 
-                <Col span={6}>
-                  <Row gutter={20} justify="end">
-                    <Col>
-                      <Button
-                        type="primary"
-                        icon={<SearchOutlined />}
-                        size={"medium"}
-                        onClick={() => props.previewDetailNilai(item)}
-                      ></Button>
-                    </Col>
-                  </Row>
-                </Col>
-              </Row>
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.editKelas(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => props.deleteKelas(item)}
+                        ></Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
             </List.Item>
           )}
         />
+      );
+    case "lihat-nilai":
+      let topThreeStudents = dataSource.slice().splice(0, 3);
+      
+      return (
+        <Card>
+          <List
+            itemLayout="horizontal"
+            dataSource={showDetail ? dataSource : topThreeStudents}
+            renderItem={(item) => (
+              <List.Item>
+                <Row justify="space-around" style={{ width: "100vw" }}>
+                  <Col span={18}>
+                    <Row gutter={[50]}>
+                      <Col span={8}>{item.nama}</Col>
+                      <Col span={6}>
+                        <ConsoleSqlOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.jumlahLatihanDikerjakan} Pertanyaan
+                      </Col>
+                      <Col span={5}>
+                        <FieldTimeOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        {item.avgDurasi} menit
+                      </Col>
+                      <Col span={5}>
+                        <FormOutlined
+                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                        />
+                        Nilai :{item.avgNilai}
+                      </Col>
+                    </Row>
+                  </Col>
+
+                  <Col span={4}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Tooltip title="Preview Nilai Mhs">
+                          <Button
+                            type="primary"
+                            icon={<SearchOutlined />}
+                            style={{
+                              color: "white",
+                              backgroundColor: "purple",
+                            }}
+                            size={"medium"}
+                            onClick={() => props.previewDetailNilai(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </List.Item>
+            )}
+          />
+          {!showDetail && (
+            <Typography.Paragraph
+              underline
+              style={{ color: "grey", textAlign: "center", marginTop: "1em" }}
+            >
+              <Tooltip
+                title={`Preview Kelas untuk melihat daftar mahasiswa dalam kelas ${
+                  props?.kelas?.nama || "ini"
+                }`}
+              >
+                Terdapat total {dataSource.length} mahasiswa
+              </Tooltip>
+            </Typography.Paragraph>
+          )}
+        </Card>
       );
     case "sesi-latihan-mahasiswa":
       return (
@@ -443,6 +522,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         />
       );
     case "soal-tiap-paket-dosen":
+      console.log(dataSource);
       return (
         <List
           itemLayout="horizontal"
@@ -462,7 +542,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       </Col>
                     </Row>
                     <Row justify="space-between" style={{ margin: "1em 0" }}>
-                      <Col> {item.soal} </Col>
+                      <Col> {item.teksSoal} </Col>
                     </Row>
                     <Row justify="space-between">
                       <Col>

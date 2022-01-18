@@ -21,10 +21,6 @@ function FormTambahKelas({
     setVisible(false);
   };
 
-  const [semester, setSemester] = useState("");
-
-  const onChangeSemester = (val) => setSemester(val);
-
   return (
     <Form onFinish={onFinish} layout="vertical">
       <Row gutter={10}>
@@ -32,6 +28,11 @@ function FormTambahKelas({
           <Form.Item
             name="kelas_nama"
             label="Nama Kelas"
+            extra={
+              <>
+                Format [Prodi]-[Kelas]-[Tahun] <br /> Contoh: TI-1A-2021
+              </>
+            }
             rules={[
               {
                 required: true,
@@ -39,7 +40,10 @@ function FormTambahKelas({
               },
             ]}
           >
-            <Input prefix={<LaptopOutlined />} placeholder={` Kelas . . .`} />
+            <Input
+              prefix={<LaptopOutlined />}
+              placeholder={` Format [Prodi]-[Kelas]-[Tahun] . . .`}
+            />
           </Form.Item>
         </Col>
         <Col>
@@ -55,11 +59,11 @@ function FormTambahKelas({
           >
             <Select
               placeholder="Pilih semester . . ."
-              onChange={onChangeSemester}
               style={{ width: "200px" }}
             >
-              <Option key={1}> 1 </Option>
-              <Option key={2}> 2 </Option>
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((item) => (
+                <Select.Option key={item}>{item}</Select.Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>

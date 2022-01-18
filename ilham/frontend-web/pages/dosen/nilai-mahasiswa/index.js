@@ -13,15 +13,30 @@ import {
   Spin,
 } from "antd";
 
-import { mockKelasDiajar } from "../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
-import PageLayout from "../../components/PageLayout";
-import ListComponent from "../../components/List";
-import ModalCustom from "../../components/Modal";
-import SearchBar from "../../components/SearchBar";
+import { mockKelasDiajar } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
+import PageLayout from "../../../components/PageLayout";
+import ListComponent from "../../../components/List";
+import ModalCustom from "../../../components/Modal";
+import SearchBar from "../../../components/SearchBar";
+
+import { RightOutlined } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 const mockNilaiMhs = [
   {
     nama: "Muhammad Ilham Adhim",
+    avgNilai: 88,
+    avgDurasi: 25.4,
+    jumlahLatihanDikerjakan: 20,
+  },
+  {
+    nama: "Dharma Y",
+    avgNilai: 88,
+    avgDurasi: 25.4,
+    jumlahLatihanDikerjakan: 20,
+  },
+  {
+    nama: "Rasyid M",
     avgNilai: 88,
     avgDurasi: 25.4,
     jumlahLatihanDikerjakan: 20,
@@ -41,6 +56,8 @@ const mockNilaiMhs = [
 ];
 
 function HalamanNilai() {
+  const router = useRouter();
+
   const [data, setData] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
 
@@ -63,8 +80,8 @@ function HalamanNilai() {
   };
 
   useEffect(() => {
-    mockKelasDiajar(1).then((item) => {
-      setData(item);
+    mockKelasDiajar().then((response) => {
+      setData(response.data);
       setIsDataLoaded(true);
     });
   }, []);
@@ -97,7 +114,7 @@ function HalamanNilai() {
         {isDataLoaded ? (
           <SearchBar
             dataSource={data}
-            searchKey="name"
+            searchKey="nama"
             role="kelas"
             isSearching={isSearching}
             setIsSearching={setIsSearching}
@@ -115,11 +132,28 @@ function HalamanNilai() {
             dataSource={isSearching ? searchResult : data}
             renderItem={(item) => (
               <Card style={{ marginBottom: "1em" }}>
-                <Typography.Title level={3}> {item.name} </Typography.Title>
+                <Row justify="space-between">
+                  <Col>
+                    <Typography.Title level={3}> {item.nama} </Typography.Title>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="primary"
+                      shape="round"
+                      icon={<RightOutlined />}
+                      onClick={() =>
+                        router.push(`/dosen/nilai-mahasiswa/${item.id}`)
+                      }
+                    >
+                      Preview Kelas
+                    </Button>{" "}
+                  </Col>
+                </Row>
                 <ListComponent
+                  role={"lihat-nilai"}
+                  kelas={item}
                   isLoading={!isDataLoaded}
                   dataSource={mockNilaiMhs}
-                  role={"lihat-nilai"}
                   previewDetailNilai={previewNilaiMhs}
                 />
               </Card>

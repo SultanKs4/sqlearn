@@ -38,7 +38,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 8,
                 nama: "Test nama soal 1",
-                soal: "Dosen ingin menampilkan semua data tentang mahasiswa.",
+                teksSoal:
+                  "Dosen ingin menampilkan semua data tentang mahasiswa.",
                 jawaban: [
                   "SELECT * FROM mahasiswa",
                   "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa",
@@ -49,7 +50,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 11,
                 nama: "Test nama soal 2",
-                soal: "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
+                teksSoal:
+                  "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
                 jawaban: [
                   "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
                   "SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
@@ -70,7 +72,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 9,
                 nama: "Test nama soal 2",
-                soal: "Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'",
+                teksSoal:
+                  "Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'",
                 jawaban: [
                   "SELECT * FROM mahasiswa WHERE nama LIKE 'D%'",
                   "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE nama LIKE 'D%'",
@@ -81,7 +84,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 12,
                 nama: "Test nama soal 2",
-                soal: "Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut",
+                teksSoal:
+                  "Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut",
                 jawaban: [
                   "SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2 ",
                   "SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2",
@@ -95,7 +99,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 15,
                 nama: "Test nama soal 2",
-                soal: "Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut",
+                teksSoal:
+                  "Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut",
                 jawaban: [
                   "SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa",
                 ],
@@ -105,14 +110,14 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 16,
                 nama: "Test nama soal 2",
-                soal: "Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan",
+                teksSoal:
+                  "Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan",
                 jawaban: [
                   "(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)",
                 ],
                 studi_kasus: "Studi Kasus C",
                 dosen_pembuat: "Dosen Coba",
               },
-              ,
             ],
           },
           {
@@ -129,7 +134,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 10,
                 nama: "Test nama soal 3",
-                soal: "Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut",
+                teksSoal:
+                  "Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut",
                 jawaban: ["SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC"],
                 studi_kasus: "Studi Kasus C",
                 dosen_pembuat: "Dosen Coba",
@@ -137,7 +143,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 13,
                 nama: "Test nama soal 3",
-                soal: "Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00",
+                teksSoal:
+                  "Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00",
                 jawaban: [
                   "SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00",
                   "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00",
@@ -152,7 +159,8 @@ const mockGetPaketSoal = async () => {
               {
                 idSoal: 14,
                 nama: "Test nama soal 3",
-                soal: "Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery",
+                teksSoal:
+                  "Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery",
                 jawaban: [
                   "SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)",
                   "SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)",
@@ -162,7 +170,6 @@ const mockGetPaketSoal = async () => {
                 studi_kasus: "Studi Kasus B",
                 dosen_pembuat: "Dosen Coba",
               },
-              ,
             ],
           },
         ],

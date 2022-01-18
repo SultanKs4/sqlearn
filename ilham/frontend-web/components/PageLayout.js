@@ -68,7 +68,8 @@ function PageLayout({ children, role, username = "1841720076" }) {
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
-          Ant Design ©2018 Created by Ant UED
+          SQLearn - JTI Polinema
+          <br />
         </Footer>
       </Layout>
     </Layout>

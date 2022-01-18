@@ -3,7 +3,7 @@ import { React, useState, useEffect } from "react";
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 import EmptyData from "../../components/EmptyData";
-import { getKelas } from "../../utils/remote-data/dosen/KelasCRUD";
+import { mockGetKelas } from "../../utils/remote-data/dosen/KelasCRUD";
 import {
   Skeleton,
   Typography,
@@ -25,6 +25,7 @@ import ModalCustom from "../../components/Modal";
 import FormTambahKelas from "../../components/dosen/Kelas/FormTambahKelas";
 import FormHapusKelas from "../../components/dosen/Kelas/FormHapusKelas";
 import FormEditKelas from "../../components/dosen/Kelas/FormEditKelas";
+import ListComponent from "../../components/List";
 
 function DaftarKelas() {
   const [dataKelas, setDataKelas] = useState([]);
@@ -44,9 +45,9 @@ function DaftarKelas() {
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
-    getKelas(1).then((data) => {
+    mockGetKelas(1).then((response) => {
+      setDataKelas(response.data);
       setIsDataKelasLoaded(true);
-      setDataKelas(data);
     });
   }, []);
 
@@ -74,7 +75,8 @@ function DaftarKelas() {
   const aksiTambahKelas = (formKelas) => {
     // TODO : Call POST API request dari KelasCRUD.js
     // ...
-    setAlertMessage(`Data ${formKelas.name} berhasil ditambahkan`);
+    handleToggleModal();
+    setAlertMessage(`Data ${formKelas.kelas_nama} berhasil ditambahkan`);
     console.log("Hasil submit tambah", formKelas);
   };
 
@@ -82,7 +84,7 @@ function DaftarKelas() {
     // TODO : Call PUT API request dari KelasCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data Kelas ${formKelas.name} berhasil diubah`);
+    setAlertMessage(`Data Kelas ${formKelas.kelas_nama} berhasil diubah`);
     handleToggleAlert();
     console.log("Data berhasil diedit", formKelas);
   };
@@ -91,7 +93,7 @@ function DaftarKelas() {
     // TODO : Call DELETE API request dari KelasCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data Kelas ${formKelas.name} berhasil dihapus`);
+    setAlertMessage(`Data Kelas ${formKelas.nama} berhasil dihapus`);
     handleToggleAlert();
     console.log("Data terhapus", formKelas);
   };
@@ -157,37 +159,13 @@ function DaftarKelas() {
           }
         />
 
-        {isDataKelasLoaded ? (
-          dataKelas.length > 0 ? (
-            <List
-              grid={{ gutter: 16, column: 4 }}
-              dataSource={dataKelas}
-              renderItem={(item) => (
-                <List.Item>
-                  <Card>
-                    <Row>
-                      <Col flex="1">{item.name}</Col>
-                      <Col>
-                        <Button onClick={() => editKelas(item)}>
-                          <EditTwoTone twoToneColor="#52c41a" />
-                        </Button>
-                      </Col>
-                      <Col>
-                        <Button onClick={() => deleteKelas(item)}>
-                          <DeleteTwoTone twoToneColor="#eb2f96" />
-                        </Button>
-                      </Col>
-                    </Row>
-                  </Card>
-                </List.Item>
-              )}
-            />
-          ) : (
-            <EmptyData description="Tidak ada kelas" />
-          )
-        ) : (
-          <Skeleton active={true} />
-        )}
+        <ListComponent
+          isLoading={!isDataKelasLoaded}
+          role="list-kelas-dosen"
+          editKelas={editKelas}
+          deleteKelas={deleteKelas}
+          dataSource={dataKelas}
+        />
       </PageLayout>
     </>
   );
