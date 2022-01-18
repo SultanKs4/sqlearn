@@ -1,5 +1,5 @@
-const dbFunctions = require("../../lib/dbFunction");
-const responseObj = require("../../lib/responseObject");
+const dbFunctions = require("../../../lib/dbFunction");
+const responseObj = require("../../../lib/responseObject");
 
 module.exports = {
     createDb: async (dbname) => {

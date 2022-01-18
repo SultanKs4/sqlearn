@@ -101,6 +101,11 @@
   dependencies:
     "safe-buffer" "5.1.2"
 
+"big-integer@^1.6.48":
+  "integrity" "sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg=="
+  "resolved" "https://registry.npmjs.org/big-integer/-/big-integer-1.6.51.tgz"
+  "version" "1.6.51"
+
 "bignumber.js@9.0.0":
   "integrity" "sha512-t/OYhhJ2SD+YGBQcjY8GzzDHEk9f3nerxjtfa6tlMXfe7frs/WozhvCNoGvpM0P3bNf3Gq5ZRMlGr5f3r4/N8A=="
   "resolved" "https://registry.npmjs.org/bignumber.js/-/bignumber.js-9.0.0.tgz"
@@ -1016,6 +1021,13 @@
   "integrity" "sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw=="
   "resolved" "https://registry.npmjs.org/negotiator/-/negotiator-0.6.2.tgz"
   "version" "0.6.2"
+
+"node-sql-parser@^4.0.4":
+  "integrity" "sha512-ljPM80AxuAZTf4T83A1J1Qr5Pxd9u0jF29M1vX9nEmZrB0zRGFABHS7+RIZdUpAel6zu2/iLP5heD3yFxHFaKQ=="
+  "resolved" "https://registry.npmjs.org/node-sql-parser/-/node-sql-parser-4.0.4.tgz"
+  "version" "4.0.4"
+  dependencies:
+    "big-integer" "^1.6.48"
 
 "nodemon@^2.0.7":
   "integrity" "sha512-XHzK69Awgnec9UzHr1kc8EomQh4sjTQ8oRf8TsGrSmHDx9/UmiGG9E/mM3BuTfNeFwdNBvrqQq/RHL0xIeyFOA=="
