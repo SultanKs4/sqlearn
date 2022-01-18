@@ -1,53 +1,51 @@
-const parser = require('js-sql-parser');
-const { getCosineSimilarity } = require('./cosineSimilarity.js');
-const parseFeatures = require('./parseFeature.js');
+const { Parser } = require("node-sql-parser");
+const { getCosineSimilarity } = require("./cosineSimilarity.js");
+const parseFeatureNode = require("./parseFeatureNode");
 // const util = require('util')
 
 function getSimilarity(query1, query2) {
-
-    const { success: successQ1, featureVector: featureQ1, message: messageQ1 } = getFeatureVector(query1)
-    const { success: successQ2, featureVector: featureQ2, message: messageQ2 } = getFeatureVector(query2)
+    const { success: successQ1, featureVector: featureQ1, message: messageQ1 } = getFeatureVector(query1);
+    const { success: successQ2, featureVector: featureQ2, message: messageQ2 } = getFeatureVector(query2);
 
     if (!successQ1) {
         return {
             success: false,
             similarity: -1,
-            message: messageQ1
-        }
+            message: messageQ1,
+        };
     }
 
     if (!successQ2) {
         return {
             success: false,
             similarity: -1,
-            message: messageQ2
-        }
+            message: messageQ2,
+        };
     }
 
     const documents = {
         d1: featureQ1,
-        d2: featureQ2
-    }
+        d2: featureQ2,
+    };
 
     return {
         success: true,
-        similarity: getCosineSimilarity(documents)
-    }
+        similarity: getCosineSimilarity(documents),
+    };
 }
 
 function getFeatureVector(query) {
-    const { success, featureVector, message } = parseSQL(query)
-    const featureVectorLC = (featureVector) ? featureVector.map(v => v[0].toLowerCase()) : null
+    const { success, featureVector, message } = parseSQL(query);
+    const featureVectorLC = featureVector ? featureVector.map((v) => v[0].toLowerCase()) : null;
     return {
         success,
         featureVector: featureVectorLC,
-        message
-    }
+        message,
+    };
 }
 
 function parseSQL(query) {
     try {
-
         // let otherFeature
         // if (query.includes("EXCEPT")) {
         //     otherFeature = "EXCEPT"
@@ -75,9 +73,9 @@ function parseSQL(query) {
         // }
 
         // const vectorizedFeatures = getVectorizedFeatures(vectorFeatures)
-        const queryLowerCase = query.toLowerCase()
+        const queryLowerCase = query.toLowerCase();
 
-        const querySplitter = ["union all", "intersect all", "except all", "union", "intersect", "except"]
+        const querySplitter = ["union all", "intersect all", "except all", "union", "intersect", "except"];
 
         function splitString(string, splitters) {
             var list = [string];
@@ -89,10 +87,10 @@ function parseSQL(query) {
 
         function traverseList(list, splitter, index) {
             if (list[index]) {
-                if ((list.constructor !== String) && (list[index].constructor === String))
-                    (list[index] != list[index].split(splitter)) ? list[index] = list[index].split(splitter) : null;
-                (list[index].constructor === Array) ? traverseList(list[index], splitter, 0) : null;
-                (list.constructor === Array) ? traverseList(list, splitter, index + 1) : null;
+                if (list.constructor !== String && list[index].constructor === String)
+                    list[index] != list[index].split(splitter) ? (list[index] = list[index].split(splitter)) : null;
+                list[index].constructor === Array ? traverseList(list[index], splitter, 0) : null;
+                list.constructor === Array ? traverseList(list, splitter, index + 1) : null;
             }
         }
 
@@ -102,66 +100,73 @@ function parseSQL(query) {
             }, []);
         }
 
-        const splittedString = splitString(queryLowerCase, querySplitter)
+        const splittedString = splitString(queryLowerCase, querySplitter);
 
         function countWord(sentence, word) {
-            return sentence.split(word).length - 1
+            return sentence.split(word).length - 1;
         }
 
         function countWords(sentence, listOfWords) {
             const countedWords = listOfWords.reduce((acc, curr) => {
                 if (!acc[curr]) {
-                    acc[curr] = countWord(sentence, curr)
+                    acc[curr] = countWord(sentence, curr);
                 }
-                return acc
-            }, {})
-            return countedWords
+                return acc;
+            }, {});
+            return countedWords;
         }
 
-        const formattedString = splittedString.map(val => {
-            let trimmed = val.trim()
+        const formattedString = splittedString.map((val) => {
+            let trimmed = val.trim();
             if (trimmed[0] == "(" && trimmed[trimmed.length - 1] == ")") {
-                trimmed = trimmed.substr(1).slice(0, -1)
+                trimmed = trimmed.substr(1).slice(0, -1);
             }
-            return trimmed
-        })
+            return trimmed;
+        });
 
-        let vectorizedFeatures = []
+        let vectorizedFeatures = [];
+        const parser = new Parser();
 
         for (let i = 0; i < formattedString.length; i++) {
-            const ast = parser.parse(formattedString[i])
+            // js-sql-parser
+            // const ast = parser.parse(formattedString[i]);
+            // const vectorFeatures = parseFeatures(ast["value"]);
+
+            // node-sql-parser
+            const ast = parser.astify(formattedString[i]);
+            const vectorFeatures = parseFeatureNode(ast);
+
+            // console.log(JSON.stringify(ast, null, 4));
             // console.log(util.inspect(ast, false, null, true /* enable colors */))
-            const vectorFeatures = parseFeatures(ast["value"])
-            vectorizedFeatures = [...vectorizedFeatures, ...getVectorizedFeatures(vectorFeatures)]
+            vectorizedFeatures = [...vectorizedFeatures, ...getVectorizedFeatures(vectorFeatures)];
         }
 
-        const countedWords = countWords(queryLowerCase, querySplitter)
-        Object.keys(countedWords).forEach(key => {
+        const countedWords = countWords(queryLowerCase, querySplitter);
+        Object.keys(countedWords).forEach((key) => {
             for (let i = 0; i < countedWords[key]; i++) {
-                vectorizedFeatures = [...vectorizedFeatures, [key]]
+                vectorizedFeatures = [...vectorizedFeatures, [key]];
             }
-        })
+        });
 
         // console.log(vectorizedFeatures)
 
         return {
             success: true,
             featureVector: vectorizedFeatures,
-            message: "Parsing Sukses"
-        }
+            message: "Parsing Sukses",
+        };
     } catch (err) {
-        console.log(err)
+        console.log(err);
         return {
             success: false,
             featureVector: null,
-            message: err
-        }
-
+            message: err,
+        };
     }
 }
 
 function getVectorizedFeatures(ast) {
-    let vectorizedFeatures = []
+    let vectorizedFeatures = [];
     // if (ast["other"]) {
     //     vectorizedFeatures.push([ast["other"].toLowerCase()])
 
@@ -183,17 +188,21 @@ function getVectorizedFeatures(ast) {
     //         }
     //     })
     // } else {
-    Object.keys(ast).forEach(key => {
+    Object.keys(ast).forEach((key) => {
         if (ast[key]) {
-            const prefix = key.toLowerCase()
-            ast[key].forEach(feature => {
-                vectorizedFeatures.push([`${prefix}_${feature}`])
-            })
+            const prefix = key.toLowerCase();
+            ast[key].forEach((feature, index) => {
+                let str =
+                    key == "values"
+                        ? `${prefix}_${index}_${feature.toLowerCase()}`
+                        : `${prefix}_${feature.toLowerCase()}`;
+                vectorizedFeatures.push([str]);
+            });
         }
-    })
+    });
     // }
-    return vectorizedFeatures
+    return vectorizedFeatures;
 }
 
-module.exports = getSimilarity
-module.exports.getFeatureVector = getFeatureVector
+module.exports = getSimilarity;
+module.exports.getFeatureVector = getFeatureVector;

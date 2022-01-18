@@ -1,0 +1,35 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program Backend Assessment",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "envFile": "${workspaceFolder}/backend-assessment/.env",
+            "program": "${workspaceFolder}/backend-assessment/app.js"
+        },
+        {
+            "type": "pwa-node",
+            "request": "launch",
+            "name": "Launch Program Backend Web",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "envFile": "${workspaceFolder}/sultan/backend-web/.env",
+            "program": "${workspaceFolder}/sultan/backend-web/app.js"
+        },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Run npm test backend assessment",
+            "cwd": "${workspaceFolder}/backend-assessment",
+            "command": "npm test",
+        }
+    ]
+}

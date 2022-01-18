@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "test": "mocha"
+    "test": "mocha -r dotenv/config"
   },
   "author": "",
   "license": "ISC",
@@ -17,7 +17,8 @@
     "lodash.isequal": "^4.5.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "node-sql-parser": "^4.0.4"
   },
   "devDependencies": {
     "chai": "^4.3.4",
