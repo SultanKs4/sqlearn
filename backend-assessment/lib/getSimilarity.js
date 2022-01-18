@@ -191,8 +191,12 @@ function getVectorizedFeatures(ast) {
     Object.keys(ast).forEach((key) => {
         if (ast[key]) {
             const prefix = key.toLowerCase();
-            ast[key].forEach((feature) => {
-                vectorizedFeatures.push([`${prefix}_${feature.toLowerCase()}`]);
+            ast[key].forEach((feature, index) => {
+                let str =
+                    key == "values"
+                        ? `${prefix}_${index}_${feature.toLowerCase()}`
+                        : `${prefix}_${feature.toLowerCase()}`;
+                vectorizedFeatures.push([str]);
             });
         }
     });

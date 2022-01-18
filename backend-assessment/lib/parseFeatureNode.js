@@ -46,7 +46,7 @@ function typeCheck(obj, arr = []) {
         if (pattern.test(operator) && (operator == "AND" || operator == "OR")) {
             arr.push(operator, ...left, ...right);
         } else {
-            arr.push(operator + "_" + left + "_" + right);
+            arr.push(`${operator}_${left}_${right}`);
         }
         return arr;
     } else if (type == "unary_expr") {
@@ -57,7 +57,7 @@ function typeCheck(obj, arr = []) {
           } */
         let operator = obj.operator;
         if (!pattern.test(operator)) operator = "Equation";
-        arr.push(operator + "_" + exprCheck(obj.expr));
+        arr.push(`${operator}_${exprCheck(obj.expr)}`);
         return arr;
     } else if (type == "expr_list") {
         /* type : 'expr_list',
@@ -91,10 +91,10 @@ function typeCheck(obj, arr = []) {
             */
         let result = exprCheck(obj.args);
         if (Array.isArray(result)) result.unshift(obj.name);
-        else result = obj.name + "_" + result;
+        else result = `${obj.name}_${result}`;
         return result;
     } else if (type == "ASC" || type == "DESC") {
-        return type + "_" + exprCheck(obj.expr);
+        return `${type}_${exprCheck(obj.expr)}`;
     } else {
         return type;
     }
@@ -138,7 +138,7 @@ function getTable(tableArr) {
             .map((e) => {
                 let arr = [];
                 if (e.join) {
-                    arr.push(e.join + "_" + e.table);
+                    arr.push(`${e.join}_${e.table}`);
                     e.on ? arr.push(exprCheck(e.on)) : null;
                 } else arr.push(e.table);
                 return arr;
@@ -170,7 +170,7 @@ function getLimit(obj) {
 function getOnDuplicateUpdate(obj) {
     if (typeof obj == "object" && obj != null) {
         return obj.set.map((e) => {
-            return e.column + "_" + exprCheck(e.obj);
+            return `${e.column}_${exprCheck(e.obj)}`;
         });
     }
     return obj;
