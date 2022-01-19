@@ -2,7 +2,6 @@ const convertToSnakeCase = require("../../lib/convertSnakeCase");
 const shortIdGen = require("../../lib/shortIdGen");
 const CaseStudy = require("./case-study.model");
 const axios = require("axios");
-const deleteFile = require("../../lib/deleteFile");
 const runSql = require("../../lib/runSql");
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const User = require("../user/user.model");
@@ -19,12 +18,13 @@ module.exports = {
             });
             return createResponseObject(
                 true,
-                "Data studi kasus berhasil didapatkan",
-                caseStudies
+                caseStudies,
+                "Data studi kasus berhasil didapatkan"
             );
         } catch (error) {
             return createResponseObject(
                 false,
+                error,
                 "Data studi kasus gagal didapatkan"
             );
         }
@@ -38,22 +38,20 @@ module.exports = {
                 },
                 raw: true,
             });
+            let message = "Data studi kasus kosong";
             if (caseStudy) {
-                const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/desc_table/${caseStudy["db_name"]}`
+                const resDetail = await axios.get(
+                    `${AUTO_ASSESS_BACKEND}/api/v2/desc_table/${caseStudy["db_name"]}`
                 );
-                caseStudy["tables"] = groupColumnsByTable(res.data);
-                return createResponseObject(
-                    true,
-                    "Data studi kasus berhasil didapatkan",
-                    caseStudy
-                );
+                caseStudy["tables"] = groupColumnsByTable(resDetail.data);
+                message = "Data studi kasus berhasil didapatkan";
             }
-            return createResponseObject(true, "Data studi kasus kosong");
+            return createResponseObject(true, caseStudy, message);
         } catch (error) {
             console.error(error);
             return createResponseObject(
                 false,
+                error,
                 "Data studi kasus gagal didapatkan"
             );
         }
@@ -63,148 +61,84 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(id, {
                 raw: true,
             });
-            if (caseStudy) {
-                const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/select/${caseStudy["db_name"]}/${tableName}`
-                );
-                return createResponseObject(
-                    true,
-                    "Data studi kasus berhasil didapatkan",
-                    res.data
-                );
-            }
-            return createResponseObject(false, "Data studi kasus kosong");
+
+            const res = await axios.get(
+                `${AUTO_ASSESS_BACKEND}/api/v2/select/${caseStudy["db_name"]}/${tableName}`
+            );
+            return createResponseObject(
+                true,
+                res.data,
+                "Data studi kasus berhasil didapatkan"
+            );
         } catch (error) {
             console.error(error);
             return createResponseObject(
                 false,
+                error,
                 "Data studi kasus gagal didapatkan"
             );
         }
     },
-    insert: async (data, user) => {
+    store: async (name, user, file) => {
         try {
             const userDb = await User.findByPk(user.id);
-            if (!userDb)
-                createResponseObject(false, "User tidak dapat ditemukan");
 
-            const dbName = `${user.username}_${convertToSnakeCase(
-                data.name
+            let dbName = `${user.username}_${convertToSnakeCase(
+                name
             )}_${shortIdGen()}`;
             const newCaseStudies = await CaseStudy.create({
-                name: data.name,
+                name,
                 db_name: dbName,
+                db_path: file.path,
                 user_id: user.id,
             });
-            const {
-                data: { success },
-            } = await axios.post(`${AUTO_ASSESS_BACKEND}/createDB/${dbName}`);
+            const createDbResObj = await axios.post(
+                `${AUTO_ASSESS_BACKEND}/api/v2/create/${dbName}`
+            );
 
-            if (!success)
-                createResponseObject(false, "Gagal membuat database baru");
+            const resRunSql = await runSql(dbName, file.path);
+            if (!resRunSql)
+                throw {
+                    data: resRunSql,
+                    message: "Import SQL Gagal dilakukan",
+                };
 
             return createResponseObject(
                 true,
-                "Data studi kasus berhasil ditambahkan",
-                newCaseStudies
+                newCaseStudies,
+                "Data studi kasus berhasil ditambahkan"
             );
         } catch (err) {
             console.log(err);
-            return createResponseObject(
-                false,
-                "Data studi kasus gagal ditambahkan"
-            );
+            return createResponseObject(false, err, "Studi kasus gagal dibuat");
         }
-    },
-    insertSQL: async (id, data, user, file) => {
-        return new Promise(async (resolve, reject) => {
-            const userDb = await User.findByPk(user.id);
-            if (!userDb)
-                reject(
-                    createResponseObject(false, "User tidak dapat ditemukan")
-                );
-
-            const dbName = `${user.username}_${convertToSnakeCase(
-                data.name
-            )}_${shortIdGen()}`;
-            const newCaseStudies = await CaseStudy.create({
-                name: data.name,
-                db_name: dbName,
-                user_id: user.id,
-            });
-            const {
-                data: { success },
-            } = await axios.post(`${AUTO_ASSESS_BACKEND}/createDB/${dbName}`);
-
-            if (!success)
-                reject(
-                    createResponseObject(false, "Gagal membuat database baru")
-                );
-
-            runSql(newCaseStudies.db_name, file.path)
-                .then((success) => {
-                    if (!success)
-                        resolve(
-                            createResponseObject(
-                                false,
-                                "Import SQL gagal dilakukan"
-                            )
-                        );
-                    resolve(
-                        createResponseObject(
-                            true,
-                            "Import SQL berhasil dilakukan"
-                        )
-                    );
-                })
-                .catch((err) => {
-                    console.log(err);
-                    reject(
-                        createResponseObject(
-                            false,
-                            "Import SQL gagal dilakukan"
-                        )
-                    );
-                })
-                .finally(async () => {
-                    await deleteFile(file.path);
-                });
-        });
     },
     deleteOne: async (id) => {
         try {
             const caseStudy = await CaseStudy.findByPk(id, {
                 raw: true,
             });
-            if (!caseStudy)
-                return createResponseObject(
-                    false,
-                    "Tidak ada database yang dihapus"
-                );
 
-            await CaseStudy.destroy({
+            const del = await CaseStudy.destroy({
                 where: {
                     id,
                 },
             });
 
-            const {
-                data: { success },
-            } = await axios.post(
-                `${AUTO_ASSESS_BACKEND}/dropDB/${caseStudy["db_name"]}`
+            const destroyResObj = await axios.post(
+                `${AUTO_ASSESS_BACKEND}/api/v2/drop/${caseStudy["db_name"]}`
             );
-
-            if (!success)
-                createResponseObject(false, "Gagal menghapus database");
 
             return createResponseObject(
                 true,
+                destroyResObj.data,
                 "Data studi kasus berhasil dihapus"
             );
         } catch (error) {
             console.log(error);
             return createResponseObject(
                 false,
+                error,
                 "Data studi kasus gagal dihapus"
             );
         }

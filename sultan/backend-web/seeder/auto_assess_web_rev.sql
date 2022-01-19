@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.4
+-- version 4.9.5deb2
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Jul 25, 2021 at 03:37 AM
--- Server version: 10.4.17-MariaDB
--- PHP Version: 8.0.2
+-- Host: localhost:3306
+-- Generation Time: Jan 19, 2022 at 01:38 PM
+-- Server version: 10.3.32-MariaDB-0ubuntu0.20.04.1
+-- PHP Version: 7.4.3
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -31,6 +32,7 @@ CREATE TABLE `case_studies` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `db_name` varchar(50) NOT NULL,
+  `db_path` text DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
@@ -40,8 +42,8 @@ CREATE TABLE `case_studies` (
 -- Dumping data for table `case_studies`
 --
 
-INSERT INTO `case_studies` (`id`, `name`, `db_name`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Tes', 'auto_assess_tes', 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
+INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_path`, `user_id`, `createdAt`, `updatedAt`) VALUES
+(2, 'Tes', 'auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
 
 -- --------------------------------------------------------
 
