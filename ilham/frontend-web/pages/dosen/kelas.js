@@ -39,7 +39,7 @@ function DaftarKelas() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
@@ -52,7 +52,7 @@ function DaftarKelas() {
   }, []);
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   const tambahKelas = () => {
     setModalRole("tambah");
@@ -75,6 +75,8 @@ function DaftarKelas() {
   const aksiTambahKelas = (formKelas) => {
     // TODO : Call POST API request dari KelasCRUD.js
     // ...
+    handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
     handleToggleModal();
     setAlertMessage(`Data ${formKelas.kelas_nama} berhasil ditambahkan`);
     console.log("Hasil submit tambah", formKelas);
@@ -83,6 +85,8 @@ function DaftarKelas() {
   const aksiEditKelas = (formKelas) => {
     // TODO : Call PUT API request dari KelasCRUD.js
     // ...
+    handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
     handleToggleModal();
     setAlertMessage(`Data Kelas ${formKelas.kelas_nama} berhasil diubah`);
     handleToggleAlert();
@@ -92,6 +96,8 @@ function DaftarKelas() {
   const aksiDeleteKelas = (formKelas) => {
     // TODO : Call DELETE API request dari KelasCRUD.js
     // ...
+    handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
     handleToggleModal();
     setAlertMessage(`Data Kelas ${formKelas.nama} berhasil dihapus`);
     handleToggleAlert();

@@ -38,6 +38,8 @@ const mockGetJadwal = async () => {
             tanggal_akhir: moment("2022-01-12 23:59"),
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
+            paket_soal: "Paket Soal A",
+            kategori: "Close-Ended",
           },
           {
             jadwal_nama: "Jadwal 2",
@@ -45,6 +47,8 @@ const mockGetJadwal = async () => {
             tanggal_akhir: moment("2022-01-13 21:59"),
             kelas_nama: "TI-1G",
             studi_kasus_nama: "Studi Kasus B",
+            paket_soal: "Paket Soal B",
+            kategori: "Open-Ended",
           },
           {
             jadwal_nama: "Jadwal 3",
@@ -52,6 +56,8 @@ const mockGetJadwal = async () => {
             tanggal_akhir: moment("2022-01-16 23:59"),
             kelas_nama: "TI-1H",
             studi_kasus_nama: "Studi Kasus A",
+            paket_soal: "Paket Soal D",
+            kategori: "Close-Ended",
           },
           {
             jadwal_nama: "Jadwal 4",
@@ -59,6 +65,8 @@ const mockGetJadwal = async () => {
             tanggal_akhir: moment("2022-01-10 23:59"),
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
+            paket_soal: "Paket Soal D",
+            kategori: "Open-Ended",
           },
         ],
       });

@@ -70,6 +70,9 @@ function FormEditSoal({
 
   useEffect(() => {
     mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
+    form.setFieldsValue({
+      dosen_pembuat: "Dosen Coba",
+    });
   }, []);
 
   const onFinish = (values) => {
@@ -82,26 +85,26 @@ function FormEditSoal({
     setVisible(false);
   };
 
-  useEffect(() => {
-    if (currentSoal?.kategori === "Close-Ended")
-      form.setFieldsValue({
-        nama_soal: currentSoal?.nama,
-        kategori: selectedKategori,
-        soal: currentSoal?.soal,
-        jawaban: tags,
-        studi_kasus: currentSoal?.studi_kasus,
-        dosen_pembuat: currentSoal?.dosen_pembuat,
-      });
-    else
-      form.setFieldsValue({
-        nama_soal: currentSoal?.nama,
-        kategori: selectedKategori,
-        soal: currentSoal?.soal,
-        jawaban: currentSoal?.jawaban,
-        studi_kasus: currentSoal?.studi_kasus,
-        dosen_pembuat: currentSoal?.dosen_pembuat,
-      });
-  }, [currentSoal, tags, selectedKategori]);
+  // useEffect(() => {
+  //   if (currentSoal?.kategori === "Close-Ended")
+  //     form.setFieldsValue({
+  //       nama_soal: currentSoal?.nama,
+  //       kategori: selectedKategori,
+  //       soal: currentSoal?.soal,
+  //       jawaban: tags,
+  //       studi_kasus: currentSoal?.studi_kasus,
+  //       dosen_pembuat: currentSoal?.dosen_pembuat,
+  //     });
+  //   else
+  //     form.setFieldsValue({
+  //       nama_soal: currentSoal?.nama,
+  //       kategori: selectedKategori,
+  //       soal: currentSoal?.soal,
+  //       jawaban: currentSoal?.jawaban,
+  //       studi_kasus: currentSoal?.studi_kasus,
+  //       dosen_pembuat: currentSoal?.dosen_pembuat,
+  //     });
+  // }, [currentSoal, tags, selectedKategori]);
 
   const showInput = () => {
     setInputVisible(true);
@@ -144,7 +147,10 @@ function FormEditSoal({
         </Col>
         <Col span={12}>
           <Form.Item name="kategori" label="Kategori">
-            <Select placeholder="Pilih kelas . . ." onChange={onChangeKategori}>
+            <Select
+              placeholder="Pilih Kategori . . ."
+              onChange={onChangeKategori}
+            >
               <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
               <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
@@ -286,6 +292,7 @@ function FormEditSoal({
             ]}
           >
             <Input
+              disabled
               prefix={<ConsoleSqlOutlined />}
               placeholder={` Dibuat Oleh . . .`}
             />
@@ -303,7 +310,7 @@ function FormEditSoal({
             ]}
           >
             <Select
-              placeholder="Pilih kelas . . ."
+              placeholder="Pilih Studi Kasus . . ."
               onChange={onChangeStudiKasus}
             >
               {dataStudiKasus?.map((item) => (

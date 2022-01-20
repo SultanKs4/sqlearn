@@ -27,6 +27,7 @@ import FormTambahPaket from "../../../components/dosen/PaketSoal/FormTambahPaket
 import FormEditPaket from "../../../components/dosen/PaketSoal/FormEditPaket";
 import FormHapusPaket from "../../../components/dosen/PaketSoal/FormHapusPaket";
 import { useRouter } from "next/router";
+import RibbonFilter from "../../../components/RibbonFilter";
 
 function PaketSoal() {
   const router = useRouter();
@@ -37,18 +38,21 @@ function PaketSoal() {
   const [dataPaket, setDataPaket] = useState([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
+  const [paketFiltered, setPaketFiltered] = useState([]);
+  const [isFilterActive, setIsFilterActive] = useState(false);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
     mockGetPaketSoal().then((response) => {
@@ -74,26 +78,19 @@ function PaketSoal() {
 
   const aksiTambahPaket = (formPaket) => {
     // TODO : Call POST API request dari PaketSoalCRUD.js
-    // ...
-    setAlertMessage(`Data ${formPaket.name} berhasil ditambahkan`);
-    console.log("Hasil submit tambah", formPaket);
-  };
-
-  const aksiEditPaket = (formPaket) => {
-    // TODO : Call PUT API request dari PaketSoalCRUD.js
-    // ...
     handleToggleModal();
-    setAlertMessage(`Data Paket ${formPaket.name} berhasil diubah`);
     handleToggleAlert();
-    console.log("Data berhasil diedit", formPaket);
+    setAlertMessage(`Data ${formPaket.paket_nama} berhasil ditambahkan`);
+    setTimeout(() => handleToggleAlert(false), 5000);
+    console.log("Hasil submit tambah", formPaket);
   };
 
   const aksiDeletePaket = (formPaket) => {
     // TODO : Call DELETE API request dari PaketSoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data Paket ${formPaket.name} berhasil dihapus`);
     handleToggleAlert();
+    setAlertMessage(`Data Paket ${formPaket.paket_nama} berhasil dihapus`);
     console.log("Data terhapus", formPaket);
   };
 
@@ -152,10 +149,15 @@ function PaketSoal() {
           />
         )}
 
+        <RibbonFilter
+          data={dataPaket}
+          setIsFilterActive={setIsFilterActive}
+          setEntityFiltered={setPaketFiltered}
+        />
         {/* Content asli... */}
         <ListComponent
           isLoading={!isDataLoaded}
-          dataSource={dataPaket}
+          dataSource={isFilterActive ? paketFiltered : dataPaket}
           role={"paket-soal-dosen"}
           previewPaket={previewPaket}
           deletePaket={deletePaket}

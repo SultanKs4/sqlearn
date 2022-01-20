@@ -27,7 +27,7 @@ function StudiKasus() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
 
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
@@ -41,7 +41,7 @@ function StudiKasus() {
   }, []);
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   const previewStudiKasus = (studiKasusObj) => {
     setCurrentStudiKasus(studiKasusObj);
@@ -70,11 +70,11 @@ function StudiKasus() {
     // TODO : Call POST API request dari StudiKasusCRUD.js
     // ...
     handleToggleModal();
-    handleToggleAlert();
-
     setAlertMessage(
       `Data ${formStudiKasus.studi_kasus_nama} berhasil ditambahkan`
     );
+    handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
 
     console.log("Hasil submit tambah", formStudiKasus);
   };
@@ -85,6 +85,7 @@ function StudiKasus() {
     handleToggleModal();
     setAlertMessage(`Data ${formStudiKasus.studi_kasus_nama} berhasil dihapus`);
     handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
 
     console.log("Data terhapus", formStudiKasus);
   };

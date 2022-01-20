@@ -41,13 +41,13 @@ function PreviewPaket() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
     mockGetPaketSoal().then((response) => {

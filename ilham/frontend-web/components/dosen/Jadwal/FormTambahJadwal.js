@@ -12,7 +12,7 @@ import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
-import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 
 function FormTambahJadwal({
   form,
@@ -24,17 +24,17 @@ function FormTambahJadwal({
   const { Option } = Select;
 
   const [dataKelas, setDataKelas] = useState([]);
-  const [dataStudiKasus, setDataStudiKasus] = useState([]);
+  const [dataPaketSoal, setDataPaketSoal] = useState([]);
 
   const [selectedKelas, setSelectedKelas] = useState({});
-  const [selectedStudiKasus, setSelectedStudiKasus] = useState({});
+  const [selectedKategori, setSelectedKategori] = useState({});
 
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangeStudiKasus = (StudiKasus) => setSelectedStudiKasus(StudiKasus);
+  const onChangeKategori = (Kategori) => setSelectedKategori(Kategori);
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
-    mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
+    mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 
   const onFinish = (values) => {
@@ -49,18 +49,47 @@ function FormTambahJadwal({
 
   return (
     <Form onFinish={onFinish} layout="vertical">
-      <Form.Item
-        name="jadwal_nama"
-        label="Nama Jadwal"
-        rules={[
-          {
-            required: true,
-            message: "Masukkan nama jadwal!",
-          },
-        ]}
-      >
-        <Input prefix={<ScheduleOutlined />} placeholder={` Jadwal . . .`} />
-      </Form.Item>
+      <Row gutter={20}>
+        <Col>
+          <Form.Item
+            name="jadwal_nama"
+            label="Nama Jadwal"
+            rules={[
+              {
+                required: true,
+                message: "Masukkan nama jadwal!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<ScheduleOutlined />}
+              placeholder={` Jadwal . . .`}
+            />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Form.Item
+            name="paket_soal"
+            label="Paket Soal"
+            rules={[
+              {
+                required: true,
+                message: "Pilih paket soal!",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Pilih paket soal . . ."
+              style={{ width: "200px" }}
+            >
+              {dataPaketSoal.map((item) => (
+                <Option key={item?.id_paket}> {item?.nama} </Option>
+              ))}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+
       <Row gutter={20}>
         <Col>
           <Form.Item
@@ -133,30 +162,29 @@ function FormTambahJadwal({
         </Col>
         <Col>
           <Form.Item
-            name="studi_kasus_nama"
-            label="Studi Kasus"
+            name="kategori"
+            label="Kategori"
             tooltip={{
-              title: `Jadwal ini menggunakan Studi Kasus ${
-                isObjectEmpty(selectedStudiKasus)
+              title: `Jadwal ini menggunakan kategori ${
+                isObjectEmpty(selectedKategori)
                   ? " yang dipilih "
-                  : selectedStudiKasus
+                  : selectedKategori
               }`,
             }}
             rules={[
               {
                 required: true,
-                message: "Mohon pilih Studi Kasus!",
+                message: "Mohon pilih Kategori!",
               },
             ]}
           >
             <Select
-              placeholder="Pilih kelas . . ."
-              onChange={onChangeStudiKasus}
+              placeholder="Pilih Kategori . . ."
+              onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              {dataStudiKasus?.map((item) => (
-                <Option key={item.nama}>{item.nama}</Option>
-              ))}
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

@@ -1,17 +1,6 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  Row,
-  Select,
-} from "antd";
-import { ScheduleOutlined, CodeSandboxOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { isObjectEmpty } from "../../../utils/common";
-import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
+import { CodeSandboxOutlined } from "@ant-design/icons";
+import { useState } from "react";
 
 function FormTambahPaket({
   form,
@@ -20,6 +9,13 @@ function FormTambahPaket({
   handleSubmit,
   ...props
 }) {
+  const [selectedKategori, setSelectedKategori] = useState();
+
+  const onChangeKategori = (kategori) => {
+    console.log(kategori);
+    setSelectedKategori(kategori);
+  };
+
   const onFinish = (values) => {
     setFormObj(values);
     handleSubmit(values);
@@ -32,21 +28,49 @@ function FormTambahPaket({
 
   return (
     <Form onFinish={onFinish} layout="vertical">
-      <Form.Item
-        name="paket_nama"
-        label="Nama Paket"
-        rules={[
-          {
-            required: true,
-            message: "Masukkan nama Paket!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<CodeSandboxOutlined />}
-          placeholder={` Contoh : Paket Soal E `}
-        />
-      </Form.Item>
+      <Row gutter={20}>
+        <Col>
+          <Form.Item
+            name="paket_nama"
+            label="Nama Paket"
+            rules={[
+              {
+                required: true,
+                message: "Masukkan nama Paket!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<CodeSandboxOutlined />}
+              placeholder={` Contoh : Paket Soal E `}
+            />
+          </Form.Item>
+        </Col>
+        <Col>
+          <Col span={12}>
+            <Form.Item
+              name="kategori"
+              label="Kategori"
+              rules={[
+                {
+                  required: true,
+                  message: "Mohon masukkan nama Kategori!",
+                },
+              ]}
+            >
+              <Select
+                placeholder="Pilih Kategori . . ."
+                onChange={onChangeKategori}
+                style={{ width: "200px" }}
+              >
+                <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+                <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+              </Select>
+            </Form.Item>
+          </Col>
+        </Col>
+      </Row>
+
       <Divider />
       <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>

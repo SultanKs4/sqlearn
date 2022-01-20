@@ -12,6 +12,7 @@ import {
   Card,
   Alert,
   Form,
+  Radio,
 } from "antd";
 
 import {
@@ -26,6 +27,7 @@ import FormEditJadwal from "../../components/dosen/Jadwal/FormEditJadwal";
 import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 import ListComponent from "../../components/List";
 import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
+import RibbonFilter from "../../components/RibbonFilter";
 
 function Jadwal() {
   const [currentJadwal, setCurrentJadwal] = useState({});
@@ -34,19 +36,22 @@ function Jadwal() {
   const [dataJadwal, setDataJadwal] = useState([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
+  const [jadwalFiltered, setJadwalFiltered] = useState([]);
+  const [isFilterActive, setIsFilterActive] = useState(false);
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
 
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
     mockGetJadwal().then((response) => {
@@ -54,6 +59,10 @@ function Jadwal() {
       setIsDataLoaded(true);
     });
   }, []);
+
+  useEffect(() => {
+    console.log(isAlertActive);
+  }, [isAlertActive]);
 
   const tambahJadwal = () => {
     setModalRole("tambah");
@@ -77,6 +86,9 @@ function Jadwal() {
   const aksiTambahJadwal = (formJadwal) => {
     // TODO : Call POST API request dari JadwalCRUD.js
     // ...
+    handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
+    handleToggleModal();
     setAlertMessage(`Data ${formJadwal.jadwal_nama} berhasil ditambahkan`);
     console.log("Hasil submit tambah", formJadwal);
   };
@@ -86,6 +98,7 @@ function Jadwal() {
     // ...
     setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil diubah`);
     handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
     console.log("Data berhasil diedit", formJadwal);
   };
 
@@ -94,6 +107,7 @@ function Jadwal() {
     // ...
     setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil dihapus`);
     handleToggleAlert();
+    setTimeout(() => handleToggleAlert(false), 5000);
     console.log("Data terhapus", formJadwal);
   };
 
@@ -122,6 +136,7 @@ function Jadwal() {
             showIcon
             banner
             style={{ marginBottom: "1em" }}
+            onClose={() => handleToggleAlert()}
           />
         )}
 
@@ -160,13 +175,19 @@ function Jadwal() {
           />
         )}
 
+        <RibbonFilter
+          data={dataJadwal}
+          setIsFilterActive={setIsFilterActive}
+          setEntityFiltered={setJadwalFiltered}
+        />
+
         {/* Content asli... */}
         <ListComponent
           isLoading={!isDataLoaded}
-          dataSource={dataJadwal}
           role={"jadwal-dosen"}
           editJadwal={editJadwal}
           deleteJadwal={deleteJadwal}
+          dataSource={isFilterActive ? jadwalFiltered : dataJadwal}
         />
       </PageLayout>
     </>

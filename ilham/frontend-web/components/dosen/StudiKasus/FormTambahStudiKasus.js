@@ -1,20 +1,5 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Upload,
-} from "antd";
+import { Button, Col, Divider, Form, Input, message, Row, Upload } from "antd";
 import { InboxOutlined, DatabaseOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
-import { isObjectEmpty } from "../../../utils/common";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 
 function FormTambahStudiKasus({
   form,
@@ -60,23 +45,6 @@ function FormTambahStudiKasus({
             <Input
               prefix={<DatabaseOutlined />}
               placeholder={` Studi Kasus . . .`}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            name="nama_database"
-            label="Nama Database"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Database!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<DatabaseOutlined />}
-              placeholder={` Database . . .`}
             />
           </Form.Item>
         </Col>

@@ -5,7 +5,6 @@ import { Skeleton, Typography, Row, Col, Button, Alert, Tooltip } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../components/PageLayout";
-import ModalCustom from "../../../components/Modal";
 import ListComponent from "../../../components/List";
 
 import { useRouter } from "next/router";
@@ -14,7 +13,6 @@ import {
   mockGetNilaiTiapKelas,
   mockKelasDiajar,
 } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
-import ModalPreviewNilaiMhs from "../../../components/dosen/NilaiMhs/ModalPreviewNilaiMhs";
 
 function PreviewNilaiTiapKelas() {
   const router = useRouter();
@@ -32,13 +30,13 @@ function PreviewNilaiTiapKelas() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(true);
+  const [isAlertActive, setIsAlertActive] = useState(false);
   // ? Mock alert status dan message
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive(true);
+  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
     console.log("ini router", router?.query);
@@ -59,13 +57,6 @@ function PreviewNilaiTiapKelas() {
   useEffect(() => {
     console.log("ini data nilai mhs", dataNilaiMhs);
   }, [dataNilaiMhs]);
-
-  const previewDetailNilai = (mhsObj) => {
-    console.log(mhsObj);
-    setModalRole("preview");
-    setSelectedMhs(mhsObj);
-    handleToggleModal();
-  };
 
   return (
     <>
@@ -117,30 +108,12 @@ function PreviewNilaiTiapKelas() {
           />
         )}
 
-        <ModalCustom
-          role={modalRole}
-          entity={`Nilai oleh ${selectedMhs.nama}`}
-          visible={isModalVisible}
-          setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
-          setModalText={setModalText}
-          modalContent={
-            modalRole === "preview" && (
-              <ModalPreviewNilaiMhs
-                selectedMhs={selectedMhs}
-                setVisible={setIsModalVisible}
-              />
-            )
-          }
-        />
         {/* Content asli */}
         <ListComponent
           showDetail
           isLoading={!isDataMhsLoaded}
           dataSource={dataNilaiMhs}
           role={"lihat-nilai"}
-          previewDetailNilai={previewDetailNilai}
         />
       </PageLayout>
     </>

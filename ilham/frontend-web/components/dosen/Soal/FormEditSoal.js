@@ -98,7 +98,7 @@ function FormEditSoal({
       teksSoal: currentSoal?.teksSoal,
       jawaban: currentSoal?.jawaban,
       studi_kasus: currentSoal?.studi_kasus,
-      dosen_pembuat: currentSoal?.dosen_pembuat,
+      dosen_pembuat: "Dosen Coba",
     });
   }, [currentSoal]);
 
@@ -158,7 +158,10 @@ function FormEditSoal({
               },
             ]}
           >
-            <Select placeholder="Pilih kelas . . ." onChange={onChangeKategori}>
+            <Select
+              placeholder="Pilih Kategori . . ."
+              onChange={onChangeKategori}
+            >
               <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
               <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
@@ -291,6 +294,7 @@ function FormEditSoal({
             ]}
           >
             <Input
+              disabled
               prefix={<ConsoleSqlOutlined />}
               placeholder={` Dibuat Oleh . . .`}
             />
