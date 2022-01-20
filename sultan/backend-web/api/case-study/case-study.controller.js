@@ -33,7 +33,7 @@ module.exports = {
                 .json(
                     createResponseObject(
                         false,
-                        req.file.originalname,
+                        req.file,
                         "Format file tidak didukung"
                     )
                 );

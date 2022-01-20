@@ -38,15 +38,19 @@ module.exports = {
                 },
                 raw: true,
             });
-            let message = "Data studi kasus kosong";
             if (caseStudy) {
                 const resDetail = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/api/v2/desc_table/${caseStudy["db_name"]}`
+                    `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["db_name"]}`
                 );
-                caseStudy["tables"] = groupColumnsByTable(resDetail.data);
-                message = "Data studi kasus berhasil didapatkan";
+                caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
+                return createResponseObject(
+                    true,
+                    caseStudy,
+                    "Data studi kasus berhasil didapatkan"
+                );
+            } else {
+                throw caseStudy;
             }
-            return createResponseObject(true, caseStudy, message);
         } catch (error) {
             console.error(error);
             return createResponseObject(
@@ -63,11 +67,11 @@ module.exports = {
             });
 
             const res = await axios.get(
-                `${AUTO_ASSESS_BACKEND}/api/v2/select/${caseStudy["db_name"]}/${tableName}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["db_name"]}/${tableName}`
             );
             return createResponseObject(
                 true,
-                res.data,
+                res.data.data,
                 "Data studi kasus berhasil didapatkan"
             );
         } catch (error) {
@@ -93,7 +97,7 @@ module.exports = {
                 user_id: user.id,
             });
             const createDbResObj = await axios.post(
-                `${AUTO_ASSESS_BACKEND}/api/v2/create/${dbName}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbName}`
             );
 
             const resRunSql = await runSql(dbName, file.path);
@@ -126,7 +130,7 @@ module.exports = {
             });
 
             const destroyResObj = await axios.post(
-                `${AUTO_ASSESS_BACKEND}/api/v2/drop/${caseStudy["db_name"]}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${caseStudy["db_name"]}`
             );
 
             return createResponseObject(
