@@ -1,20 +1,27 @@
-import {
-  Button,
-  Col,
-  DatePicker,
-  Divider,
-  Form,
-  Input,
-  message,
-  Row,
-  Select,
-  Upload,
-} from "antd";
-import { ConsoleSqlOutlined, DatabaseOutlined } from "@ant-design/icons";
+import { Button, Col, Divider, Form, Row, Select, Table } from "antd";
 import { useEffect, useState } from "react";
-import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import { getSoal } from "../../../utils/remote-data/dosen/SoalCRUD";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 import { isObjectEmpty } from "../../../utils/common";
+
+const columns = [
+  {
+    title: "id",
+    dataIndex: "idSoal",
+  },
+  {
+    title: "Kategori",
+    dataIndex: "kategori",
+  },
+  {
+    title: "Studi Kasus",
+    dataIndex: "studi_kasus",
+  },
+  {
+    title: "Pertanyaan",
+    dataIndex: "teksSoal",
+  },
+];
 
 function FormEditPilihSoal({
   currentSoal,
@@ -29,18 +36,53 @@ function FormEditPilihSoal({
   const [form] = Form.useForm();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
-  const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
+  const [loadOnChangeStudiKasus, setLoadOnChangeStudiKasus] = useState(false);
+  const [selectedStudiKasus, setSelectedStudiKasus] = useState(
+    currentSoal?.studi_kasus
+  );
+
+  const [dataSoalByStudiKasus, setDataSoalByStudiKasus] = useState([]);
 
   const onChangeStudiKasus = (kelas) => {
     console.log(kelas);
     setSelectedStudiKasus(kelas);
   };
 
+  const rowSelection = {
+    onChange: (_, selectedRows) => {
+      form.setFieldsValue({
+        soal: selectedRows[0],
+      });
+    },
+  };
+
   useEffect(() => {
     mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
   }, []);
 
+  useEffect(() => {
+    setLoadOnChangeStudiKasus(false);
+    getSoal().then((response) => {
+      let tempSoalFiltered = response.data.filter(
+        (item) => item.studi_kasus === selectedStudiKasus
+      );
+      tempSoalFiltered = tempSoalFiltered.map((item) => {
+        return {
+          key: item.idSoal,
+          ...item,
+        };
+      });
+      setDataSoalByStudiKasus(tempSoalFiltered);
+      setLoadOnChangeStudiKasus(true);
+    });
+  }, [selectedStudiKasus]);
+
+  useEffect(() => {
+    console.log(dataStudiKasus);
+  }, [dataStudiKasus]);
+
   const onFinish = (values) => {
+    console.log(values);
     setFormObj(values);
     handleSubmit(values);
   };
@@ -77,6 +119,7 @@ function FormEditPilihSoal({
         ]}
       >
         <Select
+          disabled
           placeholder="Pilih Studi Kasus . . ."
           onChange={onChangeStudiKasus}
           style={{ width: "200px" }}
@@ -86,11 +129,17 @@ function FormEditPilihSoal({
           ))}
         </Select>
       </Form.Item>
-      {selectedStudiKasus.length > 0 ? (
-        <> {`Ini list pertanyaan yang ada untuk ${selectedStudiKasus}`} </>
-      ) : (
-        <>Harap pilih studi kasus</>
-      )}
+      <Form.Item name="soal" label={`Ganti Soal di ${selectedStudiKasus}`}>
+        <Table
+          rowSelection={{
+            type: "radio",
+            ...rowSelection,
+          }}
+          columns={columns}
+          dataSource={dataSoalByStudiKasus}
+        />
+      </Form.Item>
+
       <Divider />
       <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>

@@ -628,39 +628,46 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
                         <Col> {item.teksSoal} </Col>
                       </Row>
-                      <Row justify="space-between">
-                        <Col>
-                          <Typography.Text children={"Jawaban Query : "} />
-                          <List
-                            size="small"
-                            dataSource={item.jawaban}
-                            locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
-                            renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
-                          />
-                        </Col>
-                      </Row>
+                      {showDetail && (
+                        <Row justify="space-between">
+                          <Col>
+                            <Typography.Text children={"Jawaban Query : "} />
+                            <List
+                              size="small"
+                              dataSource={item.jawaban}
+                              locale={{
+                                emptyText: "Opsi Jawaban belum dibuat",
+                              }}
+                              renderItem={(opsi) => (
+                                <List.Item>{opsi}</List.Item>
+                              )}
+                            />
+                          </Col>
+                        </Row>
+                      )}
                     </Col>
-
-                    <Col>
-                      <Row>
-                        <Tooltip title="Edit Soal">
+                    {showDetail && (
+                      <Col>
+                        <Row>
+                          <Tooltip title="Edit Soal">
+                            <Button
+                              type="primary"
+                              icon={<EditOutlined />}
+                              size={"medium"}
+                              onClick={() => props.editSoal(item)}
+                            />
+                          </Tooltip>
+                        </Row>
+                        <Divider style={{ margin: 0, padding: 4 }} />
+                        <Tooltip title="Hapus Soal">
                           <Button
-                            type="primary"
-                            icon={<EditOutlined />}
-                            size={"medium"}
-                            onClick={() => props.editSoal(item)}
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            onClick={() => props.deleteSoal(item)}
                           />
                         </Tooltip>
-                      </Row>
-                      <Divider style={{ margin: 0, padding: 4 }} />
-                      <Tooltip title="Hapus Soal">
-                        <Button
-                          type="danger"
-                          icon={<DeleteOutlined />}
-                          onClick={() => props.deleteSoal(item)}
-                        />
-                      </Tooltip>
-                    </Col>
+                      </Col>
+                    )}
                   </Row>
                 </Card>
               </List.Item>

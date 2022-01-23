@@ -237,6 +237,7 @@ function HalamanSoal() {
 
         {/* Content asli... */}
         <ListComponent
+          showDetail
           isLoading={!isDataLoaded}
           dataSource={isFilterActive ? soalFiltered : dataSoal}
           role={"data-soal-dosen"}

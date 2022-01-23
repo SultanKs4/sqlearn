@@ -91,13 +91,14 @@ function PreviewPaket() {
   };
 
   const aksiEditSoal = (formSoal) => {
-    // TODO : Call DELETE API request dari SoalCRUD.js
+    console.log("ini currentSoal", currentSoal);
+    // TODO : Call PUT API request dari SoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama} berhasil dihapus`);
+    setAlertMessage(`Soal berhasil diubah`);
     handleToggleAlert();
 
-    console.log("Data terhapus", formSoal);
+    console.log("Soal berhasil diubah", formSoal);
   };
 
   const aksiDeleteSoal = (formSoal) => {
@@ -178,11 +179,13 @@ function PreviewPaket() {
                 handleSubmit={aksiTambahSoal}
                 setVisible={setIsModalVisible}
                 setFormObj={setFormObj}
+                studiKasus={dataPaket?.studi_kasus}
               />
             ) : modalRole === "edit" ? (
               <FormEditPilihSoal
                 handleSubmit={aksiEditSoal}
                 setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
                 currentSoal={currentSoal}
               />
             ) : (

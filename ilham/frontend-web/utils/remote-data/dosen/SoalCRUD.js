@@ -95,7 +95,7 @@ const getSoal = async () => {
             jawaban: ["SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC"],
             kategori: "Close-Ended",
 
-            studi_kasus: "Studi Kasus C",
+            studi_kasus: "Studi Kasus B",
             dosen_pembuat: "Dosen Coba",
           },
           {

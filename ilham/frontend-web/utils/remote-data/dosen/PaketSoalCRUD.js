@@ -33,6 +33,7 @@ const mockGetPaketSoal = async () => {
           {
             id_paket: 1,
             nama: "Paket Soal A",
+            studi_kasus: "Studi Kasus A",
             durasi: 120,
             kategori: "Open-Ended",
             pertanyaan: [
@@ -68,6 +69,7 @@ const mockGetPaketSoal = async () => {
           {
             id_paket: 2,
             nama: "Paket Soal B",
+            studi_kasus: "Studi Kasus C",
             durasi: 120,
             kategori: "Close-Ended",
             pertanyaan: [
@@ -125,6 +127,7 @@ const mockGetPaketSoal = async () => {
           {
             id_paket: 3,
             nama: "Paket Soal C",
+            studi_kasus: "-",
             durasi: 120,
             kategori: "Close-Ended",
             pertanyaan: [],
@@ -132,6 +135,7 @@ const mockGetPaketSoal = async () => {
           {
             id_paket: 4,
             nama: "Paket Soal D",
+            studi_kasus: "Studi Kasus B",
             durasi: 120,
             kategori: "Open-Ended",
             pertanyaan: [
@@ -141,7 +145,7 @@ const mockGetPaketSoal = async () => {
                 teksSoal:
                   "Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut",
                 jawaban: ["SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC"],
-                studi_kasus: "Studi Kasus C",
+                studi_kasus: "Studi Kasus B",
                 dosen_pembuat: "Dosen Coba",
               },
               {
