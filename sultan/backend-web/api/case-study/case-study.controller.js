@@ -40,12 +40,12 @@ module.exports = {
 
         const resObj = await caseStudyService.store(
             req.body.name,
-            req.file,
-            req.user
+            req.user,
+            req.file
         );
         if (!resObj.status) return res.status(500).json(resObj);
 
-        return res.status(201).json(resImportObj);
+        return res.status(201).json(resObj);
     },
     destroy: async (req, res) => {
         const resObj = await caseStudyService.deleteOne(req.params.id);

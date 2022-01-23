@@ -1,9 +1,9 @@
 const Importer = require("mysql-import");
 
 module.exports = (dbname, sqlfile) => {
-    const host = "localhost";
-    const user = "root";
-    const password = "";
+    const host = process.env.HOST;
+    const user = process.env.DB_USER;
+    const password = process.env.DB_PASS;
     const database = dbname;
 
     const importer = new Importer({ host, user, password, database });

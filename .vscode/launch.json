@@ -15,14 +15,12 @@
             "program": "${workspaceFolder}/backend-assessment/app.js"
         },
         {
-            "type": "pwa-node",
+            "type": "node-terminal",
             "request": "launch",
-            "name": "Launch Program Backend Web",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "name": "Run NPM Dev Backend Web",
             "envFile": "${workspaceFolder}/sultan/backend-web/.env",
-            "program": "${workspaceFolder}/sultan/backend-web/app.js"
+            "cwd": "${workspaceFolder}/sultan/backend-web",
+            "command": "npm run dev",
         },
         {
             "type": "node-terminal",

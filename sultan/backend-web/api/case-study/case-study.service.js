@@ -18,14 +18,14 @@ module.exports = {
             });
             return createResponseObject(
                 true,
-                caseStudies,
-                "Data studi kasus berhasil didapatkan"
+                "Data studi kasus berhasil didapatkan",
+                caseStudies
             );
         } catch (error) {
             return createResponseObject(
                 false,
-                error,
-                "Data studi kasus gagal didapatkan"
+                "Data studi kasus gagal didapatkan",
+                error.message ? error.message : error
             );
         }
     },
@@ -45,8 +45,8 @@ module.exports = {
                 caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
                 return createResponseObject(
                     true,
-                    caseStudy,
-                    "Data studi kasus berhasil didapatkan"
+                    "Data studi kasus berhasil didapatkan",
+                    caseStudy
                 );
             } else {
                 throw caseStudy;
@@ -55,8 +55,8 @@ module.exports = {
             console.error(error);
             return createResponseObject(
                 false,
-                error,
-                "Data studi kasus gagal didapatkan"
+                "Data studi kasus gagal didapatkan",
+                error
             );
         }
     },
@@ -66,30 +66,33 @@ module.exports = {
                 raw: true,
             });
 
+            if (!caseStudy) throw new Error("case study tidak dapat ditemukan");
+
             const res = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["db_name"]}/${tableName}`
             );
             return createResponseObject(
                 true,
-                res.data.data,
-                "Data studi kasus berhasil didapatkan"
+                "Data studi kasus berhasil didapatkan",
+                res.data.data
             );
         } catch (error) {
             console.error(error);
             return createResponseObject(
                 false,
-                error,
-                "Data studi kasus gagal didapatkan"
+                "Data studi kasus gagal didapatkan",
+                error.message ? error.message : error
             );
         }
     },
     store: async (name, user, file) => {
         try {
             const userDb = await User.findByPk(user.id);
+            if (!userDb) throw new Error("user tidak dapat ditemukan");
 
-            let dbName = `${user.username}_${convertToSnakeCase(
-                name
-            )}_${shortIdGen()}`;
+            let dbName = `sqlearn_casestudy_${
+                user.username
+            }_${convertToSnakeCase(name)}_${shortIdGen()}`;
             const newCaseStudies = await CaseStudy.create({
                 name,
                 db_name: dbName,
@@ -109,12 +112,16 @@ module.exports = {
 
             return createResponseObject(
                 true,
-                newCaseStudies,
-                "Data studi kasus berhasil ditambahkan"
+                "Data studi kasus berhasil ditambahkan",
+                newCaseStudies
             );
         } catch (err) {
             console.log(err);
-            return createResponseObject(false, err, "Studi kasus gagal dibuat");
+            return createResponseObject(
+                false,
+                "Studi kasus gagal dibuat",
+                err.message ? err.message : err
+            );
         }
     },
     deleteOne: async (id) => {
@@ -122,8 +129,9 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(id, {
                 raw: true,
             });
+            if (!caseStudy) throw new Error("case study tidak dapat ditemukan");
 
-            const del = await CaseStudy.destroy({
+            await CaseStudy.destroy({
                 where: {
                     id,
                 },
@@ -135,15 +143,15 @@ module.exports = {
 
             return createResponseObject(
                 true,
-                destroyResObj.data,
-                "Data studi kasus berhasil dihapus"
+                "Data studi kasus berhasil dihapus",
+                destroyResObj.data
             );
         } catch (error) {
             console.log(error);
             return createResponseObject(
                 false,
-                error,
-                "Data studi kasus gagal dihapus"
+                "Data studi kasus gagal dihapus",
+                error.message ? error.message : error
             );
         }
     },
