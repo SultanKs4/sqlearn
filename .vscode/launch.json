@@ -5,29 +5,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "type": "pwa-node",
+            "type": "node-terminal",
             "request": "launch",
-            "name": "Launch Program Backend Assessment",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
+            "name": "Backend Assessment npm Dev",
             "envFile": "${workspaceFolder}/backend-assessment/.env",
-            "program": "${workspaceFolder}/backend-assessment/app.js"
-        },
-        {
-            "type": "pwa-node",
-            "request": "launch",
-            "name": "Launch Program Backend Web",
-            "skipFiles": [
-                "<node_internals>/**"
-            ],
-            "envFile": "${workspaceFolder}/sultan/backend-web/.env",
-            "program": "${workspaceFolder}/sultan/backend-web/app.js"
+            "cwd": "${workspaceFolder}/backend-assessment",
+            "command": "npm run dev",
         },
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Run npm test backend assessment",
+            "name": "Backend Web Run npm Dev",
+            "envFile": "${workspaceFolder}/sultan/backend-web/.env",
+            "cwd": "${workspaceFolder}/sultan/backend-web",
+            "command": "npm run dev",
+        },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Backend Assessment npm test",
             "cwd": "${workspaceFolder}/backend-assessment",
             "command": "npm test",
         }

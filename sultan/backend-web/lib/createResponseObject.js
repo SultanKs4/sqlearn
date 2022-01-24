@@ -1,9 +1,7 @@
-function createResponseObject(success, message, data = null) {
+module.exports = (status, data, message = null) => {
     return {
-        success,
+        status,
         message,
-        data
-    }
-}
-
-module.exports = createResponseObject
+        data,
+    };
+};
