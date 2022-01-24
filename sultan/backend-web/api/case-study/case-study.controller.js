@@ -5,14 +5,14 @@ module.exports = {
     index: async (req, res) => {
         const resObj = await caseStudyService.getAll();
 
-        if (!resObj.status) return res.status(500).json(resObj);
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(200).json(resObj);
     },
     show: async (req, res) => {
         const resObj = await caseStudyService.getOne(req.params.id);
 
-        if (!resObj.status) return res.status(500).json(resObj);
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(200).json(resObj);
     },
@@ -22,7 +22,7 @@ module.exports = {
             req.params.tablename
         );
 
-        if (!resObj.status) return res.status(500).json(resObj);
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(200).json(resObj);
     },
@@ -32,8 +32,8 @@ module.exports = {
                 .status(400)
                 .json(
                     createResponseObject(
-                        false,
-                        req.file,
+                        "fail",
+                        null,
                         "Format file tidak didukung"
                     )
                 );
@@ -43,14 +43,14 @@ module.exports = {
             req.user,
             req.file
         );
-        if (!resObj.status) return res.status(500).json(resObj);
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(201).json(resObj);
     },
     destroy: async (req, res) => {
         const resObj = await caseStudyService.deleteOne(req.params.id);
 
-        if (!resObj.status) return res.status(500).json(resObj);
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(201).json(resObj);
     },

@@ -32,7 +32,7 @@ CREATE TABLE `case_studies` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
   `db_name` varchar(50) NOT NULL,
-  `db_path` text DEFAULT NULL,
+  `db_file` text DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
@@ -42,7 +42,7 @@ CREATE TABLE `case_studies` (
 -- Dumping data for table `case_studies`
 --
 
-INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_path`, `user_id`, `createdAt`, `updatedAt`) VALUES
+INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_file`, `user_id`, `createdAt`, `updatedAt`) VALUES
 (2, 'Tes', 'auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
 
 -- --------------------------------------------------------

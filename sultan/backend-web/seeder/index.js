@@ -10,7 +10,7 @@ const user = process.env.DB_USER;
 const password = process.env.DB_PASS;
 const database = process.env.DB_NAME;
 
-const databaseStudyCase = "sqlearn_casestudy_auto_assess_tes";
+const databaseStudyCase = "sqlearn_cs_auto_assess_tes";
 
 mysql
     .createConnection({
@@ -76,7 +76,7 @@ mysql
                                             .import(
                                                 path.resolve(
                                                     __dirname,
-                                                    "sqlearn_casestudy_auto_assess_tes.sql"
+                                                    "sqlearn_cs_auto_assess_tes.sql"
                                                 )
                                             )
                                             .then(() => {

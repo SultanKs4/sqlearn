@@ -19,7 +19,7 @@ CaseStudy.init(
             type: DataTypes.STRING(50),
             allowNull: false,
         },
-        db_path: {
+        db_file: {
             type: DataTypes.TEXT("long"),
         },
         user_id: {
