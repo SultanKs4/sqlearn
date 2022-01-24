@@ -27,7 +27,7 @@ module.exports = {
             return createResponseObject(
                 "error",
                 "Data studi kasus gagal didapatkan",
-                error.message ? error.message : error
+                error == null ? null : error.message ? error.message : error
             );
         }
     },
@@ -51,9 +51,12 @@ module.exports = {
                     caseStudy
                 );
             } else {
-                throw caseStudy;
+                throw new Error("studi kasus tidak dapat ditemukan");
             }
         } catch (error) {
+            if (axios.isAxiosError(error)) {
+                error = error.response.data;
+            }
             console.error(error);
             return createResponseObject(
                 "error",
@@ -80,6 +83,9 @@ module.exports = {
                 res.data.data
             );
         } catch (error) {
+            if (axios.isAxiosError(error)) {
+                error = error.response.data;
+            }
             console.error(error);
             return createResponseObject(
                 "error",
@@ -120,6 +126,9 @@ module.exports = {
                 newCaseStudies
             );
         } catch (err) {
+            if (axios.isAxiosError(error)) {
+                error = error.response.data;
+            }
             console.log(err);
             return createResponseObject(
                 "error",
@@ -159,6 +168,9 @@ module.exports = {
                 destroyResObj.data
             );
         } catch (error) {
+            if (axios.isAxiosError(error)) {
+                error = error.response.data;
+            }
             console.log(error);
             return createResponseObject(
                 "error",

@@ -1,0 +1,979 @@
+{
+	"info": {
+		"_postman_id": "9d2cc9a5-e32a-4ea1-9d08-74c19f8c5b4a",
+		"name": "SQLearn",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Backend Assessment",
+			"item": [
+				{
+					"name": "Create DB",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v2/database/create/testcreate",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"database",
+								"create",
+								"testcreate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Drop DB",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v2/database/drop/sqlearn_cs_dosencoba_ini_tes_lagi_22_o2jrzs",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"database",
+								"drop",
+								"sqlearn_cs_dosencoba_ini_tes_lagi_22_o2jrzs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "desc table",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v2/database/desc_table/auto_assess_tes",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"database",
+								"desc_table",
+								"auto_assess_tes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "select detail table",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/api/v2/database/select/auto_assess_tes/mahasiswa",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"api",
+								"v2",
+								"database",
+								"select",
+								"auto_assess_tes",
+								"mahasiswa"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Backend Web",
+			"item": [
+				{
+					"name": "Case Study",
+					"item": [
+						{
+							"name": "Get All",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/casestudies",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"casestudies"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "262"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"106-bZm3YBvrPcFV1PcsYSwzbO7I2ss\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:06:04 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"id\": 2,\n            \"name\": \"Tes\",\n            \"db_name\": \"auto_assess_tes\",\n            \"db_file\": null,\n            \"user_id\": 1,\n            \"createdAt\": \"2021-05-05T16:31:57.000Z\",\n            \"updatedAt\": \"2021-05-05T16:31:57.000Z\",\n            \"User\": {\n                \"name\": \"Dosen baru\"\n            }\n        }\n    ],\n    \"data\": \"Data studi kasus berhasil didapatkan\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get One",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/casestudies/5",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"casestudies",
+										"5"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Get One Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/2",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"2"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "388"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"184-nQP86I1qTil3C28RxVC6W+AkBJA\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:06:43 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": {\n        \"id\": 2,\n        \"name\": \"Tes\",\n        \"db_name\": \"auto_assess_tes\",\n        \"db_file\": null,\n        \"user_id\": 1,\n        \"createdAt\": \"2021-05-05T16:31:57.000Z\",\n        \"updatedAt\": \"2021-05-05T16:31:57.000Z\",\n        \"User.id\": 1,\n        \"User.name\": \"Dosen baru\",\n        \"tables\": {\n            \"mahasiswa\": [\n                \"id_mahasiswa\",\n                \"nama\",\n                \"kelas\",\n                \"ipk\"\n            ],\n            \"user\": [\n                \"id_user\",\n                \"username\",\n                \"waktu_login\",\n                \"id_mahasiswa\"\n            ]\n        }\n    },\n    \"data\": \"Data studi kasus berhasil didapatkan\"\n}"
+								},
+								{
+									"name": "Get One Error not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/5",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"5"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "107"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6b-cdWbD6ATuvRoSkgGhZ1iEYmxs3Y\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:14:58 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"studi kasus tidak dapat ditemukan\",\n    \"data\": \"Data studi kasus gagal didapatkan\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Get One Detail per Table",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/casestudies/2/data/a",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"casestudies",
+										"2",
+										"data",
+										"a"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/2/data/mahasiswa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"2",
+												"data",
+												"mahasiswa"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "586"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"24a-rVv3KtTDEoTmfz4adaGxCTQApuc\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:07:27 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": [\n        {\n            \"id_mahasiswa\": 1,\n            \"nama\": \"Daffa\",\n            \"kelas\": \"4C\",\n            \"ipk\": 3\n        },\n        {\n            \"id_mahasiswa\": 2,\n            \"nama\": \"Akbar\",\n            \"kelas\": \"4D\",\n            \"ipk\": 3.5\n        },\n        {\n            \"id_mahasiswa\": 5,\n            \"nama\": \"Dwiputra\",\n            \"kelas\": \"4A\",\n            \"ipk\": 2\n        },\n        {\n            \"id_mahasiswa\": 6,\n            \"nama\": \"Damarriyanto\",\n            \"kelas\": \"4A\",\n            \"ipk\": 2.5\n        },\n        {\n            \"id_mahasiswa\": 7,\n            \"nama\": \"John\",\n            \"kelas\": \"4B\",\n            \"ipk\": 3\n        },\n        {\n            \"id_mahasiswa\": 8,\n            \"nama\": \"Doe\",\n            \"kelas\": \"4B\",\n            \"ipk\": 2.5\n        },\n        {\n            \"id_mahasiswa\": 9,\n            \"nama\": \"Jane\",\n            \"kelas\": \"4C\",\n            \"ipk\": 4\n        },\n        {\n            \"id_mahasiswa\": 10,\n            \"nama\": \"Budi\",\n            \"kelas\": \"4D\",\n            \"ipk\": 3.5\n        },\n        {\n            \"id_mahasiswa\": 11,\n            \"nama\": \"Ani\",\n            \"kelas\": \"4C\",\n            \"ipk\": 3\n        }\n    ],\n    \"data\": \"Data studi kasus berhasil didapatkan\"\n}"
+								},
+								{
+									"name": "Error studi kasus not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/5/data/mahasiswa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"5",
+												"data",
+												"mahasiswa"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "107"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"6b-cdWbD6ATuvRoSkgGhZ1iEYmxs3Y\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:15:23 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"studi kasus tidak dapat ditemukan\",\n    \"data\": \"Data studi kasus gagal didapatkan\"\n}"
+								},
+								{
+									"name": "Error table not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/2/data/a",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"2",
+												"data",
+												"a"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "93"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5d-ps4NLQBH1tDfTqXjjhzmEyuz/Ak\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:23:52 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"select table failed\",\n    \"data\": \"Data studi kasus gagal didapatkan\"\n}"
+								}
+							]
+						},
+						{
+							"name": "POST case study sql file",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "sql",
+											"type": "file",
+											"src": "/home/kaito/sqlearn/sultan/backend-web/uploads/sqls/1642985498221_sql_sqlearn_cs_auto_assess_tes.sql"
+										},
+										{
+											"key": "name",
+											"value": "ini tes lagi 22",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url_web}}/api/casestudies/",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"casestudies",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Del Case Study",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/casestudies/9",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"casestudies",
+										"9"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/8",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"8"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "257"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"101-CYb3P0kGDZIchYVy5h7FMS2HuIQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 01:37:39 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": {\n        \"status\": \"success\",\n        \"data\": {\n            \"fieldCount\": 0,\n            \"affectedRows\": 2,\n            \"insertId\": 0,\n            \"serverStatus\": 258,\n            \"warningCount\": 2,\n            \"message\": \"database deleted\",\n            \"protocol41\": true,\n            \"changedRows\": 0\n        },\n        \"message\": null\n    },\n    \"data\": \"Data studi kasus berhasil dihapus\"\n}"
+								},
+								{
+									"name": "Error not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/9",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"9"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "104"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"68-tWRD3D5NCg3UjfQpJXdMO3jqEYk\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:31:23 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"studi kasus tidak dapat ditemukan\",\n    \"data\": \"Data studi kasus gagal dihapus\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "User",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"dosencoba\",\r\n    \"password\": \"dosencoba\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web}}/api/users/login",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"dosencoba\",\r\n    \"password\": \"dosencoba\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/users/login",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"users",
+												"login"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "407"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"197-6pME7NoVVjolnM8/QKkMSuAw4oc\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:32:01 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": true,\n    \"message\": {\n        \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo1LCJyb2xlIjoiZG9zZW4ifSwiaWF0IjoxNjQyOTkxNTIxfQ.0RSDUjxo6eZOOoJSIu4TJUGWDIciVz16GR454_FMQWI\",\n        \"user\": {\n            \"id\": 5,\n            \"username\": \"dosencoba\",\n            \"level\": \"dosen\",\n            \"no_induk\": \"101010\",\n            \"name\": \"Dosen Coba\",\n            \"createdAt\": \"2021-05-30T17:54:21.000Z\",\n            \"updatedAt\": \"2021-05-30T17:54:21.000Z\",\n            \"role\": \"dosen\"\n        }\n    },\n    \"data\": \"Login berhasil dilakukan\"\n}"
+								},
+								{
+									"name": "Error username not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"dosencoba1\",\r\n    \"password\": \"dosencoba\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/users/login",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"users",
+												"login"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "84"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"54-ebYPcUr5Hxd1/wQ6TSiAun+ygXA\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:32:18 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"Username tidak ditemukan\",\n    \"data\": \"Login gagal dilakukan\"\n}"
+								},
+								{
+									"name": "Error password salah",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"dosencoba\",\r\n    \"password\": \"dosencoba1\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/users/login",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"users",
+												"login"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "74"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"4a-I3RBE/ZyprKHFRYJpo2iOqOyzFw\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 02:32:39 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"Password salah\",\n    \"data\": \"Login gagal dilakukan\"\n}"
+								}
+							]
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo1LCJyb2xlIjoiZG9zZW4ifSwiaWF0IjoxNjQyOTQyNDk1fQ.ElR7Kk3IF8T6W7T5UibyRq-DWBnNQ9RrVNmsEuhHiEE",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "url_web",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
