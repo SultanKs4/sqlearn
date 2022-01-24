@@ -1,6 +1,6 @@
 import { Col, Radio, Row, Typography } from "antd";
 
-function RibbonFilter({ setIsFilterActive, setEntityFiltered, data }) {
+function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
   const filterCategory = (e) => {
     e.target.value === "Semua"
       ? setIsFilterActive(false)
@@ -46,4 +46,4 @@ function RibbonFilter({ setIsFilterActive, setEntityFiltered, data }) {
   );
 }
 
-export default RibbonFilter;
+export default RadioFilterCategory;

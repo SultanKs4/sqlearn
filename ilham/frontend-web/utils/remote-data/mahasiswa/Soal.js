@@ -6,56 +6,113 @@ import axios from "axios";
     3. Submit jawaban -> @param SQL Query, log timer, log berapa kali dia test query
 */
 
-const getAllSoal = async studiKasusID => {
+const getAllSoal = async (studiKasusID) => {
   // TODO : API Request GET : URL ?studiKasusID={studiKasus}
   let response = await axios.get("");
   return response.data;
 };
 
-const mockGetSoalByID = async () => {
+// TODO : 1 jadwal = 1 studi paket soal
+const mockGetSoalByID = async (jadwalID) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
-        id: 1 /* idSoal */,
-        studi_kasus: "" /* Soal nya */,
-
-        sql_components: [
+        data: [
           {
-            id: 1,
-            content: "SELECT"
+            id: 1 /* idSoal */,
+            studi_kasus: "Studi Kasus B" /* Soal nya */,
+            sql_components: [
+              {
+                id: 1,
+                content: "SELECT",
+              },
+              {
+                id: 2,
+                content: "COUNT",
+              },
+              {
+                id: 3,
+                content: "nama",
+              },
+              {
+                id: 4,
+                content: "FROM",
+              },
+              {
+                id: 5,
+                content: "MAHASISWA",
+              },
+              {
+                id: 6,
+                content: "Employee",
+              },
+              {
+                id: 7,
+                content: "STUDENTS",
+              },
+            ],
+            correct_answer: "SELECT COUNT nama FROM MAHASISWA",
+            teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
+            kategori: "Close-Ended",
           },
           {
-            id: 2,
-            content: "COUNT"
+            id: 2 /* idSoal */,
+            studi_kasus: "Studi Kasus B" /* Soal nya */,
+            sql_components: [
+              {
+                id: 1,
+                content: "SELECT",
+              },
+              {
+                id: 2,
+                content: "kelas",
+              },
+              {
+                id: 3,
+                content: ",COUNT(id_mahasiswa)",
+              },
+              {
+                id: 4,
+                content: "as",
+              },
+              {
+                id: 5,
+                content: "jumlah_mhs",
+              },
+              {
+                id: 6,
+                content: "FROM",
+              },
+              {
+                id: 7,
+                content: "mahasiswa",
+              },
+              {
+                id: 7,
+                content: "GROUP BY",
+              },
+              {
+                id: 7,
+                content: "kelas",
+              },
+              {
+                id: 7,
+                content: "mahasiswa",
+              },
+            ],
+            correct_answer:
+              "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
+            teksSoal:
+              "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
+            kategori: "Close-Ended",
           },
-          {
-            id: 3,
-            content: "nama"
-          },
-          {
-            id: 4,
-            content: "FROM"
-          },
-          {
-            id: 5,
-            content: "MAHASISWA"
-          },
-          {
-            id: 6,
-            content: "Employee"
-          },
-          {
-            id: 7,
-            content: "STUDENTS"
-          }
         ],
-        correct_answer: "SELECT COUNT nama FROM STUDENTS"
       });
     }, 1000);
   });
 };
 
-const getSoalByID = async soalID => {
+const getSoalByID = async (soalID) => {
   let response = await axios.get("");
   //   ? Output :
   /* 
@@ -95,7 +152,7 @@ const getSoalByID = async soalID => {
   return response.data;
 };
 
-const testQuery = async sqlQuery => {
+const testQuery = async (sqlQuery) => {
   // TODO : API Request POST: URL ?soalID={soalID, studiKasusID, username} data : attempt++
   // ...
   // TODO : API Request GET: URL ?soalID={soalID}

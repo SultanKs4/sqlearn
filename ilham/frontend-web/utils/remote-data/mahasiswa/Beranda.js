@@ -1,5 +1,5 @@
 import axios from "axios";
-import { v4 as uuidv4 } from "uuid";
+import moment from "moment";
 
 const getUserInfo = async (username) => {
   // TODO : API Request GET : ?username={username}
@@ -39,29 +39,32 @@ const mockGetAllPractices = async (username) => {
       resolve({
         data: [
           {
-            id: uuidv4(),
+            id: 1,
             nama: "Latihan 1",
             jumlahSoal: 3,
             durasi: "2 jam",
-            deadline: "12 jam lagi",
+            tanggal_akhir: moment("2022-01-26 07:00"),
+            kategori: "Close-Ended",
             status: "tersedia",
           },
           {
-            id: uuidv4(),
+            id: 2,
             nama: "Latihan 2",
             jumlahSoal: 5,
             durasi: "2 jam",
-            deadline: "-",
+            tanggal_akhir: "-",
             status: "selesai",
             nilai: 100,
+            kategori: "Close-Ended",
             totalPercobaan: 4,
           },
           {
-            id: uuidv4(),
+            id: 3,
             nama: "Latihan 3",
             jumlahSoal: 1,
             durasi: "2 jam",
-            deadline: "10 jam lagi",
+            tanggal_akhir: moment("2022-01-25 07:00"),
+            kategori: "Open-Ended",
             status: "tersedia",
           },
         ],

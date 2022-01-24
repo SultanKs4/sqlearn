@@ -27,7 +27,7 @@ import FormTambahPaket from "../../../components/dosen/PaketSoal/FormTambahPaket
 import FormEditPaket from "../../../components/dosen/PaketSoal/FormEditPaket";
 import FormHapusPaket from "../../../components/dosen/PaketSoal/FormHapusPaket";
 import { useRouter } from "next/router";
-import RibbonFilter from "../../../components/RibbonFilter";
+import RadioFilterCategory from "../../../components/RadioFilterCategory";
 
 function PaketSoal() {
   const router = useRouter();
@@ -149,7 +149,7 @@ function PaketSoal() {
           />
         )}
 
-        <RibbonFilter
+        <RadioFilterCategory
           data={dataPaket}
           setIsFilterActive={setIsFilterActive}
           setEntityFiltered={setPaketFiltered}

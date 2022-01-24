@@ -340,15 +340,22 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           {`${item.totalPercobaan}x percobaan`}
                         </>
                       ) : (
-                        <>
+                        <div
+                          style={{
+                            color:
+                              countTimeDifference(moment(), item?.tanggal_akhir)
+                                .toLowerCase()
+                                .includes("terlewat") && "red",
+                          }}
+                        >
                           <FieldTimeOutlined
                             style={{
                               fontSize: "1.2em",
                               marginRight: ".5em",
                             }}
                           />
-                          {item.deadline}
-                        </>
+                          {countTimeDifference(moment(), item?.tanggal_akhir)}
+                        </div>
                       )}
                     </Col>
                   </Row>
@@ -601,6 +608,46 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           )}
         />
       );
+    case "data-soal-mahasiswa":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                <Row justify="space-between">
+                  <Col span={20}>
+                    <Row>
+                      <Col style={{ paddingTop: "1em" }}>
+                        <DatabaseOutlined />
+                        <Typography.Text
+                          style={{ fontWeight: "bold", marginLeft: "1em" }}
+                          children={item.studi_kasus}
+                        />
+                      </Col>
+                    </Row>
+                    <Row justify="space-between" style={{ margin: "1em 0" }}>
+                      <Col> {item.teksSoal} </Col>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <Tooltip title="Kerjakan Soal">
+                      <Button
+                        type="primary"
+                        icon={<EditOutlined />}
+                        children="Kerjakan"
+                        onClick={() => props.kerjakanLatihan(item?.id)}
+                      />
+                    </Tooltip>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
+      );
+
     case "data-soal-dosen":
       return (
         <List

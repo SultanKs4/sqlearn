@@ -59,7 +59,7 @@ function PreviewPaket() {
       );
       setIsDataLoaded(true);
     });
-  }, []);
+  }, [router.query.id_paket]);
 
   const tambahSoal = () => {
     setModalRole("tambah");

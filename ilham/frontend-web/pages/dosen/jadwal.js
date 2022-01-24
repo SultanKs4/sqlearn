@@ -27,7 +27,7 @@ import FormEditJadwal from "../../components/dosen/Jadwal/FormEditJadwal";
 import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 import ListComponent from "../../components/List";
 import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
-import RibbonFilter from "../../components/RibbonFilter";
+import RadioFilterCategory from "../../components/RadioFilterCategory";
 
 function Jadwal() {
   const [currentJadwal, setCurrentJadwal] = useState({});
@@ -59,10 +59,6 @@ function Jadwal() {
       setIsDataLoaded(true);
     });
   }, []);
-
-  useEffect(() => {
-    console.log(isAlertActive);
-  }, [isAlertActive]);
 
   const tambahJadwal = () => {
     setModalRole("tambah");
@@ -175,7 +171,7 @@ function Jadwal() {
           />
         )}
 
-        <RibbonFilter
+        <RadioFilterCategory
           data={dataJadwal}
           setIsFilterActive={setIsFilterActive}
           setEntityFiltered={setJadwalFiltered}

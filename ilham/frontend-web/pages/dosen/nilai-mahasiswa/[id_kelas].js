@@ -52,11 +52,7 @@ function PreviewNilaiTiapKelas() {
       setDataNilaiMhs(response?.data);
       setIsDataMhsLoaded(true);
     });
-  }, []);
-
-  useEffect(() => {
-    console.log("ini data nilai mhs", dataNilaiMhs);
-  }, [dataNilaiMhs]);
+  }, [router.query.id_kelas]);
 
   return (
     <>
