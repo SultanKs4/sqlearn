@@ -42,7 +42,7 @@ CREATE TABLE `case_studies` (
 --
 
 INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_file`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Tes', 'auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
+(2, 'Tes', 'sqlearn_cs_auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
 
 -- --------------------------------------------------------
 

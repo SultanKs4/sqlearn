@@ -3,40 +3,52 @@ const questionService = require("./question.service");
 
 module.exports = {
     index: async (req, res) => {
-        const { success, message, data } = await questionService.getAll(req.query)
+        const resObj = await questionService.getAll(req.query);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     indexExclude: async (req, res) => {
-        const { success, message, data } = await questionService.getAllExclude(req.params.container, req.query)
+        const resObj = await questionService.getAllExclude(
+            req.params.container,
+            req.query
+        );
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     show: async (req, res) => {
-        const { success, message, data } = await questionService.getOne(req.params.id)
+        const resObj = await questionService.getOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     store: async (req, res) => {
-        console.log(req.body)
-        if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"))
-        const { success, message, data } = await questionService.insert(req.body, req.file.filename, req.user)
+        console.log(req.body);
+        if (!req.file)
+            return res
+                .status(400)
+                .json(
+                    createResponseObject(false, "Format file tidak disupport")
+                );
+        const resObj = await questionService.insert(
+            req.body,
+            req.file.filename,
+            req.user
+        );
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
+        return res.status(201).json(resObj);
     },
     destroy: async (req, res) => {
-        const { success, message, data } = await questionService.deleteOne(req.params.id)
+        const resObj = await questionService.deleteOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
-    }
+        return res.status(201).json(resObj);
+    },
 };

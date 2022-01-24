@@ -39,15 +39,16 @@ module.exports = {
                 ],
             });
             return createResponseObject(
-                true,
+                "success",
                 "Data pertanyaan berhasil didapatkan",
                 questions
             );
         } catch (error) {
             console.log(error);
             return createResponseObject(
-                false,
-                "Data pertanyaan gagal didapatkan"
+                "error",
+                "Data pertanyaan gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
             );
         }
     },
@@ -86,6 +87,10 @@ module.exports = {
                         attributes: ["id", "name"],
                         where: whereCaseStudy,
                     },
+                    {
+                        model: QuestionLabel,
+                        attributes: ["id", "name"],
+                    },
                 ],
                 where: {
                     id: {
@@ -94,15 +99,16 @@ module.exports = {
                 },
             });
             return createResponseObject(
-                true,
+                "success",
                 "Data pertanyaan berhasil didapatkan",
                 questions
             );
         } catch (error) {
             console.log(error);
             return createResponseObject(
-                false,
-                "Data pertanyaan gagal didapatkan"
+                "error",
+                "Data pertanyaan gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
             );
         }
     },
@@ -118,9 +124,13 @@ module.exports = {
                         model: CaseStudy,
                         attributes: ["id", "name", "db_name"],
                     },
+                    {
+                        model: QuestionLabel,
+                        attributes: ["id", "name"],
+                    },
                 ],
-                raw: true,
-                nest: true,
+                raw: "success",
+                nest: "success",
             });
 
             const tables = question["tables"]
@@ -129,7 +139,7 @@ module.exports = {
             question["tables"] = await tables.reduce(async (acc, curr) => {
                 const obj = await acc;
                 const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/select/${question["CaseStudy"]["db_name"]}/${curr}`
+                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question["CaseStudy"]["db_name"]}/${curr}`
                 );
                 obj[curr] = res.data;
                 return obj;
@@ -142,15 +152,16 @@ module.exports = {
             // })
 
             return createResponseObject(
-                true,
+                "success",
                 "Data pertanyaan berhasil didapatkan",
                 question
             );
         } catch (error) {
             console.error(error);
             return createResponseObject(
-                false,
-                "Data pertanyaan gagal didapatkan"
+                "error",
+                "Data pertanyaan gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
             );
         }
     },
@@ -166,28 +177,25 @@ module.exports = {
             });
 
             return createResponseObject(
-                true,
+                "success",
                 "Data pertanyaan berhasil ditambahkan",
                 newQuestion
             );
         } catch (err) {
             console.log(err);
             return createResponseObject(
-                false,
-                "Data pertanyaan gagal ditambahkan"
+                "error",
+                "Data pertanyaan gagal ditambahkan",
+                error == null ? null : error.message ? error.message : error
             );
         }
     },
     deleteOne: async (id) => {
         try {
             const question = await Question.findByPk(id, {
-                raw: true,
+                raw: "success",
             });
-            if (!question)
-                return createResponseObject(
-                    false,
-                    "Tidak ada pertanyaan yang dihapus"
-                );
+            if (!question) throw new Error("Tidak ada pertanyaan yang dihapus");
 
             await Question.destroy({
                 where: {
@@ -203,12 +211,16 @@ module.exports = {
             );
 
             return createResponseObject(
-                true,
+                "success",
                 "Data pertanyaan berhasil dihapus"
             );
         } catch (error) {
             console.log(error);
-            return createResponseObject(false, "Data pertanyaan gagal dihapus");
+            return createResponseObject(
+                "error",
+                "Data pertanyaan gagal dihapus",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 };
