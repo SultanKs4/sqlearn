@@ -4,16 +4,19 @@ const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 
 const User = require("./user.model");
 
-
 module.exports = {
     getAll: async () => {
         try {
             const users = await User.findAll({
                 attributes: {
-                    exclude: ['password']
-                }
-            })
-            return createResponseObject(true, "Data user berhasil didapatkan", users);
+                    exclude: ["password"],
+                },
+            });
+            return createResponseObject(
+                true,
+                "Data user berhasil didapatkan",
+                users
+            );
         } catch (error) {
             return createResponseObject(false, "Data user gagal didapatkan");
         }
@@ -23,55 +26,72 @@ module.exports = {
         try {
             const user = await User.findByPk(id, {
                 attributes: {
-                    exclude: ['password']
-                }
-            })
-            return createResponseObject(true, "Data user berhasil didapatkan", user)
+                    exclude: ["password"],
+                },
+            });
+            return createResponseObject(
+                true,
+                "Data user berhasil didapatkan",
+                user
+            );
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return createResponseObject(false, "Data user gagal didapatkan");
         }
     },
 
-    authenticate: async (data) => {
+    authenticate: async (username, password) => {
         try {
-            const { username, password } = data
-
             const user = await User.findOne({
                 where: {
-                    username
+                    username,
                 },
-                raw: true
-            })
-            if (!user) return createResponseObject(false, "Tidak ada username yang cocok");
+                raw: true,
+            });
+            if (!user) throw new Error("Username tidak ditemukan");
 
-            const isPasswordMatch = comparePassword(password, user.password)
-            if (!isPasswordMatch) return createResponseObject(false, "Password salah");
+            const isPasswordMatch = comparePassword(password, user.password);
+            if (!isPasswordMatch) throw new Error("Password salah");
 
-            const jwt = encodeJWT(user.id, JWT_ROLES.dosen)
+            const jwt = encodeJWT(user.id, JWT_ROLES.dosen);
 
-            const { password: passDb, ...rest } = user
-            const userResponse = { ...rest, role: "dosen" }
+            const { password: passDb, ...rest } = user;
+            const userResponse = { ...rest, role: "dosen" };
 
-            return createResponseObject(true, "Login berhasil dilakukan", { token: jwt, user: userResponse })
+            return createResponseObject(true, "Login berhasil dilakukan", {
+                token: jwt,
+                user: userResponse,
+            });
         } catch (error) {
-            console.error(error)
-            return createResponseObject(false, "Login gagal dilakukan");
+            console.error(error);
+            return createResponseObject(
+                false,
+                "Login gagal dilakukan",
+                error.message
+            );
         }
     },
 
-    insert: async (data) => {
+    insert: async (username, password, no_induk, name) => {
         try {
             let newUser = await User.create({
-                username: data.username,
-                password: hashPassword(data.password),
-                no_induk: data.no_induk,
-                name: data.name,
-            })
-            return createResponseObject(true, "Data user berhasil ditambahkan", newUser)
+                username: username,
+                password: hashPassword(password),
+                no_induk: no_induk,
+                name: name,
+            });
+            return createResponseObject(
+                true,
+                "Data user berhasil ditambahkan",
+                newUser
+            );
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data user gagal ditambahkan")
+            console.log(error);
+            return createResponseObject(
+                false,
+                "Data user gagal ditambahkan",
+                error
+            );
         }
     },
 
@@ -79,41 +99,50 @@ module.exports = {
         try {
             const user = await User.findByPk(id, {
                 attributes: {
-                    exclude: ['password']
-                }
-            })
-            if (!user) return createResponseObject(false, "Tidak ada data user didapatkan");
+                    exclude: ["password"],
+                },
+            });
+            if (!user) throw new Error("Tidak ada data user didapatkan");
 
-            Object.keys(data).forEach(val => {
-                user[val] = data[val]
-            })
+            Object.keys(data).forEach((val) => {
+                user[val] = data[val];
+            });
 
-            await user.save()
+            await user.save();
 
-            return createResponseObject(true, "Data user berhasil diperbarui", user);
+            return createResponseObject(
+                true,
+                "Data user berhasil diperbarui",
+                user
+            );
         } catch (error) {
-            return createResponseObject(false, "Data user gagal diperbarui");
+            return createResponseObject(
+                false,
+                "Data user gagal diperbarui",
+                error.message
+            );
         }
     },
 
     destroy: async (id) => {
         try {
-            const user = await User.findByPk(id)
-            if (!user) return createResponseObject(false, "Tidak ada user yang dihapus")
+            const user = await User.findByPk(id);
+            if (!user) throw new Error("Tidak ada data user didapatkan");
 
             await User.destroy({
                 where: {
-                    id
-                }
-            })
+                    id,
+                },
+            });
 
-            return createResponseObject(true, "Data user berhasil dihapus")
-
-
+            return createResponseObject(true, "Data user berhasil dihapus");
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data user gagal dihapus");
+            console.log(error);
+            return createResponseObject(
+                false,
+                "Data user gagal dihapus",
+                error.message
+            );
         }
-    }
-
-}
+    },
+};

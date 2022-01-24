@@ -3,51 +3,55 @@ const caseStudyService = require("./case-study.service");
 
 module.exports = {
     index: async (req, res) => {
-        const { success, message, data } = await caseStudyService.getAll()
+        const resObj = await caseStudyService.getAll();
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     show: async (req, res) => {
-        const { success, message, data } = await caseStudyService.getOne(req.params.id)
+        const resObj = await caseStudyService.getOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     showTable: async (req, res) => {
-        const { success, message, data } = await caseStudyService.getOneDetail(req.params.id, req.params.tablename)
+        const resObj = await caseStudyService.getOneDetail(
+            req.params.id,
+            req.params.tablename
+        );
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
     store: async (req, res) => {
-        const { success, message, data } = await caseStudyService.insert(req.body, req.user)
+        if (!req.file)
+            return res
+                .status(400)
+                .json(
+                    createResponseObject(
+                        "fail",
+                        null,
+                        "Format file tidak didukung"
+                    )
+                );
 
-        if (!success) return res.status(500).json({ success, message })
+        const resObj = await caseStudyService.store(
+            req.body.name,
+            req.user,
+            req.file
+        );
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
-    },
-    upload: async (req, res) => {
-        if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"))
-
-        caseStudyService.insertSQL(req.params.id, req.body, req.user, req.file)
-            .then(({ success, message }) => {
-                if (!success) return res.status(500).json({ success, message })
-
-                return res.status(200).json({ success, message })
-            })
-            .catch(({ success, message }) => {
-                return res.status(500).json({ success, message })
-            })
+        return res.status(201).json(resObj);
     },
     destroy: async (req, res) => {
-        const { success, message, data } = await caseStudyService.deleteOne(req.params.id)
+        const resObj = await caseStudyService.deleteOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
-    }
+        return res.status(201).json(resObj);
+    },
 };

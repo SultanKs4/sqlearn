@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `auto_assess_tes`
+-- Database: `sqlearn_cs_auto_assess_tes`
 --
 
 -- --------------------------------------------------------
