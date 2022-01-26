@@ -65,14 +65,12 @@ function typeCheck(obj, arr = []) {
           { type: 'number', value: 1 },
           { type: 'single_quote_string', value: 't' }
         ] */
-        let res = type;
         if (Array.isArray(obj.value)) {
             arr = obj.value.map((e) => {
                 return exprCheck(e);
             });
-            res = arr.join("_");
         }
-        return res;
+        return arr;
     } else if (type == "function" || type == "aggr_func") {
         /*         {
             type: 'function',
@@ -148,12 +146,13 @@ function getTable(tableArr) {
     return tableArr;
 }
 
-function getStatement(arr) {
+function getStatement(arr, statement = null) {
     if (Array.isArray(arr)) {
-        let arrFlat = arr.map((e) => {
+        arr = arr.map((e) => {
             return exprCheck(e);
         });
-        return arrFlat.flat(Infinity);
+        if (statement != "values") arr = arr.flat(Infinity).join("_");
+        return arr;
     }
     return arr;
 }
@@ -186,15 +185,15 @@ function parseFeatureNode(ast) {
             let from = getTable(ast.from);
             let where = ast.where ? [exprCheck(ast.where)].flat(Infinity) : null;
             let having = ast.having ? [exprCheck(ast.having)].flat(Infinity) : null;
-            let groupBy = getStatement(ast.groupby);
-            let orderBy = getStatement(ast.orderby);
+            let groupBy = getStatement(ast.groupby, "groupby");
+            let orderBy = getStatement(ast.orderby, "orderby");
             let limit = getLimit(ast.limit);
             obj = { from, where, groupBy, having, orderBy, limit };
             break;
         case "insert":
             let table = getTable(ast.table);
             column = ast.columns ? [...table, ...ast.columns] : table;
-            let values = getStatement(ast.values);
+            let values = getStatement(ast.values, "values");
             let partition = ast.partition;
             let onDuplicateUpdate = getOnDuplicateUpdate(ast.on_duplicate_update);
             obj = { values, partition, onDuplicateUpdate };

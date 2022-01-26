@@ -36,7 +36,7 @@ function getSimilarity(query1, query2) {
 
 function getFeatureVector(query) {
     const { success, featureVector, message } = parseSQL(query);
-    const featureVectorLC = featureVector ? featureVector.map((v) => v[0].toLowerCase()) : null;
+    const featureVectorLC = featureVector ? featureVector.map((v) => v.toLowerCase()) : null;
     return {
         success,
         featureVector: featureVectorLC,
@@ -192,11 +192,15 @@ function getVectorizedFeatures(ast) {
         if (ast[key]) {
             const prefix = key.toLowerCase();
             ast[key].forEach((feature, index) => {
-                let str =
-                    key == "values"
-                        ? `${prefix}_${index}_${feature.toLowerCase()}`
-                        : `${prefix}_${feature.toLowerCase()}`;
-                vectorizedFeatures.push([str]);
+                let strArr = [];
+                if (prefix == "values") {
+                    feature.forEach((val) => {
+                        strArr.push(`${prefix}_${index + 1}_${val.toLowerCase()}`);
+                    });
+                } else {
+                    strArr.push(`${prefix}_${feature.toLowerCase()}`);
+                }
+                vectorizedFeatures.push(...strArr);
             });
         }
     });

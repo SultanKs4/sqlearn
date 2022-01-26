@@ -14,7 +14,10 @@ function docToDocIndex(documents) {
 
 function getTF(documentIndex, feature, documents) {
     if (documentIndex[documents] && documentIndex[documents][feature]) {
-        return documentIndex[documents][feature] / Object.keys(documentIndex[documents]).length;
+        return (
+            documentIndex[documents][feature] /
+            Object.values(documentIndex[documents]).reduce((prev, curr) => prev + curr)
+        );
     }
     return 0;
 }
