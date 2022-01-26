@@ -34,8 +34,11 @@ import {
   TeamOutlined,
   FormOutlined,
 } from "@ant-design/icons";
+import { useRouter } from "next/router";
 
 function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
+  const router = useRouter();
+
   if (isLoading) {
     let skeleton = ["", ""];
     return (
@@ -62,7 +65,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
     case "list-kelas-dosen":
       icon = <LaptopOutlined />;
       break;
-
     case "jadwal-dosen":
       emptyDescription = "Jadwal";
       icon = (
@@ -95,7 +97,14 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         />
       );
       break;
-
+    case "daftar-mahasiswa-per-kelas":
+      emptyDescription = "Mahasiswa";
+      icon = (
+        <UserOutlined
+          style={{ fontSize: "3em", color: "gray", marginTop: "1em" }}
+        />
+      );
+      break;
     default:
       break;
   }
@@ -123,7 +132,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <List.Item style={{ padding: 0 }}>
-              <Card style={{ width: "100vw" }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
                 <Row justify="space-around">
                   <Col span={18}>
                     <Row gutter={50}>
@@ -198,20 +207,35 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   <Col span={6}>
                     <Row gutter={20} justify="end">
                       <Col>
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editKelas(item)}
-                        ></Button>
+                        <Tooltip title="Preview Kelas">
+                          <Button
+                            type="primary"
+                            icon={<SearchOutlined />}
+                            onClick={() =>
+                              router.push(`/dosen/kelas/${item.id}`)
+                            }
+                          />
+                        </Tooltip>
                       </Col>
                       <Col>
-                        <Button
-                          type="danger"
-                          icon={<DeleteOutlined />}
-                          size={"medium"}
-                          onClick={() => props.deleteKelas(item)}
-                        ></Button>
+                        <Tooltip title="Ubah Kelas">
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editKelas(item)}
+                          />
+                        </Tooltip>
+                      </Col>
+                      <Col>
+                        <Tooltip title="Hapus Kelas">
+                          <Button
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            size={"medium"}
+                            onClick={() => props.deleteKelas(item)}
+                          />
+                        </Tooltip>
                       </Col>
                     </Row>
                   </Col>
@@ -399,7 +423,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
-                <Card style={{ width: "100vw" }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
                   <Row justify="space-around" style={{ marginTop: "1em" }}>
                     <Col span={18}>
                       <Row gutter={[50]}>
@@ -485,7 +509,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
-                <Card style={{ width: "100vw" }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
                   <Row justify="space-between" style={{ marginTop: "1em" }}>
                     <Col span={18}>
                       <Row gutter={[50]}>
@@ -553,7 +577,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <List.Item style={{ padding: 0 }}>
-              <Card style={{ width: "100vw" }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
                 <Row justify="space-between">
                   <Col span={20}>
                     <Row>
@@ -647,7 +671,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           )}
         />
       );
-
     case "data-soal-dosen":
       return (
         <List
@@ -719,6 +742,55 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                 </Card>
               </List.Item>
             </Badge.Ribbon>
+          )}
+        />
+      );
+    case "daftar-mahasiswa-per-kelas":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={20}>
+                      <Col span={8}>
+                        <UserOutlined />
+                        <Typography.Text
+                          style={{ marginLeft: "1em" }}
+                          children={item?.nama}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <Typography.Text children={item?.nim} />
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.editMahasiswa(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => props.deleteMahasiswa(item)}
+                        ></Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
           )}
         />
       );

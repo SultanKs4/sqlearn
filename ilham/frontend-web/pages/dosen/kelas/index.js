@@ -1,31 +1,17 @@
 import { React, useState, useEffect } from "react";
 
 import Head from "next/head";
-import PageLayout from "../../components/PageLayout";
-import EmptyData from "../../components/EmptyData";
-import { mockGetKelas } from "../../utils/remote-data/dosen/KelasCRUD";
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert,
-} from "antd";
+import { mockGetKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import { Typography, Row, Col, Button, Alert } from "antd";
 
-import {
-  PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
-import ModalCustom from "../../components/Modal";
-import FormTambahKelas from "../../components/dosen/Kelas/FormTambahKelas";
-import FormHapusKelas from "../../components/dosen/Kelas/FormHapusKelas";
-import FormEditKelas from "../../components/dosen/Kelas/FormEditKelas";
-import ListComponent from "../../components/List";
+import ModalCustom from "../../../components/Modal";
+import FormTambahKelas from "../../../components/dosen/Kelas/FormTambahKelas";
+import FormHapusKelas from "../../../components/dosen/Kelas/FormHapusKelas";
+import FormEditKelas from "../../../components/dosen/Kelas/FormEditKelas";
+import ListComponent from "../../../components/List";
+import PageLayout from "../../../components/PageLayout";
 
 function DaftarKelas() {
   const [dataKelas, setDataKelas] = useState([]);

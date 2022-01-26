@@ -67,24 +67,32 @@ function FormTambahJadwal({
             />
           </Form.Item>
         </Col>
+
         <Col>
           <Form.Item
-            name="paket_soal"
-            label="Paket Soal"
+            name="kategori"
+            label="Kategori"
+            tooltip={{
+              title: `Jadwal ini menggunakan kategori ${
+                isObjectEmpty(selectedKategori)
+                  ? " yang dipilih "
+                  : selectedKategori
+              }`,
+            }}
             rules={[
               {
                 required: true,
-                message: "Pilih paket soal!",
+                message: "Mohon pilih Kategori!",
               },
             ]}
           >
             <Select
-              placeholder="Pilih paket soal . . ."
+              placeholder="Pilih Kategori . . ."
+              onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              {dataPaketSoal.map((item) => (
-                <Option key={item?.id_paket}> {item?.nama} </Option>
-              ))}
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -160,31 +168,25 @@ function FormTambahJadwal({
             </Select>
           </Form.Item>
         </Col>
+
         <Col>
           <Form.Item
-            name="kategori"
-            label="Kategori"
-            tooltip={{
-              title: `Jadwal ini menggunakan kategori ${
-                isObjectEmpty(selectedKategori)
-                  ? " yang dipilih "
-                  : selectedKategori
-              }`,
-            }}
+            name="paket_soal"
+            label="Paket Soal"
             rules={[
               {
                 required: true,
-                message: "Mohon pilih Kategori!",
+                message: "Pilih paket soal!",
               },
             ]}
           >
             <Select
-              placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
+              placeholder="Pilih paket soal . . ."
               style={{ width: "200px" }}
             >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+              {dataPaketSoal.map((item) => (
+                <Option key={item?.id_paket}> {item?.nama} </Option>
+              ))}
             </Select>
           </Form.Item>
         </Col>

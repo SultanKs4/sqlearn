@@ -13,7 +13,7 @@ import {
 } from "antd";
 import {
   ConsoleSqlOutlined,
-  DatabaseOutlined,
+  InboxOutlined,
   PlusOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
@@ -85,26 +85,22 @@ function FormEditSoal({
     setVisible(false);
   };
 
-  // useEffect(() => {
-  //   if (currentSoal?.kategori === "Close-Ended")
-  //     form.setFieldsValue({
-  //       nama_soal: currentSoal?.nama,
-  //       kategori: selectedKategori,
-  //       soal: currentSoal?.soal,
-  //       jawaban: tags,
-  //       studi_kasus: currentSoal?.studi_kasus,
-  //       dosen_pembuat: currentSoal?.dosen_pembuat,
-  //     });
-  //   else
-  //     form.setFieldsValue({
-  //       nama_soal: currentSoal?.nama,
-  //       kategori: selectedKategori,
-  //       soal: currentSoal?.soal,
-  //       jawaban: currentSoal?.jawaban,
-  //       studi_kasus: currentSoal?.studi_kasus,
-  //       dosen_pembuat: currentSoal?.dosen_pembuat,
-  //     });
-  // }, [currentSoal, tags, selectedKategori]);
+  const normFile = (e) => console.log("Upload event:", e);
+
+  useEffect(() => {
+    form.setFieldsValue({
+      ...form,
+      opsi_jawaban: tags,
+    });
+  }, [tags]);
+
+  const validateImageFile = (file) => {
+    if (!file.type.includes("image")) {
+      console.log("bukan gambar", file);
+      message.error(`${file.name} is not an image`);
+    }
+    return file.type.includes("image") ? true : Upload.LIST_IGNORE;
+  };
 
   const showInput = () => {
     setInputVisible(true);
@@ -176,7 +172,7 @@ function FormEditSoal({
       {selectedKategori === "Open-Ended" ? (
         <>
           <Form.List
-            name="jawaban"
+            name="opsi_jawaban"
             rules={[
               {
                 validator: async (_, names) => {
@@ -244,16 +240,7 @@ function FormEditSoal({
           </Form.List>
         </>
       ) : (
-        <Form.Item
-          name="jawaban"
-          label="Opsi Jawaban"
-          rules={[
-            {
-              required: true,
-              message: "Mohon masukkan opsi jawaban!",
-            },
-          ]}
-        >
+        <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
           {tags.map((item, idx) => (
             <Tag key={idx} closable onClose={() => onRemoveTags(item)}>
               {item}
@@ -279,6 +266,44 @@ function FormEditSoal({
         </Form.Item>
       )}
 
+      <Form.Item
+        name="jawaban_benar"
+        label="Jawaban Benar"
+        rules={[
+          {
+            required: true,
+            message: "Mohon masukkan jawaban yang benar!",
+          },
+        ]}
+      >
+        <Input
+          prefix={<ConsoleSqlOutlined />}
+          placeholder={` Jawaban Benar . . .`}
+        />
+      </Form.Item>
+      <Form.Item label="Preview Hasil">
+        <Form.Item
+          name="preview_hasil"
+          valuePropName="fileList"
+          getValueFromEvent={normFile}
+          noStyle
+        >
+          <Upload.Dragger
+            multiple={false}
+            beforeUpload={(file) => validateImageFile(file)}
+            name="files"
+            action="/upload.do"
+          >
+            <p className="ant-upload-drag-icon">
+              <InboxOutlined />
+            </p>
+            <p className="ant-upload-text">
+              Click or drag file to this area to upload
+            </p>
+            <p className="ant-upload-hint">Hanya bisa upload gambar </p>
+          </Upload.Dragger>
+        </Form.Item>
+      </Form.Item>
       <Row justify="space-between" gutter={8}>
         <Col span={12}>
           <Form.Item

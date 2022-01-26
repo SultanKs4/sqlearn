@@ -104,7 +104,7 @@ const mockGetSoalByID = async (jadwalID) => {
               "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
             teksSoal:
               "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
-            kategori: "Close-Ended",
+            kategori: "Open-Ended",
           },
         ],
       });
