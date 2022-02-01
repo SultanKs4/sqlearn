@@ -3,24 +3,9 @@ import { React, useEffect, useState } from "react";
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert,
-  Radio,
-  Divider,
-} from "antd";
+import { Typography, Row, Col, Button, Alert, Radio } from "antd";
 
-import {
-  PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
 import FormEditSoal from "../../components/dosen/Soal/FormEditSoal";

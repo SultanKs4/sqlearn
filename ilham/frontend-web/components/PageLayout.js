@@ -25,8 +25,8 @@ function PageLayout({ children, role, username = "1841720076" }) {
     </Menu>
   );
 
-  // mock login
   if (role === "mahasiswa") username = "1841720076";
+  else if (role === "admin") username = "admincoba";
   else username = "Dosen Coba";
 
   return (

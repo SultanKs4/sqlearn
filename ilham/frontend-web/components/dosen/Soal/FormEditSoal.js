@@ -91,11 +91,6 @@ function FormEditSoal({
     };
   }, []);
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
-
   const handleCancel = () => {
     console.log("Clicked cancel button");
     setVisible(false);

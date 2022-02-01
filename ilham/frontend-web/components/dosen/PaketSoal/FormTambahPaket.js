@@ -9,13 +9,6 @@ function FormTambahPaket({
   handleSubmit,
   ...props
 }) {
-  const [selectedKategori, setSelectedKategori] = useState();
-
-  const onChangeKategori = (kategori) => {
-    console.log(kategori);
-    setSelectedKategori(kategori);
-  };
-
   const onFinish = (values) => {
     setFormObj(values);
     handleSubmit(values);
@@ -60,7 +53,6 @@ function FormTambahPaket({
             >
               <Select
                 placeholder="Pilih Kategori . . ."
-                onChange={onChangeKategori}
                 style={{ width: "200px" }}
               >
                 <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>

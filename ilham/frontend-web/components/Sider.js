@@ -6,8 +6,10 @@ import {
   FileTextOutlined,
   CodeSandboxOutlined,
   TeamOutlined,
+  FormOutlined,
   HomeOutlined,
   BarChartOutlined,
+  ContainerOutlined,
 } from "@ant-design/icons";
 
 import { React } from "react";
@@ -21,19 +23,10 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
   const router = useRouter();
 
   const onCollapse = (statusCollapse) => setCollapsed(statusCollapse);
-
-  return (
-    <Sider
-      collapsible
-      collapsed={collapsed}
-      onCollapse={onCollapse}
-      className={styles.sticky_sider}
-      style={{
-        zIndex: collapsed ? 1 : 2,
-      }}
-    >
-      <div className="logo" />
-      {role === "dosen" ? (
+  let siderElement;
+  switch (role) {
+    case "dosen":
+      siderElement = (
         <Menu
           theme="dark"
           defaultSelectedKeys={["jadwal"]}
@@ -96,7 +89,10 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             Nilai Mahasiswa
           </Menu.Item>
         </Menu>
-      ) : (
+      );
+      break;
+    case "mahasiswa":
+      siderElement = (
         <Menu
           theme="dark"
           defaultSelectedKeys={["beranda"]}
@@ -134,7 +130,65 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             Lihat Nilai
           </Menu.Item>
         </Menu>
-      )}
+      );
+      break;
+    case "admin":
+      siderElement = (
+        <Menu
+          theme="dark"
+          defaultSelectedKeys={["daftar-dosen"]}
+          selectedKeys={router.pathname.split("/")[2]}
+          mode="inline"
+        >
+          <Menu.Item
+            key="daftar-dosen"
+            icon={<TeamOutlined />}
+            onClick={() => {
+              router.push("/admin/daftar-dosen");
+            }}
+          >
+            Daftar Dosen
+          </Menu.Item>
+          <Menu.Item
+            key="konfigurasi-penilaian"
+            icon={<ContainerOutlined />}
+            onClick={() => {
+              router.push("/admin/konfigurasi-penilaian");
+            }}
+          >
+            {" "}
+            Konfigurasi Penilaian
+          </Menu.Item>
+          <Menu.Item
+            key="edit-profile"
+            icon={<FormOutlined />}
+            onClick={() => {
+              router.push("/admin/edit-profile");
+            }}
+          >
+            {" "}
+            Ubah Profile
+          </Menu.Item>
+        </Menu>
+      );
+      break;
+
+    default:
+      break;
+  }
+
+  return (
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={onCollapse}
+      className={styles.sticky_sider}
+      style={{
+        zIndex: collapsed ? 1 : 2,
+      }}
+    >
+      <div className="logo" />
+      {siderElement}
     </Sider>
   );
 }

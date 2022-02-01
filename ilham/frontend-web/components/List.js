@@ -794,6 +794,55 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           )}
         />
       );
+    case "admin-data-dosen":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item) => (
+            <List.Item style={{ padding: 0 }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={20}>
+                      <Col span={8}>
+                        <UserOutlined />
+                        <Typography.Text
+                          style={{ marginLeft: "1em" }}
+                          children={item?.nama_dosen}
+                        />
+                      </Col>
+                      <Col span={6}>
+                        <Typography.Text children={item?.nomor_induk} />
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={6}>
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.editDosen(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => props.deleteDosen(item)}
+                        ></Button>
+                      </Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
+      );
   }
 }
 

@@ -2,29 +2,15 @@ import { React, useEffect, useState } from "react";
 
 import Head from "next/head";
 
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert,
-} from "antd";
+import { Typography, Row, Col, Button, Alert } from "antd";
 
-import {
-  PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../components/PageLayout";
 import ModalCustom from "../../../components/Modal";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import ListComponent from "../../../components/List";
 import FormTambahPaket from "../../../components/dosen/PaketSoal/FormTambahPaket";
-import FormEditPaket from "../../../components/dosen/PaketSoal/FormEditPaket";
 import FormHapusPaket from "../../../components/dosen/PaketSoal/FormHapusPaket";
 import { useRouter } from "next/router";
 import RadioFilterCategory from "../../../components/RadioFilterCategory";
@@ -61,6 +47,10 @@ function PaketSoal() {
     });
   }, []);
 
+  useEffect(() => {
+    console.log(isAlertActive);
+  }, [isAlertActive]);
+
   const previewPaket = (id) => {
     router.push(`/dosen/paket-soal/${id}`);
   };
@@ -90,7 +80,8 @@ function PaketSoal() {
     // ...
     handleToggleModal();
     handleToggleAlert();
-    setAlertMessage(`Data Paket ${formPaket.paket_nama} berhasil dihapus`);
+    setAlertMessage(`Data Paket ${formPaket.nama} berhasil dihapus`);
+    setTimeout(() => handleToggleAlert(false), 5000);
     console.log("Data terhapus", formPaket);
   };
 
