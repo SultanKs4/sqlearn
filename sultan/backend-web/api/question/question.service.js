@@ -167,13 +167,20 @@ module.exports = {
     },
     insert: async (data, fileName, user) => {
         try {
+            const caseStudy = await CaseStudy.findByPk(data.case_study, {
+                raw: true,
+            });
+            const label = await QuestionLabel.findByPk(data.label_id, {
+                raw: true,
+            });
             const newQuestion = await Question.create({
                 text: data.text,
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
-                case_study_id: data.case_study,
+                case_study_id: caseStudy.id,
                 user_id: user.id,
+                label_id: label.id,
             });
 
             return createResponseObject(
@@ -181,8 +188,7 @@ module.exports = {
                 "Data pertanyaan berhasil ditambahkan",
                 newQuestion
             );
-        } catch (err) {
-            console.log(err);
+        } catch (error) {
             return createResponseObject(
                 "error",
                 "Data pertanyaan gagal ditambahkan",
@@ -193,7 +199,7 @@ module.exports = {
     deleteOne: async (id) => {
         try {
             const question = await Question.findByPk(id, {
-                raw: "success",
+                raw: true,
             });
             if (!question) throw new Error("Tidak ada pertanyaan yang dihapus");
 

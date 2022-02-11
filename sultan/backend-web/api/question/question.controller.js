@@ -27,7 +27,6 @@ module.exports = {
         return res.status(200).json(resObj);
     },
     store: async (req, res) => {
-        console.log(req.body);
         if (!req.file)
             return res
                 .status(400)

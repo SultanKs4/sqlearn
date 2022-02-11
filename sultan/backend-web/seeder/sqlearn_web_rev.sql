@@ -152,16 +152,18 @@ INSERT INTO `questions` (`id`, `text`, `answer`, `answer_pic`, `tables`, `case_s
 
 CREATE TABLE `questions_label` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `name` varchar(100) NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `questions_label`
 --
 
-INSERT INTO `questions_label` (`id`, `name`) VALUES
-(1, 'Open-Ended'),
-(2, 'Close-Ended');
+INSERT INTO `questions_label` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
+(1, 'Open-Ended', '2021-06-17 03:46:54', '2021-06-17 03:46:54'),
+(2, 'Close-Ended', '2021-06-17 03:46:54', '2021-06-17 03:46:54');
 
 -- --------------------------------------------------------
 
