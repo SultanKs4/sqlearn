@@ -7,8 +7,8 @@ router.get("/", containerController.index);
 router.get("/:id", containerController.show);
 router.post("/", containerController.store);
 router.put("/:id", containerController.update);
-router.put("/:id/add/", containerController.addQuestion);
-router.put("/:id/remove/:question", containerController.removeQuestion);
-router.delete("/:id", containerController.destroy)
+router.post("/:id/add/", containerController.addQuestion);
+router.delete("/:id/remove/:question", containerController.removeQuestion);
+router.delete("/:id", containerController.destroy);
 
 module.exports = router;

@@ -99,6 +99,7 @@ CREATE TABLE `containers` (
   `id` int(11) NOT NULL,
   `description` text DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `label_id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -107,8 +108,8 @@ CREATE TABLE `containers` (
 -- Dumping data for table `containers`
 --
 
-INSERT INTO `containers` (`id`, `description`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(5, 'Paket Tes', 5, '2021-06-17 04:38:50', '2021-06-17 04:38:50');
+INSERT INTO `containers` (`id`, `description`, `user_id`, `label_id`, `createdAt`, `updatedAt`) VALUES
+(5, 'Paket Tes', 5, 1, '2021-06-17 04:38:50', '2021-06-17 04:38:50');
 
 -- --------------------------------------------------------
 
@@ -810,7 +811,8 @@ ALTER TABLE `class_schedules`
 --
 ALTER TABLE `containers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `label_id` (`label_id`);
 
 --
 -- Indexes for table `questions`
@@ -1009,7 +1011,8 @@ ALTER TABLE `class_schedules`
 -- Constraints for table `containers`
 --
 ALTER TABLE `containers`
-  ADD CONSTRAINT `containers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `containers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `containers_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `questions_label` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `questions`

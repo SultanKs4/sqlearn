@@ -1,7 +1,7 @@
-const { Sequelize } = require('sequelize');
+const { Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const CaseStudy = require("../case-study/case-study.model");
-const QuestionContainer = require('../question-container/question-container.model');
+const QuestionContainer = require("../question-container/question-container.model");
 const Question = require("../question/question.model");
 const User = require("../user/user.model");
 const Container = require("./container.model");
@@ -11,24 +11,28 @@ module.exports = {
         try {
             const containers = await Container.findAll({
                 attributes: {
-                    include: [[Sequelize.fn("COUNT", Sequelize.col("questions.id")), "questionCount"]]
+                    include: [[Sequelize.fn("COUNT", Sequelize.col("questions.id")), "questionCount"]],
                 },
                 include: [
                     {
                         model: Question,
                         as: "questions",
-                        attributes: []
+                        attributes: [],
                     },
                     {
-                        model: User
-                    }
+                        model: User,
+                    },
                 ],
-                group: ['id']
-            })
-            return createResponseObject(true, "Data kontainer berhasil didapatkan", containers);
+                group: ["id"],
+            });
+            return createResponseObject("success", "Data kontainer berhasil didapatkan", containers);
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data kontainer gagal didapatkan");
+            console.log(error);
+            return createResponseObject(
+                "error",
+                "Data kontainer gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
@@ -38,24 +42,31 @@ module.exports = {
                 include: {
                     model: Question,
                     as: "questions",
-                    attributes: ['id', 'text', 'answer'],
+                    attributes: ["id", "text", "answer"],
                     through: { attributes: [] },
                     include: [
                         {
                             model: CaseStudy,
-                            attributes: ['id', 'name']
+                            attributes: ["id", "name"],
                         },
                         {
                             model: User,
-                            attributes: ['id', 'name']
-                        }
-                    ]
-                }
-            })
-            return createResponseObject(true, "Data kontainer berhasil didapatkan", containerById)
+                            attributes: ["id", "name"],
+                        },
+                    ],
+                },
+            });
+
+            if (containerById == null) throw new Error("container not found");
+
+            return createResponseObject("success", "Data kontainer berhasil didapatkan", containerById);
         } catch (error) {
-            console.error(error)
-            return createResponseObject(false, "Data kontainer gagal didapatkan");
+            console.error(error);
+            return createResponseObject(
+                "error",
+                "Data kontainer gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
@@ -64,49 +75,61 @@ module.exports = {
             const newContainer = await Container.create({
                 type: data.type,
                 description: data.description,
-                user_id: user.id
-            })
-            return createResponseObject(true, "Data kontainer baru berhasil ditambahkan", newContainer)
+                user_id: user.id,
+            });
+            return createResponseObject("success", "Data kontainer baru berhasil ditambahkan", newContainer);
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data kontainer baru gagal ditambahkan")
+            console.log(error);
+            return createResponseObject(
+                "error",
+                "Data kontainer baru gagal ditambahkan",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
     update: async (id, data) => {
         try {
-            const container = await Container.findByPk(id)
-            if (!container) return createResponseObject(false, "Tidak ada data kontainer didapatkan");
+            const container = await Container.findByPk(id);
+            if (!container) return createResponseObject("error", "Tidak ada data kontainer didapatkan");
 
-            Object.keys(data).forEach(val => {
-                container[val] = data[val]
-            })
+            Object.keys(data).forEach((val) => {
+                container[val] = data[val];
+            });
 
-            await container.save()
+            await container.save();
 
-            return createResponseObject(true, "Data kontainer berhasil diperbarui", container);
+            return createResponseObject("success", "Data kontainer berhasil diperbarui", container);
         } catch (error) {
-            return createResponseObject(false, "Data kontainer gagal diperbarui");
+            return createResponseObject(
+                "error",
+                "Data kontainer gagal diperbarui",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
     addQuestion: async (containerId, { questions: questionIds }) => {
         try {
-            const container = await Container.findByPk(containerId)
-            if (!container) return createResponseObject(false, "Tidak ada data kontainer didapatkan");
+            const container = await Container.findByPk(containerId);
+            if (!container) return createResponseObject("error", "Tidak ada data kontainer didapatkan");
 
-            const questions = questionIds.map(id => {
+            const questions = questionIds.map((id) => {
                 return {
                     question_id: id,
-                    container_id: containerId
-                }
-            })
-            const newQuestionContainer = await QuestionContainer.bulkCreate(questions, { returning: true })
+                    container_id: containerId,
+                };
+            });
+            const newQuestionContainer = await QuestionContainer.bulkCreate(questions, { returning: true });
 
-            return createResponseObject(true, "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);
+            return createResponseObject("success", "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Gagal memasukkan pertanyaan ke kontainer");
+            console.log(error);
+            return createResponseObject(
+                "error",
+                "Gagal memasukkan pertanyaan ke kontainer",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
@@ -115,44 +138,49 @@ module.exports = {
             const questionContainer = await QuestionContainer.findOne({
                 where: {
                     question_id: questionId,
-                    container_id: containerId
-                }
-            })
-            if (!questionContainer) return createResponseObject(false, "Pertanyaan tidak terdapat di dalam kontainer tersebut");
+                    container_id: containerId,
+                },
+            });
+            if (!questionContainer)
+                return createResponseObject("error", "Pertanyaan tidak terdapat di dalam kontainer tersebut");
 
             await QuestionContainer.destroy({
                 where: {
                     question_id: questionId,
-                    container_id: containerId
-                }
-            })
+                    container_id: containerId,
+                },
+            });
 
-            return createResponseObject(true, "Berhasil mengeluarkan pertanyaan dari kontainer");
+            return createResponseObject("success", "Berhasil mengeluarkan pertanyaan dari kontainer");
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Gagal mengeluarkan pertanyaan dari kontainer");
+            console.log(error);
+            return createResponseObject(
+                "error",
+                "Gagal mengeluarkan pertanyaan dari kontainer",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
     destroy: async (id) => {
         try {
-            const container = await Container.findByPk(id)
-            if (!container) return createResponseObject(false, "Tidak ada kontainer yang dihapus")
+            const container = await Container.findByPk(id);
+            if (!container) return createResponseObject("error", "Tidak ada kontainer yang dihapus");
 
             await Container.destroy({
                 where: {
-                    id
-                }
-            })
+                    id,
+                },
+            });
 
-            return createResponseObject(true, "Data kontainer berhasil dihapus")
-
-
+            return createResponseObject("success", "Data kontainer berhasil dihapus");
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data kontainer gagal dihapus");
+            console.log(error);
+            return createResponseObject(
+                "error",
+                "Data kontainer gagal dihapus",
+                error == null ? null : error.message ? error.message : error
+            );
         }
-    }
-
-
-}
+    },
+};
