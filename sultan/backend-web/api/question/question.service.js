@@ -13,24 +13,17 @@ const QuestionLabel = require("../questions-label/question-label.model");
 module.exports = {
     getAll: async (query = null) => {
         try {
-            const { dosen, case_study } = query;
-            let whereDosen = {};
-            let whereCaseStudy = {};
-
-            if (dosen) whereDosen = { id: dosen };
-            if (case_study) whereCaseStudy = { id: case_study };
-
             const questions = await Question.findAll({
                 include: [
                     {
                         model: User,
                         attributes: ["id", "name"],
-                        where: whereDosen,
+                        where: query.dosen ? { id: query.dosen } : {},
                     },
                     {
                         model: CaseStudy,
                         attributes: ["id", "name"],
-                        where: whereCaseStudy,
+                        where: query.case_study ? { id: query.case_study } : {},
                     },
                     {
                         model: QuestionLabel,
@@ -38,11 +31,7 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject(
-                "success",
-                "Data pertanyaan berhasil didapatkan",
-                questions
-            );
+            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", questions);
         } catch (error) {
             console.log(error);
             return createResponseObject(
@@ -54,13 +43,6 @@ module.exports = {
     },
     getAllExclude: async (containerId, query = null) => {
         try {
-            const { dosen, case_study } = query;
-            let whereDosen = {};
-            let whereCaseStudy = {};
-
-            if (dosen) whereDosen = { id: dosen };
-            if (case_study) whereCaseStudy = { id: case_study };
-
             const containers = await Container.findByPk(containerId, {
                 attributes: [],
                 include: {
@@ -71,21 +53,21 @@ module.exports = {
                 },
             });
 
-            const existedQuestionIds = containers["questions"].map(
-                (val) => val.id
-            );
+            if (containers == null) throw new Error("container not found");
+
+            const existedQuestionIds = containers["questions"].map((val) => val.id);
 
             const questions = await Question.findAll({
                 include: [
                     {
                         model: User,
                         attributes: ["id", "name"],
-                        where: whereDosen,
+                        where: query.dosen ? { id: query.dosen } : {},
                     },
                     {
                         model: CaseStudy,
                         attributes: ["id", "name"],
-                        where: whereCaseStudy,
+                        where: query.case_study ? { id: query.case_study } : {},
                     },
                     {
                         model: QuestionLabel,
@@ -98,11 +80,7 @@ module.exports = {
                     },
                 },
             });
-            return createResponseObject(
-                "success",
-                "Data pertanyaan berhasil didapatkan",
-                questions
-            );
+            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", questions);
         } catch (error) {
             console.log(error);
             return createResponseObject(
@@ -129,13 +107,13 @@ module.exports = {
                         attributes: ["id", "name"],
                     },
                 ],
-                raw: "success",
-                nest: "success",
+                raw: true,
+                nest: true,
             });
 
-            const tables = question["tables"]
-                .split(",")
-                .map((val) => val.trim());
+            if (question == null) throw new Error("question not found");
+
+            const tables = question["tables"].split(",").map((val) => val.trim());
             question["tables"] = await tables.reduce(async (acc, curr) => {
                 const obj = await acc;
                 const res = await axios.get(
@@ -151,11 +129,7 @@ module.exports = {
             //     question['tables'][table] = res.data
             // })
 
-            return createResponseObject(
-                "success",
-                "Data pertanyaan berhasil didapatkan",
-                question
-            );
+            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", question);
         } catch (error) {
             console.error(error);
             return createResponseObject(
@@ -170,9 +144,13 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(data.case_study, {
                 raw: true,
             });
+            if (caseStudy == null) throw new Error("case study not found");
+
             const label = await QuestionLabel.findByPk(data.label_id, {
                 raw: true,
             });
+            if (label == null) throw new Error("label not found");
+
             const newQuestion = await Question.create({
                 text: data.text,
                 answer: data.answer,
@@ -183,11 +161,41 @@ module.exports = {
                 label_id: label.id,
             });
 
+            return createResponseObject("success", "Data pertanyaan berhasil ditambahkan", newQuestion);
+        } catch (error) {
             return createResponseObject(
-                "success",
-                "Data pertanyaan berhasil ditambahkan",
-                newQuestion
+                "error",
+                "Data pertanyaan gagal ditambahkan",
+                error == null ? null : error.message ? error.message : error
             );
+        }
+    },
+    update: async (questionId, data, fileName, user) => {
+        try {
+            const caseStudy = await CaseStudy.findByPk(data.case_study, {
+                raw: true,
+            });
+            if (caseStudy == null) throw new Error("case study not found");
+
+            const label = await QuestionLabel.findByPk(data.label_id, {
+                raw: true,
+            });
+            if (label == null) throw new Error("label not found");
+
+            const question = await Question.update(
+                {
+                    text: data.text,
+                    answer: data.answer,
+                    answer_pic: fileName,
+                    tables: data.tables,
+                    case_study_id: caseStudy.id,
+                    user_id: user.id,
+                    label_id: label.id,
+                },
+                { where: { id: questionId } }
+            );
+
+            return createResponseObject("success", "Data pertanyaan berhasil diperbarui", question);
         } catch (error) {
             return createResponseObject(
                 "error",
@@ -201,7 +209,7 @@ module.exports = {
             const question = await Question.findByPk(id, {
                 raw: true,
             });
-            if (!question) throw new Error("Tidak ada pertanyaan yang dihapus");
+            if (question == null) throw new Error("question not found");
 
             await Question.destroy({
                 where: {
@@ -209,17 +217,9 @@ module.exports = {
                 },
             });
 
-            await deleteFile(
-                path.join(
-                    __dirname,
-                    `../../uploads/images/${question["answer_pic"]}`
-                )
-            );
+            await deleteFile(path.join(__dirname, `../../uploads/images/${question["answer_pic"]}`));
 
-            return createResponseObject(
-                "success",
-                "Data pertanyaan berhasil dihapus"
-            );
+            return createResponseObject("success", "Data pertanyaan berhasil dihapus");
         } catch (error) {
             console.log(error);
             return createResponseObject(

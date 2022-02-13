@@ -10,6 +10,7 @@ router.get("/:id", questionController.show);
 router.use(verifyToken);
 router.get("/containers/:container", questionController.indexExclude);
 router.post("/", upload.single("answer_pic"), questionController.store);
+router.put("/:id", upload.single("answer_pic"), questionController.update);
 router.delete("/:id", questionController.destroy);
 
 module.exports = router;
