@@ -51,7 +51,7 @@ const mockGetSoalByID = async (jadwalID) => {
                 content: "STUDENTS",
               },
             ],
-            correct_answer: "SELECT COUNT nama FROM MAHASISWA",
+            jawaban_benar: "SELECT COUNT nama FROM MAHASISWA",
             teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
             kategori: "Close-Ended",
           },
@@ -100,7 +100,7 @@ const mockGetSoalByID = async (jadwalID) => {
                 content: "mahasiswa",
               },
             ],
-            correct_answer:
+            jawaban_benar:
               "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
             teksSoal:
               "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",

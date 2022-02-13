@@ -74,6 +74,11 @@ function FormEditSoal({
     return file.type.includes("image") ? true : Upload.LIST_IGNORE;
   };
 
+  const onFinish = (values) => {
+    setFormObj(values);
+    handleSubmit(values);
+  };
+
   const onChangeStudiKasus = (kelas) => {
     console.log(kelas);
     setSelectedStudiKasus(kelas);
