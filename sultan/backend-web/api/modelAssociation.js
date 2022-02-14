@@ -33,6 +33,7 @@ CaseStudy.belongsTo(User, { foreignKey: "user_id" });
 Question.belongsTo(User, { foreignKey: "user_id" });
 Schedule.belongsTo(User, { foreignKey: "user_id" });
 Container.belongsTo(User, { foreignKey: "user_id" });
+Container.belongsTo(QuestionLabel, { foreignKey: "label_id" });
 Question.belongsTo(CaseStudy, { foreignKey: "case_study_id" });
 Question.belongsTo(QuestionLabel, { foreignKey: "label_id" });
 Score.belongsTo(Student, { foreignKey: "student_id" });

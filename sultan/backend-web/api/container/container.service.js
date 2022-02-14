@@ -3,6 +3,7 @@ const createResponseObject = require("../../lib/createResponseObject");
 const CaseStudy = require("../case-study/case-study.model");
 const QuestionContainer = require("../question-container/question-container.model");
 const Question = require("../question/question.model");
+const QuestionLabel = require("../questions-label/question-label.model");
 const User = require("../user/user.model");
 const Container = require("./container.model");
 
@@ -21,6 +22,10 @@ module.exports = {
                     },
                     {
                         model: User,
+                    },
+                    {
+                        model: QuestionLabel,
+                        attributes: ["id", "name"],
                     },
                 ],
                 group: ["id"],
@@ -51,6 +56,10 @@ module.exports = {
                         },
                         {
                             model: User,
+                            attributes: ["id", "name"],
+                        },
+                        {
+                            model: QuestionLabel,
                             attributes: ["id", "name"],
                         },
                     ],
