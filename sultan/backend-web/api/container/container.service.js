@@ -22,6 +22,7 @@ module.exports = {
                     },
                     {
                         model: User,
+                        attributes: ["id", "name"],
                     },
                     {
                         model: QuestionLabel,
@@ -81,10 +82,13 @@ module.exports = {
 
     insert: async (data, user) => {
         try {
+            const label = QuestionLabel.findByPk(data.label_id, { raw: true });
+            if (label == null) throw new Error("label not found");
+
             const newContainer = await Container.create({
-                type: data.type,
                 description: data.description,
                 user_id: user.id,
+                label_id: label.id,
             });
             return createResponseObject("success", "Data kontainer baru berhasil ditambahkan", newContainer);
         } catch (error) {
@@ -97,16 +101,19 @@ module.exports = {
         }
     },
 
-    update: async (id, data) => {
+    update: async (id, data, user) => {
         try {
-            const container = await Container.findByPk(id);
-            if (!container) return createResponseObject("error", "Tidak ada data kontainer didapatkan");
+            const label = QuestionLabel.findByPk(data.label_id, { raw: true });
+            if (label == null) throw new Error("label not found");
 
-            Object.keys(data).forEach((val) => {
-                container[val] = data[val];
-            });
-
-            await container.save();
+            const container = await Container.update(
+                {
+                    description: data.description,
+                    user_id: user.id,
+                    label_id: label.id,
+                },
+                { where: { id: id } }
+            );
 
             return createResponseObject("success", "Data kontainer berhasil diperbarui", container);
         } catch (error) {
@@ -121,12 +128,12 @@ module.exports = {
     addQuestion: async (containerId, { questions: questionIds }) => {
         try {
             const container = await Container.findByPk(containerId);
-            if (!container) return createResponseObject("error", "Tidak ada data kontainer didapatkan");
+            if (container == null) throw new Error("container not found");
 
             const questions = questionIds.map((id) => {
                 return {
                     question_id: id,
-                    container_id: containerId,
+                    container_id: container.id,
                 };
             });
             const newQuestionContainer = await QuestionContainer.bulkCreate(questions, { returning: true });
@@ -150,8 +157,7 @@ module.exports = {
                     container_id: containerId,
                 },
             });
-            if (!questionContainer)
-                return createResponseObject("error", "Pertanyaan tidak terdapat di dalam kontainer tersebut");
+            if (questionContainer == null) throw new Error("pertanyaan tidak terdapat dalam kontainer");
 
             await QuestionContainer.destroy({
                 where: {
@@ -174,7 +180,7 @@ module.exports = {
     destroy: async (id) => {
         try {
             const container = await Container.findByPk(id);
-            if (!container) return createResponseObject("error", "Tidak ada kontainer yang dihapus");
+            if (container == null) throw new Error("container not found");
 
             await Container.destroy({
                 where: {

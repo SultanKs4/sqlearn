@@ -27,6 +27,7 @@ Container.hasMany(Schedule, { foreignKey: "container_id" });
 Session.hasMany(SessionStudentAnswer, { foreignKey: "session_id" });
 Question.hasMany(SessionStudentAnswer, { foreignKey: "question_id" });
 QuestionLabel.hasMany(Question, { foreignKey: "label_id" });
+QuestionLabel.hasMany(Container, { foreignKey: "label_id" });
 
 Class.belongsTo(User, { foreignKey: "user_id" });
 CaseStudy.belongsTo(User, { foreignKey: "user_id" });

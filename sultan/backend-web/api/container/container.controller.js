@@ -26,7 +26,7 @@ module.exports = {
     },
 
     update: async (req, res) => {
-        const resObj = await containerService.update(req.params.id, req.body);
+        const resObj = await containerService.update(req.params.id, req.body, req.user);
 
         if (resObj.status == "error") return res.status(500).json(resObj);
 
