@@ -45,9 +45,7 @@ module.exports = {
             caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudy);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                error = error.response.data;
-            }
+            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.error(error);
             return createResponseObject(
                 "error",
@@ -69,9 +67,7 @@ module.exports = {
             );
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                error = error.response.data;
-            }
+            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.error(error);
             return createResponseObject(
                 "error",
@@ -103,12 +99,11 @@ module.exports = {
                 };
 
             return createResponseObject("success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
-        } catch (err) {
-            if (axios.isAxiosError(error)) {
-                error = error.response.data;
-            }
-            console.log(err);
-            return createResponseObject("error", "Studi kasus gagal dibuat", err.message ? err.message : err);
+        } catch (error) {
+            await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
+            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
+            console.log(error);
+            return createResponseObject("error", "Studi kasus gagal dibuat", error.message ? error.message : error);
         }
     },
     deleteOne: async (id) => {
@@ -132,9 +127,7 @@ module.exports = {
 
             return createResponseObject("success", "Data studi kasus berhasil dihapus", destroyResObj.data);
         } catch (error) {
-            if (axios.isAxiosError(error)) {
-                error = error.response.data;
-            }
+            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.log(error);
             return createResponseObject(
                 "error",
