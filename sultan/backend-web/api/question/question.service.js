@@ -131,6 +131,7 @@ module.exports = {
 
             return createResponseObject("success", "Data pertanyaan berhasil didapatkan", question);
         } catch (error) {
+            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.error(error);
             return createResponseObject(
                 "error",
