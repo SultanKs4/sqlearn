@@ -35,7 +35,9 @@ function FormEditJadwal({
   const [selectedKategori, setSelectedKategori] = useState({});
 
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangeKategori = (Kategori) => setSelectedKategori(Kategori);
+  const onChangeKategori = (kategori) => {
+    setSelectedKategori(kategori);
+  };
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
@@ -50,6 +52,7 @@ function FormEditJadwal({
       kelas_nama: currentJadwal?.kelas_nama,
       paket_soal: currentJadwal?.paket_soal,
       kategori: currentJadwal?.kategori,
+      // ? Kategori 1 = Close-ended, 2 = Open-Ended
     });
   }, [currentJadwal]);
 
@@ -107,8 +110,8 @@ function FormEditJadwal({
               onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+              <Option key="1">Close-Ended</Option>
+              <Option key="2">Open-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

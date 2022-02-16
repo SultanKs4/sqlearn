@@ -2,6 +2,7 @@ import { Col, Radio, Row, Typography } from "antd";
 
 function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
   const filterCategory = (e) => {
+    console.log(e.target.value);
     e.target.value === "Semua"
       ? setIsFilterActive(false)
       : setIsFilterActive(true);
@@ -9,8 +10,7 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
     setEntityFiltered(
       data.filter((item) => {
         if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else
-          return item?.kategori?.toLowerCase() === e.target.value.toLowerCase();
+        else return item?.kategori === parseInt(e.target.value);
       })
     );
   };
@@ -31,10 +31,10 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
               <Radio.Button value="Semua">Semua</Radio.Button>
             </Col>
             <Col>
-              <Radio.Button value="Close-Ended">Close-Ended</Radio.Button>
+              <Radio.Button value="1">Close-Ended</Radio.Button>
             </Col>
             <Col>
-              <Radio.Button value="Open-Ended">Open-Ended</Radio.Button>
+              <Radio.Button value="2">Open-Ended</Radio.Button>
             </Col>
             <Col>
               <Radio.Button value="Tanpa Kategori">Tanpa Kategori</Radio.Button>

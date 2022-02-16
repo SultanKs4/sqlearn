@@ -35,7 +35,7 @@ const mockGetPaketSoal = async () => {
             nama: "Paket Soal A",
             studi_kasus: "Studi Kasus A",
             durasi: 120,
-            kategori: "Open-Ended",
+            kategori: 2,
             pertanyaan: [
               {
                 idSoal: 8,
@@ -71,7 +71,7 @@ const mockGetPaketSoal = async () => {
             nama: "Paket Soal B",
             studi_kasus: "Studi Kasus C",
             durasi: 120,
-            kategori: "Close-Ended",
+            kategori: 1,
             pertanyaan: [
               {
                 idSoal: 9,
@@ -129,7 +129,7 @@ const mockGetPaketSoal = async () => {
             nama: "Paket Soal C",
             studi_kasus: "-",
             durasi: 120,
-            kategori: "Close-Ended",
+            kategori: 1,
             pertanyaan: [],
           },
           {
@@ -137,7 +137,7 @@ const mockGetPaketSoal = async () => {
             nama: "Paket Soal D",
             studi_kasus: "Studi Kasus B",
             durasi: 120,
-            kategori: "Open-Ended",
+            kategori: 2,
             pertanyaan: [
               {
                 idSoal: 10,

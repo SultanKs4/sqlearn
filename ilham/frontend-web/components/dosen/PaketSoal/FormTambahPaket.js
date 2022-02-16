@@ -55,8 +55,8 @@ function FormTambahPaket({
                 placeholder="Pilih Kategori . . ."
                 style={{ width: "200px" }}
               >
-                <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-                <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+                <Select.Option key={1}>Close-Ended</Select.Option>
+                <Select.Option key={2}>Open-Ended</Select.Option>
               </Select>
             </Form.Item>
           </Col>

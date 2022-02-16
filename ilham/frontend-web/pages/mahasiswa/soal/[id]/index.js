@@ -27,6 +27,7 @@ function Practice() {
           (item) => parseInt(item.id) === parseInt(router.query.id)
         )
       );
+
       setIsDataPracticeLoaded(true);
     });
     mockGetSoalByID().then((response) => {
@@ -35,6 +36,10 @@ function Practice() {
       console.log(response.data);
     });
   }, [router.query.id]);
+
+  useEffect(() => {
+    console.log(dataPractice);
+  }, [dataPractice]);
 
   return (
     <>
@@ -71,18 +76,6 @@ function Practice() {
               router.push(`/mahasiswa/soal/1/pertanyaan/${id}`)
             }
           />
-
-          {/* <Row style={{ marginTop: "2em" }} justify="center">
-            <Button
-              ghost
-              type="primary"
-              //  ? route : /mahasiswa/soal/:jadwalID/pertanyaan/:soalID
-              // onClick={() => router.push(`/mahasiswa/soal/1/pertanyaan/1`)}
-            >
-              {" "}
-              Mulai Latihan{" "}
-            </Button>
-          </Row> */}
         </Card>
       </PageLayout>
     </>

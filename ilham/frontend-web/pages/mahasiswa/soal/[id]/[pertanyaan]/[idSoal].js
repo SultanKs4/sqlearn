@@ -113,7 +113,7 @@ function LatihanSoal() {
   };
 
   const submitAnswer = (values) => {
-    if (dataPertanyaan?.kategori === "Open-Ended") {
+    if (dataPertanyaan?.kategori === 2) {
       console.log(values);
     } else {
       console.log(
@@ -128,7 +128,7 @@ function LatihanSoal() {
   };
 
   const testQuery = () => {
-    if (dataPertanyaan?.kategori === "Open-Ended") {
+    if (dataPertanyaan?.kategori === 2) {
     } else {
     }
     // TODO : Call POST API request dari ... , terus define try catch nya disini
@@ -189,7 +189,7 @@ function LatihanSoal() {
                 <h2 className="title-part">01:59:00</h2>
               </Col>
             </Row>
-            {dataPertanyaan?.kategori === "Open-Ended" ? (
+            {dataPertanyaan?.kategori === 2 ? (
               <>
                 <Form form={form} layout="vertical">
                   <Form.Item name="jawaban_siswa">
@@ -219,7 +219,7 @@ function LatihanSoal() {
                   style={{ backgroundColor: "#003A8C", color: "white" }}
                   onClick={() =>
                     submitAnswer(
-                      dataPertanyaan?.kategori === "Open-Ended"
+                      dataPertanyaan?.kategori === 2
                         ? form.getFieldsValue()
                         : ""
                     )

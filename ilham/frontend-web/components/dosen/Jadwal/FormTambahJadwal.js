@@ -27,10 +27,15 @@ function FormTambahJadwal({
   const [dataPaketSoal, setDataPaketSoal] = useState([]);
 
   const [selectedKelas, setSelectedKelas] = useState({});
+
+  // ? : Kategori 1 = Close-ended, 2 = Open-Ended
   const [selectedKategori, setSelectedKategori] = useState({});
 
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangeKategori = (Kategori) => setSelectedKategori(Kategori);
+  const onChangeKategori = (kategori) => {
+    console.log(kategori);
+    setSelectedKategori(kategori);
+  };
 
   useEffect(() => {
     getKelas(1).then((data) => setDataKelas(data));
@@ -91,8 +96,8 @@ function FormTambahJadwal({
               onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+              <Option key={1}>Close-Ended</Option>
+              <Option key={2}>Open-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

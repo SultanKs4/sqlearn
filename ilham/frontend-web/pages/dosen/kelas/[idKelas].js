@@ -113,102 +113,100 @@ function MahasiswaByID() {
 
   return (
     <>
-      <>
-        <Head>
-          <title>SQLearn | Dosen - Daftar Mahasiswa </title>
-        </Head>
-        <PageLayout role="dosen">
-          <Row justify="space-between">
-            <Row gutter={30}>
-              <Col>
-                <Tooltip title="Kembali" placement="bottom">
-                  <Button
-                    onClick={() => router.push("/dosen/Mahasiswa")}
-                    style={{
-                      marginTop: ".2em",
-                      backgroundColor: "#231e8f",
-                      color: "white",
-                    }}
-                    icon={<LeftOutlined />}
-                  />
-                </Tooltip>
-              </Col>
-              <Col>
-                {isDataKelasLoaded ? (
-                  <Typography.Title level={2}>
-                    {`Kelas ${DataKelas?.nama}`}{" "}
-                  </Typography.Title>
-                ) : (
-                  <Skeleton
-                    active
-                    paragraph={false}
-                    title={{ width: "20vw" }}
-                    style={{ marginBottom: "1em" }}
-                  />
-                )}
-              </Col>
-            </Row>
-
+      <Head>
+        <title>SQLearn | Dosen - Daftar Mahasiswa </title>
+      </Head>
+      <PageLayout role="dosen">
+        <Row justify="space-between">
+          <Row gutter={30}>
             <Col>
-              <Button type="primary" onClick={tambahMahasiswa}>
-                Tambah Mahasiswa <PlusCircleOutlined />
-              </Button>{" "}
+              <Tooltip title="Kembali" placement="bottom">
+                <Button
+                  onClick={() => router.push("/dosen/kelas")}
+                  style={{
+                    marginTop: ".2em",
+                    backgroundColor: "#231e8f",
+                    color: "white",
+                  }}
+                  icon={<LeftOutlined />}
+                />
+              </Tooltip>
+            </Col>
+            <Col>
+              {isDataKelasLoaded ? (
+                <Typography.Title level={2}>
+                  {`Kelas ${DataKelas?.nama}`}{" "}
+                </Typography.Title>
+              ) : (
+                <Skeleton
+                  active
+                  paragraph={false}
+                  title={{ width: "20vw" }}
+                  style={{ marginBottom: "1em" }}
+                />
+              )}
             </Col>
           </Row>
 
-          {/* Content asli... */}
+          <Col>
+            <Button type="primary" onClick={tambahMahasiswa}>
+              Tambah Mahasiswa <PlusCircleOutlined />
+            </Button>{" "}
+          </Col>
+        </Row>
 
-          {isAlertActive && (
-            <Alert
-              message={alertMessage}
-              type={alertStatus}
-              closable
-              showIcon
-              banner
-              style={{ marginBottom: "1em" }}
-            />
-          )}
+        {/* Content asli... */}
 
-          <ModalCustom
-            role={modalRole}
-            entity={`Mahasiswa di ${DataKelas?.nama}`}
-            visible={isModalVisible}
-            setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
-            modalContent={
-              modalRole === "tambah" ? (
-                <FormTambahMahasiswa
-                  handleSubmit={aksiTambahMahasiswa}
-                  setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
-                />
-              ) : modalRole === "edit" ? (
-                <FormEditMahasiswa
-                  handleSubmit={aksiEditMahasiswa}
-                  setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
-                  currentMhs={currentMhs}
-                />
-              ) : (
-                <FormHapusMahasiswa
-                  handleSubmit={aksiDeleteMahasiswa}
-                  setVisible={setIsModalVisible}
-                  currentMhs={currentMhs}
-                />
-              )
-            }
+        {isAlertActive && (
+          <Alert
+            message={alertMessage}
+            type={alertStatus}
+            closable
+            showIcon
+            banner
+            style={{ marginBottom: "1em" }}
           />
+        )}
 
-          <ListComponent
-            isLoading={!isDataMhsLoaded}
-            role="daftar-mahasiswa-per-kelas"
-            editMahasiswa={editMahasiswa}
-            deleteMahasiswa={deleteMahasiswa}
-            dataSource={dataMhsPerKelas}
-          />
-        </PageLayout>
-      </>
+        <ModalCustom
+          role={modalRole}
+          entity={`Mahasiswa di ${DataKelas?.nama}`}
+          visible={isModalVisible}
+          setVisible={setIsModalVisible}
+          confirmLoading={isModalLoading}
+          setConfirmLoading={setIsModalLoading}
+          modalContent={
+            modalRole === "tambah" ? (
+              <FormTambahMahasiswa
+                handleSubmit={aksiTambahMahasiswa}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+              />
+            ) : modalRole === "edit" ? (
+              <FormEditMahasiswa
+                handleSubmit={aksiEditMahasiswa}
+                setVisible={setIsModalVisible}
+                setFormObj={setFormObj}
+                currentMhs={currentMhs}
+              />
+            ) : (
+              <FormHapusMahasiswa
+                handleSubmit={aksiDeleteMahasiswa}
+                setVisible={setIsModalVisible}
+                currentMhs={currentMhs}
+              />
+            )
+          }
+        />
+
+        <ListComponent
+          isLoading={!isDataMhsLoaded}
+          role="daftar-mahasiswa-per-kelas"
+          editMahasiswa={editMahasiswa}
+          deleteMahasiswa={deleteMahasiswa}
+          dataSource={dataMhsPerKelas}
+        />
+      </PageLayout>
     </>
   );
 }

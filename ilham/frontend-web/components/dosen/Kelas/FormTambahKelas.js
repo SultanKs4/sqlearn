@@ -1,6 +1,5 @@
-import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
-import { LaptopOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { Button, Col, Divider, Form, Input, Row, Select, Upload } from "antd";
+import { LaptopOutlined, InboxOutlined } from "@ant-design/icons";
 
 function FormTambahKelas({
   form,
@@ -20,6 +19,8 @@ function FormTambahKelas({
     console.log("Clicked cancel button");
     setVisible(false);
   };
+
+  const normFile = (e) => console.log("Upload event:", e);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
@@ -67,6 +68,34 @@ function FormTambahKelas({
             </Select>
           </Form.Item>
         </Col>
+      </Row>
+      <Row>
+        <Form.Item label="Upload Data Kelas">
+          <Form.Item
+            name="excelFile"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            noStyle
+          >
+            <Upload.Dragger
+              multiple={false}
+              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              name="files"
+              action="/upload.do"
+              style={{ padding: "3em" }}
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Hanya bisa upload file .xlsx atau .xls{" "}
+              </p>
+            </Upload.Dragger>
+          </Form.Item>
+        </Form.Item>
       </Row>
 
       <Divider />

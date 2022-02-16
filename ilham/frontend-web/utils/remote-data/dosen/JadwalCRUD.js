@@ -39,7 +39,7 @@ const mockGetJadwal = async () => {
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal A",
-            kategori: "Close-Ended",
+            kategori: 1,
           },
           {
             jadwal_nama: "Jadwal 2",
@@ -48,7 +48,7 @@ const mockGetJadwal = async () => {
             kelas_nama: "TI-1G",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal B",
-            kategori: "Open-Ended",
+            kategori: 2,
           },
           {
             jadwal_nama: "Jadwal 3",
@@ -57,7 +57,7 @@ const mockGetJadwal = async () => {
             kelas_nama: "TI-1H",
             studi_kasus_nama: "Studi Kasus A",
             paket_soal: "Paket Soal D",
-            kategori: "Close-Ended",
+            kategori: 1,
           },
           {
             jadwal_nama: "Jadwal 4",
@@ -66,7 +66,7 @@ const mockGetJadwal = async () => {
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal D",
-            kategori: "Open-Ended",
+            kategori: 2,
           },
         ],
       });

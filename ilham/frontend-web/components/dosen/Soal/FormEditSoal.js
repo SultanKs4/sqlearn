@@ -60,9 +60,8 @@ function FormEditSoal({
   const [inputValue, setInputValue] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
   const [tags, setTags] = useState(
-    currentSoal?.kategori === "Close-Ended"
-      ? currentSoal?.jawaban[0]?.split(" ")
-      : []
+    // ? : Kategori 1 = Close-ended, 2 = Open-Ended
+    currentSoal?.kategori === 1 ? currentSoal?.jawaban[0]?.split(" ") : []
   );
   const normFile = (e) => console.log("Upload event:", e);
 
@@ -174,8 +173,8 @@ function FormEditSoal({
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+              <Select.Option key={1}>Close-Ended</Select.Option>
+              <Select.Option key={2}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -198,7 +197,7 @@ function FormEditSoal({
       </Form.Item>
       {selectedKategori === "-" ? (
         " "
-      ) : selectedKategori === "Open-Ended" ? (
+      ) : selectedKategori === 2 ? (
         <Form.List
           name="opsi_jawaban"
           rules={[

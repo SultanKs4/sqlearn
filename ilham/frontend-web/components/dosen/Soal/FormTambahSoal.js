@@ -50,7 +50,7 @@ function FormEditSoal({
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
   const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
-  const [selectedKategori, setSelectedKategori] = useState("Close-Ended");
+  const [selectedKategori, setSelectedKategori] = useState(1);
 
   // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
@@ -147,8 +147,8 @@ function FormEditSoal({
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+              <Select.Option key={1}>Close-Ended</Select.Option>
+              <Select.Option key={2}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -169,7 +169,7 @@ function FormEditSoal({
           placeholder={` Teks Pertanyaan . . .`}
         />
       </Form.Item>
-      {selectedKategori === "Open-Ended" ? (
+      {selectedKategori === 2 ? (
         <>
           <Form.List
             name="opsi_jawaban"

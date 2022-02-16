@@ -13,6 +13,7 @@ import FormHapusSoal from "../../components/dosen/Soal/FormHapusSoal";
 import { getSoal } from "../../utils/remote-data/dosen/SoalCRUD";
 import ListComponent from "../../components/List";
 import FormTambahSoal from "../../components/dosen/Soal/FormTambahSoal";
+import RadioFilterCategory from "../../components/RadioFilterCategory";
 
 function HalamanSoal() {
   const [formObj, setFormObj] = useState({});
@@ -37,6 +38,7 @@ function HalamanSoal() {
 
   useEffect(() => {
     getSoal().then((response) => {
+      console.log(response.data);
       setDataSoal(response.data);
       setIsDataLoaded(true);
     });
@@ -120,9 +122,9 @@ function HalamanSoal() {
     console.log(e.target.value);
     setSoalFiltered(
       dataSoal.filter((item) => {
+        // ? : Kategori 1 = Close-ended, 2 = Open-Ended
         if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else
-          return item?.kategori?.toLowerCase() === e.target.value.toLowerCase();
+        else return item?.kategori === parseInt(e.target.value);
       })
     );
   };
@@ -189,36 +191,12 @@ function HalamanSoal() {
             }
           />
         )}
-        <Row style={{ marginBottom: "1em" }} justify="space-between" gutter={8}>
-          <Col>
-            {" "}
-            <Typography.Title level={4} children={<>Pilih Kategori </>} />{" "}
-          </Col>
-          <Col>
-            <Radio.Group
-              defaultValue="Semua"
-              buttonStyle="solid"
-              onChange={(e) => filterCategory(e)}
-            >
-              <Row justify="center" gutter={8}>
-                <Col>
-                  <Radio.Button value="Semua">Semua</Radio.Button>
-                </Col>
-                <Col>
-                  <Radio.Button value="Close-Ended">Close-Ended</Radio.Button>
-                </Col>
-                <Col>
-                  <Radio.Button value="Open-Ended">Open-Ended</Radio.Button>
-                </Col>
-                <Col>
-                  <Radio.Button value="Tanpa Kategori">
-                    Tanpa Kategori
-                  </Radio.Button>
-                </Col>
-              </Row>
-            </Radio.Group>
-          </Col>
-        </Row>
+
+        <RadioFilterCategory
+          data={dataSoal}
+          setIsFilterActive={setIsFilterActive}
+          setEntityFiltered={setSoalFiltered}
+        />
 
         {/* Content asli... */}
         <ListComponent
