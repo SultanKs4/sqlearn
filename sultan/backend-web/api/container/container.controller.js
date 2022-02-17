@@ -34,7 +34,7 @@ module.exports = {
     },
 
     addQuestion: async (req, res) => {
-        const resObj = await containerService.addQuestion(req.params.id, req.body);
+        const resObj = await containerService.addQuestion(req.params.id, req.body.questions);
 
         if (resObj.status == "error") return res.status(500).json(resObj);
 

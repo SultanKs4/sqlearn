@@ -125,7 +125,7 @@ module.exports = {
         }
     },
 
-    addQuestion: async (containerId, { questions: questionIds }) => {
+    addQuestion: async (containerId, questionIds) => {
         try {
             const container = await Container.findByPk(containerId);
             if (container == null) throw new Error("container not found");
