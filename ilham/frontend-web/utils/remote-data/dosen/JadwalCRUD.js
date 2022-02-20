@@ -34,8 +34,8 @@ const mockGetJadwal = async () => {
         data: [
           {
             jadwal_nama: "Jadwal 1",
-            tanggal_mulai: moment("2022-01-11 00:01"),
-            tanggal_akhir: moment("2022-01-12 23:59"),
+            tanggal_mulai: moment("2022-02-21 00:01"),
+            tanggal_akhir: moment("2022-02-22 23:59"),
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal A",
@@ -43,8 +43,8 @@ const mockGetJadwal = async () => {
           },
           {
             jadwal_nama: "Jadwal 2",
-            tanggal_mulai: moment("2022-01-13 07:00"),
-            tanggal_akhir: moment("2022-01-13 21:59"),
+            tanggal_mulai: moment("2022-02-23 07:00"),
+            tanggal_akhir: moment("2022-02-23 21:59"),
             kelas_nama: "TI-1G",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal B",
@@ -52,8 +52,8 @@ const mockGetJadwal = async () => {
           },
           {
             jadwal_nama: "Jadwal 3",
-            tanggal_mulai: moment("2022-01-14 10:00"),
-            tanggal_akhir: moment("2022-01-16 23:59"),
+            tanggal_mulai: moment("2022-02-24 10:00"),
+            tanggal_akhir: moment("2022-02-26 23:59"),
             kelas_nama: "TI-1H",
             studi_kasus_nama: "Studi Kasus A",
             paket_soal: "Paket Soal D",
@@ -61,8 +61,8 @@ const mockGetJadwal = async () => {
           },
           {
             jadwal_nama: "Jadwal 4",
-            tanggal_mulai: moment("2022-01-11 00:01"),
-            tanggal_akhir: moment("2022-01-10 23:59"),
+            tanggal_mulai: moment("2022-02-21 00:01"),
+            tanggal_akhir: moment("2022-02-20 23:59"),
             kelas_nama: "TI-1C",
             studi_kasus_nama: "Studi Kasus B",
             paket_soal: "Paket Soal D",

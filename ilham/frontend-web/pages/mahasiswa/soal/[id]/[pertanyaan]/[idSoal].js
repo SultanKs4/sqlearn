@@ -10,27 +10,33 @@ import {
   Button,
   Divider,
   Alert,
-  Tooltip,
   Form,
   Input,
 } from "antd";
 
-import {
-  LeftOutlined,
-  RightOutlined,
-  ConsoleSqlOutlined,
-} from "@ant-design/icons";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../../../components/PageLayout";
 import { mockGetSoalByID } from "../../../../../utils/remote-data/mahasiswa/Soal";
 import SQLContainer from "../../../../../components/mahasiswa/Soal/SQLContainer";
+import CountdownTimer from "../../../../../components/CountdownTimer";
 
 function LatihanSoal() {
   const router = useRouter();
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [isDataPertanyaanLoaded, setIsDataPertanyaanLoaded] = useState(false);
+  const [isTimeLoaded, setIsTimeLoaded] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState(new Date());
+
   const [isPreviewTable, setIsPreviewTable] = useState(false);
+  const [logData, setLogData] = useState({
+    timerLeft: "00:00:00",
+    studentAnswer: "",
+    attemptTestQuery: 0,
+  });
+
+  const [timerLeftCounter, setTimerLeftCounter] = useState("");
 
   const [isAlertActive, setIsAlertActive] = useState(false);
   const [alertStatus, setAlertStatus] = useState("success");
@@ -81,15 +87,30 @@ function LatihanSoal() {
   };
 
   useEffect(() => {
-    mockGetSoalByID().then((response) => {
-      setDataPertanyaan(
-        response.data.find(
-          (item) => parseInt(item.id) === parseInt(router.query.idSoal)
-        )
+    mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
+      setDataPertanyaan(response.data);
+      console.log(
+        `${response.data?.finished_date} ${response.data?.finished_time}`
       );
       setIsDataPertanyaanLoaded(true);
     });
   }, [router.query.idSoal]);
+
+  useEffect(() => {
+    console.log("debugging ", isDataPertanyaanLoaded);
+
+    if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) {
+      console.log(
+        `${dataPertanyaan?.finished_date} ${dataPertanyaan?.finished_time}`
+      );
+      setScheduleDate(
+        new Date(
+          `${dataPertanyaan?.finished_date} ${dataPertanyaan?.finished_time}`
+        )
+      );
+      setIsTimeLoaded(true);
+    }
+  }, [isDataPertanyaanLoaded, dataPertanyaan]);
 
   useEffect(() => {
     console.log("ini dataPertanyaan", dataPertanyaan);
@@ -113,13 +134,8 @@ function LatihanSoal() {
   };
 
   const submitAnswer = (values) => {
-    if (dataPertanyaan?.kategori === 2) {
-      console.log(values);
-    } else {
-      console.log(
-        boxes?.sql_constructed?.items?.map((item) => item.content).join(" ")
-      );
-    }
+    saveLog(values);
+
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
     setIsAlertActive(true);
@@ -127,16 +143,41 @@ function LatihanSoal() {
     setAlertMessage(`Jawaban berhasil disimpan !`);
   };
 
-  const testQuery = () => {
+  const saveLog = (values) => {
     if (dataPertanyaan?.kategori === 2) {
+      setLogData(({ attemptTestQuery, timerLeft, studentAnswer }) => {
+        return {
+          studentAnswer: values,
+          attemptTestQuery: attemptTestQuery + 1,
+          timerLeft: timerLeftCounter,
+        };
+      });
     } else {
+      setLogData(({ attemptTestQuery, timerLeft, studentAnswer }) => {
+        return {
+          studentAnswer: boxes?.sql_constructed?.items
+            ?.map((item) => item.content)
+            .join(" "),
+          attemptTestQuery: attemptTestQuery + 1,
+          timerLeft: timerLeftCounter,
+        };
+      });
     }
+  };
+
+  const testQuery = (values) => {
+    saveLog(values);
+
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
     setIsAlertActive(true);
     setTimeout(() => setIsAlertActive(false), 5000);
     setAlertMessage(`Jawaban anda benar !`);
   };
+
+  useEffect(() => {
+    console.log(logData);
+  }, [logData]);
 
   return (
     <>
@@ -151,7 +192,8 @@ function LatihanSoal() {
                 <Typography.Title level={3}>Pertanyaan</Typography.Title>
                 <Typography.Paragraph
                   style={{
-                    marginBottom: "4em",
+                    marginBottom: "2em",
+                    textAlign: "justify",
                   }}
                 >
                   {dataPertanyaan?.teksSoal}
@@ -166,7 +208,7 @@ function LatihanSoal() {
               />
             )}
             <Button type="primary" onClick={() => previewTable()}>
-              Preview Table
+              Preview Hasil Query
             </Button>
             <Row
               style={{
@@ -174,7 +216,7 @@ function LatihanSoal() {
                 display: isPreviewTable ? "block" : "none",
               }}
             >
-              <img src="https://via.placeholder.com/320x200"></img>
+              <img src="https://via.placeholder.com/380x200"></img>
             </Row>
           </Col>
           <Col lg={1}>
@@ -186,7 +228,16 @@ function LatihanSoal() {
                 <h2 className="title-part">SQL Query</h2>
               </Col>
               <Col style={{ textAlign: "right" }}>
-                <h2 className="title-part">01:59:00</h2>
+                <h2 className="title-part">
+                  {isTimeLoaded ? (
+                    <CountdownTimer
+                      expiryTimestamp={scheduleDate}
+                      setTimerLeft={setTimerLeftCounter}
+                    />
+                  ) : (
+                    "Loading. . ."
+                  )}
+                </h2>
               </Col>
             </Row>
             {dataPertanyaan?.kategori === 2 ? (
@@ -210,7 +261,16 @@ function LatihanSoal() {
 
             <Row style={{ marginTop: "1em" }} justify="space-between">
               <Col>
-                <Button type="primary" onClick={() => testQuery()}>
+                <Button
+                  type="primary"
+                  onClick={() =>
+                    testQuery(
+                      dataPertanyaan?.kategori === 2
+                        ? form.getFieldsValue()
+                        : ""
+                    )
+                  }
+                >
                   Test Query
                 </Button>
               </Col>

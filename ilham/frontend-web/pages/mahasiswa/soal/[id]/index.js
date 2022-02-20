@@ -5,7 +5,7 @@ import Head from "next/head";
 import { Card, Row, Col, Skeleton, Button, Typography } from "antd";
 
 import PageLayout from "../../../../components/PageLayout";
-import { mockGetSoalByID } from "../../../../utils/remote-data/mahasiswa/Soal";
+import { mockGetAllSoal } from "../../../../utils/remote-data/mahasiswa/Soal";
 import { mockGetAllPractices } from "../../../../utils/remote-data/mahasiswa/Beranda";
 import ListComponent from "../../../../components/List";
 
@@ -30,7 +30,7 @@ function Practice() {
 
       setIsDataPracticeLoaded(true);
     });
-    mockGetSoalByID().then((response) => {
+    mockGetAllSoal().then((response) => {
       setDataListPertanyaan(response.data);
       setIsDataListPertanyaanLoaded(true);
       console.log(response.data);
