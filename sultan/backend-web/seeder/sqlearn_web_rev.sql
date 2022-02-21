@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Jan 19, 2022 at 01:38 PM
--- Server version: 10.3.32-MariaDB-0ubuntu0.20.04.1
--- PHP Version: 7.4.3
+-- Host: localhost
+-- Generation Time: Jan 24, 2022 at 09:06 AM
+-- Server version: 10.6.5-MariaDB
+-- PHP Version: 8.0.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -43,7 +42,7 @@ CREATE TABLE `case_studies` (
 --
 
 INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_file`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Tes', 'auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
+(2, 'Tes', 'sqlearn_cs_auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
 
 -- --------------------------------------------------------
 
@@ -100,6 +99,7 @@ CREATE TABLE `containers` (
   `id` int(11) NOT NULL,
   `description` text DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `label_id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -108,8 +108,8 @@ CREATE TABLE `containers` (
 -- Dumping data for table `containers`
 --
 
-INSERT INTO `containers` (`id`, `description`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(5, 'Paket Tes', 5, '2021-06-17 04:38:50', '2021-06-17 04:38:50');
+INSERT INTO `containers` (`id`, `description`, `user_id`, `label_id`, `createdAt`, `updatedAt`) VALUES
+(5, 'Paket Tes', 5, 1, '2021-06-17 04:38:50', '2021-06-17 04:38:50');
 
 -- --------------------------------------------------------
 
@@ -125,6 +125,7 @@ CREATE TABLE `questions` (
   `tables` text NOT NULL,
   `case_study_id` int(11) DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `label_id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -133,16 +134,37 @@ CREATE TABLE `questions` (
 -- Dumping data for table `questions`
 --
 
-INSERT INTO `questions` (`id`, `text`, `answer`, `answer_pic`, `tables`, `case_study_id`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(8, '<p>Dosen ingin menampilkan semua data tentang mahasiswa.</p>', '[\"SELECT * FROM mahasiswa\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa\"]', 'answer_pic-1623901614402.png', 'mahasiswa', 2, 5, '2021-06-17 03:46:54', '2021-06-17 03:46:54'),
-(9, '<p>Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf \'D\'</p>', '[\"SELECT * FROM mahasiswa WHERE nama LIKE \'D%\'\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE nama LIKE \'D%\'\"]', 'answer_pic-1623901699340.png', 'mahasiswa', 2, 5, '2021-06-17 03:48:19', '2021-06-17 03:48:19'),
-(10, '<p>Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut</p>', '[\"SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC\"]', 'answer_pic-1623901724476.png', 'mahasiswa', 2, 5, '2021-06-17 03:48:44', '2021-06-17 03:48:44'),
-(11, '<p>Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut</p>', '[\"SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(nama) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(kelas) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(ipk) as jumlah_mhs FROM mahasiswa GROUP BY kelas\"]', 'answer_pic-1623901797490.png', 'mahasiswa', 2, 5, '2021-06-17 03:49:57', '2021-06-17 03:49:57'),
-(12, '<p>Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut</p>', '[\"SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(nama) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(ipk) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(kelas) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\"]', 'answer_pic-1623901838360.png', 'mahasiswa', 2, 5, '2021-06-17 03:50:38', '2021-06-17 03:50:38'),
-(13, '<p>Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00</p>', '[\"SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00\"]', 'answer_pic-1623901915295.png', 'mahasiswa', 2, 5, '2021-06-17 03:51:56', '2021-06-17 03:51:56'),
-(14, '<p>Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery</p>', '[\"SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1\"]', 'answer_pic-1623904606531.png', 'user', 2, 5, '2021-06-17 04:36:46', '2021-06-17 04:36:46'),
-(15, '<p>Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut</p>', '[\"SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa\"]', 'answer_pic-1623904684453.png', 'user,mahasiswa', 2, 5, '2021-06-17 04:38:04', '2021-06-17 04:38:04'),
-(16, '<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>', '[\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\"]', 'answer_pic-1623904707990.png', 'mahasiswa,user', 2, 5, '2021-06-17 04:38:27', '2021-06-17 04:38:27');
+INSERT INTO `questions` (`id`, `text`, `answer`, `answer_pic`, `tables`, `case_study_id`, `user_id`, `label_id`, `createdAt`, `updatedAt`) VALUES
+(8, '<p>Dosen ingin menampilkan semua data tentang mahasiswa.</p>', '[\"SELECT * FROM mahasiswa\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa\"]', 'answer_pic-1623901614402.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:46:54', '2021-06-17 03:46:54'),
+(9, '<p>Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf \'D\'</p>', '[\"SELECT * FROM mahasiswa WHERE nama LIKE \'D%\'\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE nama LIKE \'D%\'\"]', 'answer_pic-1623901699340.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:48:19', '2021-06-17 03:48:19'),
+(10, '<p>Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut</p>', '[\"SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC\"]', 'answer_pic-1623901724476.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:48:44', '2021-06-17 03:48:44'),
+(11, '<p>Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut</p>', '[\"SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(nama) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(kelas) as jumlah_mhs FROM mahasiswa GROUP BY kelas\",\"SELECT kelas, COUNT(ipk) as jumlah_mhs FROM mahasiswa GROUP BY kelas\"]', 'answer_pic-1623901797490.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:49:57', '2021-06-17 03:49:57'),
+(12, '<p>Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut</p>', '[\"SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(nama) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(ipk) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\",\"SELECT kelas, COUNT(kelas) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\"]', 'answer_pic-1623901838360.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:50:38', '2021-06-17 03:50:38'),
+(13, '<p>Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00</p>', '[\"SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00\"]', 'answer_pic-1623901915295.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:51:56', '2021-06-17 03:51:56'),
+(14, '<p>Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery</p>', '[\"SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1\"]', 'answer_pic-1623904606531.png', 'user', 2, 5, 1, '2021-06-17 04:36:46', '2021-06-17 04:36:46'),
+(15, '<p>Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut</p>', '[\"SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa\"]', 'answer_pic-1623904684453.png', 'user,mahasiswa', 2, 5, 1, '2021-06-17 04:38:04', '2021-06-17 04:38:04'),
+(16, '<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>', '[\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\"]', 'answer_pic-1623904707990.png', 'mahasiswa,user', 2, 5, 1, '2021-06-17 04:38:27', '2021-06-17 04:38:27');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `questions_label`
+--
+
+CREATE TABLE `questions_label` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `questions_label`
+--
+
+INSERT INTO `questions_label` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
+(1, 'Open-Ended', '2021-06-17 03:46:54', '2021-06-17 03:46:54'),
+(2, 'Close-Ended', '2021-06-17 03:46:54', '2021-06-17 03:46:54');
 
 -- --------------------------------------------------------
 
@@ -789,7 +811,8 @@ ALTER TABLE `class_schedules`
 --
 ALTER TABLE `containers`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `label_id` (`label_id`);
 
 --
 -- Indexes for table `questions`
@@ -798,6 +821,12 @@ ALTER TABLE `questions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `case_study_id` (`case_study_id`),
   ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `questions_label`
+--
+ALTER TABLE `questions_label`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `question_containers`
@@ -902,6 +931,12 @@ ALTER TABLE `questions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
+-- AUTO_INCREMENT for table `questions_label`
+--
+ALTER TABLE `questions_label`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
@@ -976,14 +1011,16 @@ ALTER TABLE `class_schedules`
 -- Constraints for table `containers`
 --
 ALTER TABLE `containers`
-  ADD CONSTRAINT `containers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `containers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `containers_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `questions_label` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `questions`
 --
 ALTER TABLE `questions`
   ADD CONSTRAINT `questions_ibfk_583` FOREIGN KEY (`case_study_id`) REFERENCES `case_studies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `questions_ibfk_584` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `questions_ibfk_584` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `questions_ibfk_585` FOREIGN KEY (`label_id`) REFERENCES `questions_label` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `question_containers`

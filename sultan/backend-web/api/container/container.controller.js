@@ -2,59 +2,58 @@ const containerService = require("./container.service");
 
 module.exports = {
     index: async (req, res) => {
-        const { success, message, data } = await containerService.getAll()
+        const resObj = await containerService.getAll();
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     show: async (req, res) => {
-        const { success, message, data } = await containerService.getOne(req.params.id)
+        const resObj = await containerService.getOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     store: async (req, res) => {
-        const { success, message, data } = await containerService.insert(req.body, req.user)
+        const resObj = await containerService.insert(req.body, req.user);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
+        return res.status(201).json(resObj);
     },
 
     update: async (req, res) => {
-        const { success, message, data } = await containerService.update(req.params.id, req.body)
+        const resObj = await containerService.update(req.params.id, req.body, req.user);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     addQuestion: async (req, res) => {
-        const { success, message } = await containerService.addQuestion(req.params.id, req.body)
+        const resObj = await containerService.addQuestion(req.params.id, req.body.questions);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message })
+        return res.status(201).json(resObj);
     },
 
     removeQuestion: async (req, res) => {
-        const { success, message } = await containerService.removeQuestion(req.params.id, req.params.question)
+        const resObj = await containerService.removeQuestion(req.params.id, req.params.question);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message })
+        return res.status(200).json(resObj);
     },
 
     destroy: async (req, res) => {
-        const { success, message } = await containerService.destroy(req.params.id)
+        const resObj = await containerService.destroy(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(204).json({ success, message })
+        return res.status(200).json(resObj);
     },
-
-}
+};

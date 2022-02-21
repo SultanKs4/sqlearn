@@ -17,32 +17,16 @@ module.exports = {
         return res.status(200).json(resObj);
     },
     showTable: async (req, res) => {
-        const resObj = await caseStudyService.getOneDetail(
-            req.params.id,
-            req.params.tablename
-        );
+        const resObj = await caseStudyService.getOneDetail(req.params.id, req.params.tablename);
 
         if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(200).json(resObj);
     },
     store: async (req, res) => {
-        if (!req.file)
-            return res
-                .status(400)
-                .json(
-                    createResponseObject(
-                        "fail",
-                        null,
-                        "Format file tidak didukung"
-                    )
-                );
+        if (!req.file) return res.status(400).json(createResponseObject("fail", null, "Format file tidak didukung"));
 
-        const resObj = await caseStudyService.store(
-            req.body.name,
-            req.user,
-            req.file
-        );
+        const resObj = await caseStudyService.store(req.body.name, req.user, req.file);
         if (resObj.status == "error") return res.status(500).json(resObj);
 
         return res.status(201).json(resObj);
@@ -52,6 +36,6 @@ module.exports = {
 
         if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json(resObj);
+        return res.status(200).json(resObj);
     },
 };

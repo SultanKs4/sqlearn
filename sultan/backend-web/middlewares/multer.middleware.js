@@ -26,8 +26,7 @@ function fileFilter(req, file, cb) {
     if (file.fieldname == "sql") filetypes = /sql/;
     else if (file.fieldname == "answer_pic") filetypes = /jpeg|png/;
     else if (file.fieldname == "excel") {
-        filetypes =
-            /ms-excel|openxmlformats-officedocument.spreadsheetml.sheet/;
+        filetypes = /ms-excel|openxmlformats-officedocument.spreadsheetml.sheet/;
     }
 
     if (filetypes.test(file.mimetype)) return cb(null, true);

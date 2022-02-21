@@ -20,6 +20,24 @@ describe("Similarity Test", () => {
                 expect(result).to.include.keys(["insert", "values", "partition", "onDuplicateUpdate"]);
             });
         });
+        it("Should return feature vector insert query", () => {
+            const { success, featureVector } = getFeatureVector(
+                "INSERT INTO MAHASISWA (nama,nim,kelas) VALUES ('YASA', 1123144, 'MI-2M'), ('YASA', 1123144, 'MI-2M')"
+            );
+            expect(success).to.equal(true);
+            expect(featureVector).to.deep.equal([
+                "insert_mahasiswa",
+                "insert_nama",
+                "insert_nim",
+                "insert_kelas",
+                "values_1_constant",
+                "values_1_constant",
+                "values_1_constant",
+                "values_2_constant",
+                "values_2_constant",
+                "values_2_constant",
+            ]);
+        });
         it("Should return object from parse select query", () => {
             const data = [
                 "SELECT nama, nim FROM mahasiswa WHERE nama = 'Tomi' AND kelas = 'TI-4C'",
@@ -99,6 +117,22 @@ describe("Similarity Test", () => {
             };
             const result = getCosineSimilarity(documents);
             expect(result).to.greaterThanOrEqual(0.88);
+        });
+        it("Get Cosine Similarity from Documents Insert", () => {
+            const documents = {
+                d1: [["insert_mahasiswa"], ["values_1_constant"], ["values_1_constant"], ["values_1_constant"]],
+                d2: [
+                    ["insert_mahasiswa"],
+                    ["insert_nama"],
+                    ["insert_nim"],
+                    ["insert_kelas"],
+                    ["values_1_constant"],
+                    ["values_1_constant"],
+                    ["values_1_constant"],
+                ],
+            };
+            const result = getCosineSimilarity(documents);
+            expect(result).to.greaterThanOrEqual(0.81);
         });
     });
 });
