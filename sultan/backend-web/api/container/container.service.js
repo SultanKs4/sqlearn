@@ -82,7 +82,7 @@ module.exports = {
 
     insert: async (data, user) => {
         try {
-            const label = QuestionLabel.findByPk(data.label_id, { raw: true });
+            const label = await QuestionLabel.findByPk(data.label_id, { raw: true });
             if (label == null) throw new Error("label not found");
 
             const newContainer = await Container.create({
@@ -103,7 +103,7 @@ module.exports = {
 
     update: async (id, data, user) => {
         try {
-            const label = QuestionLabel.findByPk(data.label_id, { raw: true });
+            const label = await QuestionLabel.findByPk(data.label_id, { raw: true });
             if (label == null) throw new Error("label not found");
 
             const container = await Container.update(
@@ -113,7 +113,10 @@ module.exports = {
                     label_id: label.id,
                 },
                 { where: { id: id } }
-            );
+            ).then(async () => {
+                return await Container.findByPk(id, { raw: true });
+            });
+            if (container == null) throw new Error("container not found");
 
             return createResponseObject("success", "Data kontainer berhasil diperbarui", container);
         } catch (error) {
@@ -130,12 +133,18 @@ module.exports = {
             const container = await Container.findByPk(containerId);
             if (container == null) throw new Error("container not found");
 
-            const questions = questionIds.map((id) => {
-                return {
-                    question_id: id,
-                    container_id: container.id,
-                };
-            });
+            const questions = await Promise.all(
+                questionIds.map(async (id) => {
+                    const question = await Question.findByPk(id, { raw: true });
+                    if (question == null) throw new Error(`question id ${id} not found`);
+                    if (container.label_id != question.label_id)
+                        throw new Error(`question id ${id} has different label`);
+                    return {
+                        question_id: question.id,
+                        container_id: container.id,
+                    };
+                })
+            );
             const newQuestionContainer = await QuestionContainer.bulkCreate(questions, { returning: true });
 
             return createResponseObject("success", "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);

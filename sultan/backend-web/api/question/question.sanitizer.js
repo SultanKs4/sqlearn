@@ -13,6 +13,7 @@ const checkCaseStudyBodyInt = body(["case_study", "label_id"], "cannot null")
 
 module.exports = {
     checkIdOnly: [checkId, validationHandle],
+    checkQueryCaseOnly: [checkCaseStudyQuery, validationHandle],
     checkGetData: [checkId, checkCaseStudyQuery, validationHandle],
     checkContainer: [containerCheck, checkCaseStudyQuery, validationHandle],
     checkStore: [checkCaseStudyBodyString, checkCaseStudyBodyInt, validationHandle],

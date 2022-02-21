@@ -194,7 +194,10 @@ module.exports = {
                     label_id: label.id,
                 },
                 { where: { id: questionId } }
-            );
+            ).then(async () => {
+                return await Question.findByPk(questionId, { raw: true });
+            });
+            if (question == null) throw new Error("question not found");
 
             return createResponseObject("success", "Data pertanyaan berhasil diperbarui", question);
         } catch (error) {

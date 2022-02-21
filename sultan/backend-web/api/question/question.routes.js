@@ -6,7 +6,7 @@ const router = express.Router();
 const questionController = require("./question.controller");
 const questionSanitizer = require("./question.sanitizer");
 
-router.get("/", questionSanitizer.checkGetData, questionController.index);
+router.get("/", questionSanitizer.checkQueryCaseOnly, questionController.index);
 router.get("/:id", questionSanitizer.checkGetData, questionController.show);
 router.use(verifyToken);
 router.get("/containers/:container", questionSanitizer.checkContainer, questionController.indexExclude);

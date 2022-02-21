@@ -54,6 +54,6 @@ module.exports = {
 
         if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(204).json(resObj);
+        return res.status(200).json(resObj);
     },
 };
