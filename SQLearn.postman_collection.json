@@ -182,14 +182,14 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "{{url_web}}/api/casestudies/5",
+									"raw": "{{url_web}}/api/casestudies/aa",
 									"host": [
 										"{{url_web}}"
 									],
 									"path": [
 										"api",
 										"casestudies",
-										"5"
+										"aa"
 									]
 								}
 							},
@@ -307,6 +307,115 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": \"error\",\n    \"message\": \"studi kasus tidak dapat ditemukan\",\n    \"data\": \"Data studi kasus gagal didapatkan\"\n}"
+								},
+								{
+									"name": "Get One Error validation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/aa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"aa"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "133"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"85-DZxtAs6eBU7nZ8P0jtUklUMKCQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:36:24 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
 								}
 							]
 						},
@@ -506,6 +615,117 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": \"error\",\n    \"message\": \"select table failed\",\n    \"data\": \"Data studi kasus gagal didapatkan\"\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/aa/data/a",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"aa",
+												"data",
+												"a"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "133"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"85-DZxtAs6eBU7nZ8P0jtUklUMKCQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:38:10 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
 								}
 							]
 						},
@@ -520,12 +740,13 @@
 										{
 											"key": "sql",
 											"type": "file",
-											"src": "/home/kaito/sqlearn/sultan/backend-web/uploads/sqls/1642985498221_sql_sqlearn_cs_auto_assess_tes.sql"
+											"src": "/C:/Users/sulta/Downloads/bumdes.sql"
 										},
 										{
 											"key": "name",
-											"value": "ini tes lagi 22",
-											"type": "text"
+											"value": "1",
+											"type": "text",
+											"disabled": true
 										}
 									]
 								},
@@ -541,7 +762,277 @@
 									]
 								}
 							},
-							"response": []
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "sql",
+													"type": "file",
+													"src": "/home/kaito/sqlearn/sultan/backend-web/seeder/sqlearn_cs_auto_assess_tes.sql"
+												},
+												{
+													"key": "name",
+													"value": "ini tes",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "302"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"12e-rDpWt5Ke8VbinsgeOKP5fOe+/ek\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 03:18:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": {\n        \"id\": 9,\n        \"name\": \"ini tes\",\n        \"db_name\": \"sqlearn_cs_dosencoba_ini_tes_7eak5k\",\n        \"db_file\": \"1642994333691_sql_sqlearn_cs_auto_assess_tes.sql\",\n        \"user_id\": 5,\n        \"updatedAt\": \"2022-01-24T03:18:53.706Z\",\n        \"createdAt\": \"2022-01-24T03:18:53.706Z\"\n    },\n    \"data\": \"Data studi kasus berhasil ditambahkan\"\n}"
+								},
+								{
+									"name": "Fail file format not supported",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "sql",
+													"type": "file",
+													"src": "/home/kaito/Downloads/04.docx"
+												},
+												{
+													"key": "name",
+													"value": "ini tes",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												""
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "X-Powered-By",
+											"value": "Express"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "68"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"44-mvc7V1XsEQZR/oF81z2xlLOz+bc\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 24 Jan 2022 03:20:11 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"fail\",\n    \"message\": \"Format file tidak didukung\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "error validation failed",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "sql",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/bumdes.sql"
+												},
+												{
+													"key": "name",
+													"value": "1",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												""
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "119"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"77-oxmNT8Oti8ey/lN4okIbwj1olok\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:39:30 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"name\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"name\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								}
+							]
 						},
 						{
 							"name": "Del Case Study",
@@ -549,14 +1040,14 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "{{url_web}}/api/casestudies/9",
+									"raw": "{{url_web}}/api/casestudies/aa",
 									"host": [
 										"{{url_web}}"
 									],
 									"path": [
 										"api",
 										"casestudies",
-										"9"
+										"aa"
 									]
 								}
 							},
@@ -674,6 +1165,5182 @@
 									],
 									"cookie": [],
 									"body": "{\n    \"status\": \"error\",\n    \"message\": \"studi kasus tidak dapat ditemukan\",\n    \"data\": \"Data studi kasus gagal dihapus\"\n}"
+								},
+								{
+									"name": "Error validation failed",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/casestudies/aa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"casestudies",
+												"aa"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "133"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"85-DZxtAs6eBU7nZ8P0jtUklUMKCQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:40:09 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Question",
+					"item": [
+						{
+							"name": "Get All",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/questions",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "6210"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1842-8lp5RRhjh+HYabXTbGxiNuK/+rg\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:14:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil didapatkan\",\n    \"data\": [\n        {\n            \"id\": 8,\n            \"text\": \"<p>Dosen ingin menampilkan semua data tentang mahasiswa.</p>\",\n            \"answer\": \"[\\\"SELECT * FROM mahasiswa\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901614402.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:46:54.000Z\",\n            \"updatedAt\": \"2021-06-17T03:46:54.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 9,\n            \"text\": \"<p>Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'</p>\",\n            \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE nama LIKE 'D%'\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE nama LIKE 'D%'\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901699340.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:48:19.000Z\",\n            \"updatedAt\": \"2021-06-17T03:48:19.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 10,\n            \"text\": \"<p>Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut</p>\",\n            \"answer\": \"[\\\"SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901724476.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:48:44.000Z\",\n            \"updatedAt\": \"2021-06-17T03:48:44.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 11,\n            \"text\": \"<p>Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut</p>\",\n            \"answer\": \"[\\\"SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(nama) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(kelas) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(ipk) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901797490.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:49:57.000Z\",\n            \"updatedAt\": \"2021-06-17T03:49:57.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 12,\n            \"text\": \"<p>Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut</p>\",\n            \"answer\": \"[\\\"SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(nama) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(ipk) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(kelas) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901838360.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:50:38.000Z\",\n            \"updatedAt\": \"2021-06-17T03:50:38.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 13,\n            \"text\": \"<p>Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00</p>\",\n            \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\\\",\\\"SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\\\",\\\"SELECT * FROM mahasiswa WHERE ipk >= 3.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00\\\"]\",\n            \"answer_pic\": \"answer_pic-1623901915295.png\",\n            \"tables\": \"mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T03:51:56.000Z\",\n            \"updatedAt\": \"2021-06-17T03:51:56.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 14,\n            \"text\": \"<p>Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery</p>\",\n            \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\\\",\\\"SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1\\\"]\",\n            \"answer_pic\": \"answer_pic-1623904606531.png\",\n            \"tables\": \"user\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T04:36:46.000Z\",\n            \"updatedAt\": \"2021-06-17T04:36:46.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 15,\n            \"text\": \"<p>Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut</p>\",\n            \"answer\": \"[\\\"SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa\\\"]\",\n            \"answer_pic\": \"answer_pic-1623904684453.png\",\n            \"tables\": \"user,mahasiswa\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T04:38:04.000Z\",\n            \"updatedAt\": \"2021-06-17T04:38:04.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        },\n        {\n            \"id\": 16,\n            \"text\": \"<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>\",\n            \"answer\": \"[\\\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\\\"]\",\n            \"answer_pic\": \"answer_pic-1623904707990.png\",\n            \"tables\": \"mahasiswa,user\",\n            \"case_study_id\": 2,\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T04:38:27.000Z\",\n            \"updatedAt\": \"2021-06-17T04:38:27.000Z\",\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"CaseStudy\": {\n                \"id\": 2,\n                \"name\": \"Tes\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "GET All Question exclude existed Copy",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/questions/containers/aa",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions",
+										"containers",
+										"aa"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/containers/5",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"containers",
+												"5"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "78"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"4e-tApsXCWeFGF+NM9+PmsfO3E2gGg\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:46:02 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil didapatkan\",\n    \"data\": []\n}"
+								},
+								{
+									"name": "Error container not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/containers/8",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"containers",
+												"8"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "92"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5c-RT5dn6F2zzOoLXC/TnlBvgS4DGg\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:45:17 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal didapatkan\",\n    \"data\": \"container not found\"\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/containers/aa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"containers",
+												"aa"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "147"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"93-K5kwJtP0wOH4mKPy0al1uDdJ31A\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:46:29 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"container\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"container\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Get One Detail",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/questions/2",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions",
+										"2"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/8",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"8"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "1147"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"47b-UIWjzAe4Ea9lciJVm+Eaw7tFhoA\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:57:11 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil didapatkan\",\n    \"data\": {\n        \"id\": 8,\n        \"text\": \"<p>Dosen ingin menampilkan semua data tentang mahasiswa.</p>\",\n        \"answer\": \"[\\\"SELECT * FROM mahasiswa\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa\\\"]\",\n        \"answer_pic\": \"answer_pic-1623901614402.png\",\n        \"tables\": {\n            \"mahasiswa\": {\n                \"status\": \"success\",\n                \"data\": [\n                    {\n                        \"id_mahasiswa\": 1,\n                        \"nama\": \"Daffa\",\n                        \"kelas\": \"4C\",\n                        \"ipk\": 3\n                    },\n                    {\n                        \"id_mahasiswa\": 2,\n                        \"nama\": \"Akbar\",\n                        \"kelas\": \"4D\",\n                        \"ipk\": 3.5\n                    },\n                    {\n                        \"id_mahasiswa\": 5,\n                        \"nama\": \"Dwiputra\",\n                        \"kelas\": \"4A\",\n                        \"ipk\": 2\n                    },\n                    {\n                        \"id_mahasiswa\": 6,\n                        \"nama\": \"Damarriyanto\",\n                        \"kelas\": \"4A\",\n                        \"ipk\": 2.5\n                    },\n                    {\n                        \"id_mahasiswa\": 7,\n                        \"nama\": \"John\",\n                        \"kelas\": \"4B\",\n                        \"ipk\": 3\n                    },\n                    {\n                        \"id_mahasiswa\": 8,\n                        \"nama\": \"Doe\",\n                        \"kelas\": \"4B\",\n                        \"ipk\": 2.5\n                    },\n                    {\n                        \"id_mahasiswa\": 9,\n                        \"nama\": \"Jane\",\n                        \"kelas\": \"4C\",\n                        \"ipk\": 4\n                    },\n                    {\n                        \"id_mahasiswa\": 10,\n                        \"nama\": \"Budi\",\n                        \"kelas\": \"4D\",\n                        \"ipk\": 3.5\n                    },\n                    {\n                        \"id_mahasiswa\": 11,\n                        \"nama\": \"Ani\",\n                        \"kelas\": \"4C\",\n                        \"ipk\": 3\n                    }\n                ],\n                \"message\": null\n            }\n        },\n        \"case_study_id\": 2,\n        \"user_id\": 5,\n        \"label_id\": 1,\n        \"createdAt\": \"2021-06-17T03:46:54.000Z\",\n        \"updatedAt\": \"2021-06-17T03:46:54.000Z\",\n        \"User\": {\n            \"id\": 5,\n            \"name\": \"Dosen Coba\"\n        },\n        \"CaseStudy\": {\n            \"id\": 2,\n            \"name\": \"Tes\",\n            \"db_name\": \"sqlearn_cs_auto_assess_tes\"\n        },\n        \"QuestionLabel\": {\n            \"id\": 1,\n            \"name\": \"Open-Ended\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/aa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"aa"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "133"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"85-DZxtAs6eBU7nZ8P0jtUklUMKCQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:57:32 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error question not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/2",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"2"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "91"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5b-trn5I0SbB7RD1GhVXkIQKK1MYOs\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:57:49 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal didapatkan\",\n    \"data\": \"question not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "POST a new Question",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "answer_pic",
+											"type": "file",
+											"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+										},
+										{
+											"key": "text",
+											"value": "ini text soal",
+											"type": "text"
+										},
+										{
+											"key": "answer",
+											"value": "ini jawaban soal",
+											"type": "text"
+										},
+										{
+											"key": "tables",
+											"value": "table,wow,tes",
+											"type": "text"
+										},
+										{
+											"key": "case_study",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "label_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url_web}}/api/questions",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "335"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"14f-xI/0tSTb1vnBnOAEucqHAr2j/PQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:11:22 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil ditambahkan\",\n    \"data\": {\n        \"id\": 18,\n        \"text\": \"ini text soal\",\n        \"answer\": \"ini jawaban soal\",\n        \"answer_pic\": \"1645276282202_answer_pic_1224063.jpg\",\n        \"tables\": \"table,wow,tes\",\n        \"case_study_id\": 2,\n        \"user_id\": 5,\n        \"label_id\": 1,\n        \"updatedAt\": \"2022-02-19T13:11:22.210Z\",\n        \"createdAt\": \"2022-02-19T13:11:22.210Z\"\n    }\n}"
+								},
+								{
+									"name": "Error validation failed",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/FIlBcUOVIAAIXuJ.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "201"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"c9-7+uFhbe6ij0YDzMUZxhuDqC9dHI\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:58:47 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"case_study\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"case_study\",\n            \"location\": \"body\"\n        },\n        \"label_id\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"label_id\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error format file",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/2.AKTA ANAK KEDUA.pdf"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "68"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"44-Ofer1bkoOKHlXe/MQBKwr5qlOuY\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:00:57 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"Format file tidak disupport\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "Error data not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "3",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "89"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"59-+m+TbN2GKr0TNLX5FhRpsVuvup8\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:10:36 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal ditambahkan\",\n    \"data\": \"label not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Edit Question",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "answer_pic",
+											"type": "file",
+											"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+										},
+										{
+											"key": "text",
+											"value": "ini text soal updated",
+											"type": "text"
+										},
+										{
+											"key": "answer",
+											"value": "ini jawaban soal updated test",
+											"type": "text"
+										},
+										{
+											"key": "tables",
+											"value": "table,wow,tes",
+											"type": "text"
+										},
+										{
+											"key": "case_study",
+											"value": "2",
+											"type": "text"
+										},
+										{
+											"key": "label_id",
+											"value": "1",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{url_web}}/api/questions/20",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions",
+										"20"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal updated",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal updated test",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions/20",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"20"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "355"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"163-fpmTW3QXZEwEWJ0tMKbAPGkhyhQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 10:12:39 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil diperbarui\",\n    \"data\": {\n        \"id\": 20,\n        \"text\": \"ini text soal updated\",\n        \"answer\": \"ini jawaban soal updated test\",\n        \"answer_pic\": \"1645438359891_answer_pic_1224063.jpg\",\n        \"tables\": \"table,wow,tes\",\n        \"case_study_id\": 2,\n        \"user_id\": 5,\n        \"label_id\": 1,\n        \"createdAt\": \"2022-02-21T10:12:34.000Z\",\n        \"updatedAt\": \"2022-02-21T10:12:39.000Z\"\n    }\n}"
+								},
+								{
+									"name": "Error validation failed",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/FIlBcUOVIAAIXuJ.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text",
+													"disabled": true
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text",
+													"disabled": true
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions/18",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"18"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "201"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"c9-7+uFhbe6ij0YDzMUZxhuDqC9dHI\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 12:58:47 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"case_study\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"case_study\",\n            \"location\": \"body\"\n        },\n        \"label_id\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"label_id\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error format file",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/2.AKTA ANAK KEDUA.pdf"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions/18",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"18"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "68"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"44-Ofer1bkoOKHlXe/MQBKwr5qlOuY\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:00:57 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": false,\n    \"message\": \"Format file tidak disupport\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "Error data not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "3",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions/18",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"18"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "89"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"59-+m+TbN2GKr0TNLX5FhRpsVuvup8\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:10:36 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal ditambahkan\",\n    \"data\": \"label not found\"\n}"
+								},
+								{
+									"name": "Error question not found",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "answer_pic",
+													"type": "file",
+													"src": "/C:/Users/sulta/Downloads/1224063.jpg"
+												},
+												{
+													"key": "text",
+													"value": "ini text soal updated",
+													"type": "text"
+												},
+												{
+													"key": "answer",
+													"value": "ini jawaban soal updated test",
+													"type": "text"
+												},
+												{
+													"key": "tables",
+													"value": "table,wow,tes",
+													"type": "text"
+												},
+												{
+													"key": "case_study",
+													"value": "2",
+													"type": "text"
+												},
+												{
+													"key": "label_id",
+													"value": "1",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{url_web}}/api/questions/18",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"18"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "92"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5c-ylIW/eqrKTbR8swF6G+XPybehHA\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 10:12:03 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal ditambahkan\",\n    \"data\": \"question not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "DELETE one Question",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/questions/19",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"questions",
+										"19"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/19",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"19"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "77"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"4d-nlM0o5h6kJfPHjW2rafDkpKg6nQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:18:41 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data pertanyaan berhasil dihapus\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "Error validation failed",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/aa",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"aa"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "133"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"85-DZxtAs6eBU7nZ8P0jtUklUMKCQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:11:56 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"aa\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error question not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/questions/21",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"questions",
+												"21"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "88"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"58-VrSXKqJqZi1J1v9D/3rwkN6RzF0\""
+										},
+										{
+											"key": "Date",
+											"value": "Sat, 19 Feb 2022 13:12:29 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data pertanyaan gagal dihapus\",\n    \"data\": \"question not found\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Container",
+					"item": [
+						{
+							"name": "GET All Container",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/containers",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "313"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"139-CF99RQr2MmEADwdfN2DHZmFG+BE\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:15:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data kontainer berhasil didapatkan\",\n    \"data\": [\n        {\n            \"id\": 5,\n            \"description\": \"Paket Tes\",\n            \"user_id\": 5,\n            \"label_id\": 1,\n            \"createdAt\": \"2021-06-17T04:38:50.000Z\",\n            \"updatedAt\": \"2021-06-17T04:38:50.000Z\",\n            \"questionCount\": 9,\n            \"User\": {\n                \"id\": 5,\n                \"name\": \"Dosen Coba\"\n            },\n            \"QuestionLabel\": {\n                \"id\": 1,\n                \"name\": \"Open-Ended\"\n            }\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "GET one Container",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/containers/5",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers",
+										"5"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/5",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"5"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "4680"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"1248-A0+9ZPMwP17UhP4EAj1LJluVXys\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:18:13 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data kontainer berhasil didapatkan\",\n    \"data\": {\n        \"id\": 5,\n        \"description\": \"Paket Tes\",\n        \"user_id\": 5,\n        \"label_id\": 1,\n        \"createdAt\": \"2021-06-17T04:38:50.000Z\",\n        \"updatedAt\": \"2021-06-17T04:38:50.000Z\",\n        \"questions\": [\n            {\n                \"id\": 8,\n                \"text\": \"<p>Dosen ingin menampilkan semua data tentang mahasiswa.</p>\",\n                \"answer\": \"[\\\"SELECT * FROM mahasiswa\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 9,\n                \"text\": \"<p>Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'</p>\",\n                \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE nama LIKE 'D%'\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE nama LIKE 'D%'\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 10,\n                \"text\": \"<p>Dosen ingin mengetahui urutan IPK dari yang paling besar ke yang paling kecil, informasi yang ditampilkan meliputi nama dan ipk mahasiswa tersebut</p>\",\n                \"answer\": \"[\\\"SELECT nama, ipk FROM mahasiswa ORDER BY ipk DESC\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 11,\n                \"text\": \"<p>Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut</p>\",\n                \"answer\": \"[\\\"SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(*) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(nama) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(kelas) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\",\\\"SELECT kelas, COUNT(ipk) as jumlah_mhs FROM mahasiswa GROUP BY kelas\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 12,\n                \"text\": \"<p>Administrator ingin mengetahui kelas mana yang jumlah mahasiswanya lebih dari 2, tampilkan nama kelas dan jumlah mahasiswa kelas tersebut</p>\",\n                \"answer\": \"[\\\"SELECT kelas, COUNT(id_mahasiswa) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(*) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(nama) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(ipk) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\",\\\"SELECT kelas, COUNT(kelas) jumlah_mhs FROM mahasiswa GROUP BY kelas HAVING jumlah_mhs > 2\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 13,\n                \"text\": \"<p>Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00</p>\",\n                \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\\\",\\\"SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\\\",\\\"SELECT * FROM mahasiswa WHERE ipk >= 3.00\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 14,\n                \"text\": \"<p>Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery</p>\",\n                \"answer\": \"[\\\"SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\\\",\\\"SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1\\\",\\\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 15,\n                \"text\": \"<p>Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut</p>\",\n                \"answer\": \"[\\\"SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            },\n            {\n                \"id\": 16,\n                \"text\": \"<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>\",\n                \"answer\": \"[\\\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\\\"]\",\n                \"CaseStudy\": {\n                    \"id\": 2,\n                    \"name\": \"Tes\"\n                },\n                \"User\": {\n                    \"id\": 5,\n                    \"name\": \"Dosen Coba\"\n                },\n                \"QuestionLabel\": {\n                    \"id\": 1,\n                    \"name\": \"Open-Ended\"\n                }\n            }\n        ]\n    }\n}"
+								},
+								{
+									"name": "Error container not found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/1",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"1"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "91"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5b-OAaPObTxMXz0ti88Mxm0WbhhTC8\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:16:17 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data kontainer gagal didapatkan\",\n    \"data\": \"container not found\"\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/a",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"a"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "132"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"84-W/lLHLOxydpgoRBE0Vq2TisimDs\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 03:17:05 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"a\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "Add a new Container",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"ini uas ya\",\r\n    \"label_id\": \"2\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web}}/api/containers",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"ini uas ya\",\r\n    \"label_id\": 1\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "219"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"db-mG4gaauu7YZRYHCsFpEnE5zL4Bg\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:34:02 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data kontainer baru berhasil ditambahkan\",\n    \"data\": {\n        \"id\": 6,\n        \"description\": \"ini uas ya\",\n        \"user_id\": 5,\n        \"label_id\": 1,\n        \"updatedAt\": \"2022-02-21T04:33:59.281Z\",\n        \"createdAt\": \"2022-02-21T04:33:59.281Z\"\n    }\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"ini uas ya\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "127"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"7f-rofRrXFgsJBNvXS2bp0FeTwm7do\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:25:54 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"label_id\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"label_id\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error label not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"ini uas ya\",\r\n    \"label_id\": \"3\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "93"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5d-BsH5G/ZoRaP+n5WfptDKa9SiLL4\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:36:05 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data kontainer baru gagal ditambahkan\",\n    \"data\": \"label not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Edit Container",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"description\": \"tes 222111\",\r\n    \"label_id\": 2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web}}/api/containers/6",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers",
+										"6"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"tes 222111\",\r\n    \"label_id\": 2\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "213"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"d5-ugqSl9n0k15n15H/XlKxA9a5Q24\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:52:52 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data kontainer berhasil diperbarui\",\n    \"data\": {\n        \"id\": 6,\n        \"description\": \"tes 222111\",\n        \"user_id\": 5,\n        \"label_id\": 2,\n        \"createdAt\": \"2022-02-21T04:33:59.000Z\",\n        \"updatedAt\": \"2022-02-21T04:52:52.000Z\"\n    }\n}"
+								},
+								{
+									"name": "Error validation label",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"tes update\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/1",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"1"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "127"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"7f-rofRrXFgsJBNvXS2bp0FeTwm7do\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:37:06 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"label_id\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"label_id\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error params must int",
+									"originalRequest": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"description\": \"tes update\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/a",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"a"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "202"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"ca-+Vhd9Ctvqijsmey/YeNB3YDofeQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 04:37:31 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"a\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        },\n        \"label_id\": {\n            \"msg\": \"cannot null\",\n            \"param\": \"label_id\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "add new Questions to Container",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"questions\":[8,9]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web}}/api/containers/6/add",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers",
+										"6",
+										"add"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[8,9]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6/add",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6",
+												"add"
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "311"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"137-2QFbqHfOa+/eEMGHw4QeBmrLIkQ\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:35:31 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Berhasil memasukkan pertanyaan ke kontainer\",\n    \"data\": [\n        {\n            \"question_id\": 8,\n            \"container_id\": 6,\n            \"createdAt\": \"2022-02-21T09:35:31.065Z\",\n            \"updatedAt\": \"2022-02-21T09:35:31.065Z\"\n        },\n        {\n            \"question_id\": 9,\n            \"container_id\": 6,\n            \"createdAt\": \"2022-02-21T09:35:31.065Z\",\n            \"updatedAt\": \"2022-02-21T09:35:31.065Z\"\n        }\n    ]\n}"
+								},
+								{
+									"name": "Error container not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1,2]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/1/add",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"1",
+												"add"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "100"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"64-HpvR7ZThFnSKL+tqN0b9QCKvSAM\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 05:55:34 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Gagal memasukkan pertanyaan ke kontainer\",\n    \"data\": \"container not found\"\n}"
+								},
+								{
+									"name": "Error element not int",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1,\"2\"]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6/add",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6",
+												"add"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "158"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"9e-ckE9QMxUzUncfVWhnqFFQyMYQ7A\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:20:43 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"questions\": {\n            \"value\": [\n                1,\n                \"2\"\n            ],\n            \"msg\": \"Element array not number\",\n            \"param\": \"questions\",\n            \"location\": \"body\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error question id not found",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1,2]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6/add",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6",
+												"add"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "104"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"68-RN3rQa7rOWThO3uyKUiuvotwLy8\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:32:39 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Gagal memasukkan pertanyaan ke kontainer\",\n    \"data\": \"question id 1 not found\"\n}"
+								}
+							]
+						},
+						{
+							"name": "DELETE Question from Container",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"questions\":[1, 2]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url_web}}/api/containers/6/remove/8",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers",
+										"6",
+										"remove",
+										"8"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1, 2]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6/remove/8",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6",
+												"remove",
+												"8"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "92"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"5c-52HRUacePhgjlhsVUxhQ7B0uNz4\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:48:40 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Berhasil mengeluarkan pertanyaan dari kontainer\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1, 2]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/a/remove/vb",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"a",
+												"remove",
+												"vb"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "220"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"dc-7Bmw58Z2UsKMD0t2aN3VCxIcDo0\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:46:24 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"a\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        },\n        \"question\": {\n            \"value\": \"vb\",\n            \"msg\": \"must be number\",\n            \"param\": \"question\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error question notfound",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"questions\":[1, 2]\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url_web}}/api/containers/6/remove/2",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"6",
+												"remove",
+												"2"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "126"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"7e-lKW+hvHZaJ+N4hbpYpA9UGkjcQE\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:47:46 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Gagal mengeluarkan pertanyaan dari kontainer\",\n    \"data\": \"pertanyaan tidak terdapat dalam kontainer\"\n}"
+								}
+							]
+						},
+						{
+							"name": "DELETE one Container",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{url_web}}/api/containers/7",
+									"host": [
+										"{{url_web}}"
+									],
+									"path": [
+										"api",
+										"containers",
+										"7"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "Success",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/7",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"7"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "76"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"4c-AiZCtJyTtySJSextjXYdlXn/h9c\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:50:45 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"success\",\n    \"message\": \"Data kontainer berhasil dihapus\",\n    \"data\": null\n}"
+								},
+								{
+									"name": "Error validation",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/a",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"a"
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "132"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"84-W/lLHLOxydpgoRBE0Vq2TisimDs\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:49:13 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"validation failed\",\n    \"data\": {\n        \"id\": {\n            \"value\": \"a\",\n            \"msg\": \"must be number\",\n            \"param\": \"id\",\n            \"location\": \"params\"\n        }\n    }\n}"
+								},
+								{
+									"name": "Error not found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url_web}}/api/containers/20",
+											"host": [
+												"{{url_web}}"
+											],
+											"path": [
+												"api",
+												"containers",
+												"20"
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										},
+										{
+											"key": "Content-Security-Policy",
+											"value": "default-src 'self';base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;form-action 'self';frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src 'self';script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests"
+										},
+										{
+											"key": "Cross-Origin-Embedder-Policy",
+											"value": "require-corp"
+										},
+										{
+											"key": "Cross-Origin-Opener-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "Cross-Origin-Resource-Policy",
+											"value": "same-origin"
+										},
+										{
+											"key": "X-DNS-Prefetch-Control",
+											"value": "off"
+										},
+										{
+											"key": "Expect-CT",
+											"value": "max-age=0"
+										},
+										{
+											"key": "X-Frame-Options",
+											"value": "SAMEORIGIN"
+										},
+										{
+											"key": "Strict-Transport-Security",
+											"value": "max-age=15552000; includeSubDomains"
+										},
+										{
+											"key": "X-Download-Options",
+											"value": "noopen"
+										},
+										{
+											"key": "X-Content-Type-Options",
+											"value": "nosniff"
+										},
+										{
+											"key": "Origin-Agent-Cluster",
+											"value": "?1"
+										},
+										{
+											"key": "X-Permitted-Cross-Domain-Policies",
+											"value": "none"
+										},
+										{
+											"key": "Referrer-Policy",
+											"value": "no-referrer"
+										},
+										{
+											"key": "X-XSS-Protection",
+											"value": "0"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json; charset=utf-8"
+										},
+										{
+											"key": "Content-Length",
+											"value": "88"
+										},
+										{
+											"key": "ETag",
+											"value": "W/\"58-qId46wG8DgmnvmTkr7IP5apL/DM\""
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 21 Feb 2022 09:49:35 GMT"
+										},
+										{
+											"key": "Connection",
+											"value": "keep-alive"
+										},
+										{
+											"key": "Keep-Alive",
+											"value": "timeout=5"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"status\": \"error\",\n    \"message\": \"Data kontainer gagal dihapus\",\n    \"data\": \"container not found\"\n}"
 								}
 							]
 						}
@@ -910,6 +6577,32 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "images",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url_web}}/images/answer_pic-1623901614402.png",
+							"host": [
+								"{{url_web}}"
+							],
+							"path": [
+								"images",
+								"answer_pic-1623901614402.png"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "static",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
 				}
 			],
 			"auth": {
