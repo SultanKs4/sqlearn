@@ -44,7 +44,7 @@ module.exports = {
 
     getOne: async (id) => {
         try {
-            const containerById = await Container.findByPk(id, {
+            let containerById = await Container.findByPk(id, {
                 include: {
                     model: Question,
                     as: "questions",
@@ -68,6 +68,14 @@ module.exports = {
             });
 
             if (containerById == null) throw new Error("container not found");
+
+            containerById = JSON.parse(JSON.stringify(containerById));
+
+            containerById.questions.forEach((val, i) => {
+                let next_id = null;
+                if (i != containerById.questions.length - 1) next_id = containerById.questions[i + 1].id;
+                val.next_id = next_id;
+            });
 
             return createResponseObject("success", "Data kontainer berhasil didapatkan", containerById);
         } catch (error) {
