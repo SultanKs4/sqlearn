@@ -4,15 +4,17 @@ import { Skeleton, Typography, Row, Col, Button, Alert, Tooltip } from "antd";
 
 import { LeftOutlined } from "@ant-design/icons";
 
-import PageLayout from "../../../components/PageLayout";
-import ListComponent from "../../../components/List";
+import PageLayout from "../../../../components/PageLayout";
+import ListComponent from "../../../../components/List";
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {
   mockGetNilaiTiapKelas,
   mockKelasDiajar,
-} from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
+} from "../../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
+import ModalCustom from "../../../../components/Modal";
+import PreviewLogMahasiswa from "../../../../components/dosen/NilaiMhs/PreviewLogMahasiswa";
 
 function PreviewNilaiTiapKelas() {
   const router = useRouter();
@@ -37,6 +39,15 @@ function PreviewNilaiTiapKelas() {
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
   const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+
+  const previewNilaiMhs = (nilaiMhsObj) => {
+    setSelectedMhs(nilaiMhsObj);
+    setModalRole("preview");
+    handleToggleModal();
+    // setModalText(
+    //   `Nilai Rata rata ${nilaiMhsObj.nama} adalah ${nilaiMhsObj.avgNilai}`
+    // );
+  };
 
   useEffect(() => {
     console.log("ini router", router?.query);
@@ -104,12 +115,25 @@ function PreviewNilaiTiapKelas() {
           />
         )}
 
+        <ModalCustom
+          role={modalRole}
+          entity="Log Mahasiswa"
+          visible={isModalVisible}
+          setVisible={setIsModalVisible}
+          confirmLoading={isModalLoading}
+          setConfirmLoading={setIsModalLoading}
+          // modalText={modalText}
+          modalContent={<PreviewLogMahasiswa currentNilaiMhs={selectedMhs} />}
+          setModalText={setModalText}
+        />
+
         {/* Content asli */}
         <ListComponent
-          showDetail
+          displayAllData
+          role={"lihat-nilai"}
           isLoading={!isDataMhsLoaded}
           dataSource={dataNilaiMhs}
-          role={"lihat-nilai"}
+          previewDetailNilai={previewNilaiMhs}
         />
       </PageLayout>
     </>

@@ -1,5 +1,4 @@
 import axios from "axios";
-import moment from "moment";
 
 const getUserInfo = async (username) => {
   // TODO : API Request GET : ?username={username}
@@ -43,7 +42,8 @@ const mockGetAllPractices = async (username) => {
             nama: "Latihan 1",
             jumlahSoal: 3,
             durasi: "2 jam",
-            tanggal_akhir: moment("2022-02-26 07:00"),
+            tanggal_mulai: "2022-02-24 10:00:00",
+            tanggal_akhir: "2022-02-24 12:00:00",
             kategori: 1,
             status: "tersedia",
           },
@@ -63,7 +63,8 @@ const mockGetAllPractices = async (username) => {
             nama: "Latihan 3",
             jumlahSoal: 1,
             durasi: "2 jam",
-            tanggal_akhir: moment("2022-02-25 07:00"),
+            tanggal_mulai: "2022-02-24 10:00:00",
+            tanggal_akhir: "2022-02-24 12:00:00",
             kategori: 2,
             status: "tersedia",
           },

@@ -55,7 +55,7 @@ function StudiKasusBeranda({ data = mockPaketSoal, previewStudiKasus }) {
             </Col>
             <Col>
               <FieldTimeOutlined style={{ fontSize: "1.5em" }} />{" "}
-              {getHours(item.durasi)} Jam
+              {/* {getHours(item.durasi)} Jam */}
             </Col>
             <Col>
               <Button

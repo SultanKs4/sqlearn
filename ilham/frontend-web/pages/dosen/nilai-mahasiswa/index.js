@@ -142,7 +142,7 @@ function HalamanNilai() {
                       shape="round"
                       icon={<RightOutlined />}
                       onClick={() =>
-                        router.push(`/dosen/nilai-mahasiswa/${item.id}`)
+                        router.push(`/dosen/nilai-mahasiswa/kelas/${item.id}`)
                       }
                     >
                       Preview Kelas

@@ -44,8 +44,13 @@ const data = [
     jawaban_benar: "SELECT COUNT nama FROM MAHASISWA",
     teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
     kategori: 1,
-    finished_time: "01:30:10",
+    finished_time: "23:30:10",
     finished_date: "2022-02-21",
+    timer: {
+      hours: 2,
+      minute: 0,
+      seconds: 0,
+    },
   },
   {
     id: 2 /* idSoal */,
@@ -97,8 +102,13 @@ const data = [
     teksSoal:
       "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
     kategori: 2,
-    finished_time: "01:30:10",
+    finished_time: "23:30:10",
     finished_date: "2022-02-21",
+    timer: {
+      hours: 2,
+      minute: 0,
+      seconds: 0,
+    },
   },
 ];
 

@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -20,9 +20,16 @@ import PageLayout from "../../../../../components/PageLayout";
 import { mockGetSoalByID } from "../../../../../utils/remote-data/mahasiswa/Soal";
 import SQLContainer from "../../../../../components/mahasiswa/Soal/SQLContainer";
 import CountdownTimer from "../../../../../components/CountdownTimer";
+import { JadwalContext } from "../../../../../utils/context/JadwalContext";
 
 function LatihanSoal() {
   const router = useRouter();
+
+  const { timer } = useContext(JadwalContext);
+
+  useEffect(() => {
+    console.log(timer, "ini timer contex");
+  }, []);
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [isDataPertanyaanLoaded, setIsDataPertanyaanLoaded] = useState(false);
@@ -34,6 +41,7 @@ function LatihanSoal() {
     timerLeft: "00:00:00",
     studentAnswer: "",
     attemptTestQuery: 0,
+    soalID: 0,
   });
 
   const [timerLeftCounter, setTimerLeftCounter] = useState("");
@@ -94,18 +102,26 @@ function LatihanSoal() {
       );
       setIsDataPertanyaanLoaded(true);
     });
+
+    console.log("ini router query", router.query);
+
+    setLogData(({ attemptTestQuery, ...prev }) => {
+      return {
+        attemptTestQuery: 0,
+        ...prev,
+      };
+    });
   }, [router.query.idSoal]);
 
   useEffect(() => {
-    console.log("debugging ", isDataPertanyaanLoaded);
-
     if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) {
-      console.log(
-        `${dataPertanyaan?.finished_date} ${dataPertanyaan?.finished_time}`
-      );
+      const time = new Date();
+      const { hours, minute, seconds } = dataPertanyaan?.timer;
       setScheduleDate(
-        new Date(
-          `${dataPertanyaan?.finished_date} ${dataPertanyaan?.finished_time}`
+        time.setHours(
+          time.getHours() + hours,
+          time.getMinutes() + minute,
+          time.getSeconds() + seconds
         )
       );
       setIsTimeLoaded(true);
@@ -134,7 +150,7 @@ function LatihanSoal() {
   };
 
   const submitAnswer = (values) => {
-    saveLog(values);
+    saveLog(values, true);
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
@@ -143,30 +159,25 @@ function LatihanSoal() {
     setAlertMessage(`Jawaban berhasil disimpan !`);
   };
 
-  const saveLog = (values) => {
-    if (dataPertanyaan?.kategori === 2) {
-      setLogData(({ attemptTestQuery, timerLeft, studentAnswer }) => {
-        return {
-          studentAnswer: values,
-          attemptTestQuery: attemptTestQuery + 1,
-          timerLeft: timerLeftCounter,
-        };
-      });
-    } else {
-      setLogData(({ attemptTestQuery, timerLeft, studentAnswer }) => {
-        return {
-          studentAnswer: boxes?.sql_constructed?.items
-            ?.map((item) => item.content)
-            .join(" "),
-          attemptTestQuery: attemptTestQuery + 1,
-          timerLeft: timerLeftCounter,
-        };
-      });
-    }
+  const saveLog = (values, isSubmitAnswer) => {
+    setLogData(({ attemptTestQuery, timerLeft, studentAnswer, soalID }) => {
+      return {
+        studentAnswer:
+          dataPertanyaan?.kategori === 2
+            ? values?.jawaban_siswa
+            : boxes?.sql_constructed?.items
+                ?.map((item) => item.content)
+                .join(" "),
+        attemptTestQuery: attemptTestQuery + 1,
+        timerLeft: timerLeftCounter,
+        soalID: router.query.idSoal,
+        type: isSubmitAnswer ? "answer submitted" : "check answer",
+      };
+    });
   };
 
   const testQuery = (values) => {
-    saveLog(values);
+    saveLog(values, false);
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
@@ -210,6 +221,7 @@ function LatihanSoal() {
             <Button type="primary" onClick={() => previewTable()}>
               Preview Hasil Query
             </Button>
+
             <Row
               style={{
                 marginTop: "1em",
@@ -217,6 +229,21 @@ function LatihanSoal() {
               }}
             >
               <img src="https://via.placeholder.com/380x200"></img>
+            </Row>
+
+            <Row style={{ marginTop: "1em" }}>
+              <Button
+                type="primary"
+                onClick={() =>
+                  router.push(
+                    `/mahasiswa/soal/1/pertanyaan/${
+                      parseInt(router.query.idSoal) + 1
+                    }`
+                  )
+                }
+              >
+                Soal Selanjutnya
+              </Button>
             </Row>
           </Col>
           <Col lg={1}>

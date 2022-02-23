@@ -258,7 +258,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         <Card>
           <List
             itemLayout="horizontal"
-            dataSource={showDetail ? dataSource : topThreeStudents}
+            dataSource={props.displayAllData ? dataSource : topThreeStudents}
             renderItem={(item) => (
               <List.Item>
                 <Row justify="space-around" style={{ width: "100vw" }}>
@@ -287,30 +287,28 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
 
                   <Col span={4}>
-                    {!showDetail && (
-                      <Row gutter={20} justify="end">
-                        <Col>
-                          <Tooltip title="Preview Nilai Mhs">
-                            <Button
-                              type="primary"
-                              icon={<SearchOutlined />}
-                              style={{
-                                color: "white",
-                                backgroundColor: "purple",
-                              }}
-                              size={"medium"}
-                              onClick={() => props.previewDetailNilai(item)}
-                            ></Button>
-                          </Tooltip>
-                        </Col>
-                      </Row>
-                    )}
+                    <Row gutter={20} justify="end">
+                      <Col>
+                        <Tooltip title="Preview Nilai Mhs">
+                          <Button
+                            type="primary"
+                            icon={<SearchOutlined />}
+                            style={{
+                              color: "white",
+                              backgroundColor: "purple",
+                            }}
+                            size={"medium"}
+                            onClick={() => props.previewDetailNilai(item)}
+                          ></Button>
+                        </Tooltip>
+                      </Col>
+                    </Row>
                   </Col>
                 </Row>
               </List.Item>
             )}
           />
-          {!showDetail && (
+          {!props.displayAllData && (
             <Typography.Paragraph
               underline
               style={{ color: "grey", textAlign: "center", marginTop: "1em" }}
@@ -540,7 +538,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <FieldTimeOutlined
                             style={{ fontSize: "1.2em", marginRight: ".5em" }}
                           />
-                          {getHours(item.durasi)} Jam
+                          {/* {getHours(item.durasi)} Jam */}
                         </Col>
                       </Row>
                     </Col>
@@ -640,42 +638,44 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       );
     case "data-soal-mahasiswa":
       return (
-        <List
-          itemLayout="horizontal"
-          dataSource={dataSource}
-          renderItem={(item) => (
-            <List.Item style={{ padding: 0 }}>
-              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
-                <Row justify="space-between">
-                  <Col span={20}>
-                    <Row>
-                      <Col style={{ paddingTop: "1em" }}>
-                        <DatabaseOutlined />
-                        <Typography.Text
-                          style={{ fontWeight: "bold", marginLeft: "1em" }}
-                          children={item.studi_kasus}
-                        />
-                      </Col>
-                    </Row>
-                    <Row justify="space-between" style={{ margin: "1em 0" }}>
-                      <Col> {item.teksSoal} </Col>
-                    </Row>
-                  </Col>
-                  <Col>
-                    <Tooltip title="Kerjakan Soal">
-                      <Button
-                        type="primary"
-                        icon={<EditOutlined />}
-                        children="Kerjakan"
-                        onClick={() => props.kerjakanLatihan(item?.id)}
-                      />
-                    </Tooltip>
-                  </Col>
-                </Row>
-              </Card>
-            </List.Item>
-          )}
-        />
+        <>
+          <List
+            itemLayout="horizontal"
+            dataSource={dataSource}
+            renderItem={(item) => (
+              <List.Item style={{ padding: 0 }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                  <Row justify="space-between">
+                    <Col span={20}>
+                      <Row>
+                        <Col style={{ paddingTop: "1em" }}>
+                          <DatabaseOutlined />
+                          <Typography.Text
+                            style={{ fontWeight: "bold", marginLeft: "1em" }}
+                            children={item.studi_kasus}
+                          />
+                        </Col>
+                      </Row>
+                      <Row justify="space-between" style={{ margin: "1em 0" }}>
+                        <Col> {item.teksSoal} </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </List.Item>
+            )}
+          />
+          <Row justify="center">
+            <Tooltip title="Kerjakan Soal">
+              <Button
+                type="primary"
+                icon={<EditOutlined />}
+                children="Kerjakan"
+                onClick={() => router.push(`/mahasiswa/soal/1/pertanyaan/1`)}
+              />
+            </Tooltip>
+          </Row>
+        </>
       );
     case "data-soal-dosen":
       return (

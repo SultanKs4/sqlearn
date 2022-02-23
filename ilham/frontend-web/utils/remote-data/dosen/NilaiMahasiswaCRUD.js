@@ -26,30 +26,146 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             avgNilai: 88,
             avgDurasi: 25.4,
             jumlahLatihanDikerjakan: 20,
+            detail: [
+              {
+                jadwalID: 1,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:28",
+                    type: "check answer",
+                  },
+                  {
+                    attemptTestQuery: 4,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:14",
+                    type: "check answer",
+                  },
+                  {
+                    attemptTestQuery: 3,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:0",
+                    type: "answer submitted",
+                  },
+                ],
+              },
+              {
+                jadwalID: 2,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:28",
+                    type: "check answer",
+                  },
+                  {
+                    attemptTestQuery: 4,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:14",
+                    type: "check answer",
+                  },
+                  {
+                    attemptTestQuery: 3,
+                    soalID: "2",
+                    studentAnswer: "SELECT * FROM",
+                    timerLeft: "01:59:0",
+                    type: "answer submitted",
+                  },
+                ],
+              },
+            ],
           },
           {
             nama: "Dharma Y",
             avgNilai: 88,
             avgDurasi: 25.4,
             jumlahLatihanDikerjakan: 20,
+            detail: [
+              {
+                jadwalID: 1,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "",
+                    timerLeft: "01:56:8",
+                    type: "check answer",
+                  },
+                ],
+              },
+            ],
           },
           {
             nama: "Rasyid M",
             avgNilai: 88,
             avgDurasi: 25.4,
             jumlahLatihanDikerjakan: 20,
+            detail: [
+              {
+                jadwalID: 1,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "",
+                    timerLeft: "01:56:8",
+                    type: "check answer",
+                  },
+                ],
+              },
+            ],
           },
           {
             nama: "Sultan A",
             avgNilai: 88,
             avgDurasi: 25.4,
             jumlahLatihanDikerjakan: 20,
+            detail: [
+              {
+                jadwalID: 1,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "",
+                    timerLeft: "01:56:8",
+                    type: "check answer",
+                  },
+                ],
+              },
+            ],
           },
           {
             nama: "Ilham Rizky",
             avgNilai: 88,
             avgDurasi: 25.4,
             jumlahLatihanDikerjakan: 20,
+            detail: [
+              {
+                jadwalID: 1,
+                paket_soal: "Paket B",
+                logData: [
+                  {
+                    attemptTestQuery: 1,
+                    soalID: "2",
+                    studentAnswer: "",
+                    timerLeft: "01:56:8",
+                    type: "check answer",
+                  },
+                ],
+              },
+            ],
           },
         ],
       });
