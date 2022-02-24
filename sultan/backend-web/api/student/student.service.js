@@ -11,9 +11,9 @@ module.exports = {
         try {
             const classes = await Student.findAll({
                 attributes: {
-                    exclude: ['password']
-                }
-            })
+                    exclude: ["password"],
+                },
+            });
             return createResponseObject(true, "Data mahasiswa berhasil didapatkan", classes);
         } catch (error) {
             return createResponseObject(false, "Data mahasiswa gagal didapatkan");
@@ -23,23 +23,23 @@ module.exports = {
         try {
             const studentClasses = await StudentClass.findAll({
                 where: {
-                    class_id: classId
+                    class_id: classId,
                 },
-                raw: true
-            })
+                raw: true,
+            });
 
-            const existedStudents = studentClasses.map(val => val.student_id)
+            const existedStudents = studentClasses.map((val) => val.student_id);
 
             const students = await Student.findAll({
                 attributes: {
-                    exclude: ['password']
+                    exclude: ["password"],
                 },
                 where: {
                     id: {
-                        [Op.notIn]: existedStudents
-                    }
-                }
-            })
+                        [Op.notIn]: existedStudents,
+                    },
+                },
+            });
             return createResponseObject(true, "Data mahasiswa berhasil didapatkan", students);
         } catch (error) {
             return createResponseObject(false, "Data mahasiswa gagal didapatkan");
@@ -49,14 +49,16 @@ module.exports = {
         try {
             const student = await Student.findByPk(id, {
                 attributes: {
-                    exclude: ['password']
+                    exclude: ["password"],
                 },
-                include: [{
-                    model: Class,
-                    as: "classes",
-                    through: { attributes: [] }
-                }]
-            })
+                include: [
+                    {
+                        model: Class,
+                        as: "classes",
+                        through: { attributes: [] },
+                    },
+                ],
+            });
             return createResponseObject(true, "Data mahasiswa berhasil didapatkan", student);
         } catch (error) {
             return createResponseObject(false, "Data mahasiswa gagal didapatkan");
@@ -64,27 +66,27 @@ module.exports = {
     },
     authenticate: async (data) => {
         try {
-            const { username, password } = data
+            const { username, password } = data;
 
             const user = await Student.findOne({
                 where: {
-                    username
+                    username,
                 },
-                raw: true
-            })
+                raw: true,
+            });
             if (!user) return createResponseObject(false, "Tidak ada username yang cocok");
 
-            const isPasswordMatch = comparePassword(password, user.password)
+            const isPasswordMatch = comparePassword(password, user.password);
             if (!isPasswordMatch) return createResponseObject(false, "Password salah");
 
-            const jwt = encodeJWT(user.id, JWT_ROLES.mahasiswa)
+            const jwt = encodeJWT(user.id, JWT_ROLES.mahasiswa);
 
-            const { password: passDb, ...rest } = user
-            const userResponse = { ...rest, role: "mahasiswa" }
+            const { password: passDb, ...rest } = user;
+            const userResponse = { ...rest, role: "mahasiswa" };
 
-            return createResponseObject(true, "Login berhasil dilakukan", { token: jwt, user: userResponse })
+            return createResponseObject(true, "Login berhasil dilakukan", { token: jwt, user: userResponse });
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return createResponseObject(false, "Login gagal dilakukan");
         }
     },
@@ -92,34 +94,34 @@ module.exports = {
         try {
             const student = await Student.findOne({
                 where: {
-                    nim: data.nim
-                }
-            })
-            if (student) return createResponseObject(false, "Data mahasiswa dengan nim tersebut sudah ada")
+                    nim: data.nim,
+                },
+            });
+            if (student) return createResponseObject(false, "Data mahasiswa dengan nim tersebut sudah ada");
 
             let newStudent = await Student.create({
                 username: data.nim,
                 password: hashPassword(data.nim),
                 nim: data.nim,
-                name: data.name
-            })
+                name: data.name,
+            });
 
-            return createResponseObject(true, "Data mahasiswa baru berhasil ditambahkan", newStudent)
+            return createResponseObject(true, "Data mahasiswa baru berhasil ditambahkan", newStudent);
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data mahasiswa baru gagal ditambahkan", newClass)
+            console.log(error);
+            return createResponseObject(false, "Data mahasiswa baru gagal ditambahkan", newClass);
         }
     },
     update: async (id, data) => {
         try {
-            const student = await Student.findByPk(id)
+            const student = await Student.findByPk(id);
             if (!student) return createResponseObject(false, "Tidak ada data mahasiswa yang didapatkan");
 
-            Object.keys(data).forEach(val => {
-                student[val] = data[val]
-            })
+            Object.keys(data).forEach((val) => {
+                student[val] = data[val];
+            });
 
-            await student.save()
+            await student.save();
 
             return createResponseObject(true, "Data kelas berhasil diperbarui", student);
         } catch (error) {
@@ -128,22 +130,19 @@ module.exports = {
     },
     destroy: async (id) => {
         try {
-            const student = await Student.findByPk(id)
-            if (!student) return createResponseObject(false, "Tidak ada mahasiswa yang dihapus")
+            const student = await Student.findByPk(id);
+            if (!student) return createResponseObject(false, "Tidak ada mahasiswa yang dihapus");
 
             await Student.destroy({
                 where: {
-                    id
-                }
-            })
+                    id,
+                },
+            });
 
-            return createResponseObject(true, "Data mahasiswa berhasil dihapus")
-
-
+            return createResponseObject(true, "Data mahasiswa berhasil dihapus");
         } catch (error) {
-            console.log(error)
+            console.log(error);
             return createResponseObject(false, "Data mahasiswa gagal dihapus");
         }
-
-    }
-}
+    },
+};

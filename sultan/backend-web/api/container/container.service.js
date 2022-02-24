@@ -69,7 +69,7 @@ module.exports = {
 
             if (containerById == null) throw new Error("container not found");
 
-            containerById = JSON.parse(JSON.stringify(containerById));
+            containerById = containerById.toJSON();
 
             containerById.questions.forEach((val, i) => {
                 let next_id = null;
@@ -143,7 +143,7 @@ module.exports = {
 
             const questions = await Promise.all(
                 questionIds.map(async (id) => {
-                    const question = await Question.findByPk(id, { raw: true });
+                    let question = await Question.findByPk(id);
                     if (question == null) throw new Error(`question id ${id} not found`);
                     if (container.label_id != question.label_id)
                         throw new Error(`question id ${id} has different label`);
@@ -153,7 +153,7 @@ module.exports = {
                     };
                 })
             );
-            const newQuestionContainer = await QuestionContainer.bulkCreate(questions, { returning: true });
+            const newQuestionContainer = await QuestionContainer.bulkCreate(questions);
 
             return createResponseObject("success", "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);
         } catch (error) {
