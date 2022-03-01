@@ -371,7 +371,10 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <div
                           style={{
                             color:
-                              countTimeDifference(moment(), item?.tanggal_akhir)
+                              countTimeDifference(
+                                moment(),
+                                moment(item?.tanggal_akhir)
+                              )
                                 .toLowerCase()
                                 .includes("terlewat") && "red",
                           }}
@@ -382,7 +385,10 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               marginRight: ".5em",
                             }}
                           />
-                          {countTimeDifference(moment(), item?.tanggal_akhir)}
+                          {countTimeDifference(
+                            moment(),
+                            moment(item?.tanggal_akhir)
+                          )}
                         </div>
                       )}
                     </Col>

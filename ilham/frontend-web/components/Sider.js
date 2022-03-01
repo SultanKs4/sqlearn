@@ -88,6 +88,16 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           >
             Nilai Mahasiswa
           </Menu.Item>
+          <Menu.Item
+            key="edit-profile"
+            icon={<FormOutlined />}
+            onClick={() => {
+              router.push("/dosen/edit-profile");
+            }}
+          >
+            {" "}
+            Ubah Profile
+          </Menu.Item>
         </Menu>
       );
       break;
@@ -128,6 +138,14 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           >
             {" "}
             Lihat Nilai
+          </Menu.Item>
+          <Menu.Item
+            key="edit-profile"
+            icon={<FormOutlined />}
+            onClick={() => router.push("/mahasiswa/edit-profile")}
+          >
+            {" "}
+            Ubah Profile
           </Menu.Item>
         </Menu>
       );

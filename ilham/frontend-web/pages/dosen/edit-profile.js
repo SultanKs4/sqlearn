@@ -16,16 +16,15 @@ function EditProfile() {
   useEffect(() => {
     // ? Fetch data admin
   }, []);
-
   return (
     <>
       <Head>
-        <title>SQLearn | Admin - Ubah Profile </title>
+        <title>SQLearn | Dosen - Ubah Profile </title>
       </Head>
-      <PageLayout role="admin">
+      <PageLayout role="dosen">
         <Card>
           <Typography.Title level={3} style={{ marginBottom: "1em" }}>
-            Ubah Profile Admin
+            Profile Dosen
           </Typography.Title>
 
           <Form layout="vertical" onFinish={onFinish}>
