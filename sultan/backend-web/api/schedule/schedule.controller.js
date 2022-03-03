@@ -2,59 +2,58 @@ const scheduleService = require("./schedule.service");
 
 module.exports = {
     index: async (req, res) => {
-        const { success, message, data } = await scheduleService.getAll(req.user, req.query)
+        const resObj = await scheduleService.getAll(req.user, req.query);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     indexStudents: async (req, res) => {
-        const { success, message, data } = await scheduleService.getAllForStudents(req.user)
+        const resObj = await scheduleService.getAllForStudents(req.user);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     indexByClass: async (req, res) => {
-        const { success, message, data } = await scheduleService.getAllByClass(req.params.id)
+        const resObj = await scheduleService.getAllByClass(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
-
     show: async (req, res) => {
-        const { success, message, data } = await scheduleService.getOne(req.params.id)
+        const resObj = await scheduleService.getOne(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(200).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     store: async (req, res) => {
-        const { success, message, data } = await scheduleService.insert(req.body, req.user)
+        const resObj = await scheduleService.insert(req.body, req.user);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
+        return res.status(201).json(resObj);
     },
 
     update: async (req, res) => {
-        const { success, message, data } = await scheduleService.update(req.params.id, req.body)
+        const resObj = await scheduleService.update(req.params.id, req.body, req.user);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(201).json({ success, message, data })
+        return res.status(200).json(resObj);
     },
 
     destroy: async (req, res) => {
-        const { success, message } = await scheduleService.destroy(req.params.id)
+        const resObj = await scheduleService.destroy(req.params.id);
 
-        if (!success) return res.status(500).json({ success, message })
+        if (resObj.status == "error") return res.status(500).json(resObj);
 
-        return res.status(204).json({ success, message })
-    }
+        return res.status(200).json(resObj);
+    },
 };

@@ -220,10 +220,6 @@ CREATE TABLE `schedules` (
   `id` int(11) NOT NULL,
   `start` datetime NOT NULL,
   `finish` datetime NOT NULL,
-  `start_date` date NOT NULL,
-  `finish_date` date NOT NULL,
-  `start_time` time NOT NULL,
-  `finish_time` time NOT NULL,
   `container_id` int(11) DEFAULT NULL,
   `description` varchar(360) DEFAULT NULL,
   `type` enum('latihan','ujian') NOT NULL,
@@ -237,8 +233,8 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 --
 
-INSERT INTO `schedules` (`id`, `start`, `finish`, `start_date`, `finish_date`, `start_time`, `finish_time`, `container_id`, `description`, `type`, `user_id`, `createdAt`, `updatedAt`, `total_questions`) VALUES
-(11, '2021-07-25 07:00:00', '2021-08-31 23:59:00', '2021-07-25', '2021-08-31', '07:00:00', '23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5);
+INSERT INTO `schedules` (`id`, `start`, `finish`, `container_id`, `description`, `type`, `user_id`, `createdAt`, `updatedAt`, `total_questions`) VALUES
+(11, '2021-07-25 07:00:00', '2021-08-31 23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5);
 
 -- --------------------------------------------------------
 
