@@ -163,6 +163,7 @@ function FormTambahJadwal({
             ]}
           >
             <Select
+              mode="multiple"
               placeholder="Pilih kelas . . ."
               onChange={onChangeKelas}
               style={{ width: "200px" }}
