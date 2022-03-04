@@ -37,7 +37,7 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             key="jadwal"
             icon={<CalendarOutlined />}
             onClick={() => {
-              router.push("/dosen/jadwal");
+              router.push("/dosen");
             }}
           >
             Jadwal
@@ -113,7 +113,7 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             key="beranda"
             icon={<HomeOutlined />}
             onClick={() => {
-              router.push("/mahasiswa/beranda");
+              router.push("/mahasiswa");
             }}
           >
             {" "}
@@ -162,7 +162,7 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             key="daftar-dosen"
             icon={<TeamOutlined />}
             onClick={() => {
-              router.push("/admin/daftar-dosen");
+              router.push("/admin");
             }}
           >
             Daftar Dosen
