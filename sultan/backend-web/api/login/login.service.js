@@ -20,8 +20,11 @@ module.exports = {
             let user = await Student.findOne({ where: { username }, raw: true });
             if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.mahasiswa);
 
-            user = await User.findOne({ where: { username }, raw: true });
+            user = await User.findOne({ where: { username, level: JWT_ROLES.dosen }, raw: true });
             if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.dosen);
+
+            user = await User.findOne({ where: { username, level: JWT_ROLES.admin }, raw: true });
+            if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.admin);
 
             if (!payloadResponse) throw new Error("username not found");
 
