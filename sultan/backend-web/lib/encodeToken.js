@@ -6,6 +6,7 @@ const JWT_SECRET = "ini_secret";
 const JWT_ROLES = {
     dosen: "dosen",
     mahasiswa: "mahasiswa",
+    admin: "admin",
 };
 
 function encodeJWT(id, role) {

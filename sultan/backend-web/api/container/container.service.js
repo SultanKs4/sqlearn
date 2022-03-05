@@ -4,6 +4,7 @@ const CaseStudy = require("../case-study/case-study.model");
 const QuestionContainer = require("../question-container/question-container.model");
 const Question = require("../question/question.model");
 const QuestionLabel = require("../questions-label/question-label.model");
+const Schedule = require("../schedule/schedule.model");
 const User = require("../user/user.model");
 const Container = require("./container.model");
 
@@ -155,6 +156,24 @@ module.exports = {
             );
             const newQuestionContainer = await QuestionContainer.bulkCreate(questions);
 
+            let schedules = await Schedule.findAll({ where: { container_id: containerId } });
+            if (Object.keys(schedules).length > 0) {
+                const total_questions = await Question.findAndCountAll({
+                    include: {
+                        model: Container,
+                        as: "containers",
+                        where: {
+                            id: containerId,
+                        },
+                    },
+                });
+
+                for (const schedule of schedules) {
+                    schedule.total_questions = total_questions;
+                    schedule.save();
+                }
+            }
+
             return createResponseObject("success", "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);
         } catch (error) {
             console.log(error);
@@ -182,6 +201,24 @@ module.exports = {
                     container_id: containerId,
                 },
             });
+
+            let schedules = await Schedule.findAll({ where: { container_id: containerId } });
+            if (Object.keys(schedules).length > 0) {
+                const total_questions = await Question.findAndCountAll({
+                    include: {
+                        model: Container,
+                        as: "containers",
+                        where: {
+                            id: containerId,
+                        },
+                    },
+                });
+
+                for (const schedule of schedules) {
+                    schedule.total_questions = total_questions;
+                    schedule.save();
+                }
+            }
 
             return createResponseObject("success", "Berhasil mengeluarkan pertanyaan dari kontainer");
         } catch (error) {
