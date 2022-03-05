@@ -63,6 +63,8 @@ module.exports = {
 
     insert: async (data, user) => {
         try {
+            const exist = await Class.findOne({ where: { name: data.name, semester: data.semester } });
+            if (exist) throw new Error("data already created");
             let classDb = await Class.create({
                 name: data.name,
                 semester: data.semester,
@@ -147,17 +149,28 @@ module.exports = {
 
     update: async (id, data, user) => {
         try {
-            const classUpdated = await Class.update(
-                {
+            const classDb = await Class.findByPk(id);
+            if (!classDb) throw new Error("data class by id not found");
+
+            const checkData = await Class.findOne({
+                where: {
                     name: data.name,
                     semester: data.semester,
-                    user_id: user.id,
                 },
-                { where: { id: id } }
-            ).then(async () => {
-                return await Class.findByPk(id, { raw: true });
             });
-            if (classUpdated == null) throw new Error("class not found");
+            if (!checkData) throw new Error("same data found, cannot update to same data");
+
+            let dataUpdate = {
+                name: data.name,
+                semester: data.semester,
+                user_id: user.id,
+            };
+            Object.keys(dataUpdate).forEach((val) => {
+                classDb[val] = dataUpdate[val];
+            });
+            await classDb.save();
+
+            if (!classDb) throw new Error("class not found");
 
             return createResponseObject("success", "Data kelas berhasil diperbarui", classOne);
         } catch (error) {

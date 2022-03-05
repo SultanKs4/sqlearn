@@ -37,7 +37,7 @@ module.exports = {
                 raw: true,
             });
 
-            if (caseStudy == null) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
 
             const resDetail = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["db_name"]}`
@@ -60,7 +60,7 @@ module.exports = {
                 raw: true,
             });
 
-            if (caseStudy == null) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
 
             const res = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["db_name"]}/${tableName}`
@@ -111,7 +111,7 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(id, {
                 raw: true,
             });
-            if (caseStudy == null) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
 
             await CaseStudy.destroy({
                 where: {
