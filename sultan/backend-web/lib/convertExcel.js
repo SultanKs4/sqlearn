@@ -1,21 +1,22 @@
-const excelToJson = require('convert-excel-to-json')
+const excelToJson = require("convert-excel-to-json");
 
 const convertExcel = (file) => {
     try {
         const result = excelToJson({
             sourceFile: file,
             header: {
-                rows: 2
+                rows: 2,
             },
             columnToKey: {
-                A: 'nim',
-                B: 'name'
-            }
+                A: "nim",
+                B: "name",
+            },
         });
-        return result
+        return result;
     } catch (error) {
-        console.log(error)
+        console.log(error);
+        throw new Error("Failed convert excel");
     }
-}
+};
 
-module.exports = convertExcel
+module.exports = convertExcel;

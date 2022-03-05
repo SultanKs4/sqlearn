@@ -1,9 +1,12 @@
 const express = require("express");
+const loginController = require("../api/login/login.controller");
+const loginSanitizer = require("../api/login/login.sanitizer");
 const permission = require("../middlewares/authorization.middleware");
 const verifyToken = require("../middlewares/verifyToken.middleware");
 const router = express.Router();
 module.exports = router;
 
+router.post("/api/login", loginSanitizer.checkLoginBody, loginController.auth);
 router.use("/api/users", require("../api/user/user.routes"));
 router.use("/api/students", require("../api/student/student.routes"));
 router.use("/api/test", require("../api/test-user/test-user.routes"));

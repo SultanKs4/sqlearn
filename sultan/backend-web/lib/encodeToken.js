@@ -6,6 +6,7 @@ const JWT_SECRET = "ini_secret";
 const JWT_ROLES = {
     dosen: "dosen",
     mahasiswa: "mahasiswa",
+    admin: "admin",
 };
 
 function encodeJWT(id, role) {
@@ -22,16 +23,14 @@ async function verifyJWT(token) {
         const { id, role } = payload.data;
 
         let user = null;
-        if (role == JWT_ROLES.dosen) {
+        if (role == JWT_ROLES.dosen || role == JWT_ROLES.admin) {
             user = await User.findByPk(id, {
                 attributes: {
                     exclude: ["password"],
                 },
                 raw: true,
             });
-        }
-
-        if (role == JWT_ROLES.mahasiswa) {
+        } else if (role == JWT_ROLES.mahasiswa) {
             user = await Student.findByPk(id, {
                 attributes: {
                     exclude: ["password"],
@@ -40,7 +39,7 @@ async function verifyJWT(token) {
             });
         }
 
-        if (user == null) throw new Error("user not found");
+        if (!user) throw new Error("user not found");
 
         user["role"] = role;
         return user;

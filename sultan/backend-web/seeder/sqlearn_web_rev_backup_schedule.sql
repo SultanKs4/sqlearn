@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Feb 24, 2022 at 10:41 PM
--- Server version: 10.3.32-MariaDB-0ubuntu0.20.04.1
--- PHP Version: 7.4.3
+-- Host: localhost
+-- Generation Time: Jan 24, 2022 at 09:06 AM
+-- Server version: 10.6.5-MariaDB
+-- PHP Version: 8.0.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -43,14 +42,7 @@ CREATE TABLE `case_studies` (
 --
 
 INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_file`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Tes', 'sqlearn_cs_auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57'),
-(5, 'dd', 'sqlearn_cs_dosencoba_dd_pr9k6l', '1644946596364_sql_bumdes.sql', 5, '2022-02-15 17:36:40', '2022-02-15 17:36:40'),
-(6, 'dd', 'sqlearn_cs_dosencoba_dd_78ayum', '1644946630914_sql_bumdes.sql', 5, '2022-02-15 17:37:13', '2022-02-15 17:37:13'),
-(7, 'dd', 'sqlearn_cs_dosencoba_dd_73uxn3', '1644946674646_sql_bumdes.sql', 5, '2022-02-15 17:37:58', '2022-02-15 17:37:58'),
-(8, 'dd', 'sqlearn_cs_dosencoba_dd_v3004s', '1644946706201_sql_bumdes.sql', 5, '2022-02-15 17:38:28', '2022-02-15 17:38:28'),
-(9, 'dd', 'sqlearn_cs_dosencoba_dd_fp58ey', '1644946783711_sql_bumdes.sql', 5, '2022-02-15 17:39:45', '2022-02-15 17:39:45'),
-(10, 'dd', 'sqlearn_cs_dosencoba_dd_1yxfzl', '1644946863058_sql_bumdes.sql', 5, '2022-02-15 17:41:05', '2022-02-15 17:41:05'),
-(11, 'dd', 'sqlearn_cs_dosencoba_dd_dpyyd6', '1644946978679_sql_bumdes.sql', 5, '2022-02-15 17:43:00', '2022-02-15 17:43:00');
+(2, 'Tes', 'sqlearn_cs_auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57');
 
 -- --------------------------------------------------------
 
@@ -75,8 +67,7 @@ INSERT INTO `classes` (`id`, `name`, `semester`, `user_id`, `createdAt`, `update
 (1, 'TI-4C-2021', 8, 1, '2021-04-17 18:09:21', '2021-04-17 18:09:21'),
 (3, 'TI-3C-2020', 8, 1, '2021-04-17 19:26:00', '2021-04-17 19:26:00'),
 (12, 'TI-4D-2021', 8, 1, '2021-05-06 07:27:11', '2021-05-06 07:27:11'),
-(14, 'TI-4A-2021', 8, 5, '2021-05-30 17:58:11', '2021-05-30 17:58:11'),
-(15, 'TI-4H-2022', 8, 5, '2022-02-23 07:13:21', '2022-02-23 07:13:21');
+(14, 'TI-4A-2021', 8, 5, '2021-05-30 17:58:11', '2021-05-30 17:58:11');
 
 -- --------------------------------------------------------
 
@@ -118,9 +109,7 @@ CREATE TABLE `containers` (
 --
 
 INSERT INTO `containers` (`id`, `description`, `user_id`, `label_id`, `createdAt`, `updatedAt`) VALUES
-(5, 'Paket Tes', 5, 1, '2021-06-17 04:38:50', '2021-06-17 04:38:50'),
-(8, 'ini uas ya', 5, 2, '2022-02-24 00:11:58', '2022-02-24 00:11:58'),
-(9, 'ini uas ya', 5, 1, '2022-02-24 00:12:35', '2022-02-24 00:12:35');
+(5, 'Paket Tes', 5, 1, '2021-06-17 04:38:50', '2021-06-17 04:38:50');
 
 -- --------------------------------------------------------
 
@@ -154,8 +143,7 @@ INSERT INTO `questions` (`id`, `text`, `answer`, `answer_pic`, `tables`, `case_s
 (13, '<p>Dosen ingin mengetahui data mahasiswa dengan IPK antara 3.00 sampe 4.00</p>', '[\"SELECT * FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk BETWEEN 3.00 AND 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00 AND ipk <= 4.00\",\"SELECT * FROM mahasiswa WHERE ipk >= 3.00\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk >= 3.00\"]', 'answer_pic-1623901915295.png', 'mahasiswa', 2, 5, 1, '2021-06-17 03:51:56', '2021-06-17 03:51:56'),
 (14, '<p>Dosen ingin melihat data mahasiswa yang nilai IPKnya paling kecil. Petunjuk: Gunakan SubQuery</p>', '[\"SELECT * FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa WHERE ipk = (SELECT MIN(ipk) FROM mahasiswa)\",\"SELECT * FROM mahasiswa ORDER BY ipk LIMIT 1\",\"SELECT id_mahasiswa, nama, kelas, ipk FROM mahasiswa ORDER BY ipk LIMIT 1\"]', 'answer_pic-1623904606531.png', 'user', 2, 5, 1, '2021-06-17 04:36:46', '2021-06-17 04:36:46'),
 (15, '<p>Administrator ingin melihat tanggal login terakhir dari mahasiswa, tampilkan nama dan waktu login dari mahasiswa tersebut</p>', '[\"SELECT m.nama, u.waktu_login FROM mahasiswa m JOIN user u ON m.id_mahasiswa = u.id_mahasiswa\"]', 'answer_pic-1623904684453.png', 'user,mahasiswa', 2, 5, 1, '2021-06-17 04:38:04', '2021-06-17 04:38:04'),
-(16, '<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>', '[\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\"]', 'answer_pic-1623904707990.png', 'mahasiswa,user', 2, 5, 1, '2021-06-17 04:38:27', '2021-06-17 04:38:27'),
-(20, 'ini text soal updated', 'ini jawaban soal updated test', '1645438359891_answer_pic_1224063.jpg', 'table,wow,tes', 2, 5, 1, '2022-02-21 10:12:34', '2022-02-21 10:12:39');
+(16, '<p>Administrator ingin menampilkan data nama dan kelas. Data tersebut di dapatkan dengan menggabungkan keseluruhan data antara tabel mahasiswa dan user, dimana data yang memiliki isi yang sama tetap ditampilkan</p>', '[\"(SELECT nama, kelas FROM mahasiswa) UNION ALL (SELECT username, null kelas FROM user)\"]', 'answer_pic-1623904707990.png', 'mahasiswa,user', 2, 5, 1, '2021-06-17 04:38:27', '2021-06-17 04:38:27');
 
 -- --------------------------------------------------------
 
@@ -197,13 +185,9 @@ CREATE TABLE `question_containers` (
 
 INSERT INTO `question_containers` (`question_id`, `container_id`, `createdAt`, `updatedAt`) VALUES
 (8, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
-(8, 9, '2022-02-24 00:12:40', '2022-02-24 00:12:40'),
 (9, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
-(9, 9, '2022-02-24 00:12:40', '2022-02-24 00:12:40'),
 (10, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
-(10, 9, '2022-02-24 00:13:16', '2022-02-24 00:13:16'),
 (11, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
-(11, 9, '2022-02-24 00:13:16', '2022-02-24 00:13:16'),
 (12, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
 (13, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
 (14, 5, '2021-06-17 04:39:13', '2021-06-17 04:39:13'),
@@ -218,8 +202,10 @@ INSERT INTO `question_containers` (`question_id`, `container_id`, `createdAt`, `
 
 CREATE TABLE `schedules` (
   `id` int(11) NOT NULL,
-  `start` datetime NOT NULL,
-  `finish` datetime NOT NULL,
+  `start_date` date NOT NULL,
+  `finish_date` date NOT NULL,
+  `start_time` time NOT NULL,
+  `finish_time` time NOT NULL,
   `container_id` int(11) DEFAULT NULL,
   `description` varchar(360) DEFAULT NULL,
   `type` enum('latihan','ujian') NOT NULL,
@@ -233,8 +219,8 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 --
 
-INSERT INTO `schedules` (`id`, `start`, `finish`, `container_id`, `description`, `type`, `user_id`, `createdAt`, `updatedAt`, `total_questions`) VALUES
-(11, '2021-07-25 07:00:00', '2021-08-31 23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5);
+INSERT INTO `schedules` (`id`, `start_date`, `finish_date`, `start_time`, `finish_time`, `container_id`, `description`, `type`, `user_id`, `createdAt`, `updatedAt`, `total_questions`) VALUES
+(11, '2021-07-25', '2021-08-31', '07:00:00', '23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5);
 
 -- --------------------------------------------------------
 
@@ -834,8 +820,7 @@ ALTER TABLE `containers`
 ALTER TABLE `questions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `case_study_id` (`case_study_id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `questions_ibfk_585` (`label_id`);
+  ADD KEY `user_id` (`user_id`);
 
 --
 -- Indexes for table `questions_label`
@@ -925,25 +910,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `case_studies`
 --
 ALTER TABLE `case_studies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `classes`
 --
 ALTER TABLE `classes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `containers`
 --
 ALTER TABLE `containers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `questions_label`
