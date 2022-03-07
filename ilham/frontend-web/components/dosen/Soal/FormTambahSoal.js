@@ -39,7 +39,7 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-function FormEditSoal({
+function FormTambahSoal({
   currentSoal,
   setFormObj,
   setVisible,
@@ -142,13 +142,22 @@ function FormEditSoal({
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item name="kategori" label="Kategori">
+          <Form.Item
+            name="kategori"
+            label="Kategori"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan nama Kategori!",
+              },
+            ]}
+          >
             <Select
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Select.Option key={1}>Close-Ended</Select.Option>
-              <Select.Option key={2}>Open-Ended</Select.Option>
+              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -169,8 +178,9 @@ function FormEditSoal({
           placeholder={` Teks Pertanyaan . . .`}
         />
       </Form.Item>
-      {selectedKategori === 2 ? (
+      {selectedKategori === "Open-Ended" ? (
         <>
+          <div style={{ marginBottom: "1em" }}> Opsi Jawaban</div>
           <Form.List
             name="opsi_jawaban"
             rules={[
@@ -363,4 +373,4 @@ function FormEditSoal({
   );
 }
 
-export default FormEditSoal;
+export default FormTambahSoal;

@@ -163,7 +163,7 @@ function LatihanSoal() {
     setLogData(({ attemptTestQuery, timerLeft, studentAnswer, soalID }) => {
       return {
         studentAnswer:
-          dataPertanyaan?.kategori === 2
+          dataPertanyaan?.kategori === "Open-Ended"
             ? values?.jawaban_siswa
             : boxes?.sql_constructed?.items
                 ?.map((item) => item.content)
@@ -267,7 +267,7 @@ function LatihanSoal() {
                 </h2>
               </Col>
             </Row>
-            {dataPertanyaan?.kategori === 2 ? (
+            {dataPertanyaan?.kategori === "Open-Ended" ? (
               <>
                 <Form form={form} layout="vertical">
                   <Form.Item name="jawaban_siswa">
@@ -292,7 +292,7 @@ function LatihanSoal() {
                   type="primary"
                   onClick={() =>
                     testQuery(
-                      dataPertanyaan?.kategori === 2
+                      dataPertanyaan?.kategori === "Open-Ended"
                         ? form.getFieldsValue()
                         : ""
                     )
@@ -306,7 +306,7 @@ function LatihanSoal() {
                   style={{ backgroundColor: "#003A8C", color: "white" }}
                   onClick={() =>
                     submitAnswer(
-                      dataPertanyaan?.kategori === 2
+                      dataPertanyaan?.kategori === "Open-Ended"
                         ? form.getFieldsValue()
                         : ""
                     )

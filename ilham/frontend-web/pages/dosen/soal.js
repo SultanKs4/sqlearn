@@ -114,21 +114,6 @@ function HalamanSoal() {
     console.log("Data terhapus", formSoal);
   };
 
-  const filterCategory = (e) => {
-    e.target.value === "Semua"
-      ? setIsFilterActive(false)
-      : setIsFilterActive(true);
-
-    console.log(e.target.value);
-    setSoalFiltered(
-      dataSoal.filter((item) => {
-        // ? : Kategori 1 = Close-ended, 2 = Open-Ended
-        if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else return item?.kategori === parseInt(e.target.value);
-      })
-    );
-  };
-
   return (
     <>
       <Head>

@@ -55,13 +55,17 @@ function FormEditSoal({
     currentSoal?.kategori
   );
 
+  const [isEditingForm, setIsEditingForm] = useState(false);
+
   // ? State ini dipakai jika kategori nya adalah close-ended
+
   const refButton = useRef(null);
   const [inputValue, setInputValue] = useState("");
   const [inputVisible, setInputVisible] = useState(false);
   const [tags, setTags] = useState(
-    // ? : Kategori 1 = Close-ended, 2 = Open-Ended
-    currentSoal?.kategori === 1 ? currentSoal?.jawaban[0]?.split(" ") : []
+    currentSoal?.kategori === "Close-Ended"
+      ? currentSoal?.jawaban[0]?.split(" ")
+      : []
   );
   const normFile = (e) => console.log("Upload event:", e);
 
@@ -79,11 +83,13 @@ function FormEditSoal({
   };
 
   const onChangeStudiKasus = (kelas) => {
+    setIsEditingForm(true);
     console.log(kelas);
     setSelectedStudiKasus(kelas);
   };
 
   const onChangeKategori = (kategori) => {
+    setIsEditingForm(true);
     console.log(kategori);
     setSelectedKategori(kategori);
   };
@@ -101,15 +107,20 @@ function FormEditSoal({
   };
 
   useEffect(() => {
+    console.log(form.getFieldsValue());
     form.setFieldsValue({
       ...form,
-      opsi_jawaban: tags,
+      opsi_jawaban:
+        selectedKategori === "Close-Ended"
+          ? tags
+          : form.getFieldValue("opsi_jawaban"),
       kategori: selectedKategori,
     });
   }, [tags, selectedKategori]);
 
   useEffect(() => {
     console.log(currentSoal);
+
     form.setFieldsValue({
       nama_soal: currentSoal?.nama,
       kategori: selectedKategori,
@@ -173,8 +184,8 @@ function FormEditSoal({
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Select.Option key={1}>Close-Ended</Select.Option>
-              <Select.Option key={2}>Open-Ended</Select.Option>
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -197,7 +208,7 @@ function FormEditSoal({
       </Form.Item>
       {selectedKategori === "-" ? (
         " "
-      ) : selectedKategori === 2 ? (
+      ) : selectedKategori === "Open-Ended" ? (
         <Form.List
           name="opsi_jawaban"
           rules={[

@@ -96,8 +96,8 @@ function FormTambahJadwal({
               onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key={1}>Close-Ended</Option>
-              <Option key={2}>Open-Ended</Option>
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

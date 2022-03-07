@@ -54,12 +54,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
     );
   }
 
-  const RenderKategori = ({ kategori_id }) => {
-    if (kategori_id === 1) return "Close-Ended";
-    else if (kategori_id === 2) return "Open-Ended";
-    else return "Kosong";
-  };
-
   let icon = <> </>;
   let emptyDescription = "";
 
@@ -428,8 +422,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={<RenderKategori kategori_id={item?.kategori} />}
-              color={item?.kategori === 1 ? "geekblue" : "purple"}
+              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
+              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -514,8 +508,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={<RenderKategori kategori_id={item?.kategori} />}
-              color={item?.kategori === 1 ? "geekblue" : "purple"}
+              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
+              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -539,12 +533,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             }}
                             children={`${item.pertanyaan.length} Pertanyaan`}
                           />
-                        </Col>
-                        <Col>
-                          <FieldTimeOutlined
-                            style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                          />
-                          {/* {getHours(item.durasi)} Jam */}
                         </Col>
                       </Row>
                     </Col>
@@ -690,8 +678,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={<RenderKategori kategori_id={item?.kategori} />}
-              color={item?.kategori === 1 ? "geekblue" : "purple"}
+              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
+              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>

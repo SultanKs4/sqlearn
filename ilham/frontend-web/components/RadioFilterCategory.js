@@ -10,7 +10,7 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
     setEntityFiltered(
       data.filter((item) => {
         if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else return item?.kategori === parseInt(e.target.value);
+        else return item?.kategori === e.target.value;
       })
     );
   };
@@ -31,10 +31,10 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
               <Radio.Button value="Semua">Semua</Radio.Button>
             </Col>
             <Col>
-              <Radio.Button value="1">Close-Ended</Radio.Button>
+              <Radio.Button value="Close-Ended">Close-Ended</Radio.Button>
             </Col>
             <Col>
-              <Radio.Button value="2">Open-Ended</Radio.Button>
+              <Radio.Button value="Open-Ended">Open-Ended</Radio.Button>
             </Col>
             <Col>
               <Radio.Button value="Tanpa Kategori">Tanpa Kategori</Radio.Button>

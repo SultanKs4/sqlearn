@@ -43,7 +43,7 @@ const data = [
     ],
     jawaban_benar: "SELECT COUNT nama FROM MAHASISWA",
     teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
-    kategori: 1,
+    kategori: "Close-Ended",
     finished_time: "23:30:10",
     finished_date: "2022-02-21",
     timer: {
@@ -101,7 +101,7 @@ const data = [
       "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
     teksSoal:
       "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
-    kategori: 2,
+    kategori: "Open-Ended",
     finished_time: "23:30:10",
     finished_date: "2022-02-21",
     timer: {
