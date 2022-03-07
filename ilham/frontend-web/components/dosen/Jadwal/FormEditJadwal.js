@@ -56,9 +56,12 @@ function FormEditJadwal({
     });
   }, [currentJadwal]);
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {

@@ -14,13 +14,7 @@ import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 
-function FormTambahJadwal({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
 
   const [dataKelas, setDataKelas] = useState([]);
@@ -42,9 +36,12 @@ function FormTambahJadwal({
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {

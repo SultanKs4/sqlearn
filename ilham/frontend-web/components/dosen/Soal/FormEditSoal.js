@@ -77,11 +77,13 @@ function FormEditSoal({
     return file.type.includes("image") ? true : Upload.LIST_IGNORE;
   };
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
-
   const onChangeStudiKasus = (kelas) => {
     setIsEditingForm(true);
     console.log(kelas);
