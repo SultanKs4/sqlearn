@@ -9,25 +9,24 @@ const Question = require("../question/question.model");
 const SessionStudentAnswer = require("../session-student-answer/session-student-answer.model");
 const Session = require("../session/session.model");
 
-
 module.exports = {
     getAllByStudent: async (user, kelas = null) => {
         try {
-            let whereKelas = {}
+            let whereKelas = {};
             if (kelas) {
                 whereKelas = {
-                    id: kelas
-                }
+                    id: kelas,
+                };
             }
             const scores = await Score.findAll({
-                attributes: ['score'],
+                attributes: ["score"],
                 include: [
                     {
                         model: Schedule,
-                        attributes: ['start_date', 'description'],
+                        attributes: ["start_date", "description"],
                         include: [
                             {
-                                attributes: ['id', 'name'],
+                                attributes: ["id", "name"],
                                 model: ClassModel,
                                 as: "classes",
                                 include: [
@@ -36,40 +35,40 @@ module.exports = {
                                         model: Student,
                                         as: "students",
                                         where: {
-                                            id: user.id
+                                            id: user.id,
                                         },
-                                        through: { attributes: [] }
-                                    }
+                                        through: { attributes: [] },
+                                    },
                                 ],
                                 where: whereKelas,
-                                through: { attributes: [] }
-                            }
-                        ]
-                    }
+                                through: { attributes: [] },
+                            },
+                        ],
+                    },
                 ],
                 where: {
-                    student_id: user.id
+                    student_id: user.id,
                 },
                 raw: true,
-                nest: true
-            })
+                nest: true,
+            });
 
             const scoresResponse = scores.reduce((acc, curr) => {
-                if (curr['Schedule']['start_date']) {
-                    const score = curr['score']
-                    const schedule = curr['Schedule']['description']
-                    const start_date = curr['Schedule']['start_date']
-                    const className = curr['Schedule']['classes']['name']
+                if (curr["Schedule"]["start_date"]) {
+                    const score = curr["score"];
+                    const schedule = curr["Schedule"]["description"];
+                    const start_date = curr["Schedule"]["start_date"];
+                    const className = curr["Schedule"]["classes"]["name"];
                     const obj = {
                         className,
                         schedule,
                         start_date,
-                        score
-                    }
-                    acc = [...acc, obj]
+                        score,
+                    };
+                    acc = [...acc, obj];
                 }
-                return acc
-            }, [])
+                return acc;
+            }, []);
             // const scoresResponse = scores.map(val => {
             //     if (val['Schedule']['start_date']) {
             //         const score = val['score']
@@ -87,7 +86,7 @@ module.exports = {
 
             return createResponseObject(true, "Data nilai berhasil didapatkan", scoresResponse);
         } catch (error) {
-            console.log(error)
+            console.log(error);
             return createResponseObject(false, "Data nilai gagal didapatkan");
         }
     },
@@ -95,7 +94,7 @@ module.exports = {
     getAllByDosen: async (kelas, jadwal) => {
         try {
             const scores = await Score.findAll({
-                attributes: ['id', 'student_id', 'schedule_id', 'score'],
+                attributes: ["id", "student_id", "schedule_id", "score"],
                 include: [
                     {
                         model: Schedule,
@@ -106,35 +105,35 @@ module.exports = {
                                 attributes: [],
                                 as: "classes",
                                 where: {
-                                    id: kelas
+                                    id: kelas,
                                 },
-                                through: { attributes: [] }
-                            }
+                                through: { attributes: [] },
+                            },
                         ],
                         where: {
-                            id: jadwal
-                        }
+                            id: jadwal,
+                        },
                     },
                     {
                         model: Student,
-                        attributes: ['id', 'nim', 'name']
-                    }
+                        attributes: ["id", "nim", "name"],
+                    },
                 ],
                 raw: true,
-                nest: true
-            })
+                nest: true,
+            });
 
-            return createResponseObject(true, "Data nilai berhasil didapatkan", scores)
+            return createResponseObject(true, "Data nilai berhasil didapatkan", scores);
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return createResponseObject(false, "Data nilai gagal didapatkan");
         }
     },
 
     getOne: async (student, schedule) => {
         try {
-            const studentDb = await Student.findByPk(student)
-            const scheduleDb = await Schedule.findByPk(schedule)
+            const studentDb = await Student.findByPk(student);
+            const scheduleDb = await Schedule.findByPk(schedule);
             const answer = await Question.findAll({
                 include: [
                     {
@@ -147,29 +146,29 @@ module.exports = {
                                 include: [
                                     {
                                         model: Schedule,
-                                        attributes: []
+                                        attributes: [],
                                     },
                                     {
                                         model: Student,
-                                        attributes: []
-                                    }
+                                        attributes: [],
+                                    },
                                 ],
                                 where: {
                                     student_id: student,
-                                    schedule_id: schedule
-                                }
-                            }
+                                    schedule_id: schedule,
+                                },
+                            },
                         ],
-                    }
-                ]
-            })
+                    },
+                ],
+            });
             return createResponseObject(true, "Data pertanyaan berhasil didapatkan", {
                 student: studentDb,
                 schedule: scheduleDb,
-                answer
-            })
+                answer,
+            });
         } catch (error) {
-            console.error(error)
+            console.error(error);
             return createResponseObject(false, "Data pertanyaan gagal didapatkan");
         }
     },
@@ -181,11 +180,11 @@ module.exports = {
                 password: hashPassword(data.password),
                 no_induk: data.no_induk,
                 name: data.name,
-            })
-            return createResponseObject(true, "Data user berhasil ditambahkan", newUser)
+            });
+            return createResponseObject(true, "Data user berhasil ditambahkan", newUser);
         } catch (error) {
-            console.log(error)
-            return createResponseObject(false, "Data user gagal ditambahkan")
+            console.log(error);
+            return createResponseObject(false, "Data user gagal ditambahkan");
         }
     },
 
@@ -193,16 +192,16 @@ module.exports = {
         try {
             const user = await User.findByPk(id, {
                 attributes: {
-                    exclude: ['password']
-                }
-            })
+                    exclude: ["password"],
+                },
+            });
             if (!user) return createResponseObject(false, "Tidak ada data user didapatkan");
 
-            Object.keys(data).forEach(val => {
-                user[val] = data[val]
-            })
+            Object.keys(data).forEach((val) => {
+                user[val] = data[val];
+            });
 
-            await user.save()
+            await user.save();
 
             return createResponseObject(true, "Data user berhasil diperbarui", user);
         } catch (error) {
@@ -212,22 +211,19 @@ module.exports = {
 
     destroy: async (id) => {
         try {
-            const user = await User.findByPk(id)
-            if (!user) return createResponseObject(false, "Tidak ada user yang dihapus")
+            const user = await User.findByPk(id);
+            if (!user) return createResponseObject(false, "Tidak ada user yang dihapus");
 
             await User.destroy({
                 where: {
-                    id
-                }
-            })
+                    id,
+                },
+            });
 
-            return createResponseObject(true, "Data user berhasil dihapus")
-
-
+            return createResponseObject(true, "Data user berhasil dihapus");
         } catch (error) {
-            console.log(error)
+            console.log(error);
             return createResponseObject(false, "Data user gagal dihapus");
         }
-    }
-
-}
+    },
+};

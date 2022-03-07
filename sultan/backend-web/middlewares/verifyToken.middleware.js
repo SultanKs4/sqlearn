@@ -9,11 +9,11 @@ async function verifyToken(req, res, next) {
         const token = bearerHeader.split(" ")[1];
         const user = await verifyJWT(token);
 
-        if (!user) return res.status(500).json(createResponseObject(false, "Gagal mengautorisasi user"));
+        if (!user) return res.status(500).json(createResponseObject("error", "Gagal mengautorisasi user"));
         req.user = user;
         next();
     } catch (error) {
-        return res.status(500).json(createResponseObject(false, "Gagal mengautorisasi user", error.message));
+        return res.status(500).json(createResponseObject("error", "Gagal mengautorisasi user", error.message));
     }
 }
 
