@@ -88,45 +88,40 @@ module.exports = {
     getAllForStudents: async (user) => {
         try {
             const student = await Student.findByPk(user.id, {
+                attributes: ["id"],
                 include: [
                     {
                         model: Class,
                         as: "classes",
                         attributes: ["id"],
-                        through: { attributes: [] },
                     },
                 ],
             });
             if (!student) throw new Error("data student not found");
+            const classessId = student.classes.map((item) => item.id);
 
-            const scores = await Score.findAll({
+            const existedScores = await Score.findAll({
                 attributes: ["schedule_id"],
                 where: {
                     student_id: user.id,
                 },
                 raw: true,
+            }).then((scores) => {
+                return scores.map((val) => val.schedule_id);
             });
 
-            const existedScores = scores.map((score) => score.schedule_id);
-
-            const sessions = await Session.findAll({
+            const unfinishedSessions = await Session.findAll({
                 attributes: ["schedule_id"],
                 where: {
                     student_id: user.id,
                     is_finished: false,
                 },
                 raw: true,
+            }).then((sessions) => {
+                return sessions.map((session) => session.schedule_id);
             });
 
-            const unfinishedSessions = sessions.map((session) => session.schedule_id);
-
-            const studentClasses = student.classes.map((item) => item.id);
-
-            const dateNow = new Date();
-            const date = `${dateNow.getFullYear()}-${("0" + (dateNow.getMonth() + 1)).slice(-2)}-${(
-                "0" + dateNow.getDate()
-            ).slice(-2)}`;
-            const time = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`;
+            const date = new Date();
 
             const schedules = await Schedule.findAll({
                 include: {
@@ -135,7 +130,7 @@ module.exports = {
                     through: { attributes: [] },
                     where: {
                         id: {
-                            [Op.in]: studentClasses,
+                            [Op.in]: classessId,
                         },
                     },
                 },
@@ -145,22 +140,13 @@ module.exports = {
                     },
                     [Op.or]: {
                         [Op.and]: {
-                            start_date: {
+                            start: {
                                 [Op.lte]: date,
                             },
-                            finish_date: {
+                            finish: {
                                 [Op.gte]: date,
                             },
-                            [Op.and]: {
-                                start_time: {
-                                    [Op.lte]: time,
-                                },
-                                finish_time: {
-                                    [Op.gte]: time,
-                                },
-                            },
                         },
-
                         id: {
                             [Op.in]: unfinishedSessions,
                         },
@@ -170,7 +156,11 @@ module.exports = {
             return createResponseObject("success", "Data schedule berhasil didapatkan", schedules);
         } catch (error) {
             console.log(error);
-            return createResponseObject("error", "Data schedule gagal didapatkan");
+            return createResponseObject(
+                "error",
+                "Data schedule gagal didapatkan",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 

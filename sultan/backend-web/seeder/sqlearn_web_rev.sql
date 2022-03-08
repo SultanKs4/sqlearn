@@ -260,30 +260,32 @@ CREATE TABLE `scores` (
 CREATE TABLE `sessions` (
   `id` int(11) NOT NULL,
   `student_id` int(11) DEFAULT NULL,
-  `session_started` datetime DEFAULT current_timestamp(),
   `schedule_id` int(11) DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
+  `session_started` datetime DEFAULT current_timestamp(),
   `is_finished` tinyint(1) DEFAULT 0,
-  `questions` text DEFAULT NULL
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `session_student_answers`
+-- Table structure for table `log_session_student`
 --
 
-CREATE TABLE `session_student_answers` (
+CREATE TABLE `log_session_student` (
   `id` int(11) NOT NULL,
   `session_id` int(11) DEFAULT NULL,
   `question_id` int(11) DEFAULT NULL,
   `answer` text DEFAULT NULL,
-  `type` enum('test','submit') DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
+  `answer_json` json DEFAULT NULL,
+  `type` enum('start','test','submit') DEFAULT NULL,
   `similarity` decimal(10,2) DEFAULT -1.00,
-  `is_equal` tinyint(1) DEFAULT NULL
+  `is_equal` tinyint(1) DEFAULT NULL,
+  `timer` time DEFAULT NULL,
+  `record_time` datetime DEFAULT current_timestamp(),
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -876,9 +878,9 @@ ALTER TABLE `sessions`
   ADD KEY `schedule_id` (`schedule_id`);
 
 --
--- Indexes for table `session_student_answers`
+-- Indexes for table `log_session_student`
 --
-ALTER TABLE `session_student_answers`
+ALTER TABLE `log_session_student`
   ADD PRIMARY KEY (`id`),
   ADD KEY `session_id` (`session_id`),
   ADD KEY `question_id` (`question_id`);
@@ -968,12 +970,6 @@ ALTER TABLE `scores`
 --
 ALTER TABLE `sessions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
-
---
--- AUTO_INCREMENT for table `session_student_answers`
---
-ALTER TABLE `session_student_answers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
 
 --
 -- AUTO_INCREMENT for table `settings`
@@ -1066,11 +1062,11 @@ ALTER TABLE `sessions`
   ADD CONSTRAINT `sessions_ibfk_556` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `session_student_answers`
+-- Constraints for table `log_session_student`
 --
-ALTER TABLE `session_student_answers`
-  ADD CONSTRAINT `session_student_answers_ibfk_549` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `session_student_answers_ibfk_550` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `log_session_student`
+  ADD CONSTRAINT `log_session_student_ibfk_549` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `log_session_student_ibfk_550` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `student_classes`
