@@ -42,6 +42,8 @@ function LatihanSoal() {
     studentAnswer: "",
     attemptTestQuery: 0,
     soalID: 0,
+    type: "",
+    movement: [],
   });
 
   const [timerLeftCounter, setTimerLeftCounter] = useState("");
@@ -53,7 +55,7 @@ function LatihanSoal() {
   // ? Untuk simpan jawaban kalau soalini berkategori close-ended
   const [boxes, setBoxes] = useState([]);
 
-  // ? Untuk simpan jawaban kalau soalini berkategori open-ended
+  // ? Untuk simpan jawaban kalau soal ini berkategori open-ended
   const [form] = Form.useForm();
 
   const onDragEnd = (result, boxes, setBoxes) => {
@@ -62,12 +64,14 @@ function LatihanSoal() {
     const { source, destination } = result;
 
     if (source.droppableId !== destination.droppableId) {
+      //  ? Ini dijalankan ketika elemen drag and drop nya dipindah ke field yang berbeda
       const sourceColumn = boxes[source.droppableId];
       const destColumn = boxes[destination.droppableId];
       const sourceItems = [...sourceColumn.items];
       const destItems = [...destColumn.items];
       const [removed] = sourceItems.splice(source.index, 1);
       destItems.splice(destination.index, 0, removed);
+
       setBoxes({
         ...boxes,
         [source.droppableId]: {
@@ -80,6 +84,7 @@ function LatihanSoal() {
         },
       });
     } else {
+      //  ? Ini dijalankan ketika elemen drag and drop nya dipindah ke field yang sama
       const column = boxes[source.droppableId];
       const copiedItems = [...column.items];
       const [removed] = copiedItems.splice(source.index, 1);
@@ -92,6 +97,9 @@ function LatihanSoal() {
         },
       });
     }
+
+    // ? Set Log per Drag & Drop
+    saveLog(result, "part-movement");
   };
 
   useEffect(() => {
@@ -105,12 +113,7 @@ function LatihanSoal() {
 
     console.log("ini router query", router.query);
 
-    setLogData(({ attemptTestQuery, ...prev }) => {
-      return {
-        attemptTestQuery: 0,
-        ...prev,
-      };
-    });
+    resetLog();
   }, [router.query.idSoal]);
 
   useEffect(() => {
@@ -132,25 +135,44 @@ function LatihanSoal() {
     console.log("ini dataPertanyaan", dataPertanyaan);
     setBoxes({
       sql_parts: {
-        items: dataPertanyaan?.sql_components,
+        items: dataPertanyaan?.sql_components?.filter(
+          (item) => item.role === "part"
+        ),
       },
       sql_constructed: {
-        items: [],
+        items: dataPertanyaan?.sql_components?.filter(
+          (item) => item.role === "clue"
+        ),
       },
     });
   }, [dataPertanyaan]);
 
-  // useEffect(() => {
-  //   console.log(boxes?.sql_constructed?.items?.map((item) => item.content));
-  // }, [boxes]);
+  useEffect(() => {
+    // ?  monitor 2 field box drag and drop disini
+    console.log(boxes?.sql_constructed?.items?.map((item) => item.content));
+    // console.log(boxes);
+  }, [boxes]);
 
   const previewTable = () => {
     setIsPreviewTable((prev) => !prev);
     console.log("table preview");
   };
 
+  const resetLog = () => {
+    setLogData(({ attemptTestQuery, ...prev }) => {
+      return {
+        timerLeft: "00:00:00",
+        studentAnswer: "",
+        attemptTestQuery: 0,
+        soalID: 0,
+        movement: [],
+        type: "",
+      };
+    });
+  };
+
   const submitAnswer = (values) => {
-    saveLog(values, true);
+    saveLog(values, "answer-submitted");
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
@@ -159,25 +181,42 @@ function LatihanSoal() {
     setAlertMessage(`Jawaban berhasil disimpan !`);
   };
 
-  const saveLog = (values, isSubmitAnswer) => {
-    setLogData(({ attemptTestQuery, timerLeft, studentAnswer, soalID }) => {
-      return {
-        studentAnswer:
-          dataPertanyaan?.kategori === "Open-Ended"
-            ? values?.jawaban_siswa
-            : boxes?.sql_constructed?.items
-                ?.map((item) => item.content)
-                .join(" "),
-        attemptTestQuery: attemptTestQuery + 1,
-        timerLeft: timerLeftCounter,
-        soalID: router.query.idSoal,
-        type: isSubmitAnswer ? "answer submitted" : "check answer",
-      };
-    });
+  const saveLog = (values, role) => {
+    if (role === "part-movement") {
+      setLogData(({ movement, ...rest }) => {
+        return {
+          movement: [
+            ...movement,
+            {
+              timerLeft: timerLeftCounter,
+              from: values.source,
+              to: values.destination,
+            },
+          ],
+          ...rest,
+        };
+      });
+    } else {
+      setLogData(({ attemptTestQuery, movement, ...rest }) => {
+        return {
+          studentAnswer:
+            dataPertanyaan?.kategori === "Open-Ended"
+              ? values?.jawaban_siswa
+              : boxes?.sql_constructed?.items
+                  ?.map((item) => item.content)
+                  .join(" "),
+          attemptTestQuery: attemptTestQuery + 1,
+          timerLeft: timerLeftCounter,
+          soalID: parseInt(router.query.idSoal),
+          type: role,
+          movement: movement || [],
+        };
+      });
+    }
   };
 
   const testQuery = (values) => {
-    saveLog(values, false);
+    saveLog(values, "check-answer");
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
@@ -281,6 +320,7 @@ function LatihanSoal() {
             ) : (
               <SQLContainer
                 boxes={boxes}
+                jawaban={dataPertanyaan?.jawaban_benar}
                 setBoxes={setBoxes}
                 onDragEnd={onDragEnd}
               />

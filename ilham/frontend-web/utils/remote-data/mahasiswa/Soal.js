@@ -14,31 +14,45 @@ const data = [
     sql_components: [
       {
         id: 1,
+        position: 1,
         content: "SELECT",
+        role: "clue",
       },
       {
         id: 2,
+        position: 2,
         content: "COUNT",
+        role: "part",
       },
       {
         id: 3,
+        position: 3,
         content: "nama",
+        role: "part",
       },
       {
         id: 4,
+        position: 4,
         content: "FROM",
+        role: "clue",
       },
       {
         id: 5,
+        position: 5,
         content: "MAHASISWA",
+        role: "part",
       },
       {
         id: 6,
+        position: 6,
         content: "Employee",
+        role: "part",
       },
       {
         id: 7,
+        position: 7,
         content: "STUDENTS",
+        role: "part",
       },
     ],
     jawaban_benar: "SELECT COUNT nama FROM MAHASISWA",
@@ -102,6 +116,52 @@ const data = [
     teksSoal:
       "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
     kategori: "Open-Ended",
+    finished_time: "23:30:10",
+    finished_date: "2022-02-21",
+    timer: {
+      hours: 2,
+      minute: 0,
+      seconds: 0,
+    },
+  },
+  {
+    id: 3 /* idSoal */,
+    studi_kasus: "Studi Kasus C" /* Soal nya */,
+    sql_components: [
+      {
+        id: 1,
+        position: 1,
+        content: "SELECT",
+        role: "part",
+      },
+      {
+        id: 2,
+        position: 2,
+        content: "*",
+        role: "clue",
+      },
+      {
+        id: 3,
+        position: 3,
+        content: "nama",
+        role: "part",
+      },
+      {
+        id: 4,
+        position: 4,
+        content: "FROM",
+        role: "part",
+      },
+      {
+        id: 5,
+        position: 5,
+        content: "MAHASISWA",
+        role: "clue",
+      },
+    ],
+    jawaban_benar: "SELECT * FROM MAHASISWA",
+    teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
+    kategori: "Close-Ended",
     finished_time: "23:30:10",
     finished_date: "2022-02-21",
     timer: {

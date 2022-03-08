@@ -54,9 +54,17 @@ function FormTambahSoal({
 
   // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-  const [inputVisible, setInputVisible] = useState(false);
-  const [tags, setTags] = useState([]);
+  const refButtonPetunjuk = useRef(null);
+
+  const [tagsKomponen, setTagsKomponen] = useState([]);
+  const [inputTagsKomponenValue, setInputTagsKomponenValue] = useState("");
+  const [inputTagsKomponenVisible, setInputTagsKomponenVisible] =
+    useState(false);
+
+  const [inputTagsPetunjukValue, setInputTagsPetunjukValue] = useState("");
+  const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
+    useState(false);
+  const [tagsPetunjuk, setTagsPetunjuk] = useState([]);
 
   const onChangeStudiKasus = (kelas) => {
     console.log(kelas);
@@ -93,9 +101,10 @@ function FormTambahSoal({
   useEffect(() => {
     form.setFieldsValue({
       ...form,
-      opsi_jawaban: tags,
+      opsi_jawaban: tagsKomponen,
+      petunjuk_jawaban: tagsPetunjuk,
     });
-  }, [tags]);
+  }, [tagsKomponen, tagsPetunjuk]);
 
   const validateImageFile = (file) => {
     if (!file.type.includes("image")) {
@@ -105,23 +114,47 @@ function FormTambahSoal({
     return file.type.includes("image") ? true : Upload.LIST_IGNORE;
   };
 
-  const showInput = () => {
-    setInputVisible(true);
-  };
+  const showInput = () => setInputTagsKomponenVisible(true);
+  const showInputPetunjuk = () => setInputTagsPetunjukVisible(true);
 
   useEffect(() => {
     refButton?.current?.input.focus();
-  }, [inputVisible]);
+  }, [inputTagsKomponenVisible]);
 
-  const handleInputChange = (e) => setInputValue(e.target.value);
+  useEffect(() => {
+    refButtonPetunjuk?.current?.input.focus();
+  }, [inputTagsPetunjukVisible]);
 
-  const onRemoveTags = (removedTag) =>
-    setTags((prevTags) => prevTags.filter((item) => item !== removedTag));
+  const handleInputChange = (e) => setInputTagsKomponenValue(e.target.value);
+  const handleInputPetunjukChange = (e) =>
+    setInputTagsPetunjukValue(e.target.value);
 
-  const onAddTags = () => {
-    setTags((prevTags) => [...prevTags, inputValue]);
-    setInputVisible(false);
-    setInputValue("");
+  const onRemoveTagsKomponen = (removedTag) =>
+    setTagsKomponen((prevTagsKomponen) =>
+      prevTagsKomponen.filter((item) => item !== removedTag)
+    );
+
+  const onAddTagsKomponen = () => {
+    setTagsKomponen((prevTagsKomponen) => [
+      ...prevTagsKomponen,
+      inputTagsKomponenValue,
+    ]);
+    setInputTagsKomponenVisible(false);
+    setInputTagsKomponenValue("");
+  };
+
+  const onRemoveTagsPetunjuk = (removedTag) =>
+    setTagsPetunjuk((prevTagsPetunjuk) =>
+      prevTagsPetunjuk.filter((item) => item !== removedTag)
+    );
+
+  const onAddTagsPetunjuk = () => {
+    setTagsPetunjuk((prevTagsPetunjuk) => [
+      ...prevTagsPetunjuk,
+      inputTagsPetunjukValue,
+    ]);
+    setInputTagsPetunjukVisible(false);
+    setInputTagsPetunjukValue("");
   };
 
   return (
@@ -253,30 +286,65 @@ function FormTambahSoal({
           </Form.List>
         </>
       ) : (
-        <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
-          {tags.map((item, idx) => (
-            <Tag key={idx} closable onClose={() => onRemoveTags(item)}>
-              {item}
-            </Tag>
-          ))}
-          {inputVisible && (
-            <Input
-              ref={refButton}
-              type="text"
-              size="small"
-              style={{ width: 78 }}
-              value={inputValue}
-              onChange={handleInputChange}
-              onBlur={onAddTags}
-              onPressEnter={onAddTags}
-            />
-          )}
-          {!inputVisible && (
-            <Button size="small" type="dashed" onClick={showInput}>
-              + Tambah komponen SQL
-            </Button>
-          )}
-        </Form.Item>
+        <>
+          <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
+            {tagsKomponen.map((item, idx) => (
+              <Tag
+                key={idx}
+                closable
+                onClose={() => onRemoveTagsKomponen(item)}
+              >
+                {item}
+              </Tag>
+            ))}
+            {inputTagsKomponenVisible && (
+              <Input
+                ref={refButton}
+                type="text"
+                size="small"
+                style={{ width: 78 }}
+                value={inputTagsKomponenValue}
+                onChange={handleInputChange}
+                onBlur={onAddTagsKomponen}
+                onPressEnter={onAddTagsKomponen}
+              />
+            )}
+            {!inputTagsKomponenVisible && (
+              <Button size="small" type="dashed" onClick={showInput}>
+                + Tambah komponen SQL
+              </Button>
+            )}
+          </Form.Item>
+          {/* =========================================================== */}
+          <Form.Item name="petunjuk_jawaban" label="Petunjuk Jawaban">
+            {tagsPetunjuk.map((item, idx) => (
+              <Tag
+                key={idx}
+                closable
+                onClose={() => onRemoveTagsPetunjuk(item)}
+              >
+                {item}
+              </Tag>
+            ))}
+            {inputTagsPetunjukVisible && (
+              <Input
+                ref={refButtonPetunjuk}
+                type="text"
+                size="small"
+                style={{ width: 78 }}
+                value={inputTagsPetunjukValue}
+                onChange={handleInputPetunjukChange}
+                onBlur={onAddTagsPetunjuk}
+                onPressEnter={onAddTagsPetunjuk}
+              />
+            )}
+            {!inputTagsPetunjukVisible && (
+              <Button size="small" type="dashed" onClick={showInputPetunjuk}>
+                + Tambah komponen petunjuk SQL
+              </Button>
+            )}
+          </Form.Item>
+        </>
       )}
 
       <Form.Item
