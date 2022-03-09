@@ -9,14 +9,6 @@ module.exports = {
         return res.status(200).json(resObj);
     },
 
-    indexStudents: async (req, res) => {
-        const resObj = await scheduleService.getAllForStudents(req.user);
-
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
-    },
-
     indexByClass: async (req, res) => {
         const resObj = await scheduleService.getAllByClass(req.params.id);
 

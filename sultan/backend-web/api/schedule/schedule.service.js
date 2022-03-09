@@ -3,157 +3,142 @@ const createResponseObject = require("../../lib/createResponseObject");
 const Class = require("../class/class.model");
 const Container = require("../container/container.model");
 const Question = require("../question/question.model");
+const QuestionLabel = require("../questions-label/question-label.model");
 const Score = require("../score/score.model");
 const Session = require("../session/session.model");
 const Student = require("../student/student.model");
 const Schedule = require("./schedule.model");
 
+async function getWhereDosen(query, userId) {
+    let whereSchedule = {};
+    if (query.start && query.finish) {
+        whereSchedule[Op.and] = [
+            { start: { [Op.gte]: new Date(query.start) } },
+            { finish: { [Op.lte]: new Date(query.finish) } },
+        ];
+    } else if (query.start) whereSchedule.finish = { [Op.gte]: new Date(query.start) };
+    else whereSchedule.finish = { [Op.gte]: new Date() };
+
+    let whereClass = { user_id: userId };
+    if (query.kelas) whereClass.id = query.kelas;
+
+    return { whereSchedule, whereClass };
+}
+
+async function getWhereStudent(user) {
+    const student = await Student.findByPk(user.id, {
+        attributes: ["id"],
+        include: [
+            {
+                model: Class,
+                as: "classes",
+                attributes: ["id"],
+            },
+        ],
+    });
+    if (!student) throw new Error("data student not found");
+
+    const existedScores = await Score.findAll({
+        attributes: ["schedule_id"],
+        where: {
+            student_id: user.id,
+        },
+        raw: true,
+    }).then((scores) => {
+        return scores.map((val) => val.schedule_id);
+    });
+
+    const unfinishedSessions = await Session.findAll({
+        attributes: ["schedule_id"],
+        where: {
+            student_id: user.id,
+            is_finished: false,
+        },
+        raw: true,
+    }).then((sessions) => {
+        return sessions.map((session) => session.schedule_id);
+    });
+
+    let whereSchedule = {
+        id: {
+            [Op.notIn]: existedScores,
+        },
+        [Op.or]: {
+            finish: {
+                [Op.gte]: new Date(),
+            },
+            id: {
+                [Op.in]: unfinishedSessions,
+            },
+        },
+    };
+
+    let whereClass = {
+        id: {
+            [Op.in]: student.classes.map((item) => item.id),
+        },
+    };
+    return { whereSchedule, whereClass };
+}
+
 module.exports = {
     getAll: async (user, query = null) => {
         try {
-            let whereSchedule = {};
-            if (query.start && query.finish) {
-                whereSchedule[Op.and] = [
-                    { start: { [Op.gte]: new Date(query.start) } },
-                    { finish: { [Op.lte]: new Date(query.finish) } },
-                ];
-            } else if (query.start) {
-                whereSchedule.finish = { [Op.gte]: new Date(query.start) };
+            let where = null;
+            if (user.role == "dosen") {
+                where = await getWhereDosen(query, user.id);
+            } else if (user.role == "mahasiswa") {
+                where = await getWhereStudent(user);
             } else {
-                whereSchedule.finish = { [Op.gte]: new Date() };
+                throw new Error("role not supported");
             }
-
-            let whereKelas = {};
-            if (query.kelas) whereKelas.id = query.kelas;
 
             const schedules = await Schedule.findAll({
                 include: [
                     {
                         model: Class,
                         as: "classes",
-                        where: {
-                            ...whereKelas,
-                            user_id: user.id,
-                        },
-                        // through: {
-                        //     where: whereKelas
-                        // }
+                        through: { attributes: [] },
+                        where: where.whereClass,
                     },
                     {
                         model: Container,
-                        attributes: ["id", "description"],
+                        attributes: ["id", "description", "label_id"],
+                        include: [{ model: QuestionLabel, attributes: ["id", "name"] }],
                     },
                 ],
-                where: whereSchedule,
+                where: where.whereSchedule,
                 order: [["createdAt", "DESC"]],
             });
             if (!schedules || schedules.length == 0) throw new Error("data schedule not found");
 
-            const scheduleResponse = schedules.reduce((acc, curr) => {
-                curr.classes.map((val) => {
-                    acc = [
-                        ...acc,
-                        {
-                            id: curr.id,
-                            description: curr.description,
-                            total_questions: curr.total_questions,
-                            class: {
-                                id: val.id,
-                                name: val.name,
-                            },
-                            container: {
-                                id: curr.Container.id,
-                                description: curr.Container.description,
-                            },
-                            type: curr.type,
-                            start: curr.start,
-                            finish: curr.finish,
-                        },
-                    ];
+            const scheduleResponse = schedules.map((val) => {
+                let classData = val.classes.map((e) => {
+                    return {
+                        id: e.id,
+                        name: e.name,
+                    };
                 });
-                return acc;
-            }, []);
+                return {
+                    id: val.id,
+                    description: val.description,
+                    total_questions: val.total_questions,
+                    type: val.type,
+                    start: val.start,
+                    finish: val.finish,
+                    class: classData,
+                    container: {
+                        id: val.Container.id,
+                        description: val.Container.description,
+                    },
+                    label: {
+                        id: val.Container.QuestionLabel.id,
+                        name: val.Container.QuestionLabel.name,
+                    },
+                };
+            });
 
             return createResponseObject("success", "Data schedule berhasil didapatkan", scheduleResponse);
-        } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
-        }
-    },
-
-    getAllForStudents: async (user) => {
-        try {
-            const student = await Student.findByPk(user.id, {
-                attributes: ["id"],
-                include: [
-                    {
-                        model: Class,
-                        as: "classes",
-                        attributes: ["id"],
-                    },
-                ],
-            });
-            if (!student) throw new Error("data student not found");
-            const classessId = student.classes.map((item) => item.id);
-
-            const existedScores = await Score.findAll({
-                attributes: ["schedule_id"],
-                where: {
-                    student_id: user.id,
-                },
-                raw: true,
-            }).then((scores) => {
-                return scores.map((val) => val.schedule_id);
-            });
-
-            const unfinishedSessions = await Session.findAll({
-                attributes: ["schedule_id"],
-                where: {
-                    student_id: user.id,
-                    is_finished: false,
-                },
-                raw: true,
-            }).then((sessions) => {
-                return sessions.map((session) => session.schedule_id);
-            });
-
-            const date = new Date();
-
-            const schedules = await Schedule.findAll({
-                include: {
-                    model: Class,
-                    as: "classes",
-                    through: { attributes: [] },
-                    where: {
-                        id: {
-                            [Op.in]: classessId,
-                        },
-                    },
-                },
-                where: {
-                    id: {
-                        [Op.notIn]: existedScores,
-                    },
-                    [Op.or]: {
-                        [Op.and]: {
-                            start: {
-                                [Op.lte]: date,
-                            },
-                            finish: {
-                                [Op.gte]: date,
-                            },
-                        },
-                        id: {
-                            [Op.in]: unfinishedSessions,
-                        },
-                    },
-                },
-            });
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedules);
         } catch (error) {
             console.log(error);
             return createResponseObject(

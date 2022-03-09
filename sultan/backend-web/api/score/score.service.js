@@ -6,7 +6,6 @@ const Score = require("./score.model");
 const Student = require("../student/student.model");
 const Class = require("../class/class.model");
 const Question = require("../question/question.model");
-const SessionStudentAnswer = require("../session-student-answer/session-student-answer.model");
 const Session = require("../session/session.model");
 
 module.exports = {

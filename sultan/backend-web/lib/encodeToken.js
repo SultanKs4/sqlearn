@@ -26,14 +26,14 @@ async function verifyJWT(token) {
         if (role == JWT_ROLES.dosen || role == JWT_ROLES.admin) {
             user = await User.findByPk(id, {
                 attributes: {
-                    exclude: ["password"],
+                    exclude: ["password", "createdAt", "updatedAt"],
                 },
                 raw: true,
             });
         } else if (role == JWT_ROLES.mahasiswa) {
             user = await Student.findByPk(id, {
                 attributes: {
-                    exclude: ["password"],
+                    exclude: ["password", "createdAt", "updatedAt"],
                 },
                 raw: true,
             });
