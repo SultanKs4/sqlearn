@@ -37,14 +37,7 @@ function LatihanSoal() {
   const [scheduleDate, setScheduleDate] = useState(new Date());
 
   const [isPreviewTable, setIsPreviewTable] = useState(false);
-  const [logData, setLogData] = useState({
-    timerLeft: "00:00:00",
-    studentAnswer: "",
-    attemptTestQuery: 0,
-    soalID: 0,
-    type: "",
-    movement: [],
-  });
+  const [logData, setLogData] = useState([]);
 
   const [timerLeftCounter, setTimerLeftCounter] = useState("");
 
@@ -54,6 +47,7 @@ function LatihanSoal() {
 
   // ? Untuk simpan jawaban kalau soalini berkategori close-ended
   const [boxes, setBoxes] = useState([]);
+  const [currentPart, setCurrentPart] = useState(null);
 
   // ? Untuk simpan jawaban kalau soal ini berkategori open-ended
   const [form] = Form.useForm();
@@ -99,7 +93,7 @@ function LatihanSoal() {
     }
 
     // ? Set Log per Drag & Drop
-    saveLog(result, "part-movement");
+    setCurrentPart(result);
   };
 
   useEffect(() => {
@@ -149,84 +143,88 @@ function LatihanSoal() {
 
   useEffect(() => {
     // ?  monitor 2 field box drag and drop disini
-    console.log(boxes?.sql_constructed?.items?.map((item) => item.content));
+    // console.log(boxes?.sql_constructed?.items?.map((item) => item.content));
     // console.log(boxes);
-  }, [boxes]);
+
+    if (currentPart !== null) saveLog(currentPart, "move");
+  }, [boxes, currentPart]);
 
   const previewTable = () => {
     setIsPreviewTable((prev) => !prev);
     console.log("table preview");
   };
 
-  const resetLog = () => {
-    setLogData(({ attemptTestQuery, ...prev }) => {
-      return {
-        timerLeft: "00:00:00",
-        studentAnswer: "",
-        attemptTestQuery: 0,
-        soalID: 0,
-        movement: [],
-        type: "",
-      };
-    });
-  };
+  const resetLog = () => setLogData([]);
 
   const submitAnswer = (values) => {
-    saveLog(values, "answer-submitted");
+    saveLog(values, "submit");
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
-    // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
+    // ? Kalau berhasil alertMessage = 'success' dan reset lognya, kalau gagal alertMessage = 'error', lognya tetep
+
     setIsAlertActive(true);
     setTimeout(() => setIsAlertActive(false), 5000);
     setAlertMessage(`Jawaban berhasil disimpan !`);
+
+    setTimeout(() => {
+      resetLog();
+    }, 500);
   };
 
   const saveLog = (values, role) => {
-    if (role === "part-movement") {
-      setLogData(({ movement, ...rest }) => {
-        return {
-          movement: [
-            ...movement,
-            {
-              timerLeft: timerLeftCounter,
-              from: values.source,
-              to: values.destination,
-            },
-          ],
-          ...rest,
-        };
-      });
-    } else {
-      setLogData(({ attemptTestQuery, movement, ...rest }) => {
-        return {
-          studentAnswer:
+    if (role === "move") {
+      setLogData((tempLogData) => [
+        ...logData,
+        {
+          timerLeft: timerLeftCounter,
+          type: role,
+          answer:
             dataPertanyaan?.kategori === "Open-Ended"
               ? values?.jawaban_siswa
               : boxes?.sql_constructed?.items
                   ?.map((item) => item.content)
                   .join(" "),
-          attemptTestQuery: attemptTestQuery + 1,
+          answer_json: {
+            from: values.source,
+            to: values.destination,
+          },
+        },
+      ]);
+    } else {
+      // console.log(tempLogData);
+      setLogData((tempLogData) => [
+        ...tempLogData,
+        {
           timerLeft: timerLeftCounter,
-          soalID: parseInt(router.query.idSoal),
           type: role,
-          movement: movement || [],
-        };
-      });
+          answer:
+            dataPertanyaan?.kategori === "Open-Ended"
+              ? values?.jawaban_siswa
+              : boxes?.sql_constructed?.items
+                  ?.map((item) => item.content)
+                  .join(" "),
+          answer_json: {},
+        },
+      ]);
     }
   };
 
   const testQuery = (values) => {
-    saveLog(values, "check-answer");
+    saveLog(values, "test");
 
     // TODO : Call POST API request dari ... , terus define try catch nya disini
-    // ? Kalau berhasil alertMessage = 'success', kalau gagal alertMessage = 'error'
+    // ? Kalau berhasil alertMessage = 'success' dan reset lognya, kalau gagal alertMessage = 'error', lognya tetep
     setIsAlertActive(true);
     setTimeout(() => setIsAlertActive(false), 5000);
     setAlertMessage(`Jawaban anda benar !`);
+
+    setTimeout(() => {
+      resetLog();
+    }, 500);
   };
 
   useEffect(() => {
-    console.log(logData);
+    console.log("info LogData", logData);
   }, [logData]);
 
   return (

@@ -57,6 +57,8 @@ function FormTambahSoal({
   const refButtonPetunjuk = useRef(null);
 
   const [tagsKomponen, setTagsKomponen] = useState([]);
+  const [tagsPetunjuk, setTagsPetunjuk] = useState([]);
+
   const [inputTagsKomponenValue, setInputTagsKomponenValue] = useState("");
   const [inputTagsKomponenVisible, setInputTagsKomponenVisible] =
     useState(false);
@@ -64,7 +66,6 @@ function FormTambahSoal({
   const [inputTagsPetunjukValue, setInputTagsPetunjukValue] = useState("");
   const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
     useState(false);
-  const [tagsPetunjuk, setTagsPetunjuk] = useState([]);
 
   const onChangeStudiKasus = (kelas) => {
     console.log(kelas);
