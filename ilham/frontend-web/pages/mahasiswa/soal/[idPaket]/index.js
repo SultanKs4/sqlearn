@@ -2,10 +2,10 @@ import { React, useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import { Card, Row, Col, Skeleton, Button, Typography } from "antd";
+import { Card, Row, Col, Skeleton, Button, Typography, Badge } from "antd";
 
 import PageLayout from "../../../../components/PageLayout";
-import { mockGetAllSoal } from "../../../../utils/remote-data/mahasiswa/Soal";
+import { mockGetSoalByCategory } from "../../../../utils/remote-data/mahasiswa/Soal";
 import { mockGetAllPractices } from "../../../../utils/remote-data/mahasiswa/Beranda";
 import ListComponent from "../../../../components/List";
 import moment from "moment";
@@ -38,13 +38,16 @@ function Practice() {
       );
       setIsDataPracticeLoaded(true);
     });
+  }, [router.query.idPaket]);
 
+  useEffect(() => {
     // ? Ini aslinya fetch data getQuestionByJadwal
-    mockGetAllSoal().then((response) => {
+    mockGetSoalByCategory(dataPractice?.kategori).then((response) => {
+      console.log(response.data[0]);
       setDataListPertanyaan(response.data);
       setIsDataListPertanyaanLoaded(true);
     });
-  }, [router.query.idPaket]);
+  }, [dataPractice, router.query.idPaket]);
 
   useEffect(() => {
     setTimerFromServer(
@@ -72,6 +75,10 @@ function Practice() {
     });
   }, [isTimerReady, timerFromServer]);
 
+  useEffect(() => {
+    console.clear();
+  }, []);
+
   return (
     <>
       <Head>
@@ -81,7 +88,24 @@ function Practice() {
         <Card>
           {/* ! Mock */}
           {isDataPracticeLoaded ? (
-            <Typography.Title level={3}>{dataPractice?.nama}</Typography.Title>
+            <Row justify="space-between">
+              <Col>
+                <Typography.Title level={3}>
+                  {dataPractice?.nama}
+                </Typography.Title>
+              </Col>
+              <Col>
+                <Badge.Ribbon
+                  color={
+                    dataPractice?.kategori === "Close-Ended"
+                      ? "geekblue"
+                      : "purple"
+                  }
+                  text={dataPractice?.kategori}
+                  placement="end"
+                ></Badge.Ribbon>
+              </Col>
+            </Row>
           ) : (
             <Skeleton
               active
@@ -106,15 +130,21 @@ function Practice() {
             </Col>
           </Row>
 
-          <ListComponent
-            dataSource={dataListPertanyaan}
-            role="data-soal-mahasiswa"
-            isLoading={!isDataListPertanyaanLoaded}
-            //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
-            kerjakanLatihan={(id) =>
-              router.push(`/mahasiswa/soal/1/pertanyaan/${id}`)
-            }
-          />
+          {isDataListPertanyaanLoaded && (
+            <ListComponent
+              dataSource={dataListPertanyaan}
+              role="data-soal-mahasiswa"
+              isLoading={!isDataListPertanyaanLoaded}
+              //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
+              kerjakanLatihan={(id) =>
+                router.push(
+                  `/mahasiswa/soal/${parseInt(
+                    router.query.idPaket
+                  )}/pertanyaan/${dataListPertanyaan[0].id}`
+                )
+              }
+            />
+          )}
         </Card>
       </PageLayout>
     </>

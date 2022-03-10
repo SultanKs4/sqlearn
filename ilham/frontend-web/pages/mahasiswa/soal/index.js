@@ -19,6 +19,7 @@ function SoalMahasiswa() {
   const [isDataLatihanLoaded, setIsDataLatihanLoaded] = useState(false);
 
   useEffect(() => {
+    console.clear();
     // TODO : Consume API GET dataLatihan yang tersedia
     mockGetAllPractices().then((responseData) => {
       setDataLatihan(

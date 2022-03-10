@@ -1,30 +1,7 @@
 import { React, useEffect, useState } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
-const SQLAnswerBox = ({ boxes, jawaban }) => {
-  const [sqlConstructed, setSqlConstructed] = useState([]);
-  const [sqlUncomplete, setSqlUncomplete] = useState([]);
-  const [fetchClue, setFetchClue] = useState([]);
-
-  useEffect(() => {
-    setFetchClue(
-      boxes?.sql_constructed?.items?.map((item) => item.content.toLowerCase())
-    );
-  }, [boxes]);
-
-  useEffect(() => {
-    setSqlUncomplete(
-      jawaban?.split(" ").map((partJawaban) => {
-        if (fetchClue.includes(partJawaban.toLowerCase())) return partJawaban;
-        else return "___";
-      })
-    );
-  }, [fetchClue]);
-
-  useEffect(() => {
-    console.log(sqlUncomplete);
-  }, [sqlUncomplete]);
-
+const SQLAnswerBox = ({ boxes, jawaban, isDragging }) => {
   return (
     <>
       <h3>Jawaban SQL</h3>
@@ -52,6 +29,11 @@ const SQLAnswerBox = ({ boxes, jawaban }) => {
                   key={item.id.toString()}
                   draggableId={item.id.toString()}
                   index={index}
+                  isDragDisabled={
+                    item.content === "___" || item.role === "clue"
+                      ? true
+                      : false
+                  }
                 >
                   {(provided, snapshot) => {
                     return (
@@ -79,6 +61,7 @@ const SQLAnswerBox = ({ boxes, jawaban }) => {
                 </Draggable>
               );
             })}
+
             {provided.placeholder}
           </div>
         )}

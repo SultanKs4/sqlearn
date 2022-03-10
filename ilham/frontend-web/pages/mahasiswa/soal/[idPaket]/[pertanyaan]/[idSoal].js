@@ -27,14 +27,12 @@ function LatihanSoal() {
 
   const { timer } = useContext(JadwalContext);
 
-  useEffect(() => {
-    console.log(timer, "ini timer contex");
-  }, []);
-
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [isDataPertanyaanLoaded, setIsDataPertanyaanLoaded] = useState(false);
   const [isTimeLoaded, setIsTimeLoaded] = useState(false);
   const [scheduleDate, setScheduleDate] = useState(new Date());
+
+  const [isAnswerSaved, setIsAnswerSaved] = useState(false);
 
   const [isPreviewTable, setIsPreviewTable] = useState(false);
   const [logData, setLogData] = useState([]);
@@ -45,12 +43,78 @@ function LatihanSoal() {
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  // ? Untuk simpan jawaban kalau soalini berkategori close-ended
+  // ? Untuk simpan jawaban kalau soal ini berkategori close-ended
   const [boxes, setBoxes] = useState([]);
+
+  // ? ini untuk hint sql parts close-ended
+  const [sqlUncomplete, setSqlUncomplete] = useState([]);
+
   const [currentPart, setCurrentPart] = useState(null);
 
   // ? Untuk simpan jawaban kalau soal ini berkategori open-ended
   const [form] = Form.useForm();
+
+  useEffect(() => {
+    setIsAnswerSaved(false);
+    setBoxes([]);
+    setSqlUncomplete([]);
+
+    console.clear();
+    mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
+      setDataPertanyaan(response.data);
+      setIsDataPertanyaanLoaded(true);
+      resetLog();
+
+      console.log(response.data?.next?.soalID, "ini id next soal");
+    });
+  }, [router.query.idSoal]);
+
+  useEffect(() => {
+    // ? Biar timernya tetap berjalan dan tidak reset ketika direset
+    if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) {
+      const backupTimer = JSON.parse(window?.localStorage.getItem("timerLeft"));
+      const currentTime = new Date();
+      const { hour, minute, second } = timer?.format;
+      setScheduleDate(
+        currentTime.setHours(
+          currentTime.getHours() + hour,
+          currentTime.getMinutes() + minute,
+          currentTime.getSeconds() + second
+        )
+      );
+
+      if (hour === 0 && minute === 0 && second === 0) {
+        setScheduleDate(
+          currentTime.setHours(
+            currentTime.getHours() + backupTimer.hour,
+            currentTime.getMinutes() + backupTimer.minute,
+            currentTime.getSeconds() + backupTimer.second
+          )
+        );
+      }
+      setIsTimeLoaded(true);
+    }
+  }, [isDataPertanyaanLoaded, dataPertanyaan]);
+
+  useEffect(() => {
+    setBoxes({
+      sql_parts: {
+        items: dataPertanyaan?.sql_components?.filter(
+          (item) => item.role === "part"
+        ),
+      },
+      sql_constructed: {
+        items: dataPertanyaan?.sql_components?.filter(
+          (item) => item.role === "clue"
+        ),
+      },
+    });
+  }, [dataPertanyaan]);
+
+  useEffect(() => {
+    // ? Save Log ketika ada pergerakan komponen drag-and-drop
+    if (currentPart !== null) saveLog(currentPart, "move");
+  }, [boxes, currentPart]);
 
   const onDragEnd = (result, boxes, setBoxes) => {
     if (!result.destination) return;
@@ -96,65 +160,16 @@ function LatihanSoal() {
     setCurrentPart(result);
   };
 
-  useEffect(() => {
-    mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
-      setDataPertanyaan(response.data);
-      console.log(
-        `${response.data?.finished_date} ${response.data?.finished_time}`
-      );
-      setIsDataPertanyaanLoaded(true);
-    });
-
-    console.log("ini router query", router.query);
-
-    resetLog();
-  }, [router.query.idSoal]);
-
-  useEffect(() => {
-    if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) {
-      const time = new Date();
-      const { hours, minute, seconds } = dataPertanyaan?.timer;
-      setScheduleDate(
-        time.setHours(
-          time.getHours() + hours,
-          time.getMinutes() + minute,
-          time.getSeconds() + seconds
-        )
-      );
-      setIsTimeLoaded(true);
-    }
-  }, [isDataPertanyaanLoaded, dataPertanyaan]);
-
-  useEffect(() => {
-    console.log("ini dataPertanyaan", dataPertanyaan);
-    setBoxes({
-      sql_parts: {
-        items: dataPertanyaan?.sql_components?.filter(
-          (item) => item.role === "part"
-        ),
-      },
-      sql_constructed: {
-        items: dataPertanyaan?.sql_components?.filter(
-          (item) => item.role === "clue"
-        ),
-      },
-    });
-  }, [dataPertanyaan]);
-
-  useEffect(() => {
-    // ?  monitor 2 field box drag and drop disini
-    // console.log(boxes?.sql_constructed?.items?.map((item) => item.content));
-    // console.log(boxes);
-
-    if (currentPart !== null) saveLog(currentPart, "move");
-  }, [boxes, currentPart]);
-
   const previewTable = () => {
     setIsPreviewTable((prev) => !prev);
     console.log("table preview");
   };
 
-  const resetLog = () => setLogData([]);
+  const resetLog = () => {
+    console.log("resetted log");
+    setLogData([]);
+    setCurrentPart(null);
+  };
 
   const submitAnswer = (values) => {
     saveLog(values, "submit");
@@ -169,44 +184,30 @@ function LatihanSoal() {
     setTimeout(() => {
       resetLog();
     }, 500);
+    setIsAnswerSaved(true);
   };
 
   const saveLog = (values, role) => {
-    if (role === "move") {
-      setLogData((tempLogData) => [
-        ...logData,
-        {
-          timerLeft: timerLeftCounter,
-          type: role,
-          answer:
-            dataPertanyaan?.kategori === "Open-Ended"
-              ? values?.jawaban_siswa
-              : boxes?.sql_constructed?.items
-                  ?.map((item) => item.content)
-                  .join(" "),
-          answer_json: {
-            from: values.source,
-            to: values.destination,
-          },
-        },
-      ]);
-    } else {
-      // console.log(tempLogData);
-      setLogData((tempLogData) => [
-        ...tempLogData,
-        {
-          timerLeft: timerLeftCounter,
-          type: role,
-          answer:
-            dataPertanyaan?.kategori === "Open-Ended"
-              ? values?.jawaban_siswa
-              : boxes?.sql_constructed?.items
-                  ?.map((item) => item.content)
-                  .join(" "),
-          answer_json: {},
-        },
-      ]);
-    }
+    setLogData((tempLogData) => [
+      ...tempLogData,
+      {
+        timerLeft: timerLeftCounter,
+        type: role,
+        answer:
+          dataPertanyaan?.kategori === "Open-Ended"
+            ? values?.jawaban_siswa
+            : boxes?.sql_constructed?.items
+                ?.map((item) => item.content)
+                .join(" "),
+        answer_json:
+          role === "move"
+            ? {
+                from: values.source,
+                to: values.destination,
+              }
+            : {},
+      },
+    ]);
   };
 
   const testQuery = (values) => {
@@ -224,7 +225,9 @@ function LatihanSoal() {
   };
 
   useEffect(() => {
-    console.log("info LogData", logData);
+    console.group("info LogData");
+    console.log(logData);
+    console.groupEnd();
   }, [logData]);
 
   return (
@@ -269,18 +272,38 @@ function LatihanSoal() {
             </Row>
 
             <Row style={{ marginTop: "1em" }}>
-              <Button
-                type="primary"
-                onClick={() =>
-                  router.push(
-                    `/mahasiswa/soal/1/pertanyaan/${
-                      parseInt(router.query.idSoal) + 1
-                    }`
-                  )
-                }
-              >
-                Soal Selanjutnya
-              </Button>
+              {dataPertanyaan?.next?.soalID !== false ? (
+                <Button
+                  // disabled={isAnswerSaved ? false : true}
+                  type="primary"
+                  onClick={() => {
+                    resetLog();
+                    router.push(
+                      `/mahasiswa/soal/${parseInt(
+                        router.query.idPaket
+                      )}/pertanyaan/${dataPertanyaan?.next?.soalID}`
+                    );
+                  }}
+                >
+                  Soal Selanjutnya
+                </Button>
+              ) : (
+                <Button
+                  // disabled={isAnswerSaved ? false : true}
+                  type="primary"
+                  ghost
+                  onClick={() => {
+                    resetLog();
+                    router.push(
+                      `/mahasiswa/soal/${parseInt(
+                        router.query.idPaket
+                      )}/ujian-selesai`
+                    );
+                  }}
+                >
+                  Akhiri ujian
+                </Button>
+              )}
             </Row>
           </Col>
           <Col lg={1}>
@@ -319,6 +342,8 @@ function LatihanSoal() {
               <SQLContainer
                 boxes={boxes}
                 jawaban={dataPertanyaan?.jawaban_benar}
+                sqlUncomplete={sqlUncomplete}
+                setSqlUncomplete={setSqlUncomplete}
                 setBoxes={setBoxes}
                 onDragEnd={onDragEnd}
               />
@@ -326,18 +351,33 @@ function LatihanSoal() {
 
             <Row style={{ marginTop: "1em" }} justify="space-between">
               <Col>
-                <Button
-                  type="primary"
-                  onClick={() =>
-                    testQuery(
-                      dataPertanyaan?.kategori === "Open-Ended"
-                        ? form.getFieldsValue()
-                        : ""
-                    )
-                  }
-                >
-                  Test Query
-                </Button>
+                <Row gutter={10}>
+                  <Col>
+                    <Button
+                      type="primary"
+                      onClick={() =>
+                        testQuery(
+                          dataPertanyaan?.kategori === "Open-Ended"
+                            ? form.getFieldsValue()
+                            : ""
+                        )
+                      }
+                    >
+                      Test Query
+                    </Button>
+                  </Col>
+                  {dataPertanyaan?.kategori === "Open-Ended" && (
+                    <Col>
+                      <Button
+                        type="danger"
+                        // TODO : Tambah event handler untuk reset db
+                        onClick={() => {}}
+                      >
+                        Reset Database
+                      </Button>
+                    </Col>
+                  )}
+                </Row>
               </Col>
               <Col>
                 <Button

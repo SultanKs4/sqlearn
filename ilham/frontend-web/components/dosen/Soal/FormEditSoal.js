@@ -143,7 +143,6 @@ function FormEditSoal({
     console.log("ini currentSoal", currentSoal);
 
     form.setFieldsValue({
-      nama_soal: currentSoal?.nama,
       kategori: selectedKategori,
       teksSoal: currentSoal?.teksSoal,
       opsi_jawaban: currentSoal?.jawaban,
@@ -200,24 +199,7 @@ function FormEditSoal({
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
       <Row justify="space-between" gutter={8}>
-        <Col span={12}>
-          <Form.Item
-            name="nama_soal"
-            label="Nama Soal"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Nama!",
-              },
-            ]}
-          >
-            <Input
-              prefix={<ConsoleSqlOutlined />}
-              placeholder={` Soal . . .`}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
+        <Col span={24}>
           <Form.Item
             name="kategori"
             label="Kategori"
@@ -232,8 +214,8 @@ function FormEditSoal({
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -382,24 +364,24 @@ function FormEditSoal({
               </Button>
             )}
           </Form.Item>
+          <Form.Item
+            name="jawaban_benar"
+            label="Jawaban Benar"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan jawaban yang benar!",
+              },
+            ]}
+          >
+            <Input
+              prefix={<ConsoleSqlOutlined />}
+              placeholder={` Jawaban Benar . . .`}
+            />
+          </Form.Item>
         </>
       )}
 
-      <Form.Item
-        name="jawaban_benar"
-        label="Jawaban Benar"
-        rules={[
-          {
-            required: true,
-            message: "Mohon masukkan jawaban yang benar!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<ConsoleSqlOutlined />}
-          placeholder={` Jawaban Benar . . .`}
-        />
-      </Form.Item>
       <Form.Item label="Preview Hasil">
         <Form.Item
           name="preview_hasil"

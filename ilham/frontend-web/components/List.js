@@ -665,7 +665,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                 type="primary"
                 icon={<EditOutlined />}
                 children="Kerjakan"
-                onClick={() => router.push(`/mahasiswa/soal/1/pertanyaan/1`)}
+                onClick={() => props.kerjakanLatihan()}
               />
             </Tooltip>
           </Row>

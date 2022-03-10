@@ -89,7 +89,7 @@ function HalamanSoal() {
     handleToggleModal();
     handleToggleAlert();
 
-    setAlertMessage(`Data ${formSoal.nama_soal} berhasil ditambahkan`);
+    setAlertMessage(`Data berhasil ditambahkan`);
 
     console.log("Hasil submit tambah", formSoal);
   };
@@ -98,7 +98,7 @@ function HalamanSoal() {
     // TODO : Call DELETE API request dari SoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama_soal} berhasil diubah`);
+    setAlertMessage(`Data  berhasil diubah`);
     handleToggleAlert();
 
     console.log("Data berhasil diubah", formSoal);
@@ -108,7 +108,7 @@ function HalamanSoal() {
     // TODO : Call DELETE API request dari SoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama} berhasil dihapus`);
+    setAlertMessage(`Data  berhasil dihapus`);
     handleToggleAlert();
 
     console.log("Data terhapus", formSoal);
