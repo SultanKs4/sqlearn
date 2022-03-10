@@ -15,9 +15,9 @@ module.exports = {
     getAll: async () => {
         try {
             const sessions = await Session.findAll();
-            return createResponseObject(true, "Data session berhasil didapatkan", sessions);
+            return createResponseObject("success", "Data session berhasil didapatkan", sessions);
         } catch (error) {
-            return createResponseObject(false, "Data session gagal didapatkan");
+            return createResponseObject("error", "Data session gagal didapatkan");
         }
     },
 
@@ -36,7 +36,7 @@ module.exports = {
                 include: [
                     {
                         model: Schedule,
-                        attributes: ["id", "finish_date", "finish_time"],
+                        attributes: ["id", "finish"],
                         // include: [
                         //     {
                         //         model: Container,
@@ -75,68 +75,88 @@ module.exports = {
                 session,
                 questions,
             };
-            return createResponseObject(true, "Data session berhasil didapatkan", responseObj);
+            return createResponseObject("success", "Data session berhasil didapatkan", responseObj);
         } catch (error) {
             console.error(error);
-            return createResponseObject(false, "Data session gagal didapatkan");
+            return createResponseObject("error", "Data session gagal didapatkan");
         }
     },
 
     insert: async (data, user) => {
         try {
-            let session = await Session.findOne({
+            const schedule = await Schedule.findByPk(data.schedule);
+            if (!schedule) throw new Error("schedule data not found");
+
+            const [session, created] = await Session.findOrCreate({
                 where: {
                     student_id: user.id,
                     schedule_id: data.schedule,
                 },
             });
 
-            if (session) {
-                return createResponseObject(true, "Data session berhasil ditemukan", session);
-            }
-
-            const schedule = await Schedule.findByPk(data.schedule);
-            // const container = await Container.findByPk(schedule.container_id)
-            const questions = await Question.findAll({
-                attributes: ["id"],
-                include: {
-                    model: Container,
-                    as: "containers",
-                    attributes: [],
-                    required: true,
-                    where: {
-                        id: schedule.container_id,
+            if (created) {
+                const scheduleWithJoins = await Schedule.findOne({
+                    where: { id: data.schedule },
+                    include: {
+                        model: Container,
+                        attributes: ["id"],
+                        include: {
+                            model: Question,
+                            as: "questions",
+                            attributes: ["id"],
+                            through: { attributes: [] },
+                            include: {
+                                model: CaseStudy,
+                                attributes: ["db_name", "db_file"],
+                            },
+                        },
                     },
-                    through: { attributes: [] },
-                },
-                order: Sequelize.literal("rand()"),
-                limit: schedule.total_questions,
-            });
+                });
 
-            const mappedQuestions = questions.map((question) => question.id);
-
-            let newSession = await Session.create({
-                student_id: user.id,
-                schedule_id: data.schedule,
-                questions: JSON.stringify(mappedQuestions),
-            });
-            return createResponseObject(true, "Data session berhasil ditambahkan", newSession);
+                const dbNameSet = new Set();
+                const dbFileSet = new Set();
+                scheduleWithJoins.Container.questions.forEach((val) => {
+                    dbNameSet.add(val.CaseStudy.db_name);
+                    dbFileSet.add(val.CaseStudy.db_file);
+                });
+                // nanti clone db disini
+            }
+            return createResponseObject("success", "Data session berhasil ditambahkan", session);
         } catch (error) {
             console.log(error);
-            return createResponseObject(false, "Data session gagal ditambahkan");
+            return createResponseObject(
+                "error",
+                "Data session gagal ditambahkan",
+                error == null ? null : error.message ? error.message : error
+            );
         }
     },
 
-    answer: async (session, question, data) => {
+    answer: async (sessionId, question, data, user) => {
         try {
-            const questionDb = await Question.findByPk(question, {
-                attributes: ["answer"],
+            const sessionData = await Session.findOne({
+                where: { id: sessionId, student_id: user.id },
                 include: {
-                    attributes: ["db_name"],
-                    model: CaseStudy,
+                    model: Schedule,
+                    attributes: ["id"],
+                    include: {
+                        model: Container,
+                        attributes: ["id"],
+                        include: {
+                            model: Question,
+                            as: "questions",
+                            attributes: ["id"],
+                            where: { id: question },
+                            through: { attributes: [] },
+                            include: {
+                                model: CaseStudy,
+                                attributes: ["db_name"],
+                            },
+                        },
+                    },
                 },
             });
-            if (!questionDb) return createResponseObject(false, "Tidak ada data pertanyaan didapatkan");
+            if (!sessionData) return createResponseObject("error", "Tidak ada data pertanyaan didapatkan");
 
             const similarityResponse = await axios.post(
                 `${AUTO_ASSESS_BACKEND}/assess/${questionDb["CaseStudy"]["db_name"]}`,
@@ -156,10 +176,10 @@ module.exports = {
                 is_equal: similarityResponse.data.isEqual,
             });
 
-            return createResponseObject(true, "Data jawaban berhasil ditambahkan", similarityResponse.data);
+            return createResponseObject("success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
         } catch (error) {
             console.log(error);
-            return createResponseObject(false, "Data jawaban gagal ditambahkan");
+            return createResponseObject("error", "Data jawaban gagal ditambahkan");
         }
     },
 
@@ -237,10 +257,10 @@ module.exports = {
                 }
             );
 
-            return createResponseObject(true, "Proses grading berhasil dilakukan", grade);
+            return createResponseObject("success", "Proses grading berhasil dilakukan", grade);
         } catch (error) {
             console.log(error);
-            return createResponseObject(false, "Proses grading gagal dilakukan");
+            return createResponseObject("error", "Proses grading gagal dilakukan");
         }
     },
 };

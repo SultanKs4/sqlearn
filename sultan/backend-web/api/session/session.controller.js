@@ -26,7 +26,7 @@ module.exports = {
     },
 
     answer: async (req, res) => {
-        const resObj = await sessionService.answer(req.params.id, req.params.question, req.body);
+        const resObj = await sessionService.answer(req.params.id, req.params.question, req.body, req.user);
 
         if (resObj.success == "error") return res.status(500).json(resObj);
 

@@ -90,8 +90,6 @@ module.exports = {
                     semester: data.semester,
                 },
                 defaults: {
-                    name: data.name,
-                    semester: data.semester,
                     user_id: user.id,
                 },
             });

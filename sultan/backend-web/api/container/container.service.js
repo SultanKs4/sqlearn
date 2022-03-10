@@ -66,6 +66,7 @@ module.exports = {
                         },
                     ],
                 },
+                // order: Sequelize.literal("rand()"),
             });
 
             if (containerById == null) throw new Error("container not found");
