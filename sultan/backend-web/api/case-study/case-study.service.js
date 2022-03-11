@@ -8,15 +8,22 @@ const User = require("../user/user.model");
 const createResponseObject = require("../../lib/createResponseObject");
 const deleteFile = require("../../lib/deleteFile");
 const path = require("path");
+const DbList = require("../db-list/db-list.model");
 
 module.exports = {
     getAll: async () => {
         try {
             const caseStudies = await CaseStudy.findAll({
-                include: {
-                    model: User,
-                    attributes: ["name"],
-                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ["name"],
+                    },
+                    {
+                        model: DbList,
+                        attributes: ["db_name", "db_filename"],
+                    },
+                ],
             });
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
@@ -30,17 +37,23 @@ module.exports = {
     getOne: async (id) => {
         try {
             const caseStudy = await CaseStudy.findByPk(id, {
-                include: {
-                    model: User,
-                    attributes: ["id", "name"],
-                },
+                include: [
+                    {
+                        model: User,
+                        attributes: ["id", "name"],
+                    },
+                    {
+                        model: DbList,
+                        attributes: ["db_name", "db_filename"],
+                    },
+                ],
                 raw: true,
             });
 
             if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
 
             const resDetail = await axios.get(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["db_name"]}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["DbList"]["db_name"]}`
             );
             caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudy);
@@ -63,7 +76,7 @@ module.exports = {
             if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
 
             const res = await axios.get(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["db_name"]}/${tableName}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["DbList"]["db_name"]}/${tableName}`
             );
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
@@ -82,10 +95,14 @@ module.exports = {
             if (userDb == null) throw new Error("user tidak dapat ditemukan");
 
             let dbName = `sqlearn_cs_${user.username}_${convertToSnakeCase(name)}_${shortIdGen()}`;
-            const newCaseStudies = await CaseStudy.create({
-                name,
+            const dbList = DbList.create({
                 db_name: dbName,
                 db_file: file.filename,
+            });
+
+            const newCaseStudies = await CaseStudy.create({
+                name,
+                db_list_id: dbList.id,
                 user_id: user.id,
             });
 

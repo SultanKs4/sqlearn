@@ -12,6 +12,8 @@ const Score = require("./score/score.model");
 const Session = require("./session/session.model");
 const QuestionLabel = require("./questions-label/question-label.model");
 const LogSessionStudent = require("./log-session-student/log-session-student.model");
+const DbList = require("./db-list/db-list.model");
+const SessionDb = require("./session-db/db-list.model");
 
 User.hasMany(Class, { foreignKey: "user_id" });
 User.hasMany(CaseStudy, { foreignKey: "user_id" });
@@ -28,9 +30,11 @@ Session.hasMany(LogSessionStudent, { foreignKey: "session_id" });
 Question.hasMany(LogSessionStudent, { foreignKey: "question_id" });
 QuestionLabel.hasMany(Question, { foreignKey: "label_id" });
 QuestionLabel.hasMany(Container, { foreignKey: "label_id" });
+DbList.hasOne(CaseStudy, { foreignKey: "db_list_id" });
 
 Class.belongsTo(User, { foreignKey: "user_id" });
 CaseStudy.belongsTo(User, { foreignKey: "user_id" });
+CaseStudy.belongsTo(DbList, { foreignKey: "db_list_id" });
 Question.belongsTo(User, { foreignKey: "user_id" });
 Schedule.belongsTo(User, { foreignKey: "user_id" });
 Container.belongsTo(User, { foreignKey: "user_id" });
@@ -77,3 +81,6 @@ Schedule.belongsToMany(Class, {
     foreignKey: "schedule_id",
     as: "classes",
 });
+
+Session.belongsToMany(DbList, { through: SessionDb, foreignKey: "session_id" });
+DbList.belongsToMany(Session, { through: SessionDb, foreignKey: "db_list_id" });

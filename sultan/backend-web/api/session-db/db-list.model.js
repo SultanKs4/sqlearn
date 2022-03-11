@@ -1,25 +1,22 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../../config/database");
 const DbList = require("../db-list/db-list.model");
-const User = require("../user/user.model");
+const Question = require("../question/question.model");
+const Session = require("../session/session.model");
 
-class CaseStudy extends Model {}
+class SessionDb extends Model {}
 
-CaseStudy.init(
+SessionDb.init(
     {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
         },
-        name: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        user_id: {
+        session_id: {
             type: DataTypes.INTEGER,
             references: {
-                model: User,
+                model: Session,
                 key: "id",
             },
         },
@@ -33,9 +30,9 @@ CaseStudy.init(
     },
     {
         sequelize,
-        modelName: "CaseStudy",
-        tableName: "case_studies",
+        modelName: "SessionDb",
+        tableName: "session_db",
     }
 );
 
-module.exports = CaseStudy;
+module.exports = SessionDb;

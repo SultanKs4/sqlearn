@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Mar 11, 2022 at 08:57 AM
+-- Generation Time: Mar 11, 2022 at 07:41 AM
 -- Server version: 10.6.5-MariaDB
 -- PHP Version: 8.1.2
 
@@ -317,20 +317,6 @@ CREATE TABLE `sessions` (
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `session_db`
---
-
-CREATE TABLE `session_db` (
-  `id` int(11) NOT NULL,
-  `session_id` int(11) NOT NULL,
-  `db_list_id` int(11) NOT NULL,
-  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
-  `updatedAt` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -937,14 +923,6 @@ ALTER TABLE `sessions`
   ADD KEY `schedule_id` (`schedule_id`);
 
 --
--- Indexes for table `session_db`
---
-ALTER TABLE `session_db`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `session_db_FK` (`session_id`),
-  ADD KEY `session_db_FK_1` (`db_list_id`);
-
---
 -- Indexes for table `settings`
 --
 ALTER TABLE `settings`
@@ -1035,12 +1013,6 @@ ALTER TABLE `scores`
 --
 ALTER TABLE `sessions`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
-
---
--- AUTO_INCREMENT for table `session_db`
---
-ALTER TABLE `session_db`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `settings`
@@ -1139,13 +1111,6 @@ ALTER TABLE `scores`
 ALTER TABLE `sessions`
   ADD CONSTRAINT `sessions_ibfk_555` FOREIGN KEY (`student_id`) REFERENCES `students` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `sessions_ibfk_556` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `session_db`
---
-ALTER TABLE `session_db`
-  ADD CONSTRAINT `session_db_FK` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `session_db_FK_1` FOREIGN KEY (`db_list_id`) REFERENCES `db_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `student_classes`
