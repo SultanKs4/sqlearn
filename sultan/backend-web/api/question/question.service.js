@@ -9,6 +9,7 @@ const { Op } = require("sequelize");
 const axios = require("axios");
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const QuestionLabel = require("../questions-label/question-label.model");
+const DbList = require("../db-list/db-list.model");
 
 module.exports = {
     getAll: async (query = null) => {
@@ -100,7 +101,8 @@ module.exports = {
                     },
                     {
                         model: CaseStudy,
-                        attributes: ["id", "name", "db_name"],
+                        attributes: ["id", "name", "db_list_id"],
+                        include: { model: DbList, attributes: ["db_name"] },
                     },
                     {
                         model: QuestionLabel,
@@ -117,7 +119,7 @@ module.exports = {
             question["tables"] = await tables.reduce(async (acc, curr) => {
                 const obj = await acc;
                 const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question["CaseStudy"]["db_name"]}/${curr}`
+                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question["CaseStudy"]["DbList"]["db_name"]}/${curr}`
                 );
                 obj[curr] = res.data;
                 return obj;

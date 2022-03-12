@@ -17,5 +17,5 @@ router.use("/api/classes", require("../api/class/class.routes"));
 router.use("/api/casestudies", permission("dosen"), require("../api/case-study/case-study.routes"));
 router.use("/api/containers", require("../api/container/container.routes"));
 router.use("/api/schedules", require("../api/schedule/schedule.routes"));
-router.use("/api/sessions", permission("dosen"), require("../api/session/session.routes"));
+router.use("/api/sessions", require("../api/session/session.routes"));
 router.use("/api/scores", require("../api/score/score.routes"));

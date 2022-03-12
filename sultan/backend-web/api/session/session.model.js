@@ -22,7 +22,7 @@ Session.init(
         },
         session_started: {
             type: DataTypes.DATE,
-            defaultValue: Sequelize.literal("CURRENT_TIMESTAMP()"),
+            defaultValue: DataTypes.NOW,
         },
         schedule_id: {
             type: DataTypes.INTEGER,

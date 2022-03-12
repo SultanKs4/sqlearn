@@ -13,7 +13,7 @@ const Session = require("./session/session.model");
 const QuestionLabel = require("./questions-label/question-label.model");
 const LogSessionStudent = require("./log-session-student/log-session-student.model");
 const DbList = require("./db-list/db-list.model");
-const SessionDb = require("./session-db/db-list.model");
+const SessionDb = require("./session-db/session-db.model");
 
 User.hasMany(Class, { foreignKey: "user_id" });
 User.hasMany(CaseStudy, { foreignKey: "user_id" });
@@ -30,7 +30,7 @@ Session.hasMany(LogSessionStudent, { foreignKey: "session_id" });
 Question.hasMany(LogSessionStudent, { foreignKey: "question_id" });
 QuestionLabel.hasMany(Question, { foreignKey: "label_id" });
 QuestionLabel.hasMany(Container, { foreignKey: "label_id" });
-DbList.hasOne(CaseStudy, { foreignKey: "db_list_id" });
+DbList.hasMany(CaseStudy, { foreignKey: "db_list_id" });
 
 Class.belongsTo(User, { foreignKey: "user_id" });
 CaseStudy.belongsTo(User, { foreignKey: "user_id" });

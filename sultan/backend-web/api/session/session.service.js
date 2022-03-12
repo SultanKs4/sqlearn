@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { Op, Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
+const runSql = require("../../lib/runSql");
 const Container = require("../container/container.model");
 const Question = require("../question/question.model");
 const Schedule = require("../schedule/schedule.model");
@@ -10,6 +11,10 @@ const CaseStudy = require("../case-study/case-study.model");
 const { gradingRulesLatihan, gradingRulesUjian } = require("../../config/gradingRules");
 const Score = require("../score/score.model");
 const getThreshold = require("../../lib/getThreshold");
+const DbList = require("../db-list/db-list.model");
+const Student = require("../student/student.model");
+const Class = require("../class/class.model");
+const path = require("path");
 
 module.exports = {
     getAll: async () => {
@@ -37,24 +42,6 @@ module.exports = {
                     {
                         model: Schedule,
                         attributes: ["id", "finish"],
-                        // include: [
-                        //     {
-                        //         model: Container,
-                        //         include: [
-                        //             {
-                        //                 model: Question,
-                        //                 as: "questions",
-                        //                 where: {
-                        //                     id: {
-                        //                         [Op.notIn]: existedAnswerId
-                        //                     }
-                        //                 },
-                        //                 through: { attributes: [] }
-                        //             }
-                        //         ],
-                        //         attributes: ['id'],
-                        //     }
-                        // ]
                     },
                 ],
             });
@@ -84,8 +71,28 @@ module.exports = {
 
     insert: async (data, user) => {
         try {
-            const schedule = await Schedule.findByPk(data.schedule);
-            if (!schedule) throw new Error("schedule data not found");
+            await Schedule.findOne({
+                where: { id: data.schedule },
+            }).then((data) => {
+                if (!data) throw new Error("schedule data not found");
+            });
+
+            await Student.findOne({
+                where: { id: user.id },
+                include: {
+                    model: Class,
+                    through: { attributes: [] },
+                    as: "classes",
+                    include: {
+                        model: Schedule,
+                        through: { attributes: [] },
+                        where: { id: data.schedule },
+                        as: "schedules",
+                    },
+                },
+            }).then((data) => {
+                if (data.classes.length == 0) throw new Error("student don't belong to this schedule");
+            });
 
             const [session, created] = await Session.findOrCreate({
                 where: {
@@ -95,7 +102,7 @@ module.exports = {
             });
 
             if (created) {
-                const scheduleWithJoins = await Schedule.findOne({
+                await Schedule.findOne({
                     where: { id: data.schedule },
                     include: {
                         model: Container,
@@ -107,19 +114,50 @@ module.exports = {
                             through: { attributes: [] },
                             include: {
                                 model: CaseStudy,
-                                attributes: ["db_name", "db_file"],
+                                attributes: ["db_list_id"],
+                                include: { model: DbList, attributes: ["db_name", "db_filename"] },
                             },
                         },
                     },
+                }).then(async (data) => {
+                    const dbNameSet = new Set();
+                    const dbArr = data.Container.questions.reduce((prev, curr) => {
+                        if (!dbNameSet.has(curr.CaseStudy.DbList.db_name)) {
+                            dbNameSet.add(curr.CaseStudy.DbList.db_name);
+                            prev.push({
+                                dbName: [
+                                    `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_key`,
+                                    `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_student`,
+                                ],
+                                dbFilename: curr.CaseStudy.DbList.db_filename,
+                            });
+                        }
+                        return prev;
+                    }, []);
+                    await dbArr.reduce(async (prevDbArr, currDbArr) => {
+                        await prevDbArr;
+                        await currDbArr.dbName.reduce(async (prevDbName, currDbName) => {
+                            await prevDbName;
+                            await DbList.create({
+                                db_name: currDbName,
+                                db_filename: currDbArr.dbFilename,
+                            }).then(async (data) => {
+                                await session.addDbLists(data);
+                            });
+                            await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`);
+                            const resRunSql = await runSql(
+                                currDbName,
+                                path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
+                            );
+                            if (!resRunSql) {
+                                throw {
+                                    data: resRunSql,
+                                    message: "Clone Database Gagal dilakukan",
+                                };
+                            }
+                        }, Promise.resolve());
+                    }, Promise.resolve());
                 });
-
-                const dbNameSet = new Set();
-                const dbFileSet = new Set();
-                scheduleWithJoins.Container.questions.forEach((val) => {
-                    dbNameSet.add(val.CaseStudy.db_name);
-                    dbFileSet.add(val.CaseStudy.db_file);
-                });
-                // nanti clone db disini
             }
             return createResponseObject("success", "Data session berhasil ditambahkan", session);
         } catch (error) {
@@ -132,49 +170,37 @@ module.exports = {
         }
     },
 
-    answer: async (sessionId, question, data, user) => {
+    answer: async (sessionId, questionId, data, user) => {
         try {
-            const sessionData = await Session.findOne({
+            const dbList = await Session.findOne({
                 where: { id: sessionId, student_id: user.id },
-                include: {
-                    model: Schedule,
-                    attributes: ["id"],
-                    include: {
-                        model: Container,
-                        attributes: ["id"],
-                        include: {
-                            model: Question,
-                            as: "questions",
-                            attributes: ["id"],
-                            where: { id: question },
-                            through: { attributes: [] },
-                            include: {
-                                model: CaseStudy,
-                                attributes: ["db_name"],
-                            },
-                        },
-                    },
-                },
+            }).then(async (data) => {
+                if (!data) throw new Error("Tidak ada data sesi didapatkan");
+                let dbListData = await data.getDbLists();
+                return dbListData.map((e) => {
+                    return e.db_name;
+                });
             });
-            if (!sessionData) return createResponseObject("error", "Tidak ada data pertanyaan didapatkan");
 
-            const similarityResponse = await axios.post(
-                `${AUTO_ASSESS_BACKEND}/assess/${questionDb["CaseStudy"]["db_name"]}`,
-                {
-                    queryMhs: data.answer,
-                    queryKey: JSON.parse(questionDb.answer),
-                    threshold: await getThreshold(),
-                }
-            );
-
-            await SessionStudentAnswer.create({
-                session_id: session,
-                question_id: question,
-                answer: data.answer,
-                type: data.type,
-                similarity: similarityResponse.data.similarity,
-                is_equal: similarityResponse.data.isEqual,
+            await Question.findByPk(questionId).then((data) => {
+                if (!data) throw new Error("Tidak ada data pertanyaan didapatkan");
             });
+
+            const similarityResponse = await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
+                dbList,
+                queryMhs: data.answer,
+                queryKey: JSON.parse(question.answer),
+                threshold: await getThreshold(),
+            });
+
+            // await LogSessionStudent.create({
+            //     session_id: sessionId,
+            //     question_id: questionId,
+            //     answer: data.answer,
+            //     type: data.type,
+            //     similarity: similarityResponse.data.similarity,
+            //     is_equal: similarityResponse.data.isEqual,
+            // });
 
             return createResponseObject("success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
         } catch (error) {

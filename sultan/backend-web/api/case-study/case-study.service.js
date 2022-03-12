@@ -109,12 +109,12 @@ module.exports = {
             await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbName}`);
 
             const resRunSql = await runSql(dbName, file.path);
-            if (!resRunSql)
+            if (!resRunSql) {
                 throw {
                     data: resRunSql,
                     message: "Import SQL Gagal dilakukan",
                 };
-
+            }
             return createResponseObject("success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
         } catch (error) {
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
@@ -126,6 +126,7 @@ module.exports = {
     deleteOne: async (id) => {
         try {
             const caseStudy = await CaseStudy.findByPk(id, {
+                include: { model: DbList, attributes: ["db_name", ["db_filename"]] },
                 raw: true,
             });
             if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
@@ -137,10 +138,10 @@ module.exports = {
             });
 
             const destroyResObj = await axios.delete(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${caseStudy["db_name"]}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${caseStudy["DbList"]["db_name"]}`
             );
 
-            await deleteFile(path.join(__dirname, `../../uploads/sqls/${caseStudy["db_file"]}`));
+            await deleteFile(path.join(__dirname, `../../uploads/sqls/${caseStudy["DbList"]["db_file"]}`));
 
             return createResponseObject("success", "Data studi kasus berhasil dihapus", destroyResObj.data);
         } catch (error) {

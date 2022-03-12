@@ -1,7 +1,5 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../../config/database");
-const Question = require("../question/question.model");
-const Session = require("../session/session.model");
 
 class DbList extends Model {}
 
