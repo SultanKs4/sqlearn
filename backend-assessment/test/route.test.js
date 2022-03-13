@@ -109,7 +109,6 @@ describe("Route Test", () => {
             });
         });
     });
-
     describe("v2 route", () => {
         let prefixRoute = "/api/v2";
         describe("create DB", () => {
@@ -151,7 +150,7 @@ describe("Route Test", () => {
                 const response = await req.get(`${prefixRoute}/database/desc_table/tes_created_db`);
                 expect(response.statusCode).equal(500);
                 expect(response.body).to.deep.include({ status: "error", message: "desc table failed" });
-                expect(response.body.data).to.include({ code: "PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR" });
+                expect(response.body.data).to.include({ code: "ER_BAD_DB_ERROR" });
             });
         });
         describe("select table", () => {
@@ -170,7 +169,7 @@ describe("Route Test", () => {
                 const response = await req.get(`${prefixRoute}/database/select/db_not_exist/table_not_found`);
                 expect(response.statusCode).equal(500);
                 expect(response.body).to.deep.include({ status: "error", message: "select table failed" });
-                expect(response.body.data).to.include({ code: "PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR" });
+                expect(response.body.data).to.include({ code: "ER_BAD_DB_ERROR" });
             });
         });
         describe("assessment", () => {
