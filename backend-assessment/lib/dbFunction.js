@@ -40,4 +40,7 @@ module.exports = {
     destroyConnection: (dbname) => {
         return destroyConnection(dbname);
     },
+    getConnection: (dbname) => {
+        return getConnection(dbname);
+    },
 };
