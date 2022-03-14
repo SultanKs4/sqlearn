@@ -7,6 +7,8 @@ module.exports = (req, res, next) => {
         validationResult(req).throw();
         next();
     } catch (error) {
-        res.status(400).json(createResponseObject("error", "validation failed", error.mapped()));
+        const resp = createResponseObject(400, "error", "validation failed", error.mapped());
+        const { httpCode, ...response } = resp;
+        res.status(httpCode).json(response);
     }
 };

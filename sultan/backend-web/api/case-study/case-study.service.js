@@ -9,6 +9,7 @@ const createResponseObject = require("../../lib/createResponseObject");
 const deleteFile = require("../../lib/deleteFile");
 const path = require("path");
 const DbList = require("../db-list/db-list.model");
+const createError = require("http-errors");
 
 module.exports = {
     getAll: async () => {
@@ -25,13 +26,17 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudies);
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = "Data studi kasus gagal didapatkan";
+            let data = null;
+            if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     getOne: async (id) => {
@@ -50,7 +55,7 @@ module.exports = {
                 raw: true,
             });
 
-            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
             const resDetail = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["DbList"]["db_name"]}`
@@ -58,13 +63,20 @@ module.exports = {
             caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
             return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudy);
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.error(error);
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal didapatkan",
-                error.message ? error.message : error
-            );
+            let code = 500;
+            let message = "Data studi kasus gagal didapatkan";
+            let data = null;
+            if (axios.isAxiosError(error) && error.response) {
+                let axiosData = error.response.data;
+                message = axiosData.message;
+                data = axiosData.data;
+            } else if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     getOneDetail: async (id, tableName) => {
@@ -73,27 +85,30 @@ module.exports = {
                 raw: true,
             });
 
-            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
             const res = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["DbList"]["db_name"]}/${tableName}`
             );
-            return createResponseObject("success", "Data studi kasus berhasil didapatkan", res.data.data);
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal didapatkan",
-                error.message ? error.message : error
-            );
+            let code = 500;
+            let message = "Data studi kasus gagal didapatkan";
+            let data = null;
+            if (axios.isAxiosError(error) && error.response) {
+                let axiosData = error.response.data;
+                message = axiosData.message;
+                data = axiosData.data;
+            } else if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     store: async (name, user, file) => {
         try {
-            const userDb = await User.findByPk(user.id, { raw: true });
-            if (userDb == null) throw new Error("user tidak dapat ditemukan");
-
             let dbName = `sqlearn_cs_${user.username}_${convertToSnakeCase(name)}_${shortIdGen()}`;
             const dbList = DbList.create({
                 db_name: dbName,
@@ -109,18 +124,25 @@ module.exports = {
             await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbName}`);
 
             const resRunSql = await runSql(dbName, file.path);
-            if (!resRunSql) {
-                throw {
-                    data: resRunSql,
-                    message: "Import SQL Gagal dilakukan",
-                };
-            }
-            return createResponseObject("success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
+            if (!resRunSql) throw createError(500, "import SQL gagal dilakukan");
+
+            return createResponseObject(201, "success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
         } catch (error) {
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
-            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.log(error);
-            return createResponseObject("error", "Studi kasus gagal dibuat", error.message ? error.message : error);
+            let code = 500;
+            let message = "studi kasus gagal dibuat";
+            let data = null;
+            if (axios.isAxiosError(error) && error.response) {
+                let axiosData = error.response.data;
+                message = axiosData.message;
+                data = axiosData.data;
+            } else if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     deleteOne: async (id) => {
@@ -129,7 +151,7 @@ module.exports = {
                 include: { model: DbList, attributes: ["db_name", ["db_filename"]] },
                 raw: true,
             });
-            if (!caseStudy) throw new Error("studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
             await CaseStudy.destroy({
                 where: {
@@ -143,15 +165,22 @@ module.exports = {
 
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${caseStudy["DbList"]["db_file"]}`));
 
-            return createResponseObject("success", "Data studi kasus berhasil dihapus", destroyResObj.data);
+            return createResponseObject(200, "success", "Data studi kasus berhasil dihapus", destroyResObj.data);
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
             console.log(error);
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal dihapus",
-                error.message ? error.message : error
-            );
+            let code = 500;
+            let message = "Data studi kasus gagal didapatkan";
+            let data = null;
+            if (axios.isAxiosError(error) && error.response) {
+                let axiosData = error.response.data;
+                message = axiosData.message;
+                data = axiosData.data;
+            } else if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

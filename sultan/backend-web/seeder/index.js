@@ -19,85 +19,61 @@ mysql
         host,
     })
     .then((connectionWeb) => {
-        connectionWeb
-            .query(`CREATE DATABASE IF NOT EXISTS ${database};`)
-            .then(() => {
-                const importer = new Importer({
-                    host,
-                    user,
-                    password,
-                    database,
-                });
-                importer.onProgress((progress) => {
-                    var percent =
-                        Math.floor(
-                            (progress.bytes_processed / progress.total_bytes) *
-                                10000
-                        ) / 100;
-                    console.log(`Database Web ${percent}% Completed`);
-                });
-
-                importer
-                    .import(path.resolve(__dirname, "sqlearn_web_rev.sql"))
-                    .then(() => {
-                        mysql
-                            .createConnection({
-                                user,
-                                password,
-                                host,
-                            })
-                            .then((connectionStudiKasus) => {
-                                connectionStudiKasus
-                                    .query(
-                                        `CREATE DATABASE IF NOT EXISTS ${databaseStudyCase};`
-                                    )
-                                    .then(() => {
-                                        console.log(
-                                            "Database Studi Kasus berhasil dibuat"
-                                        );
-                                        const importerTest = new Importer({
-                                            host,
-                                            user,
-                                            password,
-                                            database: databaseStudyCase,
-                                        });
-                                        importerTest.onProgress((progress) => {
-                                            var percent =
-                                                Math.floor(
-                                                    (progress.bytes_processed /
-                                                        progress.total_bytes) *
-                                                        10000
-                                                ) / 100;
-                                            console.log(
-                                                `Database Studi Kasus ${percent}% Completed`
-                                            );
-                                        });
-                                        importerTest
-                                            .import(
-                                                path.resolve(
-                                                    __dirname,
-                                                    "sqlearn_cs_auto_assess_tes.sql"
-                                                )
-                                            )
-                                            .then(() => {
-                                                console.log("Seeding berhasil");
-                                                process.exit(0);
-                                            })
-                                            .catch((err) => {
-                                                console.error(
-                                                    "Error migrate SQL Studi Kasus: " +
-                                                        err
-                                                );
-                                                process.exit(1);
-                                            });
-                                    });
-                            });
-                    })
-                    .catch((err) => {
-                        console.error("Error migrate SQL web: " + err);
-                        process.exit(1);
-                    });
+        connectionWeb.query(`CREATE DATABASE IF NOT EXISTS ${database};`).then(() => {
+            const importer = new Importer({
+                host,
+                user,
+                password,
+                database,
             });
+            importer.onProgress((progress) => {
+                var percent = Math.floor((progress.bytes_processed / progress.total_bytes) * 10000) / 100;
+                console.log(`Database Web ${percent}% Completed`);
+            });
+
+            importer
+                .import(path.resolve(__dirname, "sqlearn_web_rev.sql"))
+                .then(() => {
+                    mysql
+                        .createConnection({
+                            user,
+                            password,
+                            host,
+                        })
+                        .then((connectionStudiKasus) => {
+                            connectionStudiKasus
+                                .query(`CREATE DATABASE IF NOT EXISTS ${databaseStudyCase};`)
+                                .then(() => {
+                                    console.log("Database Studi Kasus berhasil dibuat");
+                                    const importerTest = new Importer({
+                                        host,
+                                        user,
+                                        password,
+                                        database: databaseStudyCase,
+                                    });
+                                    importerTest.onProgress((progress) => {
+                                        var percent =
+                                            Math.floor((progress.bytes_processed / progress.total_bytes) * 10000) / 100;
+                                        console.log(`Database Studi Kasus ${percent}% Completed`);
+                                    });
+                                    importerTest
+                                        .import(path.resolve(__dirname, "sqlearn_cs_auto_assess_tes.sql"))
+                                        .then(() => {
+                                            console.log("Seeding berhasil");
+                                            process.exit(0);
+                                        })
+                                        .catch((err) => {
+                                            console.error("Error migrate SQL Studi Kasus: " + err);
+                                            process.exit(1);
+                                        });
+                                });
+                        });
+                })
+                .catch((err) => {
+                    console.error("Error migrate SQL web: " + err);
+                    process.exit(1);
+                });
+        });
     });
 
 console.log("Seeding sedang berjalan...");
