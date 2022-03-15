@@ -29,7 +29,7 @@ describe("case study route", () => {
     let prefix = "/api/casestudies";
     it("mahasiswa can't access because unauthorized", async () => {
         const response = await req.get(`${prefix}`).set("Authorization", `Bearer ${tokenMahasiswa}`);
-        expect(response.statusCode).equal(401);
+        expect(response.statusCode).equal(403);
         expect(response.body.status).equal("error");
         expect(response.body.message).equal("roles unauthorized");
         expect(response.body.data).equal(null);

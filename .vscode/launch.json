@@ -7,7 +7,7 @@
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Backend Assessment npm Dev",
+            "name": "BE Dev Assessment",
             "envFile": "${workspaceFolder}/backend-assessment/.env",
             "cwd": "${workspaceFolder}/backend-assessment",
             "command": "npm run dev",
@@ -15,7 +15,7 @@
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Backend Web Run npm Dev",
+            "name": "BE Dev Web",
             "envFile": "${workspaceFolder}/sultan/backend-web/.env",
             "cwd": "${workspaceFolder}/sultan/backend-web",
             "command": "npm run dev",
@@ -23,14 +23,14 @@
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Backend Assessment npm test",
+            "name": "BE Test Assessment",
             "cwd": "${workspaceFolder}/backend-assessment",
             "command": "npm test",
         },
         {
             "type": "node-terminal",
             "request": "launch",
-            "name": "Backend Web npm test",
+            "name": "BE Test Web",
             "cwd": "${workspaceFolder}/sultan/backend-web",
             "command": "npm test",
         }

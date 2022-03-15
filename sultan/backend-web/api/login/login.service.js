@@ -7,7 +7,7 @@ const User = require("../user/user.model");
 
 function checkPasswordAndEncodeJwt(password, user, role) {
     const isPasswordMatch = comparePassword(password, user.password);
-    if (!isPasswordMatch) throw new Error("username and password combination not match");
+    if (!isPasswordMatch) throw createHttpError(401, "username and password combination not match");
 
     const jwt = encodeJWT(user.id, role);
     const { password: passDb, ...userData } = user;
@@ -35,11 +35,10 @@ module.exports = {
 
             return createResponseObject(200, "success", "login success", payloadResponse);
         } catch (error) {
-            console.log(error);
             let code = 500;
             let message = "login failed";
             let data = null;
-            if (createError.isHttpError(error)) {
+            if (createHttpError.isHttpError(error)) {
                 code = error.statusCode;
                 message = error.message;
             }
