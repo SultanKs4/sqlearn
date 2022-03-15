@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
 const { hashPassword, comparePassword } = require("../../lib/hashPassword");
@@ -30,16 +31,20 @@ module.exports = {
                 if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.admin);
             }
 
-            if (!payloadResponse) throw new Error("username not found");
+            if (!payloadResponse) throw createHttpError(404, "username not found");
 
-            return createResponseObject("success", "login success", payloadResponse);
+            return createResponseObject(200, "success", "login success", payloadResponse);
         } catch (error) {
             console.log(error);
-            return createResponseObject(
-                "error",
-                "login gagal",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = "login failed";
+            let data = null;
+            if (createError.isHttpError(error)) {
+                code = error.statusCode;
+                message = error.message;
+            }
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

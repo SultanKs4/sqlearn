@@ -26,6 +26,13 @@
             "name": "Backend Assessment npm test",
             "cwd": "${workspaceFolder}/backend-assessment",
             "command": "npm test",
+        },
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Backend Web npm test",
+            "cwd": "${workspaceFolder}/sultan/backend-web",
+            "command": "npm test",
         }
     ]
 }

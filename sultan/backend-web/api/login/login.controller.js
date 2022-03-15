@@ -3,10 +3,11 @@ const loginService = require("./login.service");
 module.exports = {
     auth: async (req, res) => {
         const { username, password } = req.body;
-        const resObj = await loginService.authentication(username, password);
+        const responseObject = await loginService.authentication(username, password);
+        const { httpCode, ...response } = responseObject;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
+        if (responseObject.status == "error") return res.status(httpCode).json(response);
 
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
 };

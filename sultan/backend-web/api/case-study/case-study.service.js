@@ -26,6 +26,7 @@ module.exports = {
                     },
                 ],
             });
+            if (!caseStudies) throw createError(404, "data studi kasus not found");
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
             let code = 500;
@@ -52,16 +53,15 @@ module.exports = {
                         attributes: ["db_name", "db_filename"],
                     },
                 ],
-                raw: true,
             });
 
             if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
             const resDetail = await axios.get(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy["DbList"]["db_name"]}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy.DbList.db_name}`
             );
             caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
-            return createResponseObject("success", "Data studi kasus berhasil didapatkan", caseStudy);
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudy);
         } catch (error) {
             console.error(error);
             let code = 500;

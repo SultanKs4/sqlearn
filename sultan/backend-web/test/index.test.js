@@ -7,7 +7,6 @@ chai.use(require("chai-like"));
 chai.use(require("chai-things"));
 
 const app = require("../app");
-const sequelize = require("../config/database");
 
 const req = supertest(app);
 
@@ -32,12 +31,4 @@ describe("route general app", () => {
         expect(response.statusCode).equal(200);
         expect(response.type).equal("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     });
-    it("return data login", async () => {
-        const response = await req.post("/api/login").send({ username: "dosencoba", password: "dosencoba" });
-        expect(response.statusCode).equal(200);
-    });
-});
-
-after("close connection", async () => {
-    await sequelize.close();
 });
