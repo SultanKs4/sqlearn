@@ -60,18 +60,14 @@ module.exports = {
             const resDetail = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy.DbList.db_name}`
             );
-            caseStudy["tables"] = groupColumnsByTable(resDetail.data.data);
-            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudy);
+            let csObj = caseStudy.toJSON();
+            csObj.tables = groupColumnsByTable(resDetail.data.data);
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", csObj);
         } catch (error) {
-            console.error(error);
             let code = 500;
             let message = "Data studi kasus gagal didapatkan";
             let data = null;
-            if (axios.isAxiosError(error) && error.response) {
-                let axiosData = error.response.data;
-                message = axiosData.message;
-                data = axiosData.data;
-            } else if (createError.isHttpError(error)) {
+            if (createError.isHttpError(error)) {
                 code = error.statusCode;
                 message = error.message;
             }
@@ -82,13 +78,16 @@ module.exports = {
     getOneDetail: async (id, tableName) => {
         try {
             const caseStudy = await CaseStudy.findByPk(id, {
-                raw: true,
+                include: {
+                    model: DbList,
+                    attributes: ["db_name"],
+                },
             });
 
             if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
             const res = await axios.get(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy["DbList"]["db_name"]}/${tableName}`
+                `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy.DbList.db_name}/${tableName}`
             );
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
@@ -129,7 +128,6 @@ module.exports = {
             return createResponseObject(201, "success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
         } catch (error) {
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
-            console.log(error);
             let code = 500;
             let message = "studi kasus gagal dibuat";
             let data = null;

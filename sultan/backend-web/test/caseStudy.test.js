@@ -41,13 +41,57 @@ describe("case study route", () => {
         expect(response.body.message).equal("Data studi kasus berhasil didapatkan");
         expect(response.body.data).to.be.an("array");
     });
-    // it("return specific data case studies", async () => {
-    //     const response = await req.get(`${prefix}/2`).set("Authorization", `Bearer ${tokenDosen}`);
-    //     expect(response.statusCode).equal(200);
-    //     expect(response.body.status).equal("success");
-    //     expect(response.body.message).equal("Data studi kasus berhasil didapatkan");
-    //     expect(response.body.data).to.be.an("array");
-    // });
+    describe("get detail list table", () => {
+        it("return fail validation params must be number", async () => {
+            const response = await req.get(`${prefix}/notnumber`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("validation failed");
+        });
+        it("return error data not found", async () => {
+            const response = await req.get(`${prefix}/99999`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(404);
+            expect(response.body.status).equal("error");
+            expect(response.body.message).equal("studi kasus tidak dapat ditemukan");
+        });
+        it("return specific data case studies", async () => {
+            const response = await req.get(`${prefix}/2`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(200);
+            expect(response.body.status).equal("success");
+            expect(response.body.message).equal("Data studi kasus berhasil didapatkan");
+            expect(response.body.data).include.keys("tables");
+        });
+    });
+    describe("get detail list data per table", () => {
+        it("return fail validation params must be number", async () => {
+            const response = await req.get(`${prefix}/sd/data/dasd`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("validation failed");
+        });
+        it("return error data not found", async () => {
+            const response = await req.get(`${prefix}/99999`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(404);
+            expect(response.body.status).equal("error");
+            expect(response.body.message).equal("studi kasus tidak dapat ditemukan");
+        });
+        it("return error table not found", async () => {
+            const response = await req
+                .get(`${prefix}/2/data/tablenotfound`)
+                .set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(500);
+            expect(response.body.status).equal("error");
+            expect(response.body.message).equal("select table failed");
+            expect(response.body.data).include({ code: "ER_NO_SUCH_TABLE" });
+        });
+        it("return specific data case studies", async () => {
+            const response = await req.get(`${prefix}/2/data/mahasiswa`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(200);
+            expect(response.body.status).equal("success");
+            expect(response.body.message).equal("Data studi kasus berhasil didapatkan");
+            expect(response.body.data).to.be.an("array");
+        });
+    });
 });
 
 after("close connection", async () => {
