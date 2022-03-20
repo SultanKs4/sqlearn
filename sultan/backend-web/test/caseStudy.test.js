@@ -8,6 +8,7 @@ chai.use(require("chai-like"));
 chai.use(require("chai-things"));
 
 const app = require("../app");
+const path = require("path");
 
 const req = supertest(app);
 
@@ -90,6 +91,34 @@ describe("case study route", () => {
             expect(response.body.status).equal("success");
             expect(response.body.message).equal("Data studi kasus berhasil didapatkan");
             expect(response.body.data).to.be.an("array");
+        });
+    });
+    describe("post data case study", () => {
+        it("return fail validation body must contain name", async () => {
+            const response = await req.post(`${prefix}/`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("validation failed");
+            expect(response.body.data.name.msg).equal("cannot null");
+        });
+        it("return format not supported because no file attach", async () => {
+            const response = await req
+                .post(`${prefix}/`)
+                .set("Authorization", `Bearer ${tokenDosen}`)
+                .send({ name: "aa" });
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("Format file tidak didukung");
+        });
+        it("return format not supported because file attach but not supported format", async () => {
+            const response = await req
+                .post(`${prefix}/`)
+                .set("Authorization", `Bearer ${tokenDosen}`)
+                .field("name", "aa")
+                .attach("sql", path.resolve(__dirname, "../static/daftar_mahasiswa.xlsx"));
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("Format file tidak didukung");
         });
     });
 });
