@@ -14,9 +14,9 @@ module.exports = {
                     exclude: ["password"],
                 },
             });
-            return createResponseObject(true, "Data mahasiswa berhasil didapatkan", classes);
+            return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", classes);
         } catch (error) {
-            return createResponseObject(false, "Data mahasiswa gagal didapatkan");
+            return createResponseObject(500, "error", "Data mahasiswa gagal didapatkan");
         }
     },
     getAllExclude: async (classId) => {
@@ -40,9 +40,9 @@ module.exports = {
                     },
                 },
             });
-            return createResponseObject(true, "Data mahasiswa berhasil didapatkan", students);
+            return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", students);
         } catch (error) {
-            return createResponseObject(false, "Data mahasiswa gagal didapatkan");
+            return createResponseObject(500, "error", "Data mahasiswa gagal didapatkan");
         }
     },
     getOne: async (id) => {
@@ -59,35 +59,9 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject(true, "Data mahasiswa berhasil didapatkan", student);
+            return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", student);
         } catch (error) {
-            return createResponseObject(false, "Data mahasiswa gagal didapatkan");
-        }
-    },
-    authenticate: async (data) => {
-        try {
-            const { username, password } = data;
-
-            const user = await Student.findOne({
-                where: {
-                    username,
-                },
-                raw: true,
-            });
-            if (!user) return createResponseObject(false, "Tidak ada username yang cocok");
-
-            const isPasswordMatch = comparePassword(password, user.password);
-            if (!isPasswordMatch) return createResponseObject(false, "Password salah");
-
-            const jwt = encodeJWT(user.id, JWT_ROLES.mahasiswa);
-
-            const { password: passDb, ...rest } = user;
-            const userResponse = { ...rest, role: "mahasiswa" };
-
-            return createResponseObject(true, "Login berhasil dilakukan", { token: jwt, user: userResponse });
-        } catch (error) {
-            console.error(error);
-            return createResponseObject(false, "Login gagal dilakukan");
+            return createResponseObject(500, "error", "Data mahasiswa gagal didapatkan");
         }
     },
     insert: async (data) => {
