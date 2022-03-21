@@ -15,14 +15,15 @@ const DbList = require("../db-list/db-list.model");
 const Student = require("../student/student.model");
 const Class = require("../class/class.model");
 const path = require("path");
+const createHttpError = require("http-errors");
 
 module.exports = {
     getAll: async () => {
         try {
             const sessions = await Session.findAll();
-            return createResponseObject("success", "Data session berhasil didapatkan", sessions);
+            return createResponseObject(200, "success", "Data session berhasil didapatkan", sessions);
         } catch (error) {
-            return createResponseObject("error", "Data session gagal didapatkan");
+            return createResponseObject(404, "error", "Data session gagal didapatkan");
         }
     },
 
@@ -56,16 +57,14 @@ module.exports = {
                     },
                 },
             });
-            console.log(questions);
 
             const responseObj = {
                 session,
                 questions,
             };
-            return createResponseObject("success", "Data session berhasil didapatkan", responseObj);
+            return createResponseObject(200, "success", "Data session berhasil didapatkan", responseObj);
         } catch (error) {
-            console.error(error);
-            return createResponseObject("error", "Data session gagal didapatkan");
+            return createResponseObject(500, "error", "Data session gagal didapatkan");
         }
     },
 
@@ -74,7 +73,7 @@ module.exports = {
             await Schedule.findOne({
                 where: { id: data.schedule },
             }).then((data) => {
-                if (!data) throw new Error("schedule data not found");
+                if (!data) throw createHttpError(404, "schedule data not found");
             });
 
             await Student.findOne({
@@ -91,7 +90,7 @@ module.exports = {
                     },
                 },
             }).then((data) => {
-                if (data.classes.length == 0) throw new Error("student don't belong to this schedule");
+                if (data.classes.length == 0) throw createHttpError(409, "student don't belong to this schedule");
             });
 
             const [session, created] = await Session.findOrCreate({
@@ -159,14 +158,14 @@ module.exports = {
                     }, Promise.resolve());
                 });
             }
-            return createResponseObject("success", "Data session berhasil ditambahkan", session);
+            return createResponseObject(200, "success", "Data session berhasil ditambahkan", session);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data session gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -175,7 +174,7 @@ module.exports = {
             const dbList = await Session.findOne({
                 where: { id: sessionId, student_id: user.id },
             }).then(async (data) => {
-                if (!data) throw new Error("Tidak ada data sesi didapatkan");
+                if (!data) throw createHttpError(404, "Tidak ada data sesi didapatkan");
                 let dbListData = await data.getDbLists();
                 return dbListData.map((e) => {
                     return e.db_name;
@@ -183,7 +182,7 @@ module.exports = {
             });
 
             await Question.findByPk(questionId).then((data) => {
-                if (!data) throw new Error("Tidak ada data pertanyaan didapatkan");
+                if (!data) throw createHttpError(404, "Tidak ada data pertanyaan didapatkan");
             });
 
             const similarityResponse = await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
@@ -202,10 +201,14 @@ module.exports = {
             //     is_equal: similarityResponse.data.isEqual,
             // });
 
-            return createResponseObject("success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
+            return createResponseObject(200, "success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
         } catch (error) {
-            console.log(error);
-            return createResponseObject("error", "Data jawaban gagal ditambahkan");
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -283,10 +286,10 @@ module.exports = {
                 }
             );
 
-            return createResponseObject("success", "Proses grading berhasil dilakukan", grade);
+            return createResponseObject(200, "success", "Proses grading berhasil dilakukan", grade);
         } catch (error) {
             console.log(error);
-            return createResponseObject("error", "Proses grading gagal dilakukan");
+            return createResponseObject(500, "error", "Proses grading gagal dilakukan");
         }
     },
 };
