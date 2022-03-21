@@ -64,7 +64,7 @@ module.exports = {
 
     insert: async (data, user) => {
         try {
-            const { dataClass, created } = Class.findOrCreate({
+            const [dataClass, created] = await Class.findOrCreate({
                 where: { name: data.name, semester: data.semester },
                 defaults: { user_id: user.id },
             });
