@@ -7,32 +7,24 @@ import {
   Row,
   Select,
   Typography,
+  Upload,
 } from "antd";
-import { LaptopOutlined } from "@ant-design/icons";
+import { LaptopOutlined, InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-function FormTambahKelas({
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  currentKelas,
-  ...props
-}) {
+function FormTambahKelas({ setVisible, handleSubmit, currentKelas, ...props }) {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
+  const onFinish = (values) => handleSubmit(values);
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
+
+  const normFile = (e) => console.log("Upload event:", e);
 
   useEffect(() => {
     form.setFieldsValue({
-      kelas_nama: currentKelas?.nama,
+      id: currentKelas?.id,
+      name: currentKelas?.name,
       semester: currentKelas?.semester,
     });
   }, [currentKelas]);
@@ -42,7 +34,7 @@ function FormTambahKelas({
       <Row gutter={10}>
         <Col span={13}>
           <Form.Item
-            name="kelas_nama"
+            name="name"
             label="Nama Kelas"
             extra={
               <>
@@ -84,6 +76,35 @@ function FormTambahKelas({
           </Form.Item>
         </Col>
       </Row>
+
+      <Form.Item label="Upload Data Kelas">
+        <Row justify="center">
+          <Form.Item
+            name="excelFile"
+            valuePropName="fileList"
+            getValueFromEvent={normFile}
+            noStyle
+          >
+            <Upload.Dragger
+              multiple={false}
+              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+              name="files"
+              action="/upload.do"
+              style={{ padding: "3em" }}
+            >
+              <p className="ant-upload-drag-icon">
+                <InboxOutlined />
+              </p>
+              <p className="ant-upload-text">
+                Click or drag file to this area to upload
+              </p>
+              <p className="ant-upload-hint">
+                Hanya bisa upload file .xlsx atau .xls{" "}
+              </p>
+            </Upload.Dragger>
+          </Form.Item>
+        </Row>
+      </Form.Item>
 
       <Divider />
       <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>

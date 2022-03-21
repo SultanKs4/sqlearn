@@ -195,12 +195,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           {item.name}
                         </Typography.Text>
                       </Col>
-                      <Col>
-                        <UserOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item?.jumlahMhs} orang
-                      </Col>
                     </Row>
                   </Col>
 
@@ -223,7 +217,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             type="primary"
                             icon={<EditOutlined />}
                             size={"medium"}
-                            onClick={() => props.editKelas(item)}
+                            onClick={() => props.displayModalEditKelas(item)}
                           />
                         </Tooltip>
                       </Col>
@@ -233,7 +227,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             type="danger"
                             icon={<DeleteOutlined />}
                             size={"medium"}
-                            onClick={() => props.deleteKelas(item)}
+                            onClick={() => props.displayModalDeleteKelas(item)}
                           />
                         </Tooltip>
                       </Col>
@@ -760,7 +754,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <UserOutlined />
                         <Typography.Text
                           style={{ marginLeft: "1em" }}
-                          children={item?.nama}
+                          children={item?.name}
                         />
                       </Col>
                       <Col span={6}>
@@ -770,14 +764,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
                   <Col span={6}>
                     <Row gutter={20} justify="end">
-                      <Col>
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editMahasiswa(item)}
-                        ></Button>
-                      </Col>
                       <Col>
                         <Button
                           type="danger"

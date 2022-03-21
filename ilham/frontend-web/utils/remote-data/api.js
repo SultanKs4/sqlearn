@@ -1,5 +1,4 @@
 export const BASE_URL = "https://api.sqlearn.sultanachmad.me";
-
 // ? BACKEND WEB
 // API KELAS
 export const URL_CLASS_API = `${BASE_URL}/api/classes`;
@@ -11,7 +10,7 @@ export const URL_CASE_STUDY_API = `${BASE_URL}/api/casestudies`;
 export const URL_QUESTION_API = `${BASE_URL}/api/questions`;
 export const URL_SCHEDULE_API = `${BASE_URL}/api/schedules`;
 export const URL_SESSION_API = `${BASE_URL}/api/sessions`;
-export const URL_LOGIN_API = `${BASE_URL}/api/users/login`;
+export const URL_LOGIN_API = `${BASE_URL}/api/login`;
 
 // ? BACKEND ASSESMENT
 export const URL_CREATE_DB_API = `${BASE_URL}/api/v2/database/create/testcreate`;

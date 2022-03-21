@@ -1,33 +1,17 @@
-import { Button, Col, Divider, Form, Input, Row, Select, Upload } from "antd";
-import { LaptopOutlined, InboxOutlined } from "@ant-design/icons";
+import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
+import { LaptopOutlined } from "@ant-design/icons";
 
-function FormTambahKelas({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
-  const { Option } = Select;
+function FormTambahKelas({ form, setVisible, handleSubmit, ...props }) {
+  const onFinish = (values) => handleSubmit(values);
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
-
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
-
-  const normFile = (e) => console.log("Upload event:", e);
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
       <Row gutter={10}>
         <Col span={13}>
           <Form.Item
-            name="kelas_nama"
+            name="name"
             label="Nama Kelas"
             extra={
               <>
@@ -68,34 +52,6 @@ function FormTambahKelas({
             </Select>
           </Form.Item>
         </Col>
-      </Row>
-      <Row>
-        <Form.Item label="Upload Data Kelas">
-          <Form.Item
-            name="excelFile"
-            valuePropName="fileList"
-            getValueFromEvent={normFile}
-            noStyle
-          >
-            <Upload.Dragger
-              multiple={false}
-              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              name="files"
-              action="/upload.do"
-              style={{ padding: "3em" }}
-            >
-              <p className="ant-upload-drag-icon">
-                <InboxOutlined />
-              </p>
-              <p className="ant-upload-text">
-                Click or drag file to this area to upload
-              </p>
-              <p className="ant-upload-hint">
-                Hanya bisa upload file .xlsx atau .xls{" "}
-              </p>
-            </Upload.Dragger>
-          </Form.Item>
-        </Form.Item>
       </Row>
 
       <Divider />

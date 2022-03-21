@@ -1,11 +1,10 @@
 import axios from "axios";
 import { URL_CLASS_API } from "../api";
 
-const getKelas = async () => {
+const getKelas = async (bearerToken) => {
   let response = await axios.get(`${URL_CLASS_API}`, {
     headers: {
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo1LCJyb2xlIjoiZG9zZW4ifSwiaWF0IjoxNjQ2NDYxNTczfQ.s26EwVazSln8jLtMTXtym8aodRvvADK_Ik_-jVGiFb4",
+      Authorization: `Bearer ${bearerToken}`,
     },
   });
   return response.data;
@@ -52,31 +51,53 @@ const mockGetKelas = () => {
   });
 };
 
-const getKelasByID = async (kelasID) => {
-  let response = await axios.get(`${mockAPIURL}/kelas/${kelasID}`);
+const getMhsKelasByID = async (bearerToken, kelasID) => {
+  let response = await axios.get(`${URL_CLASS_API}/${kelasID}`, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });
   return response.data;
 };
 
-const postKelas = async () => {
-  let response = await axios.post("");
+// TODO : Handle Upload Excel File
+
+const addMahasiswaByExcel = () => {};
+
+const postKelas = async (bearerToken, values) => {
+  let response = await axios.post(URL_CLASS_API, values, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });
+
   return response.data;
 };
 
-const updateKelas = async () => {
-  let response = await axios.put("");
+const updateKelas = async (bearerToken, values, kelasID) => {
+  let response = await axios.put(`${URL_CLASS_API}/${kelasID}`, values, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });
   return response.data;
 };
 
-const deleteKelas = async () => {
-  let response = await axios.delete("");
+const deleteKelas = async (bearerToken, kelasID) => {
+  let response = await axios.delete(`${URL_CLASS_API}/${kelasID}`, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });
   return response.data;
 };
 
 export {
   getKelas,
-  getKelasByID,
+  getMhsKelasByID,
   postKelas,
   updateKelas,
   deleteKelas,
   mockGetKelas,
+  addMahasiswaByExcel,
 };

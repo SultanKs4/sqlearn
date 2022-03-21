@@ -32,7 +32,7 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   };
 
   useEffect(() => {
-    getKelas(1).then((data) => setDataKelas(data));
+    getKelas(1).then((response) => setDataKelas(response.data));
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 

@@ -1,4 +1,7 @@
-const mockGetMhsPerKelas = (kelas_id = 1) => {
+import axios from "axios";
+import { URL_CLASS_API } from "../api";
+
+const mockGetMhsPerKelas = (mhsID = 1) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
@@ -29,4 +32,25 @@ const mockGetMhsPerKelas = (kelas_id = 1) => {
   }, 1000);
 };
 
-export { mockGetMhsPerKelas };
+const postMhs = async (bearerToken, values, idKelas) => {
+  let response = await axios.post(`${URL_CLASS_API}/${idKelas}/add`, values, {
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });
+
+  return response.data;
+};
+
+const deleteMhs = async (bearerToken, idKelas, mhsID) => {
+  let response = await axios.delete(
+    `${URL_CLASS_API}/${idKelas}/remove/${mhsID}`,
+    {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    }
+  );
+  return response.data;
+};
+export { mockGetMhsPerKelas, postMhs, deleteMhs };

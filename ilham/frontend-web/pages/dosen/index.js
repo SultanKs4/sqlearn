@@ -30,8 +30,11 @@ import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 import ListComponent from "../../components/List";
 import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
 import RadioFilterCategory from "../../components/RadioFilterCategory";
+import { useSession } from "next-auth/react";
 
 function Jadwal() {
+  const { data: token } = useSession();
+
   const [currentJadwal, setCurrentJadwal] = useState({});
   const [formObj, setFormObj] = useState({});
 
@@ -61,6 +64,8 @@ function Jadwal() {
       setIsDataLoaded(true);
     });
   }, []);
+
+  console.log("Ini token JWT", token);
 
   const tambahJadwal = () => {
     setModalRole("tambah");

@@ -1,9 +1,8 @@
 import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 
-function FormTambahMahasiswa({ setFormObj, setVisible, handleSubmit }) {
+function FormTambahMahasiswa({ setVisible, handleSubmit }) {
   const onFinish = (values) => {
-    setFormObj(values);
     handleSubmit(values);
   };
 
@@ -17,7 +16,7 @@ function FormTambahMahasiswa({ setFormObj, setVisible, handleSubmit }) {
       <Row gutter={10}>
         <Col span={12}>
           <Form.Item
-            name="nama_mahasiswa"
+            name="name"
             label="Nama Mahasiswa"
             rules={[
               {
@@ -34,7 +33,7 @@ function FormTambahMahasiswa({ setFormObj, setVisible, handleSubmit }) {
         </Col>
         <Col span={12}>
           <Form.Item
-            name="nim_mahasiswa"
+            name="nim"
             label="NIM Mahasiswa"
             rules={[
               {

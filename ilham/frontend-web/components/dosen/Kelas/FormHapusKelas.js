@@ -1,12 +1,6 @@
 import { Button, Col, Form, Row } from "antd";
 
-function FormHapusKelas({
-  form,
-  currentKelas,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormHapusKelas({ currentKelas, setVisible, handleSubmit, ...props }) {
   return (
     <>
       <Row justify="center">Apakah Anda yakin ingin menghapus kelas ini ?</Row>

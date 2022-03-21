@@ -14,6 +14,7 @@ export default NextAuth({
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
         const { username, password } = credentials;
+
         const response = await axios.post(URL_LOGIN_API, {
           username,
           password,
@@ -48,7 +49,7 @@ export default NextAuth({
         token.id = user.data.user.id;
         token.username = user.data.user.username;
         token.userRole = user.data.user.role;
-        token.accessToken = user.data.user.accessToken;
+        token.tokenJWT = user.data.token;
       }
       return token;
     },
