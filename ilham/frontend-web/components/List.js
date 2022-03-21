@@ -192,7 +192,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
                         <Typography.Text style={{ fontWeight: "bold" }}>
-                          {item.nama}
+                          {item.name}
                         </Typography.Text>
                       </Col>
                       <Col>

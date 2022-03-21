@@ -8,6 +8,7 @@ import {
 
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { signOut } from "next-auth/react";
 const { Content, Footer, Header } = Layout;
 
 function PageLayout({ children, role, username = "1841720076" }) {
@@ -15,7 +16,7 @@ function PageLayout({ children, role, username = "1841720076" }) {
 
   const router = useRouter();
 
-  const onClick = () => router.push("/auth/login");
+  const onClick = () => signOut({ callbackUrl: "http://localhost:3000/login" });
 
   const menu = (
     <Menu onClick={onClick}>

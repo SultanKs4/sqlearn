@@ -94,6 +94,7 @@ const Register = () => {
               label={`Username / ${
                 registerType === "mahasiswa" ? "NIM" : "NIDN"
               }`}
+              e
               rules={[
                 {
                   required: true,
@@ -165,7 +166,7 @@ const Register = () => {
                 <Typography.Text> Punya akun ? </Typography.Text>
                 <Typography.Text
                   underline
-                  onClick={() => router.push("/auth/login")}
+                  onClick={() => router.push("/login")}
                 >
                   Login
                 </Typography.Text>

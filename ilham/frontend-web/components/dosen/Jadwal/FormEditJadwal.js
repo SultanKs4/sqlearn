@@ -12,7 +12,10 @@ import {
 import moment from "moment";
 import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import {
+  getKelas,
+  mockGetKelas,
+} from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
@@ -40,7 +43,7 @@ function FormEditJadwal({
   };
 
   useEffect(() => {
-    getKelas(1).then((data) => setDataKelas(data));
+    mockGetKelas(1).then((response) => setDataKelas(response.data));
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 

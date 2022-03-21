@@ -1,10 +1,13 @@
 import axios from "axios";
-import { mockAPIURL } from "../api";
+import { URL_CLASS_API } from "../api";
 
-const getKelas = async (lecturerID) => {
-  let response = await axios.get(
-    `${mockAPIURL}/kelas?lecturerID=${lecturerID}`
-  );
+const getKelas = async () => {
+  let response = await axios.get(`${URL_CLASS_API}`, {
+    headers: {
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjo1LCJyb2xlIjoiZG9zZW4ifSwiaWF0IjoxNjQ2NDYxNTczfQ.s26EwVazSln8jLtMTXtym8aodRvvADK_Ik_-jVGiFb4",
+    },
+  });
   return response.data;
 };
 
