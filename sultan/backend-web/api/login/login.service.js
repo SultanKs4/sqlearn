@@ -36,12 +36,9 @@ module.exports = {
             return createResponseObject(200, "success", "login success", payloadResponse);
         } catch (error) {
             let code = 500;
-            let message = "login failed";
+            let message = error.message;
             let data = null;
-            if (createHttpError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }

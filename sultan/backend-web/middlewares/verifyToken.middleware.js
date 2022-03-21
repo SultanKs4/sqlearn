@@ -14,12 +14,11 @@ async function verifyToken(req, res, next) {
         next();
     } catch (error) {
         let code = 500;
-        let status = "error";
+        let status = "fail";
         let message = null;
         let data = null;
         if (error instanceof JsonWebTokenError) {
             code = 400;
-            status = "fail";
             message = error.message;
         } else if (createHttpError.isHttpError(error)) {
             code = error.statusCode;

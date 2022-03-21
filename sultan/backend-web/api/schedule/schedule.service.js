@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const { Op } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const Class = require("../class/class.model");
@@ -36,7 +37,6 @@ async function getWhereStudent(user) {
             },
         ],
     });
-    if (!student) throw new Error("data student not found");
 
     const existedScores = await Score.findAll({
         attributes: ["schedule_id"],
@@ -89,8 +89,6 @@ module.exports = {
                 where = await getWhereDosen(query, user.id);
             } else if (user.role == "mahasiswa") {
                 where = await getWhereStudent(user);
-            } else {
-                throw new Error("role not supported");
             }
 
             const schedules = await Schedule.findAll({
@@ -110,7 +108,7 @@ module.exports = {
                 where: where.whereSchedule,
                 order: [["createdAt", "DESC"]],
             });
-            if (!schedules || schedules.length == 0) throw new Error("data schedule not found");
+            if (!schedules || schedules.length == 0) throw createHttpError(404, "data schedule not found");
 
             const scheduleResponse = schedules.map((val) => {
                 let classData = val.classes.map((e) => {
@@ -138,14 +136,14 @@ module.exports = {
                 };
             });
 
-            return createResponseObject("success", "Data schedule berhasil didapatkan", scheduleResponse);
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", scheduleResponse);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -161,37 +159,37 @@ module.exports = {
                     },
                 },
             });
-            if (!schedule || schedule.length == 0) throw new Error("schedule not found");
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedule);
+            if (!schedule || schedule.length == 0) throw createHttpError(404, "schedule not found");
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     getOne: async (id) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("data schedule not found");
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedule);
+            if (!schedule) throw createHttpError(404, "data schedule not found");
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     insert: async (data, user) => {
         try {
             const container = await Container.findByPk(data.container_id);
-            if (!container) throw new Error("data container not found");
+            if (!container) throw createHttpError(404, "data container not found");
 
             const total_questions = await Question.findAndCountAll({
                 include: {
@@ -210,7 +208,8 @@ module.exports = {
                         user_id: user.id,
                     },
                 });
-                if (!classData) throw new Error(`class id ${val} not found or class is not belong to ${user.name}`);
+                if (!classData)
+                    throw createHttpError(404, `class id ${val} not found or class is not belong to ${user.name}`);
             }
 
             let newSchedule = await Schedule.create({
@@ -225,24 +224,24 @@ module.exports = {
 
             await newSchedule.setClasses(data.classes);
 
-            return createResponseObject("success", "Data schedule berhasil ditambahkan", newSchedule);
+            return createResponseObject(201, "success", "Data schedule berhasil ditambahkan", newSchedule);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     update: async (id, data, user) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("Tidak ada data schedule didapatkan");
+            if (!schedule) throw createHttpError(404, "Tidak ada data schedule didapatkan");
 
             const container = await Container.findByPk(data.container_id);
-            if (!container) throw new Error("data container not found");
+            if (!container) throw createResponseObject(404, "data container not found");
 
             const total_questions = await Question.findAndCountAll({
                 include: {
@@ -261,7 +260,8 @@ module.exports = {
                         user_id: user.id,
                     },
                 });
-                if (!classData) throw new Error(`class id ${val} not found or class is not belong to ${user.name}`);
+                if (!classData)
+                    throw createHttpError(404, `class id ${val} not found or class is not belong to ${user.name}`);
             }
 
             let dataUpdate = {
@@ -282,20 +282,21 @@ module.exports = {
             await schedule.setClasses([]);
             await schedule.setClasses(data.classes);
 
-            return createResponseObject("success", "Data schedule berhasil diperbarui", schedule);
+            return createResponseObject(200, "success", "Data schedule berhasil diperbarui", schedule);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data schedule gagal diperbarui",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     destroy: async (id) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("schedule data not found");
+            if (!schedule) throw createHttpError(404, "schedule data not found");
 
             await Schedule.destroy({
                 where: {
@@ -303,14 +304,14 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Data schedule berhasil dihapus");
+            return createResponseObject(200, "success", "Data schedule berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

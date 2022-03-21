@@ -30,12 +30,9 @@ module.exports = {
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
             let code = 500;
-            let message = "Data studi kasus gagal didapatkan";
+            let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -65,12 +62,9 @@ module.exports = {
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", csObj);
         } catch (error) {
             let code = 500;
-            let message = "Data studi kasus gagal didapatkan";
+            let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -92,16 +86,13 @@ module.exports = {
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
             let code = 500;
-            let message = "Data studi kasus gagal didapatkan";
+            let message = error.message;
             let data = null;
             if (axios.isAxiosError(error) && error.response) {
                 let axiosData = error.response.data;
                 message = axiosData.message;
                 data = axiosData.data;
-            } else if (createError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            } else if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -109,9 +100,9 @@ module.exports = {
     store: async (name, user, file) => {
         try {
             let dbName = `sqlearn_cs_${user.username}_${convertToSnakeCase(name)}_${shortIdGen()}`;
-            const dbList = DbList.create({
+            const dbList = await DbList.create({
                 db_name: dbName,
-                db_file: file.filename,
+                db_filename: file.filename,
             });
 
             const newCaseStudies = await CaseStudy.create({
@@ -129,16 +120,9 @@ module.exports = {
         } catch (error) {
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
             let code = 500;
-            let message = "studi kasus gagal dibuat";
+            let message = error.message;
             let data = null;
-            if (axios.isAxiosError(error) && error.response) {
-                let axiosData = error.response.data;
-                message = axiosData.message;
-                data = axiosData.data;
-            } else if (createError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -146,8 +130,7 @@ module.exports = {
     deleteOne: async (id) => {
         try {
             const caseStudy = await CaseStudy.findByPk(id, {
-                include: { model: DbList, attributes: ["db_name", ["db_filename"]] },
-                raw: true,
+                include: { model: DbList, attributes: ["id", "db_name", "db_filename"] },
             });
             if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
 
@@ -157,26 +140,21 @@ module.exports = {
                 },
             });
 
-            const destroyResObj = await axios.delete(
-                `${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${caseStudy["DbList"]["db_name"]}`
-            );
+            await axios.delete(`${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${caseStudy.DbList.db_name}`);
 
-            await deleteFile(path.join(__dirname, `../../uploads/sqls/${caseStudy["DbList"]["db_file"]}`));
+            await deleteFile(path.join(__dirname, `../../uploads/sqls/${caseStudy.DbList.db_filename}`));
+            await DbList.destroy({
+                where: {
+                    id: caseStudy.DbList.id,
+                },
+            });
 
-            return createResponseObject(200, "success", "Data studi kasus berhasil dihapus", destroyResObj.data);
+            return createResponseObject(200, "success", "Data studi kasus berhasil dihapus", caseStudy);
         } catch (error) {
-            console.log(error);
             let code = 500;
-            let message = "Data studi kasus gagal didapatkan";
+            let message = error.message;
             let data = null;
-            if (axios.isAxiosError(error) && error.response) {
-                let axiosData = error.response.data;
-                message = axiosData.message;
-                data = axiosData.data;
-            } else if (createError.isHttpError(error)) {
-                code = error.statusCode;
-                message = error.message;
-            }
+            if (createError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }

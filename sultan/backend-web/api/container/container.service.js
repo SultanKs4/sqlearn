@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const { Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const CaseStudy = require("../case-study/case-study.model");
@@ -32,14 +33,14 @@ module.exports = {
                 ],
                 group: ["id"],
             });
-            return createResponseObject("success", "Data kontainer berhasil didapatkan", containers);
+            return createResponseObject(200, "success", "Data kontainer berhasil didapatkan", containers);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kontainer gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -69,7 +70,7 @@ module.exports = {
                 // order: Sequelize.literal("rand()"),
             });
 
-            if (containerById == null) throw new Error("container not found");
+            if (!containerById) throw createHttpError(404, "container not found");
 
             containerById = containerById.toJSON();
 
@@ -79,76 +80,78 @@ module.exports = {
                 val.next_id = next_id;
             });
 
-            return createResponseObject("success", "Data kontainer berhasil didapatkan", containerById);
+            return createResponseObject(200, "success", "Data kontainer berhasil didapatkan", containerById);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data kontainer gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     insert: async (data, user) => {
         try {
             const label = await QuestionLabel.findByPk(data.label_id, { raw: true });
-            if (label == null) throw new Error("label not found");
+            if (!label) throw createHttpError(404, "label not found");
 
             const newContainer = await Container.create({
                 description: data.description,
                 user_id: user.id,
                 label_id: label.id,
             });
-            return createResponseObject("success", "Data kontainer baru berhasil ditambahkan", newContainer);
+            return createResponseObject(201, "success", "Data kontainer baru berhasil ditambahkan", newContainer);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kontainer baru gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     update: async (id, data, user) => {
         try {
+            const containerData = await Container.findByPk(id);
+            if (!containerData) throw createHttpError(404, "container not found");
+
             const label = await QuestionLabel.findByPk(data.label_id, { raw: true });
-            if (label == null) throw new Error("label not found");
+            if (!label) throw createHttpError(404, "label not found");
 
-            const container = await Container.update(
-                {
-                    description: data.description,
-                    user_id: user.id,
-                    label_id: label.id,
-                },
-                { where: { id: id } }
-            ).then(async () => {
-                return await Container.findByPk(id, { raw: true });
+            let dataUpdate = {
+                description: data.description,
+                user_id: user.id,
+                label_id: label.id,
+            };
+            Object.keys(dataUpdate).forEach((val) => {
+                containerData[val] = dataUpdate[val];
             });
-            if (container == null) throw new Error("container not found");
+            await containerData.save();
 
-            return createResponseObject("success", "Data kontainer berhasil diperbarui", container);
+            return createResponseObject(200, "success", "Data kontainer berhasil diperbarui", container);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data kontainer gagal diperbarui",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     addQuestion: async (containerId, questionIds) => {
         try {
             const container = await Container.findByPk(containerId);
-            if (container == null) throw new Error("container not found");
+            if (!container) throw createHttpError(404, "container not found");
 
             const questions = await Promise.all(
                 questionIds.map(async (id) => {
                     let question = await Question.findByPk(id);
-                    if (question == null) throw new Error(`question id ${id} not found`);
+                    if (!question) throw createHttpError(404, `question id ${id} not found`);
                     if (container.label_id != question.label_id)
-                        throw new Error(`question id ${id} has different label`);
+                        throw createHttpError(409, `question id ${id} has different label`);
                     return {
                         question_id: question.id,
                         container_id: container.id,
@@ -175,14 +178,19 @@ module.exports = {
                 }
             }
 
-            return createResponseObject("success", "Berhasil memasukkan pertanyaan ke kontainer", newQuestionContainer);
-        } catch (error) {
-            console.log(error);
             return createResponseObject(
-                "error",
-                "Gagal memasukkan pertanyaan ke kontainer",
-                error == null ? null : error.message ? error.message : error
+                201,
+                "success",
+                "Berhasil memasukkan pertanyaan ke kontainer",
+                newQuestionContainer
             );
+        } catch (error) {
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -194,7 +202,7 @@ module.exports = {
                     container_id: containerId,
                 },
             });
-            if (questionContainer == null) throw new Error("pertanyaan tidak terdapat dalam kontainer");
+            if (!questionContainer) throw createHttpError(404, "pertanyaan tidak terdapat dalam kontainer");
 
             await QuestionContainer.destroy({
                 where: {
@@ -221,21 +229,21 @@ module.exports = {
                 }
             }
 
-            return createResponseObject("success", "Berhasil mengeluarkan pertanyaan dari kontainer");
+            return createResponseObject(200, "success", "Berhasil mengeluarkan pertanyaan dari kontainer");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Gagal mengeluarkan pertanyaan dari kontainer",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     destroy: async (id) => {
         try {
             const container = await Container.findByPk(id);
-            if (container == null) throw new Error("container not found");
+            if (!container) throw createHttpError(404, "container not found");
 
             await Container.destroy({
                 where: {
@@ -243,14 +251,14 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Data kontainer berhasil dihapus");
+            return createResponseObject(200, "success", "Data kontainer berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kontainer gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

@@ -10,6 +10,7 @@ const axios = require("axios");
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const QuestionLabel = require("../questions-label/question-label.model");
 const DbList = require("../db-list/db-list.model");
+const createHttpError = require("http-errors");
 
 module.exports = {
     getAll: async (query = null) => {
@@ -32,14 +33,14 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", questions);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", questions);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     getAllExclude: async (containerId, query = null) => {
@@ -54,7 +55,7 @@ module.exports = {
                 },
             });
 
-            if (containers == null) throw new Error("container not found");
+            if (!containers) throw createHttpError(404, "container not found");
 
             const existedQuestionIds = containers["questions"].map((val) => val.id);
 
@@ -81,14 +82,14 @@ module.exports = {
                     },
                 },
             });
-            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", questions);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", questions);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     getOne: async (id) => {
@@ -113,33 +114,26 @@ module.exports = {
                 nest: true,
             });
 
-            if (question == null) throw new Error("question not found");
+            if (!question) throw createHttpError(404, "question not found");
 
             const tables = question["tables"].split(",").map((val) => val.trim());
             question["tables"] = await tables.reduce(async (acc, curr) => {
                 const obj = await acc;
                 const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question["CaseStudy"]["DbList"]["db_name"]}/${curr}`
+                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question.CaseStudy.DbList.db_name}/${curr}`
                 );
                 obj[curr] = res.data;
                 return obj;
             }, Promise.resolve({}));
-            // tables.forEach(async table => {
 
-            //     console.log(table)
-            //     console.log(res.data)
-            //     question['tables'][table] = res.data
-            // })
-
-            return createResponseObject("success", "Data pertanyaan berhasil didapatkan", question);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", question);
         } catch (error) {
-            if (axios.isAxiosError(error) && error.response != undefined) error = error.response.data;
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     insert: async (data, fileName, user) => {
@@ -147,12 +141,12 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(data.case_study, {
                 raw: true,
             });
-            if (caseStudy == null) throw new Error("case study not found");
+            if (!caseStudy) throw createHttpError(404, "case study not found");
 
             const label = await QuestionLabel.findByPk(data.label_id, {
                 raw: true,
             });
-            if (label == null) throw new Error("label not found");
+            if (!label) throw createHttpError(404, "label not found");
 
             const newQuestion = await Question.create({
                 text: data.text,
@@ -164,7 +158,7 @@ module.exports = {
                 label_id: label.id,
             });
 
-            return createResponseObject("success", "Data pertanyaan berhasil ditambahkan", newQuestion);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil ditambahkan", newQuestion);
         } catch (error) {
             return createResponseObject(
                 "error",
@@ -175,39 +169,41 @@ module.exports = {
     },
     update: async (questionId, data, fileName, user) => {
         try {
+            const questionData = await Question.findByPk(questionId);
+            if (!questionData) throw createHttpError(404, "question not found");
+
             const caseStudy = await CaseStudy.findByPk(data.case_study, {
                 raw: true,
             });
-            if (caseStudy == null) throw new Error("case study not found");
+            if (!caseStudy) throw createHttpError(404, "case study not found");
 
             const label = await QuestionLabel.findByPk(data.label_id, {
                 raw: true,
             });
-            if (label == null) throw new Error("label not found");
+            if (!label) throw createHttpError(404, "label not found");
 
-            const question = await Question.update(
-                {
-                    text: data.text,
-                    answer: data.answer,
-                    answer_pic: fileName,
-                    tables: data.tables,
-                    case_study_id: caseStudy.id,
-                    user_id: user.id,
-                    label_id: label.id,
-                },
-                { where: { id: questionId } }
-            ).then(async () => {
-                return await Question.findByPk(questionId, { raw: true });
+            let dataUpdate = {
+                text: data.text,
+                answer: data.answer,
+                answer_pic: fileName,
+                tables: data.tables,
+                case_study_id: caseStudy.id,
+                user_id: user.id,
+                label_id: label.id,
+            };
+            Object.keys(dataUpdate).forEach((val) => {
+                questionData[val] = dataUpdate[val];
             });
-            if (question == null) throw new Error("question not found");
+            await questionData.save();
 
-            return createResponseObject("success", "Data pertanyaan berhasil diperbarui", question);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil diperbarui", question);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
     deleteOne: async (id) => {
@@ -215,7 +211,7 @@ module.exports = {
             const question = await Question.findByPk(id, {
                 raw: true,
             });
-            if (question == null) throw new Error("question not found");
+            if (!question) throw createHttpError(404, "question not found");
 
             await Question.destroy({
                 where: {
@@ -225,14 +221,14 @@ module.exports = {
 
             await deleteFile(path.join(__dirname, `../../uploads/images/${question["answer_pic"]}`));
 
-            return createResponseObject("success", "Data pertanyaan berhasil dihapus");
+            return createResponseObject(200, "success", "Data pertanyaan berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

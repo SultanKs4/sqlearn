@@ -6,23 +6,17 @@ module.exports = {
         const responseObject = await caseStudyService.getAll();
         const { httpCode, ...response } = responseObject;
 
-        if (responseObject.status == "error") return res.status(httpCode).json(response);
-
         return res.status(httpCode).json(response);
     },
     show: async (req, res) => {
         const responseObject = await caseStudyService.getOne(req.params.id);
         const { httpCode, ...response } = responseObject;
 
-        if (responseObject.status == "error") return res.status(httpCode).json(response);
-
         return res.status(httpCode).json(response);
     },
     showTable: async (req, res) => {
         const responseObject = await caseStudyService.getOneDetail(req.params.id, req.params.tablename);
         const { httpCode, ...response } = responseObject;
-
-        if (responseObject.status == "error") return res.status(httpCode).json(response);
 
         return res.status(httpCode).json(response);
     },
@@ -38,15 +32,11 @@ module.exports = {
         const responseObject = await caseStudyService.store(req.body.name, req.user, req.file);
         const { httpCode, ...response } = responseObject;
 
-        if (responseObject.status == "error") return res.status(httpCode).json(response);
-
         return res.status(httpCode).json(response);
     },
     destroy: async (req, res) => {
         const responseObject = await caseStudyService.deleteOne(req.params.id);
         const { httpCode, ...response } = responseObject;
-
-        if (responseObject.status == "error") return res.status(httpCode).json(response);
 
         return res.status(httpCode).json(response);
     },
