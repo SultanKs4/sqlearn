@@ -9,7 +9,7 @@ const createResponseObject = require("../../lib/createResponseObject");
 const deleteFile = require("../../lib/deleteFile");
 const path = require("path");
 const DbList = require("../db-list/db-list.model");
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 
 module.exports = {
     getAll: async () => {
@@ -26,13 +26,13 @@ module.exports = {
                     },
                 ],
             });
-            if (!caseStudies) throw createError(404, "data studi kasus not found");
+            if (!caseStudies) throw createHttpError(404, "data studi kasus not found");
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -52,7 +52,7 @@ module.exports = {
                 ],
             });
 
-            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createHttpError(404, "studi kasus tidak dapat ditemukan");
 
             const resDetail = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/desc_table/${caseStudy.DbList.db_name}`
@@ -64,7 +64,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -78,7 +78,7 @@ module.exports = {
                 },
             });
 
-            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createHttpError(404, "studi kasus tidak dapat ditemukan");
 
             const res = await axios.get(
                 `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${caseStudy.DbList.db_name}/${tableName}`
@@ -92,7 +92,7 @@ module.exports = {
                 let axiosData = error.response.data;
                 message = axiosData.message;
                 data = axiosData.data;
-            } else if (createError.isHttpError(error)) code = error.statusCode;
+            } else if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -114,7 +114,7 @@ module.exports = {
             await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbName}`);
 
             const resRunSql = await runSql(dbName, file.path);
-            if (!resRunSql) throw createError(500, "import SQL gagal dilakukan");
+            if (!resRunSql) throw createHttpError(500, "import SQL gagal dilakukan");
 
             return createResponseObject(201, "success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
         } catch (error) {
@@ -122,7 +122,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -132,7 +132,7 @@ module.exports = {
             const caseStudy = await CaseStudy.findByPk(id, {
                 include: { model: DbList, attributes: ["id", "db_name", "db_filename"] },
             });
-            if (!caseStudy) throw createError(404, "studi kasus tidak dapat ditemukan");
+            if (!caseStudy) throw createHttpError(404, "studi kasus tidak dapat ditemukan");
 
             await CaseStudy.destroy({
                 where: {
@@ -154,7 +154,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
