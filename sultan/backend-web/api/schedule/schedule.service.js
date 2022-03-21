@@ -141,7 +141,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -165,7 +165,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -180,7 +180,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -229,7 +229,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -287,7 +287,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
@@ -309,7 +309,7 @@ module.exports = {
             let code = 500;
             let message = error.message;
             let data = null;
-            if (createError.isHttpError(error)) code = error.statusCode;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
             return createResponseObject(code, "error", message, data);
         }
