@@ -94,7 +94,7 @@ module.exports = {
                 },
             });
 
-            if (classDb == null) {
+            if (!classDb) {
                 await deleteFile(file);
                 throw createHttpError(404, "Kelas tidak ada atau gagal dibuat");
             }
@@ -103,7 +103,7 @@ module.exports = {
             const excelsData = convertExcel(file);
             const studentsExcel = excelToStudents(excelsData);
 
-            if (studentsExcel == null) {
+            if (!studentsExcel) {
                 await deleteFile(file);
                 throw createHttpError(500, "Tidak berhasil parsing data dari excel");
             }
@@ -181,12 +181,12 @@ module.exports = {
 
     addStudent: async (classId, studentIds) => {
         try {
-            const classOne = await Class.findOne(classId);
+            const classOne = await Class.findByPk(classId);
             if (classOne == null) throw createHttpError(404, "class not found");
             const students = await Promise.all(
                 studentIds.map(async (id) => {
                     let student = await Student.findByPk(id);
-                    if (student == null) throw createHttpError(404, `student id ${id} not found`);
+                    if (!student) throw createHttpError(404, `student id ${id} not found`);
                     return {
                         class_id: classOne.id,
                         student_id: student.id,
@@ -214,7 +214,7 @@ module.exports = {
                     student_id: studentId,
                 },
             });
-            if (studentClass == null) throw createHttpError(404, "mahasiswa tidak terdapat di dalam kelas tersebut");
+            if (!studentClass) throw createHttpError(404, "mahasiswa tidak terdapat di dalam kelas tersebut");
 
             await StudentClass.destroy({
                 where: {
@@ -237,7 +237,7 @@ module.exports = {
     destroy: async (id) => {
         try {
             const classOne = await Class.findByPk(id);
-            if (classOne == null) throw createHttpError(404, "Tidak ada kelas yang dihapus");
+            if (!classOne) throw createHttpError(404, "Tidak ada kelas yang dihapus");
 
             await Class.destroy({
                 where: {

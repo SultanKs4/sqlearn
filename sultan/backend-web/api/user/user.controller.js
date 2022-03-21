@@ -19,25 +19,11 @@ module.exports = {
 
     store: async (req, res) => {
         const { username, password, no_induk, name } = req.body;
-        const resObj = await userService.insert(
-            username,
-            password,
-            no_induk,
-            name
-        );
+        const resObj = await userService.insert(username, password, no_induk, name);
 
         if (!resObj.status) return res.status(500).json(resObj);
 
         return res.status(201).json(resObj);
-    },
-
-    authenticate: async (req, res) => {
-        const { username, password } = req.body;
-        const resObj = await userService.authenticate(username, password);
-
-        if (!resObj.status) return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
     },
 
     update: async (req, res) => {

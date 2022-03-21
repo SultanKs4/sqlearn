@@ -8,9 +8,9 @@ module.exports = router;
 
 router.post("/api/login", loginSanitizer.checkLoginBody, loginController.auth);
 router.use("/api/test", require("../api/test-user/test-user.routes"));
-router.use("/api/users", require("../api/user/user.routes"));
-router.use("/api/students", require("../api/student/student.routes"));
 router.use(verifyToken);
+router.use("/api/students", require("../api/student/student.routes"));
+router.use("/api/users", require("../api/user/user.routes"));
 router.use("/api/questions", require("../api/question/question.routes"));
 router.use("/api/settings", require("../api/setting/setting.routes"));
 router.use("/api/classes", require("../api/class/class.routes"));
