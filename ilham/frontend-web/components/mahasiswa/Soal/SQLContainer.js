@@ -1,80 +1,74 @@
-import { Row } from "antd";
-import { React, useState } from "react";
+import { Col, Divider, Row } from "antd";
+import { React, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import SQLQueryParts from "../Soal/SQLQueryParts";
+import SQLAnswerBox from "./SQLAnswerBox";
 
-const SQLContainer = ({ onDragEnd, boxes, setBoxes }) => {
+const SQLContainer = ({
+  boxes,
+  setBoxes,
+  jawaban,
+  sqlUncomplete,
+  setSqlUncomplete,
+  onDragEnd,
+}) => {
+  const [isDragging, setIsDragging] = useState(false);
+  const [fetchClue, setFetchClue] = useState([]);
+
+  useEffect(() => {
+    if (boxes.length !== 0)
+      setFetchClue(
+        boxes?.sql_constructed?.items?.map((item) => item.content.toLowerCase())
+      );
+  }, [boxes]);
+
+  // ? Ini kalau mau hintnya statis (hint berubah ketika ganti soal)
+  useEffect(() => {
+    if (sqlUncomplete === undefined || sqlUncomplete?.length === 0)
+      setSqlUncomplete(
+        jawaban?.split(" ").map((partJawaban, idx) => {
+          if (fetchClue?.includes(partJawaban.toLowerCase()))
+            return partJawaban;
+          else return "___";
+        })
+      );
+  }, [fetchClue]);
+
+  // // ? Ini kalau mau hintnya dinamis (menyesuaikan input drag and drop mahasiswa).
+  // useEffect(() => {
+  //   // ? Ini kalau mau hintnya dinamis (menyesuaikan input drag and drop mahasiswa).
+  //   setSqlUncomplete(
+  //     jawaban?.split(" ").map((partJawaban, idx) => {
+  //       if (fetchClue.includes(partJawaban.toLowerCase())) return partJawaban;
+  //       else return "___";
+  //     })
+  //   );
+  // }, [fetchClue]);
+
   return (
     <div>
       <DragDropContext
-        onDragEnd={(result) => onDragEnd(result, boxes, setBoxes)}
+        onDragStart={() => setIsDragging(true)}
+        onDragEnd={(result) => {
+          onDragEnd(result, boxes, setBoxes);
+          setIsDragging(false);
+        }}
       >
-        {Object.entries(boxes).map(([columnId, column], index) => {
-          return (
-            <div key={columnId}>
-              {columnId}
-              <Droppable
-                droppableId={columnId}
-                key={columnId}
-                direction="horizontal"
-              >
-                {(provided, snapshot) => {
-                  return (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      style={{
-                        background: snapshot.isDraggingOver
-                          ? "lightblue"
-                          : "lightgrey",
-                        padding: 4,
-                        width: "45vw",
-                        minHeight: 100,
-                        overflow: "auto",
-                        display: "flex",
-                      }}
-                    >
-                      {column?.items?.map((item, index) => {
-                        return (
-                          <Draggable
-                            key={item.id.toString()}
-                            draggableId={item.id.toString()}
-                            index={index}
-                          >
-                            {(provided, snapshot) => {
-                              return (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.draggableProps}
-                                  {...provided.dragHandleProps}
-                                  style={{
-                                    userSelect: "none",
-                                    padding: 16,
-                                    width: 200,
-                                    textAlign: "center",
-                                    minHeight: "50px",
-                                    marginLeft: 10,
-                                    backgroundColor: snapshot.isDragging
-                                      ? "#263B4A"
-                                      : "#456C86",
-                                    color: "white",
-                                    ...provided.draggableProps.style,
-                                  }}
-                                >
-                                  {item.content}
-                                </div>
-                              );
-                            }}
-                          </Draggable>
-                        );
-                      })}
-                      {provided.placeholder}
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </div>
-          );
-        })}
+        <Row justify="space-between" style={{ marginBottom: "1em" }}>
+          <Col>SQL Hints : </Col>
+          <Col>
+            {sqlUncomplete?.map((item, id) => (
+              <span key={id} style={{ paddingLeft: ".5em" }}>
+                {item}
+              </span>
+            ))}
+          </Col>
+        </Row>
+
+        <SQLQueryParts sqlParts={boxes?.sql_parts?.items} />
+        {/* ========================================== */}
+        <SQLAnswerBox boxes={boxes} jawaban={jawaban} isDragging={isDragging} />
       </DragDropContext>
     </div>
   );

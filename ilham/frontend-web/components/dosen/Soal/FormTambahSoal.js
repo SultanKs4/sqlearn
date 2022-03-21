@@ -39,7 +39,7 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-function FormEditSoal({
+function FormTambahSoal({
   currentSoal,
   setFormObj,
   setVisible,
@@ -54,9 +54,18 @@ function FormEditSoal({
 
   // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
-  const [inputValue, setInputValue] = useState("");
-  const [inputVisible, setInputVisible] = useState(false);
-  const [tags, setTags] = useState([]);
+  const refButtonPetunjuk = useRef(null);
+
+  const [tagsKomponen, setTagsKomponen] = useState([]);
+  const [tagsPetunjuk, setTagsPetunjuk] = useState([]);
+
+  const [inputTagsKomponenValue, setInputTagsKomponenValue] = useState("");
+  const [inputTagsKomponenVisible, setInputTagsKomponenVisible] =
+    useState(false);
+
+  const [inputTagsPetunjukValue, setInputTagsPetunjukValue] = useState("");
+  const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
+    useState(false);
 
   const onChangeStudiKasus = (kelas) => {
     console.log(kelas);
@@ -75,9 +84,12 @@ function FormEditSoal({
     });
   }, []);
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {
@@ -90,9 +102,10 @@ function FormEditSoal({
   useEffect(() => {
     form.setFieldsValue({
       ...form,
-      opsi_jawaban: tags,
+      opsi_jawaban: tagsKomponen,
+      petunjuk_jawaban: tagsPetunjuk,
     });
-  }, [tags]);
+  }, [tagsKomponen, tagsPetunjuk]);
 
   const validateImageFile = (file) => {
     if (!file.type.includes("image")) {
@@ -102,53 +115,69 @@ function FormEditSoal({
     return file.type.includes("image") ? true : Upload.LIST_IGNORE;
   };
 
-  const showInput = () => {
-    setInputVisible(true);
-  };
+  const showInput = () => setInputTagsKomponenVisible(true);
+  const showInputPetunjuk = () => setInputTagsPetunjukVisible(true);
 
   useEffect(() => {
     refButton?.current?.input.focus();
-  }, [inputVisible]);
+  }, [inputTagsKomponenVisible]);
 
-  const handleInputChange = (e) => setInputValue(e.target.value);
+  useEffect(() => {
+    refButtonPetunjuk?.current?.input.focus();
+  }, [inputTagsPetunjukVisible]);
 
-  const onRemoveTags = (removedTag) =>
-    setTags((prevTags) => prevTags.filter((item) => item !== removedTag));
+  const handleInputChange = (e) => setInputTagsKomponenValue(e.target.value);
+  const handleInputPetunjukChange = (e) =>
+    setInputTagsPetunjukValue(e.target.value);
 
-  const onAddTags = () => {
-    setTags((prevTags) => [...prevTags, inputValue]);
-    setInputVisible(false);
-    setInputValue("");
+  const onRemoveTagsKomponen = (removedTag) =>
+    setTagsKomponen((prevTagsKomponen) =>
+      prevTagsKomponen.filter((item) => item !== removedTag)
+    );
+
+  const onAddTagsKomponen = () => {
+    setTagsKomponen((prevTagsKomponen) => [
+      ...prevTagsKomponen,
+      inputTagsKomponenValue,
+    ]);
+    setInputTagsKomponenVisible(false);
+    setInputTagsKomponenValue("");
+  };
+
+  const onRemoveTagsPetunjuk = (removedTag) =>
+    setTagsPetunjuk((prevTagsPetunjuk) =>
+      prevTagsPetunjuk.filter((item) => item !== removedTag)
+    );
+
+  const onAddTagsPetunjuk = () => {
+    setTagsPetunjuk((prevTagsPetunjuk) => [
+      ...prevTagsPetunjuk,
+      inputTagsPetunjukValue,
+    ]);
+    setInputTagsPetunjukVisible(false);
+    setInputTagsPetunjukValue("");
   };
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
       <Row justify="space-between" gutter={8}>
-        <Col span={12}>
+        <Col span={24}>
           <Form.Item
-            name="nama_soal"
-            label="Nama Soal"
+            name="kategori"
+            label="Kategori"
             rules={[
               {
                 required: true,
-                message: "Mohon masukkan nama Nama!",
+                message: "Mohon masukkan nama Kategori!",
               },
             ]}
           >
-            <Input
-              prefix={<ConsoleSqlOutlined />}
-              placeholder={` Nama Soal . . .`}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item name="kategori" label="Kategori">
             <Select
               placeholder="Pilih Kategori . . ."
               onChange={onChangeKategori}
             >
-              <Select.Option key={1}>Close-Ended</Select.Option>
-              <Select.Option key={2}>Open-Ended</Select.Option>
+              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>
@@ -169,7 +198,7 @@ function FormEditSoal({
           placeholder={` Teks Pertanyaan . . .`}
         />
       </Form.Item>
-      {selectedKategori === 2 ? (
+      {selectedKategori === "Open-Ended" ? (
         <>
           <Form.List
             name="opsi_jawaban"
@@ -240,47 +269,82 @@ function FormEditSoal({
           </Form.List>
         </>
       ) : (
-        <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
-          {tags.map((item, idx) => (
-            <Tag key={idx} closable onClose={() => onRemoveTags(item)}>
-              {item}
-            </Tag>
-          ))}
-          {inputVisible && (
+        <>
+          <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
+            {tagsKomponen.map((item, idx) => (
+              <Tag
+                key={idx}
+                closable
+                onClose={() => onRemoveTagsKomponen(item)}
+              >
+                {item}
+              </Tag>
+            ))}
+            {inputTagsKomponenVisible && (
+              <Input
+                ref={refButton}
+                type="text"
+                size="small"
+                style={{ width: 78 }}
+                value={inputTagsKomponenValue}
+                onChange={handleInputChange}
+                onBlur={onAddTagsKomponen}
+                onPressEnter={onAddTagsKomponen}
+              />
+            )}
+            {!inputTagsKomponenVisible && (
+              <Button size="small" type="dashed" onClick={showInput}>
+                + Tambah komponen SQL
+              </Button>
+            )}
+          </Form.Item>
+          <Form.Item name="petunjuk_jawaban" label="Petunjuk Jawaban">
+            {tagsPetunjuk.map((item, idx) => (
+              <Tag
+                key={idx}
+                closable
+                onClose={() => onRemoveTagsPetunjuk(item)}
+              >
+                {item}
+              </Tag>
+            ))}
+            {inputTagsPetunjukVisible && (
+              <Input
+                ref={refButtonPetunjuk}
+                type="text"
+                size="small"
+                style={{ width: 78 }}
+                value={inputTagsPetunjukValue}
+                onChange={handleInputPetunjukChange}
+                onBlur={onAddTagsPetunjuk}
+                onPressEnter={onAddTagsPetunjuk}
+              />
+            )}
+            {!inputTagsPetunjukVisible && (
+              <Button size="small" type="dashed" onClick={showInputPetunjuk}>
+                + Tambah komponen petunjuk SQL
+              </Button>
+            )}
+          </Form.Item>
+
+          <Form.Item
+            name="jawaban_benar"
+            label="Jawaban Benar"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan jawaban yang benar!",
+              },
+            ]}
+          >
             <Input
-              ref={refButton}
-              type="text"
-              size="small"
-              style={{ width: 78 }}
-              value={inputValue}
-              onChange={handleInputChange}
-              onBlur={onAddTags}
-              onPressEnter={onAddTags}
+              prefix={<ConsoleSqlOutlined />}
+              placeholder={` Jawaban Benar . . .`}
             />
-          )}
-          {!inputVisible && (
-            <Button size="small" type="dashed" onClick={showInput}>
-              + Tambah komponen SQL
-            </Button>
-          )}
-        </Form.Item>
+          </Form.Item>
+        </>
       )}
 
-      <Form.Item
-        name="jawaban_benar"
-        label="Jawaban Benar"
-        rules={[
-          {
-            required: true,
-            message: "Mohon masukkan jawaban yang benar!",
-          },
-        ]}
-      >
-        <Input
-          prefix={<ConsoleSqlOutlined />}
-          placeholder={` Jawaban Benar . . .`}
-        />
-      </Form.Item>
       <Form.Item label="Preview Hasil">
         <Form.Item
           name="preview_hasil"
@@ -363,4 +427,4 @@ function FormEditSoal({
   );
 }
 
-export default FormEditSoal;
+export default FormTambahSoal;

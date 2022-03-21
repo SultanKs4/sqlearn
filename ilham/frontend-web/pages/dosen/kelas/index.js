@@ -1,7 +1,10 @@
 import { React, useState, useEffect } from "react";
 
 import Head from "next/head";
-import { mockGetKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import {
+  getKelas,
+  mockGetKelas,
+} from "../../../utils/remote-data/dosen/KelasCRUD";
 import { Typography, Row, Col, Button, Alert } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
@@ -31,10 +34,13 @@ function DaftarKelas() {
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
-    mockGetKelas(1).then((response) => {
-      setDataKelas(response.data);
-      setIsDataKelasLoaded(true);
-    });
+    mockGetKelas()
+      .then((response) => {
+        console.log(response.data);
+        setDataKelas(response.data);
+        setIsDataKelasLoaded(true);
+      })
+      .catch(() => console.log("error"));
   }, []);
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);

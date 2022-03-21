@@ -6,7 +6,7 @@ const mockDataPaketSoal = [
     nama: "Paket Soal A",
     studi_kasus: "Studi Kasus A",
     durasi: 120,
-    kategori: 2,
+    kategori: "Open-Ended",
     pertanyaan: [
       {
         idSoal: 8,
@@ -43,7 +43,7 @@ const mockDataPaketSoal = [
     nama: "Paket Soal B",
     studi_kasus: "Studi Kasus C",
     durasi: 120,
-    kategori: 1,
+    kategori: "Close-Ended",
     pertanyaan: [
       {
         idSoal: 9,
@@ -104,7 +104,7 @@ const mockDataPaketSoal = [
     nama: "Paket Soal C",
     studi_kasus: "-",
     durasi: 120,
-    kategori: 1,
+    kategori: "Close-Ended",
     pertanyaan: [],
   },
   {
@@ -112,7 +112,7 @@ const mockDataPaketSoal = [
     nama: "Paket Soal D",
     studi_kasus: "Studi Kasus B",
     durasi: 120,
-    kategori: 2,
+    kategori: "Open-Ended",
     pertanyaan: [
       {
         idSoal: 10,

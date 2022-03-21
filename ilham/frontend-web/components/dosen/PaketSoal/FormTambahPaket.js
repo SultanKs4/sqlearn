@@ -9,15 +9,21 @@ function FormTambahPaket({
   handleSubmit,
   ...props
 }) {
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
+  const [selectedKategori, setSelectedKategori] = useState("");
+
+  const onFinish = ({ kategori, ...values }) => {
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {
     console.log("Clicked cancel button");
     setVisible(false);
   };
+
+  const onChangeKategori = (kategori) => setSelectedKategori(kategori);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
@@ -54,9 +60,10 @@ function FormTambahPaket({
               <Select
                 placeholder="Pilih Kategori . . ."
                 style={{ width: "200px" }}
+                onChange={onChangeKategori}
               >
-                <Select.Option key={1}>Close-Ended</Select.Option>
-                <Select.Option key={2}>Open-Ended</Select.Option>
+                <Option key="Open-Ended">Open-Ended</Option>
+                <Option key="Close-Ended">Close-Ended</Option>
               </Select>
             </Form.Item>
           </Col>
