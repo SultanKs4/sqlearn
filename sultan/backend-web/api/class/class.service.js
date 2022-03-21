@@ -6,6 +6,7 @@ const { hashPassword } = require("../../lib/hashPassword");
 const deleteFile = require("../../lib/deleteFile");
 const createResponseObject = require("../../lib/createResponseObject");
 const StudentClass = require("../student-class/student-class.model");
+const createHttpError = require("http-errors");
 
 module.exports = {
     getAll: async (user) => {
@@ -24,17 +25,17 @@ module.exports = {
                         as: "classes",
                         through: { attributes: [] },
                     },
-                }).then((result) => {
-                    return result.classes ? result.classes : null;
                 });
             }
-            return createResponseObject("success", "Data kelas berhasil didapatkan", classes);
+            if (!classes || classes.length == 0) throw createHttpError(404, "data kelas tidak ada");
+            return createResponseObject(200, "success", "Data kelas berhasil didapatkan", classes);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data kelas gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -50,34 +51,33 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject("success", "Data studi kasus berhasil didapatkan", classById);
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", classById);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     insert: async (data, user) => {
         try {
-            const exist = await Class.findOne({ where: { name: data.name, semester: data.semester } });
-            if (exist) throw new Error("data already created");
-            let classDb = await Class.create({
-                name: data.name,
-                semester: data.semester,
-                user_id: user.id,
+            const { dataClass, created } = Class.findOrCreate({
+                where: { name: data.name, semester: data.semester },
+                defaults: { user_id: user.id },
             });
-            return createResponseObject("success", "Data kelas baru berhasil ditambahkan", newClass);
+
+            if (created) return createResponseObject(201, "success", "Data kelas baru berhasil ditambahkan", dataClass);
+            else throw createHttpError(409, "data already exist");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas baru gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -90,15 +90,13 @@ module.exports = {
                     semester: data.semester,
                 },
                 defaults: {
-                    name: data.name,
-                    semester: data.semester,
                     user_id: user.id,
                 },
             });
 
             if (classDb == null) {
                 await deleteFile(file);
-                throw new Error("Kelas tidak ada atau gagal dibuat");
+                throw createHttpError(404, "Kelas tidak ada atau gagal dibuat");
             }
 
             // Student
@@ -107,7 +105,7 @@ module.exports = {
 
             if (studentsExcel == null) {
                 await deleteFile(file);
-                throw new Error("Tidak berhasil parsing data dari excel");
+                throw createHttpError(500, "Tidak berhasil parsing data dari excel");
             }
 
             const { arrStudents: arrStudentsNim } = destructurStudentsByField(studentsExcel, "nim");
@@ -115,10 +113,10 @@ module.exports = {
             const { objStudents: nimExistedStudents } = destructurStudentsByField(existedStudents, "nim");
             const newStudents = filterExistedStudents(studentsExcel, nimExistedStudents);
 
-            if (newStudents.length == 0) throw new Error("data mahasiswa kosong");
+            if (newStudents.length == 0) throw createHttpError(404, "data mahasiswa kosong");
 
             let isSuccess = await studentBulkInsert(newStudents);
-            if (isSuccess) throw new Error("gagal menambah data mahasiswa baru");
+            if (isSuccess) throw createHttpError(500, "gagal menambah data mahasiswa baru");
 
             const existedStudentsNew = await findStudentsByNim(arrStudentsNim);
             const studentClasses = studentToStudentClasses(classDb.id, existedStudentsNew);
@@ -129,28 +127,28 @@ module.exports = {
                 "student_id"
             );
             const newStudentClasses = filterExistedStudentClasses(studentClasses, objStudentClassesStudentId);
-            if (newStudentClasses.length == 0) throw new Error("data mahasiswa kelas kosong");
+            if (newStudentClasses.length == 0) throw createHttpError(404, "data mahasiswa kelas kosong");
 
             isSuccess = await studentClassesBulkInsert(newStudentClasses);
-            if (isSuccess) throw new Error("gagal menambahkan mahasiswa ke kelas");
+            if (isSuccess) throw createHttpError(500, "gagal menambahkan mahasiswa ke kelas");
 
             await deleteFile(file);
 
-            return createResponseObject("success", "Data mahasiswa baru berhasil ditambahkan ke kelas");
+            return createResponseObject(201, "success", "Data mahasiswa baru berhasil ditambahkan ke kelas");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas dan mahasiswa baru gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     update: async (id, data, user) => {
         try {
             const classDb = await Class.findByPk(id);
-            if (!classDb) throw new Error("data class by id not found");
+            if (!classDb) throw createHttpError(404, "data class by id not found");
 
             const checkData = await Class.findOne({
                 where: {
@@ -158,7 +156,7 @@ module.exports = {
                     semester: data.semester,
                 },
             });
-            if (!checkData) throw new Error("same data found, cannot update to same data");
+            if (checkData) throw createHttpError(409, "same data found, cannot update to same data");
 
             let dataUpdate = {
                 name: data.name,
@@ -170,27 +168,25 @@ module.exports = {
             });
             await classDb.save();
 
-            if (!classDb) throw new Error("class not found");
-
-            return createResponseObject("success", "Data kelas berhasil diperbarui", classOne);
+            return createResponseObject(200, "success", "Data kelas berhasil diperbarui", classDb);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data kelas gagal diperbarui",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     addStudent: async (classId, studentIds) => {
-        console.log(studentIds);
         try {
             const classOne = await Class.findOne(classId);
-            if (classOne == null) throw new Error("class not found");
+            if (classOne == null) throw createHttpError(404, "class not found");
             const students = await Promise.all(
                 studentIds.map(async (id) => {
                     let student = await Student.findByPk(id);
-                    if (student == null) throw new Error(`student id ${id} not found`);
+                    if (student == null) throw createHttpError(404, `student id ${id} not found`);
                     return {
                         class_id: classOne.id,
                         student_id: student.id,
@@ -199,14 +195,14 @@ module.exports = {
             );
             const newStudentClass = await StudentClass.bulkCreate(students);
 
-            return createResponseObject("success", "Berhasil memasukkan mahasiswa ke kelas", newStudentClass);
+            return createResponseObject(201, "success", "Berhasil memasukkan mahasiswa ke kelas", newStudentClass);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Gagal memasukkan mahasiswa ke kelas",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -218,7 +214,7 @@ module.exports = {
                     student_id: studentId,
                 },
             });
-            if (studentClass == null) throw new Error("mahasiswa tidak terdapat di dalam kelas tersebut");
+            if (studentClass == null) throw createHttpError(404, "mahasiswa tidak terdapat di dalam kelas tersebut");
 
             await StudentClass.destroy({
                 where: {
@@ -227,20 +223,21 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Berhasil mengeluarkan mahasiswa dari kelas");
+            return createResponseObject(200, "success", "Berhasil mengeluarkan mahasiswa dari kelas");
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Gagal mengeluarkan mahasiswa dari kelas",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     destroy: async (id) => {
         try {
             const classOne = await Class.findByPk(id);
-            if (classOne == null) throw new Error("Tidak ada kelas yang dihapus");
+            if (classOne == null) throw createHttpError(404, "Tidak ada kelas yang dihapus");
 
             await Class.destroy({
                 where: {
@@ -248,14 +245,14 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Data kelas berhasil dihapus");
+            return createResponseObject(200, "success", "Data kelas berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

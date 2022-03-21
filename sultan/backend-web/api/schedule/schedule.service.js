@@ -1,176 +1,149 @@
+const createHttpError = require("http-errors");
 const { Op } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const Class = require("../class/class.model");
 const Container = require("../container/container.model");
 const Question = require("../question/question.model");
+const QuestionLabel = require("../questions-label/question-label.model");
 const Score = require("../score/score.model");
 const Session = require("../session/session.model");
 const Student = require("../student/student.model");
 const Schedule = require("./schedule.model");
 
+async function getWhereDosen(query, userId) {
+    let whereSchedule = {};
+    if (query.start && query.finish) {
+        whereSchedule[Op.and] = [
+            { start: { [Op.gte]: new Date(query.start) } },
+            { finish: { [Op.lte]: new Date(query.finish) } },
+        ];
+    } else if (query.start) whereSchedule.finish = { [Op.gte]: new Date(query.start) };
+    else whereSchedule.finish = { [Op.gte]: new Date() };
+
+    let whereClass = { user_id: userId };
+    if (query.kelas) whereClass.id = query.kelas;
+
+    return { whereSchedule, whereClass };
+}
+
+async function getWhereStudent(user) {
+    const student = await Student.findByPk(user.id, {
+        attributes: ["id"],
+        include: [
+            {
+                model: Class,
+                as: "classes",
+                attributes: ["id"],
+            },
+        ],
+    });
+
+    const existedScores = await Score.findAll({
+        attributes: ["schedule_id"],
+        where: {
+            student_id: user.id,
+        },
+        raw: true,
+    }).then((scores) => {
+        return scores.map((val) => val.schedule_id);
+    });
+
+    const unfinishedSessions = await Session.findAll({
+        attributes: ["schedule_id"],
+        where: {
+            student_id: user.id,
+            is_finished: false,
+        },
+        raw: true,
+    }).then((sessions) => {
+        return sessions.map((session) => session.schedule_id);
+    });
+
+    let whereSchedule = {
+        id: {
+            [Op.notIn]: existedScores,
+        },
+        [Op.or]: {
+            finish: {
+                [Op.gte]: new Date(),
+            },
+            id: {
+                [Op.in]: unfinishedSessions,
+            },
+        },
+    };
+
+    let whereClass = {
+        id: {
+            [Op.in]: student.classes.map((item) => item.id),
+        },
+    };
+    return { whereSchedule, whereClass };
+}
+
 module.exports = {
     getAll: async (user, query = null) => {
         try {
-            let whereSchedule = {};
-            if (query.start && query.finish) {
-                whereSchedule[Op.and] = [
-                    { start: { [Op.gte]: new Date(query.start) } },
-                    { finish: { [Op.lte]: new Date(query.finish) } },
-                ];
-            } else if (query.start) {
-                whereSchedule.finish = { [Op.gte]: new Date(query.start) };
-            } else {
-                whereSchedule.finish = { [Op.gte]: new Date() };
+            let where = null;
+            if (user.role == "dosen") {
+                where = await getWhereDosen(query, user.id);
+            } else if (user.role == "mahasiswa") {
+                where = await getWhereStudent(user);
             }
-
-            let whereKelas = {};
-            if (query.kelas) whereKelas.id = query.kelas;
 
             const schedules = await Schedule.findAll({
                 include: [
                     {
                         model: Class,
                         as: "classes",
-                        where: {
-                            ...whereKelas,
-                            user_id: user.id,
-                        },
-                        // through: {
-                        //     where: whereKelas
-                        // }
+                        through: { attributes: [] },
+                        where: where.whereClass,
                     },
                     {
                         model: Container,
-                        attributes: ["id", "description"],
+                        attributes: ["id", "description", "label_id"],
+                        include: [{ model: QuestionLabel, attributes: ["id", "name"] }],
                     },
                 ],
-                where: whereSchedule,
+                where: where.whereSchedule,
                 order: [["createdAt", "DESC"]],
             });
-            if (!schedules || schedules.length == 0) throw new Error("data schedule not found");
+            if (!schedules || schedules.length == 0) throw createHttpError(404, "data schedule not found");
 
-            const scheduleResponse = schedules.reduce((acc, curr) => {
-                curr.classes.map((val) => {
-                    acc = [
-                        ...acc,
-                        {
-                            id: curr.id,
-                            description: curr.description,
-                            total_questions: curr.total_questions,
-                            class: {
-                                id: val.id,
-                                name: val.name,
-                            },
-                            container: {
-                                id: curr.Container.id,
-                                description: curr.Container.description,
-                            },
-                            type: curr.type,
-                            start: curr.start,
-                            finish: curr.finish,
-                        },
-                    ];
+            const scheduleResponse = schedules.map((val) => {
+                let classData = val.classes.map((e) => {
+                    return {
+                        id: e.id,
+                        name: e.name,
+                    };
                 });
-                return acc;
-            }, []);
+                return {
+                    id: val.id,
+                    description: val.description,
+                    total_questions: val.total_questions,
+                    type: val.type,
+                    start: val.start,
+                    finish: val.finish,
+                    class: classData,
+                    container: {
+                        id: val.Container.id,
+                        description: val.Container.description,
+                    },
+                    label: {
+                        id: val.Container.QuestionLabel.id,
+                        name: val.Container.QuestionLabel.name,
+                    },
+                };
+            });
 
-            return createResponseObject("success", "Data schedule berhasil didapatkan", scheduleResponse);
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", scheduleResponse);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
-        }
-    },
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
 
-    getAllForStudents: async (user) => {
-        try {
-            const student = await Student.findByPk(user.id, {
-                include: [
-                    {
-                        model: Class,
-                        as: "classes",
-                        attributes: ["id"],
-                        through: { attributes: [] },
-                    },
-                ],
-            });
-            if (!student) throw new Error("data student not found");
-
-            const scores = await Score.findAll({
-                attributes: ["schedule_id"],
-                where: {
-                    student_id: user.id,
-                },
-                raw: true,
-            });
-
-            const existedScores = scores.map((score) => score.schedule_id);
-
-            const sessions = await Session.findAll({
-                attributes: ["schedule_id"],
-                where: {
-                    student_id: user.id,
-                    is_finished: false,
-                },
-                raw: true,
-            });
-
-            const unfinishedSessions = sessions.map((session) => session.schedule_id);
-
-            const studentClasses = student.classes.map((item) => item.id);
-
-            const dateNow = new Date();
-            const date = `${dateNow.getFullYear()}-${("0" + (dateNow.getMonth() + 1)).slice(-2)}-${(
-                "0" + dateNow.getDate()
-            ).slice(-2)}`;
-            const time = `${dateNow.getHours()}:${dateNow.getMinutes()}:${dateNow.getSeconds()}`;
-
-            const schedules = await Schedule.findAll({
-                include: {
-                    model: Class,
-                    as: "classes",
-                    through: { attributes: [] },
-                    where: {
-                        id: {
-                            [Op.in]: studentClasses,
-                        },
-                    },
-                },
-                where: {
-                    id: {
-                        [Op.notIn]: existedScores,
-                    },
-                    [Op.or]: {
-                        [Op.and]: {
-                            start_date: {
-                                [Op.lte]: date,
-                            },
-                            finish_date: {
-                                [Op.gte]: date,
-                            },
-                            [Op.and]: {
-                                start_time: {
-                                    [Op.lte]: time,
-                                },
-                                finish_time: {
-                                    [Op.gte]: time,
-                                },
-                            },
-                        },
-
-                        id: {
-                            [Op.in]: unfinishedSessions,
-                        },
-                    },
-                },
-            });
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedules);
-        } catch (error) {
-            console.log(error);
-            return createResponseObject("error", "Data schedule gagal didapatkan");
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -186,37 +159,37 @@ module.exports = {
                     },
                 },
             });
-            if (!schedule || schedule.length == 0) throw new Error("schedule not found");
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedule);
+            if (!schedule || schedule.length == 0) throw createHttpError(404, "schedule not found");
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     getOne: async (id) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("data schedule not found");
-            return createResponseObject("success", "Data schedule berhasil didapatkan", schedule);
+            if (!schedule) throw createHttpError(404, "data schedule not found");
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     insert: async (data, user) => {
         try {
             const container = await Container.findByPk(data.container_id);
-            if (!container) throw new Error("data container not found");
+            if (!container) throw createHttpError(404, "data container not found");
 
             const total_questions = await Question.findAndCountAll({
                 include: {
@@ -235,7 +208,8 @@ module.exports = {
                         user_id: user.id,
                     },
                 });
-                if (!classData) throw new Error(`class id ${val} not found or class is not belong to ${user.name}`);
+                if (!classData)
+                    throw createHttpError(404, `class id ${val} not found or class is not belong to ${user.name}`);
             }
 
             let newSchedule = await Schedule.create({
@@ -250,24 +224,24 @@ module.exports = {
 
             await newSchedule.setClasses(data.classes);
 
-            return createResponseObject("success", "Data schedule berhasil ditambahkan", newSchedule);
+            return createResponseObject(201, "success", "Data schedule berhasil ditambahkan", newSchedule);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     update: async (id, data, user) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("Tidak ada data schedule didapatkan");
+            if (!schedule) throw createHttpError(404, "Tidak ada data schedule didapatkan");
 
             const container = await Container.findByPk(data.container_id);
-            if (!container) throw new Error("data container not found");
+            if (!container) throw createResponseObject(404, "data container not found");
 
             const total_questions = await Question.findAndCountAll({
                 include: {
@@ -286,7 +260,8 @@ module.exports = {
                         user_id: user.id,
                     },
                 });
-                if (!classData) throw new Error(`class id ${val} not found or class is not belong to ${user.name}`);
+                if (!classData)
+                    throw createHttpError(404, `class id ${val} not found or class is not belong to ${user.name}`);
             }
 
             let dataUpdate = {
@@ -307,20 +282,21 @@ module.exports = {
             await schedule.setClasses([]);
             await schedule.setClasses(data.classes);
 
-            return createResponseObject("success", "Data schedule berhasil diperbarui", schedule);
+            return createResponseObject(200, "success", "Data schedule berhasil diperbarui", schedule);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data schedule gagal diperbarui",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     destroy: async (id) => {
         try {
             const schedule = await Schedule.findByPk(id);
-            if (!schedule) throw new Error("schedule data not found");
+            if (!schedule) throw createHttpError(404, "schedule data not found");
 
             await Schedule.destroy({
                 where: {
@@ -328,14 +304,14 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Data schedule berhasil dihapus");
+            return createResponseObject(200, "success", "Data schedule berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data schedule gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };

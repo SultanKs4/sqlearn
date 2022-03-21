@@ -1,7 +1,8 @@
+const { describe } = require("mocha");
 const { countCosineSimilarity, getCosineSimilarity } = require("../lib/cosineSimilarity");
 const { getFeatureVector } = require("../lib/getSimilarity");
 const { Parser } = require("node-sql-parser");
-const parseFeatureNode = require("../lib/parseFeatureNode");
+const { parseFeatureNode } = require("../lib/parseFeatureNode");
 
 const chai = require("chai"),
     expect = chai.expect;

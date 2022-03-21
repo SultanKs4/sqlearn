@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.5deb2
+-- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Feb 24, 2022 at 10:41 PM
--- Server version: 10.3.32-MariaDB-0ubuntu0.20.04.1
--- PHP Version: 7.4.3
+-- Host: localhost
+-- Generation Time: Mar 11, 2022 at 08:57 AM
+-- Server version: 10.6.5-MariaDB
+-- PHP Version: 8.1.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -31,9 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `case_studies` (
   `id` int(11) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `db_name` varchar(50) NOT NULL,
-  `db_file` text DEFAULT NULL,
   `user_id` int(11) DEFAULT NULL,
+  `db_list_id` int(11) NOT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -42,15 +40,15 @@ CREATE TABLE `case_studies` (
 -- Dumping data for table `case_studies`
 --
 
-INSERT INTO `case_studies` (`id`, `name`, `db_name`, `db_file`, `user_id`, `createdAt`, `updatedAt`) VALUES
-(2, 'Tes', 'sqlearn_cs_auto_assess_tes', NULL, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57'),
-(5, 'dd', 'sqlearn_cs_dosencoba_dd_pr9k6l', '1644946596364_sql_bumdes.sql', 5, '2022-02-15 17:36:40', '2022-02-15 17:36:40'),
-(6, 'dd', 'sqlearn_cs_dosencoba_dd_78ayum', '1644946630914_sql_bumdes.sql', 5, '2022-02-15 17:37:13', '2022-02-15 17:37:13'),
-(7, 'dd', 'sqlearn_cs_dosencoba_dd_73uxn3', '1644946674646_sql_bumdes.sql', 5, '2022-02-15 17:37:58', '2022-02-15 17:37:58'),
-(8, 'dd', 'sqlearn_cs_dosencoba_dd_v3004s', '1644946706201_sql_bumdes.sql', 5, '2022-02-15 17:38:28', '2022-02-15 17:38:28'),
-(9, 'dd', 'sqlearn_cs_dosencoba_dd_fp58ey', '1644946783711_sql_bumdes.sql', 5, '2022-02-15 17:39:45', '2022-02-15 17:39:45'),
-(10, 'dd', 'sqlearn_cs_dosencoba_dd_1yxfzl', '1644946863058_sql_bumdes.sql', 5, '2022-02-15 17:41:05', '2022-02-15 17:41:05'),
-(11, 'dd', 'sqlearn_cs_dosencoba_dd_dpyyd6', '1644946978679_sql_bumdes.sql', 5, '2022-02-15 17:43:00', '2022-02-15 17:43:00');
+INSERT INTO `case_studies` (`id`, `name`, `user_id`, `db_list_id`, `createdAt`, `updatedAt`) VALUES
+(2, 'Tes', 1, 1, '2021-05-05 16:31:57', '2021-05-05 16:31:57'),
+(5, 'dd', 5, 2, '2022-02-15 17:36:40', '2022-02-15 17:36:40'),
+(6, 'dd', 5, 3, '2022-02-15 17:37:13', '2022-02-15 17:37:13'),
+(7, 'dd', 5, 4, '2022-02-15 17:37:58', '2022-02-15 17:37:58'),
+(8, 'dd', 5, 5, '2022-02-15 17:38:28', '2022-02-15 17:38:28'),
+(9, 'dd', 5, 6, '2022-02-15 17:39:45', '2022-02-15 17:39:45'),
+(10, 'dd', 5, 7, '2022-02-15 17:41:05', '2022-02-15 17:41:05'),
+(11, 'dd', 5, 8, '2022-02-15 17:43:00', '2022-02-15 17:43:00');
 
 -- --------------------------------------------------------
 
@@ -96,7 +94,9 @@ CREATE TABLE `class_schedules` (
 --
 
 INSERT INTO `class_schedules` (`class_id`, `schedule_id`, `createdAt`, `updatedAt`) VALUES
-(14, 11, '2021-06-17 04:45:05', '2021-06-17 04:45:05');
+(14, 11, '2021-06-17 04:45:05', '2021-06-17 04:45:05'),
+(14, 12, '2022-03-09 02:39:17', '2022-03-09 02:39:17'),
+(14, 13, '2022-03-09 02:39:38', '2022-03-09 02:39:38');
 
 -- --------------------------------------------------------
 
@@ -121,6 +121,55 @@ INSERT INTO `containers` (`id`, `description`, `user_id`, `label_id`, `createdAt
 (5, 'Paket Tes', 5, 1, '2021-06-17 04:38:50', '2021-06-17 04:38:50'),
 (8, 'ini uas ya', 5, 2, '2022-02-24 00:11:58', '2022-02-24 00:11:58'),
 (9, 'ini uas ya', 5, 1, '2022-02-24 00:12:35', '2022-02-24 00:12:35');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `db_list`
+--
+
+CREATE TABLE `db_list` (
+  `id` int(11) NOT NULL,
+  `db_name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `db_filename` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `db_list`
+--
+
+INSERT INTO `db_list` (`id`, `db_name`, `db_filename`, `createdAt`, `updatedAt`) VALUES
+(1, 'sqlearn_cs_auto_assess_tes', '1642994333691_sql_sqlearn_cs_auto_assess_tes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(2, 'sqlearn_cs_dosencoba_dd_pr9k6l', '1644946596364_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(3, 'sqlearn_cs_dosencoba_dd_78ayum', '1644946630914_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(4, 'sqlearn_cs_dosencoba_dd_73uxn3', '1644946674646_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(5, 'sqlearn_cs_dosencoba_dd_v3004s', '1644946706201_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(6, 'sqlearn_cs_dosencoba_dd_fp58ey', '1644946783711_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(7, 'sqlearn_cs_dosencoba_dd_1yxfzl', '1644946863058_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39'),
+(8, 'sqlearn_cs_dosencoba_dd_dpyyd6', '1644946978679_sql_bumdes.sql', '2022-03-11 11:16:39', '2022-03-11 11:16:39');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `log_session_student`
+--
+
+CREATE TABLE `log_session_student` (
+  `id` int(11) NOT NULL,
+  `session_id` int(11) DEFAULT NULL,
+  `question_id` int(11) DEFAULT NULL,
+  `answer` text DEFAULT NULL,
+  `answer_json` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`answer_json`)),
+  `type` enum('start','test','submit') DEFAULT NULL,
+  `similarity` decimal(10,2) DEFAULT -1.00,
+  `is_equal` tinyint(1) DEFAULT NULL,
+  `timer` time DEFAULT NULL,
+  `record_time` datetime DEFAULT current_timestamp(),
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -234,7 +283,9 @@ CREATE TABLE `schedules` (
 --
 
 INSERT INTO `schedules` (`id`, `start`, `finish`, `container_id`, `description`, `type`, `user_id`, `createdAt`, `updatedAt`, `total_questions`) VALUES
-(11, '2021-07-25 07:00:00', '2021-08-31 23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5);
+(11, '2021-07-25 07:00:00', '2021-08-31 23:59:00', 5, 'Sesi Tes', 'latihan', 5, '2021-06-17 04:45:05', '2021-06-17 04:45:05', 5),
+(12, '2022-08-03 08:52:52', '2022-10-03 08:53:52', 8, 'UAS 3', 'ujian', 5, '2022-03-09 02:39:17', '2022-03-09 02:39:17', 0),
+(13, '2022-08-03 08:52:52', '2022-10-03 08:53:52', 8, 'UAS 5', 'ujian', 5, '2022-03-09 02:39:38', '2022-03-09 02:39:38', 0);
 
 -- --------------------------------------------------------
 
@@ -260,31 +311,26 @@ CREATE TABLE `scores` (
 CREATE TABLE `sessions` (
   `id` int(11) NOT NULL,
   `student_id` int(11) DEFAULT NULL,
-  `session_started` datetime DEFAULT current_timestamp(),
   `schedule_id` int(11) DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
+  `session_started` datetime DEFAULT current_timestamp(),
   `is_finished` tinyint(1) DEFAULT 0,
-  `questions` text DEFAULT NULL
+  `createdAt` datetime NOT NULL,
+  `updatedAt` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `session_student_answers`
+-- Table structure for table `session_db`
 --
 
-CREATE TABLE `session_student_answers` (
+CREATE TABLE `session_db` (
   `id` int(11) NOT NULL,
-  `session_id` int(11) DEFAULT NULL,
-  `question_id` int(11) DEFAULT NULL,
-  `answer` text DEFAULT NULL,
-  `type` enum('test','submit') DEFAULT NULL,
-  `createdAt` datetime NOT NULL,
-  `updatedAt` datetime NOT NULL,
-  `similarity` decimal(10,2) DEFAULT -1.00,
-  `is_equal` tinyint(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `session_id` int(11) NOT NULL,
+  `db_list_id` int(11) NOT NULL,
+  `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
+  `updatedAt` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -802,7 +848,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `level`, `no_induk`, `name`, 
 --
 ALTER TABLE `case_studies`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `db_list_id` (`db_list_id`);
 
 --
 -- Indexes for table `classes`
@@ -827,6 +874,20 @@ ALTER TABLE `containers`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `label_id` (`label_id`);
+
+--
+-- Indexes for table `db_list`
+--
+ALTER TABLE `db_list`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `log_session_student`
+--
+ALTER TABLE `log_session_student`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `session_id` (`session_id`),
+  ADD KEY `question_id` (`question_id`);
 
 --
 -- Indexes for table `questions`
@@ -876,12 +937,12 @@ ALTER TABLE `sessions`
   ADD KEY `schedule_id` (`schedule_id`);
 
 --
--- Indexes for table `session_student_answers`
+-- Indexes for table `session_db`
 --
-ALTER TABLE `session_student_answers`
+ALTER TABLE `session_db`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `session_id` (`session_id`),
-  ADD KEY `question_id` (`question_id`);
+  ADD KEY `session_db_FK` (`session_id`),
+  ADD KEY `session_db_FK_1` (`db_list_id`);
 
 --
 -- Indexes for table `settings`
@@ -940,6 +1001,12 @@ ALTER TABLE `containers`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT for table `db_list`
+--
+ALTER TABLE `db_list`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
 -- AUTO_INCREMENT for table `questions`
 --
 ALTER TABLE `questions`
@@ -955,7 +1022,7 @@ ALTER TABLE `questions_label`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `scores`
@@ -967,13 +1034,13 @@ ALTER TABLE `scores`
 -- AUTO_INCREMENT for table `sessions`
 --
 ALTER TABLE `sessions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT for table `session_student_answers`
+-- AUTO_INCREMENT for table `session_db`
 --
-ALTER TABLE `session_student_answers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+ALTER TABLE `session_db`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `settings`
@@ -1007,7 +1074,8 @@ ALTER TABLE `users`
 -- Constraints for table `case_studies`
 --
 ALTER TABLE `case_studies`
-  ADD CONSTRAINT `case_studies_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `case_studies_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `case_studies_ibfk_2` FOREIGN KEY (`db_list_id`) REFERENCES `db_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `classes`
@@ -1028,6 +1096,13 @@ ALTER TABLE `class_schedules`
 ALTER TABLE `containers`
   ADD CONSTRAINT `containers_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `containers_ibfk_2` FOREIGN KEY (`label_id`) REFERENCES `questions_label` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `log_session_student`
+--
+ALTER TABLE `log_session_student`
+  ADD CONSTRAINT `log_session_student_ibfk_549` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `log_session_student_ibfk_550` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `questions`
@@ -1066,11 +1141,11 @@ ALTER TABLE `sessions`
   ADD CONSTRAINT `sessions_ibfk_556` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `session_student_answers`
+-- Constraints for table `session_db`
 --
-ALTER TABLE `session_student_answers`
-  ADD CONSTRAINT `session_student_answers_ibfk_549` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `session_student_answers_ibfk_550` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `session_db`
+  ADD CONSTRAINT `session_db_FK` FOREIGN KEY (`session_id`) REFERENCES `sessions` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `session_db_FK_1` FOREIGN KEY (`db_list_id`) REFERENCES `db_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `student_classes`

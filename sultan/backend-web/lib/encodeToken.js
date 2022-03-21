@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const jwt = require("jsonwebtoken");
 const Student = require("../api/student/student.model");
 const User = require("../api/user/user.model");
@@ -26,25 +27,25 @@ async function verifyJWT(token) {
         if (role == JWT_ROLES.dosen || role == JWT_ROLES.admin) {
             user = await User.findByPk(id, {
                 attributes: {
-                    exclude: ["password"],
+                    exclude: ["password", "createdAt", "updatedAt"],
                 },
                 raw: true,
             });
         } else if (role == JWT_ROLES.mahasiswa) {
             user = await Student.findByPk(id, {
                 attributes: {
-                    exclude: ["password"],
+                    exclude: ["password", "createdAt", "updatedAt"],
                 },
                 raw: true,
             });
         }
 
-        if (!user) throw new Error("user not found");
+        if (!user) throw createHttpError(404, "user not found");
 
         user["role"] = role;
         return user;
     } catch (error) {
-        return error;
+        throw error;
     }
 }
 

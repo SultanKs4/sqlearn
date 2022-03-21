@@ -5,7 +5,6 @@ const scheduleController = require("./schedule.controller");
 const scheduleSanitizer = require("./schedule.sanitizer");
 
 router.get("/", scheduleController.index);
-router.get("/students", scheduleController.indexStudents);
 router.get("/class/:id", scheduleSanitizer.checkIdOnly, scheduleController.indexByClass);
 router.get("/:id", scheduleSanitizer.checkIdOnly, scheduleController.show);
 router.post("/", scheduleSanitizer.checkPost, scheduleController.store);

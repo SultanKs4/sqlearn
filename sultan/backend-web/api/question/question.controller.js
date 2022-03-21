@@ -4,46 +4,40 @@ const questionService = require("./question.service");
 module.exports = {
     index: async (req, res) => {
         const resObj = await questionService.getAll(req.query);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
     indexExclude: async (req, res) => {
         const resObj = await questionService.getAllExclude(req.params.container, req.query);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
     show: async (req, res) => {
         const resObj = await questionService.getOne(req.params.id);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
     store: async (req, res) => {
         if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"));
         const resObj = await questionService.insert(req.body, req.file.filename, req.user);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(201).json(resObj);
+        return res.status(httpCode).json(response);
     },
     update: async (req, res) => {
         if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"));
         const resObj = await questionService.update(req.params.id, req.body, req.file.filename, req.user);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
     destroy: async (req, res) => {
         const resObj = await questionService.deleteOne(req.params.id);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
 };

@@ -8,15 +8,13 @@ module.exports = (req, res, next) => {
         queryMhsLowerCase.includes("alter") ||
         queryMhsLowerCase.includes("drop")
     ) {
-        return res
-            .status(400)
-            .json(
-                responseObj(
-                    "fail",
-                    { similarity: -1, isEqual: false },
-                    "sistem hanya dapat menerima perintah SELECT dan INSERT"
-                )
-            );
+        const { httpCode, ...resp } = responseObj(
+            400,
+            "fail",
+            { similarity: -1, isEqual: false },
+            "sistem hanya dapat menerima perintah SELECT dan INSERT"
+        );
+        return res.status(httpCode).json(resp);
     }
     next();
 };
