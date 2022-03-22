@@ -1,3 +1,4 @@
+const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
 const { hashPassword, comparePassword } = require("../../lib/hashPassword");
@@ -12,13 +13,13 @@ module.exports = {
                     exclude: ["password"],
                 },
             });
-            return createResponseObject(
-                true,
-                "Data user berhasil didapatkan",
-                users
-            );
+            if (!users) throw createHttpError(404, "user not found");
+            return createResponseObject(200, "success", "Data user berhasil didapatkan", users);
         } catch (error) {
-            return createResponseObject(false, "Data user gagal didapatkan");
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -29,69 +30,35 @@ module.exports = {
                     exclude: ["password"],
                 },
             });
-            return createResponseObject(
-                true,
-                "Data user berhasil didapatkan",
-                user
-            );
+            if (!user) throw createHttpError(404, "user not found");
+            return createResponseObject(200, "success", "Data user berhasil didapatkan", user);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(false, "Data user gagal didapatkan");
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
-    authenticate: async (username, password) => {
+    insert: async (username, password, no_induk, name, level = "dosen") => {
         try {
-            const user = await User.findOne({
+            const [newUser, created] = await User.findOrCreate({
                 where: {
-                    username,
+                    username: username,
                 },
-                raw: true,
+                defaults: { password: hashPassword(password), no_induk, name, level },
             });
-            if (!user) throw new Error("Username tidak ditemukan");
-
-            const isPasswordMatch = comparePassword(password, user.password);
-            if (!isPasswordMatch) throw new Error("Password salah");
-
-            const jwt = encodeJWT(user.id, JWT_ROLES.dosen);
-
-            const { password: passDb, ...rest } = user;
-            const userResponse = { ...rest, role: "dosen" };
-
-            return createResponseObject(true, "Login berhasil dilakukan", {
-                token: jwt,
-                user: userResponse,
-            });
+            if (created) return createResponseObject(200, "success", "Data user berhasil ditambahkan", newUser);
+            else throw createHttpError(409, "user already exist");
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                false,
-                "Login gagal dilakukan",
-                error.message
-            );
-        }
-    },
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
 
-    insert: async (username, password, no_induk, name) => {
-        try {
-            let newUser = await User.create({
-                username: username,
-                password: hashPassword(password),
-                no_induk: no_induk,
-                name: name,
-            });
-            return createResponseObject(
-                true,
-                "Data user berhasil ditambahkan",
-                newUser
-            );
-        } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                false,
-                "Data user gagal ditambahkan",
-                error
-            );
+            return createResponseObject(code, "error", message, data);
         }
     },
 
@@ -102,7 +69,7 @@ module.exports = {
                     exclude: ["password"],
                 },
             });
-            if (!user) throw new Error("Tidak ada data user didapatkan");
+            if (!user) throw createHttpError(404, "Tidak ada data user didapatkan");
 
             Object.keys(data).forEach((val) => {
                 user[val] = data[val];
@@ -110,24 +77,21 @@ module.exports = {
 
             await user.save();
 
-            return createResponseObject(
-                true,
-                "Data user berhasil diperbarui",
-                user
-            );
+            return createResponseObject(200, "success", "Data user berhasil diperbarui", user);
         } catch (error) {
-            return createResponseObject(
-                false,
-                "Data user gagal diperbarui",
-                error.message
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 
     destroy: async (id) => {
         try {
             const user = await User.findByPk(id);
-            if (!user) throw new Error("Tidak ada data user didapatkan");
+            if (!user) throw createHttpError(404, "Tidak ada data user didapatkan");
 
             await User.destroy({
                 where: {
@@ -135,14 +99,15 @@ module.exports = {
                 },
             });
 
-            return createResponseObject(true, "Data user berhasil dihapus");
+            return createResponseObject(200, "success", "Data user berhasil dihapus");
         } catch (error) {
             console.log(error);
-            return createResponseObject(
-                false,
-                "Data user gagal dihapus",
-                error.message
-            );
+            let code = 500;
+            let message = error.message;
+            let data = null;
+            if (createHttpError.isHttpError(error)) code = error.statusCode;
+
+            return createResponseObject(code, "error", message, data);
         }
     },
 };
