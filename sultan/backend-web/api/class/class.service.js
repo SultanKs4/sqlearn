@@ -6,6 +6,7 @@ const { hashPassword } = require("../../lib/hashPassword");
 const deleteFile = require("../../lib/deleteFile");
 const createResponseObject = require("../../lib/createResponseObject");
 const createHttpError = require("http-errors");
+const errorHandling = require("../../lib/errorHandling");
 
 module.exports = {
     getAll: async (user) => {
@@ -31,12 +32,7 @@ module.exports = {
             if (!classes || classes.length == 0) throw createHttpError(404, "data kelas tidak ada");
             return createResponseObject(200, "success", "Data kelas berhasil didapatkan", classes);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -55,12 +51,7 @@ module.exports = {
             if (!classById) throw createHttpError(404, "data class not found");
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", classById);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -74,12 +65,7 @@ module.exports = {
             if (created) return createResponseObject(201, "success", "Data kelas baru berhasil ditambahkan", dataClass);
             else throw createHttpError(409, "data already exist");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -126,12 +112,7 @@ module.exports = {
             return createResponseObject(201, "success", "Data mahasiswa baru berhasil ditambahkan ke kelas", response);
         } catch (error) {
             await deleteFile(file);
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -160,12 +141,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kelas berhasil diperbarui", classDb);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -183,12 +159,7 @@ module.exports = {
 
             return createResponseObject(201, "success", "Berhasil memasukkan mahasiswa ke kelas", data);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -201,12 +172,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Berhasil mengeluarkan mahasiswa dari kelas");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -223,12 +189,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kelas berhasil dihapus");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

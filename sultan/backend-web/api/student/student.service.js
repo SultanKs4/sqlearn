@@ -1,8 +1,8 @@
 const createHttpError = require("http-errors");
 const { Op } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
-const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
-const { hashPassword, comparePassword } = require("../../lib/hashPassword");
+const errorHandling = require("../../lib/errorHandling");
+const { hashPassword } = require("../../lib/hashPassword");
 const Class = require("../class/class.model");
 const StudentClass = require("../student-class/student-class.model");
 const Student = require("./student.model");
@@ -17,10 +17,7 @@ module.exports = {
             });
             return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", classes);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     getAllExclude: async (classId) => {
@@ -46,10 +43,7 @@ module.exports = {
             });
             return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", students);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     getOne: async (id) => {
@@ -68,10 +62,7 @@ module.exports = {
             });
             return createResponseObject(200, "success", "Data mahasiswa berhasil didapatkan", student);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     insert: async (data) => {
@@ -90,10 +81,7 @@ module.exports = {
                 return createResponseObject(200, "success", "Data mahasiswa baru berhasil ditambahkan", student);
             else throw createHttpError(409, "data student already exist");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     update: async (id, data) => {
@@ -109,10 +97,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kelas berhasil diperbarui", student);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     destroy: async (id) => {
@@ -128,10 +113,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data mahasiswa berhasil dihapus");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

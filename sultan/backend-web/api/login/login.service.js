@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
+const errorHandling = require("../../lib/errorHandling");
 const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 const Student = require("../student/student.model");
 const User = require("../user/user.model");
@@ -35,12 +36,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "login success", payloadResponse);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

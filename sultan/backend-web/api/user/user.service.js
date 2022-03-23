@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
+const errorHandling = require("../../lib/errorHandling");
 const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 
 const User = require("./user.model");
@@ -16,10 +17,7 @@ module.exports = {
             if (!users) throw createHttpError(404, "user not found");
             return createResponseObject(200, "success", "Data user berhasil didapatkan", users);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -33,12 +31,7 @@ module.exports = {
             if (!user) throw createHttpError(404, "user not found");
             return createResponseObject(200, "success", "Data user berhasil didapatkan", user);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -53,12 +46,7 @@ module.exports = {
             if (created) return createResponseObject(200, "success", "Data user berhasil ditambahkan", newUser);
             else throw createHttpError(409, "user already exist");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -79,12 +67,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data user berhasil diperbarui", user);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -101,13 +84,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data user berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };
