@@ -100,19 +100,18 @@ module.exports = {
             const excelsData = convertExcel(file);
             const studentsExcel = excelToStudents(excelsData);
 
-            if (!studentsExcel) throw createHttpError(500, "Tidak berhasil parsing data dari excel");
-
-            const { arrStudents: arrStudentsNim } = destructurStudentsByField(studentsExcel, "nim");
-            let existedStudents = await findStudentsByNim(arrStudentsNim);
+            const arrStudentsNim = studentsExcel.map((student) => student.nim);
+            let existedStudents = await findStudentsByNim(arrStudentsNim).then((data) =>
+                data.map((student) => student.toJSON())
+            );
             let newStudents = [];
             if (existedStudents.length > 0) {
-                const { objStudents: nimExistedStudents } = destructurStudentsByField(existedStudents, "nim");
-                newStudents = filterExistedStudents(studentsExcel, nimExistedStudents);
+                newStudents = studentsExcel.filter(
+                    (student) => !existedStudents.some((existData) => existData.nim == student.nim)
+                );
             } else newStudents = studentsExcel;
 
-            if (newStudents.length > 0) {
-                await Student.bulkCreate(newStudents);
-            }
+            if (newStudents.length > 0) await Student.bulkCreate(newStudents);
 
             existedStudents = await findStudentsByNim(arrStudentsNim);
             await classDb.addStudents(existedStudents);
@@ -246,51 +245,21 @@ function excelToStudents(data) {
                 name: student["name"],
             };
         });
+        if (!students || students.length == 0) throw createHttpError(404, "data mahasiswa at excel file not found");
         return students;
     } catch (error) {
         throw error;
     }
 }
 
-function destructurStudentsByField(students, field) {
-    try {
-        if (!students || students.length == 0) throw new Error("data student empty");
-
-        const objStudents = students.reduce((prev, curr) => {
-            prev[curr[field]] = true;
-            return prev;
-        }, {});
-
-        const arrStudents = students.map((student) => student[field]);
-
-        return { objStudents, arrStudents };
-    } catch (error) {
-        throw error;
-    }
-}
-
 async function findStudentsByNim(nims) {
-    try {
-        if (!nims || nims.length == 0) throw new Error("nim empty");
-        return await Student.findAll({
-            where: {
-                nim: {
-                    [Op.in]: nims,
-                },
+    return await Student.findAll({
+        where: {
+            nim: {
+                [Op.in]: nims,
             },
-        });
-    } catch (error) {
-        throw error;
-    }
-}
-
-function filterExistedStudents(students, objStudents) {
-    if (!students || students.length == 0) return null;
-    if (!objStudents) return students;
-
-    const filteredStudents = students.filter((student) => !objStudents[student["nim"]]);
-
-    return filteredStudents;
+        },
+    });
 }
 
 async function getStudentsFromIds(studentIds) {
