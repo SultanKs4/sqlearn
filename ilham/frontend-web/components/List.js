@@ -14,7 +14,13 @@ import {
   Empty,
   Badge,
 } from "antd";
-import { countTimeDifference, getHours, ucfirst } from "../utils/common";
+import {
+  countTimeDifference,
+  formatToArray,
+  getHours,
+  removeHTML,
+  ucfirst,
+} from "../utils/common";
 
 import {
   PlusCircleOutlined,
@@ -138,14 +144,14 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                     <Row gutter={50}>
                       <Col>
                         <Typography.Text style={{ fontWeight: "bold" }}>
-                          {item.nama}
+                          {item?.name}
                         </Typography.Text>
                       </Col>
                       <Col>
                         <DatabaseOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        Database {item.database}
+                        Database {item?.DbList?.db_name}
                       </Col>
                     </Row>
                   </Col>
@@ -502,8 +508,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={
+                item?.QuestionLabel?.name === "-"
+                  ? "Kosong"
+                  : item?.QuestionLabel?.name
+              }
+              color={
+                item?.QuestionLabel?.name === "Close-Ended"
+                  ? "geekblue"
+                  : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -513,20 +527,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row gutter={[50]}>
                         <Col>
                           <Typography.Text style={{ fontWeight: "bold" }}>
-                            {item.nama}
+                            {item.description}
                           </Typography.Text>
-                        </Col>
-                        <Col>
-                          <ConsoleSqlOutlined
-                            style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                          />
-                          <Typography.Text
-                            style={{
-                              color:
-                                item.pertanyaan.length > 0 ? "black" : "red",
-                            }}
-                            children={`${item.pertanyaan.length} Pertanyaan`}
-                          />
                         </Col>
                       </Row>
                     </Col>
@@ -539,7 +541,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<SearchOutlined />}
                               size={"medium"}
-                              onClick={() => props.previewPaket(item?.id_paket)}
+                              onClick={() => props.previewPaket(item?.id)}
                             ></Button>
                           </Tooltip>
                         </Col>
@@ -577,19 +579,19 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <DatabaseOutlined />
                         <Typography.Text
                           style={{ fontWeight: "bold", marginLeft: "1em" }}
-                          children={item.studi_kasus}
+                          children={item.CaseStudy?.name}
                         />
                       </Col>
                     </Row>
                     <Row justify="space-between" style={{ margin: "1em 0" }}>
-                      <Col> {item.teksSoal} </Col>
+                      <Col> {removeHTML(item.text)} </Col>
                     </Row>
                     <Row justify="space-between">
                       <Col>
                         <Typography.Text children={"Opsi Jawaban : "} />
                         <List
                           size="small"
-                          dataSource={item.jawaban}
+                          dataSource={formatToArray(item.answer)}
                           locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
                           renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
                         />
@@ -599,17 +601,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
 
                   <Col>
-                    <Row>
-                      <Tooltip title="Edit Soal">
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editPilihSoal(item)}
-                        />
-                      </Tooltip>
-                    </Row>
-                    <Divider style={{ margin: 0, padding: 4 }} />
                     <Tooltip title="Hapus Soal">
                       <Button
                         type="danger"
@@ -672,8 +663,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={
+                item?.QuestionLabel?.name === "-"
+                  ? "Kosong"
+                  : item?.QuestionLabel?.name
+              }
+              color={
+                item?.QuestionLabel?.name === "Close-Ended"
+                  ? "geekblue"
+                  : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -685,12 +684,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <DatabaseOutlined />
                           <Typography.Text
                             style={{ fontWeight: "bold", marginLeft: "1em" }}
-                            children={item.studi_kasus}
+                            children={item.CaseStudy?.name}
                           />
                         </Col>
                       </Row>
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
-                        <Col> {item.teksSoal} </Col>
+                        <Col>{removeHTML(item.text)}</Col>
                       </Row>
                       {showDetail && (
                         <Row justify="space-between">
@@ -698,7 +697,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             <Typography.Text children={"Jawaban Query : "} />
                             <List
                               size="small"
-                              dataSource={item.jawaban}
+                              dataSource={formatToArray(item.answer)}
                               locale={{
                                 emptyText: "Opsi Jawaban belum dibuat",
                               }}
@@ -718,7 +717,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<EditOutlined />}
                               size={"medium"}
-                              onClick={() => props.editSoal(item)}
+                              onClick={() => props.displayModalEditSoal(item)}
                             />
                           </Tooltip>
                         </Row>
@@ -727,7 +726,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <Button
                             type="danger"
                             icon={<DeleteOutlined />}
-                            onClick={() => props.deleteSoal(item)}
+                            onClick={() => props.displayModalDeleteSoal(item)}
                           />
                         </Tooltip>
                       </Col>

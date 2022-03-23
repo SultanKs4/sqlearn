@@ -85,10 +85,9 @@ function MahasiswaByID() {
     // ? (Bearer Token, values, idKelas)
     postMhs(session?.user?.tokenJWT, formMahasiswa, router.query.idKelas)
       .then(() => {
-        handleToggleAlert();
+        handleToggleAlert(true);
         handleToggleModal(false);
         setAlertMessage(`Data ${formMahasiswa.name} berhasil ditambahkan`);
-        console.log("Hasil submit tambah", formMahasiswa);
         setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataMahasiswa())
@@ -111,13 +110,11 @@ function MahasiswaByID() {
   const aksiDeleteMahasiswa = (formMahasiswa) => {
     deleteMhs(session?.user?.tokenJWT, router.query.idKelas, currentMhs.id)
       .then(() => {
-        handleToggleAlert();
+        handleToggleAlert(true);
         handleToggleModal(false);
         setAlertMessage(
           `Data Mahasiswa ${formMahasiswa.name} berhasil dihapus`
         );
-        handleToggleAlert();
-        console.log("Data terhapus", formMahasiswa);
         setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataMahasiswa())

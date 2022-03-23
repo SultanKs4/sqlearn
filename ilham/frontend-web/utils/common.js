@@ -16,3 +16,12 @@ export const countTimeDifference = (startDate = moment(), endDate) => {
 export const getHours = (minutes) => minutes / 60;
 
 export const isObjectEmpty = (obj) => Object.entries(obj).length === 0;
+
+//remove html tags from a string, leaving only the inner text
+export const removeHTML = (str) => {
+  var tmp = document.createElement("DIV");
+  tmp.innerHTML = str;
+  return tmp.textContent || tmp.innerText || "";
+};
+
+export const formatToArray = (stringArray) => JSON.parse(stringArray);

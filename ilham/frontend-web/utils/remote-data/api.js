@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export const BASE_URL = "https://api.sqlearn.sultanachmad.me";
 // ? BACKEND WEB
 // API KELAS
@@ -17,3 +19,10 @@ export const URL_CREATE_DB_API = `${BASE_URL}/api/v2/database/create/testcreate`
 export const URL_DESC_TABLE_API = `${BASE_URL}/api/v2/database/desc_table/auto_assess_tes`;
 export const URL_ASSESMENT_MULTI_KEY_API = `${BASE_URL}/api/v2/assessment/multi_key`;
 export const URL_ASSESMENT_SINGLE_KEY_API = `${BASE_URL}/api/v2/assessment/single_key`;
+
+export const axiosWithBearer = (bearerToken) =>
+  axios.create({
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  });

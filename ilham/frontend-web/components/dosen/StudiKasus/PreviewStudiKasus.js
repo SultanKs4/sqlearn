@@ -1,23 +1,21 @@
+import { Row, Typography, Table, Collapse, Skeleton } from "antd";
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
 import {
-  Row,
-  Col,
-  Divider,
-  List,
-  Typography,
-  Table,
-  Collapse,
-  Skeleton,
-} from "antd";
-import { useEffect, useState } from "react";
-import { mockGetAllDataStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+  getStudiKasusByID,
+  mockGetAllDataStudiKasus,
+} from "../../../utils/remote-data/dosen/StudiKasus";
+
+// TODO 24/03/2022 : Untuk Endpoint Get One (Status Code 500) dan Get One Detail Per Table (ER_ACCESS_DENIED_ERROR)
+// ? Ready
 
 function PreviewStudiKasus({ currentStudiKasus }) {
+  const { data: session } = useSession();
+
   const { Panel } = Collapse;
+  console.log("currentStudiKasus", currentStudiKasus);
 
-  const [selectedDB, setSelectedDB] = useState({});
-
-  const [selectedTable, setSelectedTable] = useState({});
-
+  const [selectedDB, setSelectedDB] = useState([]);
   const [currentTables, setCurrentTables] = useState([]);
   const [currentColumns, setCurrentColumns] = useState([]);
   const [currentData, setCurrentData] = useState([]);
@@ -27,16 +25,21 @@ function PreviewStudiKasus({ currentStudiKasus }) {
   useEffect(() => {
     setIsDataLoaded(false);
 
-    mockGetAllDataStudiKasus().then((response) => {
-      setSelectedDB(
-        response?.data?.find((item) => item.db_id === currentStudiKasus.db_id)
-      );
-      setIsDataLoaded(true);
-    });
+    fetchStudiKasusTables();
 
     setCurrentColumns([]);
     setCurrentData([]);
   }, [currentStudiKasus]);
+
+  const fetchStudiKasusTables = useCallback(() => {
+    if (currentStudiKasus !== undefined)
+      getStudiKasusByID(session?.user?.tokenJWT, currentStudiKasus?.id).then(
+        (res) => {
+          setCurrentTables(res?.tables);
+          setIsDataLoaded(true);
+        }
+      );
+  }, [session, currentStudiKasus]);
 
   useEffect(() => {
     setCurrentTables(selectedDB?.content);

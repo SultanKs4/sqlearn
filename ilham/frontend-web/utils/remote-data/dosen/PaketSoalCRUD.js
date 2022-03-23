@@ -1,4 +1,4 @@
-import axios from "axios";
+import { axiosWithBearer, URL_CONTAINER_API } from "../api";
 
 const mockDataPaketSoal = [
   {
@@ -160,28 +160,57 @@ const mockDataPaketSoal = [
   },
 ];
 
-const getPaketSoal = async () => {
-  let response = await axios.get("");
+const getPaketSoal = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(`${URL_CONTAINER_API}`);
   return response.data;
 };
 
-const getPaketSoalByID = async (paketID) => {
-  let response = await axios.get("");
+const getPaketSoalByID = async (bearerToken, paketSoalID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_CONTAINER_API}/${paketSoalID}`
+  );
   return response.data;
 };
 
-const postPaketSoal = async () => {
-  let response = await axios.post("");
+const postPaketSoal = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    URL_CONTAINER_API,
+    values
+  );
   return response.data;
 };
 
-const updatePaketSoal = async () => {
-  let response = await axios.put("");
+const updatePaketSoal = async (bearerToken, values, paketSoalID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_CONTAINER_API}/${paketSoalID}`,
+    values
+  );
   return response.data;
 };
 
-const deletePaketSoal = async () => {
-  let response = await axios.delete("");
+const deletePaketSoal = async (bearerToken, paketSoalID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_CONTAINER_API}/${paketSoalID}`
+  );
+  return response.data;
+};
+
+const deleteQuestionFromPaketSoal = async (
+  bearerToken,
+  paketSoalID,
+  questionID
+) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_CONTAINER_API}/${paketSoalID}/remove/${questionID}`
+  );
+  return response.data;
+};
+
+const addQuestionToPaketSoal = async (bearerToken, values, paketSoalID) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    `${URL_CONTAINER_API}/${paketSoalID}/add`,
+    values
+  );
   return response.data;
 };
 
@@ -213,4 +242,6 @@ export {
   deletePaketSoal,
   mockGetPaketSoal,
   mockGetPaketSoalByID,
+  deleteQuestionFromPaketSoal,
+  addQuestionToPaketSoal,
 };

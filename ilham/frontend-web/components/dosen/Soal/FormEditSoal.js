@@ -21,6 +21,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "antd/lib/form/Form";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+import { formatToArray, removeHTML } from "../../../utils/common";
 
 const formItemLayout = {
   labelCol: {
@@ -40,24 +41,17 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-function FormEditSoal({
-  currentSoal,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const [form] = useForm();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
   const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
   const [selectedKategori, setSelectedKategori] = useState(
-    currentSoal?.kategori
+    currentSoal?.QuestionLabel?.name
   );
 
   const [isEditingForm, setIsEditingForm] = useState(false);
 
-  // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
   const refButtonPetunjuk = useRef(null);
 
@@ -87,12 +81,12 @@ function FormEditSoal({
   };
 
   const onFinish = ({ kategori, ...values }) => {
-    setFormObj(values);
     handleSubmit({
       kategori: selectedKategori === "Close-Ended" ? 1 : 2,
       ...values,
     });
   };
+
   const onChangeStudiKasus = (kelas) => {
     setIsEditingForm(true);
     console.log(kelas);
@@ -141,15 +135,16 @@ function FormEditSoal({
 
   useEffect(() => {
     console.log("ini currentSoal", currentSoal);
-
-    form.setFieldsValue({
-      kategori: selectedKategori,
-      teksSoal: currentSoal?.teksSoal,
-      opsi_jawaban: currentSoal?.jawaban,
-      jawaban_benar: currentSoal?.jawaban_benar,
-      dosen_pembuat: currentSoal?.dosen_pembuat,
-      studi_kasus: currentSoal?.studi_kasus,
-    });
+    if (currentSoal !== undefined)
+      form.setFieldsValue({
+        kategori: selectedKategori,
+        teksSoal: removeHTML(currentSoal?.text),
+        // ? Sementara seperti ini
+        opsi_jawaban: formatToArray(currentSoal?.answer),
+        jawaban_benar: formatToArray(currentSoal?.answer)[0],
+        dosen_pembuat: currentSoal?.User?.name,
+        studi_kasus: currentSoal?.CaseStudy?.name,
+      });
   }, [currentSoal]);
 
   const showInput = () => setInputTagsKomponenVisible(true);
@@ -437,7 +432,7 @@ function FormEditSoal({
             ]}
           >
             <Select
-              placeholder="Pilih kelas . . ."
+              placeholder="Pilih Studi Kasus . . ."
               onChange={onChangeStudiKasus}
             >
               {dataStudiKasus?.map((item) => (

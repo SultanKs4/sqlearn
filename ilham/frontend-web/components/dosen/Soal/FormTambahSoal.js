@@ -39,13 +39,7 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-function FormTambahSoal({
-  currentSoal,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const [form] = useForm();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
@@ -85,7 +79,6 @@ function FormTambahSoal({
   }, []);
 
   const onFinish = ({ kategori, ...values }) => {
-    setFormObj(values);
     handleSubmit({
       kategori: selectedKategori === "Close-Ended" ? 1 : 2,
       ...values,

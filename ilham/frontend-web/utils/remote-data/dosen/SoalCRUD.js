@@ -1,6 +1,6 @@
-import axios from "axios";
+import { axiosWithBearer, URL_QUESTION_API } from "../api";
 
-const getSoal = async () => {
+const mockGetSoal = async () => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
@@ -155,24 +155,39 @@ const getSoal = async () => {
   });
 };
 
-const getSoalByID = async (soalID) => {
-  let response = await axios.get("");
+const getSoal = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(`${URL_QUESTION_API}`);
   return response.data;
 };
 
-const postSoal = async () => {
-  let response = await axios.post("");
+const getSoalByID = async (bearerToken, soalID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_QUESTION_API}/${soalID}`
+  );
   return response.data;
 };
 
-const updateSoal = async () => {
-  let response = await axios.put("");
+const postSoal = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    URL_QUESTION_API,
+    values
+  );
   return response.data;
 };
 
-const deleteSoal = async () => {
-  let response = await axios.delete("");
+const updateSoal = async (bearerToken, values, soalID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_QUESTION_API}/${soalID}`,
+    values
+  );
   return response.data;
 };
 
-export { getSoal, getSoalByID, postSoal, updateSoal, deleteSoal };
+const deleteSoal = async (bearerToken, soalID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_QUESTION_API}/${soalID}`
+  );
+  return response.data;
+};
+
+export { mockGetSoal, getSoal, getSoalByID, postSoal, updateSoal, deleteSoal };

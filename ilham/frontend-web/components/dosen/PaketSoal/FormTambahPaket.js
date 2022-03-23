@@ -2,13 +2,7 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-function FormTambahPaket({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
   const [selectedKategori, setSelectedKategori] = useState("");
 
   const onFinish = ({ kategori, ...values }) => {

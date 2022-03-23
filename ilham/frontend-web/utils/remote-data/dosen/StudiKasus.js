@@ -1,27 +1,39 @@
-import axios from "axios";
+import { axiosWithBearer, URL_CASE_STUDY_API } from "../api";
 
-const getStudiKasus = async () => {
-  let response = await axios.get("");
+const getStudiKasus = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_CASE_STUDY_API}`
+  );
   return response.data;
 };
 
-const getStudiKasusByID = async (studiKasusID) => {
-  let response = await axios.get("");
+const getStudiKasusByID = async (bearerToken, studiKasusID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_CASE_STUDY_API}/${studiKasusID}`
+  );
   return response.data;
 };
 
-const postStudiKasus = async () => {
-  let response = await axios.get("");
+const postStudiKasus = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    URL_CASE_STUDY_API,
+    values
+  );
   return response.data;
 };
 
-const updateStudiKasus = async () => {
-  let response = await axios.get("");
+const updateStudiKasus = async (bearerToken, values, studiKasusID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_CASE_STUDY_API}/${studiKasusID}`,
+    values
+  );
   return response.data;
 };
 
-const deleteStudiKasus = async () => {
-  let response = await axios.get("");
+const deleteStudiKasus = async (bearerToken, studiKasusID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_CASE_STUDY_API}/${studiKasusID}`
+  );
   return response.data;
 };
 

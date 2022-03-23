@@ -1,6 +1,6 @@
 import { Button, Col, Divider, Form, Row, Select, Table } from "antd";
 import { useEffect, useState } from "react";
-import { getSoal } from "../../../utils/remote-data/dosen/SoalCRUD";
+import { mockGetSoal } from "../../../utils/remote-data/dosen/SoalCRUD";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 import { isObjectEmpty } from "../../../utils/common";
 
@@ -25,7 +25,6 @@ const columns = [
 
 function FormEditPilihSoal({
   currentSoal,
-  setFormObj,
   setVisible,
   handleSubmit,
   ...props
@@ -62,7 +61,7 @@ function FormEditPilihSoal({
 
   useEffect(() => {
     setLoadOnChangeStudiKasus(false);
-    getSoal().then((response) => {
+    mockGetSoal().then((response) => {
       let tempSoalFiltered = response.data.filter(
         (item) => item.studi_kasus === selectedStudiKasus
       );
@@ -83,7 +82,6 @@ function FormEditPilihSoal({
 
   const onFinish = (values) => {
     console.log(values);
-    setFormObj(values);
     handleSubmit(values);
   };
 

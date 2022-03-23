@@ -9,8 +9,9 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
 
     setEntityFiltered(
       data.filter((item) => {
-        if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else return item?.kategori === e.target.value;
+        if (e.target.value === "Tanpa Kategori")
+          return item?.QuestionLabel?.name === "-";
+        else return item?.QuestionLabel?.name === e.target.value;
       })
     );
   };

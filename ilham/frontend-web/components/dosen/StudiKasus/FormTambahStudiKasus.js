@@ -1,17 +1,10 @@
 import { Button, Col, Divider, Form, Input, message, Row, Upload } from "antd";
 import { InboxOutlined, DatabaseOutlined } from "@ant-design/icons";
 
-function FormTambahStudiKasus({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahStudiKasus({ form, setVisible, handleSubmit, ...props }) {
   const normFile = (e) => console.log("Upload event:", e);
 
   const onFinish = (values) => {
-    setFormObj(values);
     handleSubmit(values);
   };
 

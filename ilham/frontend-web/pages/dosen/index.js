@@ -32,6 +32,8 @@ import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
 import RadioFilterCategory from "../../components/RadioFilterCategory";
 import { useSession } from "next-auth/react";
 
+// TODO 21/03/2022 : Belum implement untuk JadwalCRUD, karena menunggu endpoint avail menerima kategori 'Close-Ended' || 'Open-Ended'
+
 function Jadwal() {
   const { data: token } = useSession();
 

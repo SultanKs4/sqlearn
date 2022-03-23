@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 
@@ -8,18 +8,25 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../components/PageLayout";
 import ModalCustom from "../../../components/Modal";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import {
+  deletePaketSoal,
+  getPaketSoal,
+  mockGetPaketSoal,
+  postPaketSoal,
+} from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import ListComponent from "../../../components/List";
 import FormTambahPaket from "../../../components/dosen/PaketSoal/FormTambahPaket";
 import FormHapusPaket from "../../../components/dosen/PaketSoal/FormHapusPaket";
 import { useRouter } from "next/router";
 import RadioFilterCategory from "../../../components/RadioFilterCategory";
+import { useSession } from "next-auth/react";
 
 function PaketSoal() {
+  const { data: session } = useSession();
+
   const router = useRouter();
 
   const [currentPaket, setCurrentPaket] = useState({});
-  const [formObj, setFormObj] = useState({});
 
   const [dataPaket, setDataPaket] = useState([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -41,19 +48,22 @@ function PaketSoal() {
   const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
-    mockGetPaketSoal().then((response) => {
-      setDataPaket(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
+    // mockGetPaketSoal().then((response) => {
+    //   setDataPaket(response.data);
+    //   setIsDataLoaded(true);
+    // });
+    fetchDataPaketSoal();
+  }, [session]);
 
-  useEffect(() => {
-    console.log(isAlertActive);
-  }, [isAlertActive]);
+  const fetchDataPaketSoal = useCallback(() => {
+    if (session !== undefined)
+      getPaketSoal(session?.user?.tokenJWT).then((response) => {
+        setDataPaket(response.data);
+        setIsDataLoaded(true);
+      });
+  }, [session, dataPaket]);
 
-  const previewPaket = (id) => {
-    router.push(`/dosen/paket-soal/${id}`);
-  };
+  const previewPaket = (id) => router.push(`/dosen/paket-soal/${id}`);
 
   const tambahPaket = () => {
     setModalRole("tambah");
@@ -67,22 +77,28 @@ function PaketSoal() {
   };
 
   const aksiTambahPaket = (formPaket) => {
-    // TODO : Call POST API request dari PaketSoalCRUD.js
-    handleToggleModal();
-    handleToggleAlert();
-    setAlertMessage(`Data ${formPaket.paket_nama} berhasil ditambahkan`);
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Hasil submit tambah", formPaket);
+    console.log(formPaket, "ini formKelas");
+    postPaketSoal(session?.user?.tokenJWT, formPaket)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(`Data ${formPaket.name} berhasil ditambahkan`);
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataPaketSoal())
+      .catch((err) => console.error(err));
   };
 
   const aksiDeletePaket = (formPaket) => {
-    // TODO : Call DELETE API request dari PaketSoalCRUD.js
-    // ...
-    handleToggleModal();
-    handleToggleAlert();
-    setAlertMessage(`Data Paket ${formPaket.nama} berhasil dihapus`);
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Data terhapus", formPaket);
+    deletePaketSoal(session?.user?.tokenJWT, formPaket?.id)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(`Data Kelas ${formPaket.name} berhasil dihapus`);
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataPaketSoal())
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -127,7 +143,6 @@ function PaketSoal() {
                 <FormTambahPaket
                   handleSubmit={aksiTambahPaket}
                   setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
                 />
               ) : (
                 <FormHapusPaket

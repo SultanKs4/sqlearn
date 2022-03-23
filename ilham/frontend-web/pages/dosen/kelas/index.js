@@ -3,13 +3,17 @@ import { React, useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import {
   deleteKelas,
+  downloadExcelTemplate,
   getKelas,
   postKelas,
   updateKelas,
 } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { Typography, Row, Col, Button, Alert } from "antd";
 
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  VerticalAlignBottomOutlined,
+} from "@ant-design/icons";
 
 import ModalCustom from "../../../components/Modal";
 import FormTambahKelas from "../../../components/dosen/Kelas/FormTambahKelas";
@@ -81,10 +85,10 @@ function DaftarKelas() {
     console.log(formKelas, "ini formKelas");
     postKelas(session?.user?.tokenJWT, formKelas)
       .then(() => {
-        handleToggleAlert();
-        setTimeout(() => handleToggleAlert(false), 5000);
+        handleToggleAlert(true);
         handleToggleModal(false);
         setAlertMessage(`Data ${formKelas.name} berhasil ditambahkan`);
+        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataKelas())
       .catch((err) => console.error(err));
@@ -106,12 +110,11 @@ function DaftarKelas() {
   const aksiDeleteKelas = (kelasObj) => {
     deleteKelas(session?.user?.tokenJWT, kelasObj?.id)
       .then(() => {
-        handleToggleAlert();
+        handleToggleAlert(true);
         handleToggleModal(false);
         setAlertMessage(`Data Kelas ${kelasObj.name} berhasil dihapus`);
         setTimeout(() => handleToggleAlert(false), 5000);
       })
-      // Fetch Data lagi ketika setelah di delete
       .then(() => fetchDataKelas())
       .catch((err) => console.error(err));
   };
@@ -127,9 +130,21 @@ function DaftarKelas() {
             <Typography.Title level={2}>Daftar Kelas </Typography.Title>
           </Col>
           <Col>
-            <Button type="primary" onClick={tambahKelas}>
-              Tambah Kelas <PlusCircleOutlined />
-            </Button>
+            <Row justify="space-between" gutter={20}>
+              <Col>
+                <Button
+                  style={{ backgroundColor: "green", color: "white" }}
+                  onClick={() => downloadExcelTemplate()}
+                >
+                  Download Template Excel <VerticalAlignBottomOutlined />
+                </Button>
+              </Col>
+              <Col>
+                <Button type="primary" onClick={tambahKelas}>
+                  Tambah Kelas <PlusCircleOutlined />
+                </Button>
+              </Col>
+            </Row>
           </Col>
         </Row>
 

@@ -17,17 +17,25 @@ import { LeftOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../components/PageLayout";
 import ModalCustom from "../../../components/Modal";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import {
+  addQuestionToPaketSoal,
+  deleteQuestionFromPaketSoal,
+  getPaketSoalByID,
+  mockGetPaketSoal,
+} from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import ListComponent from "../../../components/List";
 
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import FormPilihSoal from "../../../components/dosen/Soal/FormPilihSoal";
 import FormEditSoal from "../../../components/dosen/Soal/FormEditSoal";
 import FormHapusSoal from "../../../components/dosen/Soal/FormHapusSoal";
 import FormEditPilihSoal from "../../../components/dosen/Soal/FormEditPiihSoal";
+import { useSession } from "next-auth/react";
+import { removeHTML } from "../../../utils/common";
 
 function PreviewPaket() {
+  const { data: session } = useSession();
   const router = useRouter();
 
   const [dataPaket, setDataPaket] = useState({});
@@ -35,7 +43,6 @@ function PreviewPaket() {
 
   const [currentSoal, setCurrentSoal] = useState({});
 
-  const [formObj, setFormObj] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
@@ -50,16 +57,18 @@ function PreviewPaket() {
   const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
-    mockGetPaketSoal().then((response) => {
-      setDataPaket(
-        response?.data?.find(
-          (item) =>
-            parseInt(item?.id_paket) === parseInt(router?.query?.id_paket)
-        )
-      );
-      setIsDataLoaded(true);
-    });
+    fetchDataQuestionPaketSoal();
   }, [router.query.id_paket]);
+
+  const fetchDataQuestionPaketSoal = useCallback(() => {
+    if (session !== undefined)
+      getPaketSoalByID(session?.user?.tokenJWT, router.query.id_paket).then(
+        (res) => {
+          setDataPaket(res.data);
+          setIsDataLoaded(true);
+        }
+      );
+  }, [session, router.query.id_paket]);
 
   const tambahSoal = () => {
     setModalRole("tambah");
@@ -79,36 +88,42 @@ function PreviewPaket() {
     handleToggleModal();
   };
 
-  const aksiTambahSoal = (formSoal) => {
-    // TODO : Call POST API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    handleToggleAlert();
-
-    setAlertMessage(`Data ${formSoal.nama} berhasil ditambahkan`);
-
-    console.log("Hasil submit tambah", formSoal);
+  const aksiTambahSoal = (formPilihSoal) => {
+    console.log(formPilihSoal);
+    addQuestionToPaketSoal(
+      session?.user?.tokenJWT,
+      formPilihSoal,
+      router?.query?.id_paket
+    )
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(`Data pertanyaan berhasil ditambahkan`);
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataQuestionPaketSoal())
+      .catch((err) => console.log(err));
   };
 
-  const aksiEditSoal = (formSoal) => {
-    console.log("ini currentSoal", currentSoal);
-    // TODO : Call PUT API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Soal berhasil diubah`);
-    handleToggleAlert();
-
-    console.log("Soal berhasil diubah", formSoal);
-  };
-
-  const aksiDeleteSoal = (formSoal) => {
-    // TODO : Call DELETE API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama} berhasil dihapus`);
-    handleToggleAlert();
-
-    console.log("Data terhapus", formSoal);
+  const aksiDeleteSoal = (pilihSoalObj) => {
+    console.log("pilihSoalObj", pilihSoalObj);
+    deleteQuestionFromPaketSoal(
+      session?.user?.tokenJWT,
+      router?.query?.id_paket,
+      pilihSoalObj.id
+    )
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(
+          `Data Pertanyaan ${removeHTML(
+            pilihSoalObj.text
+          )} berhasil dikeluarkan dari paket soal "${dataPaket?.description}"`
+        );
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataQuestionPaketSoal())
+      .catch((err) => console.log(err));
   };
   return (
     <>
@@ -135,7 +150,7 @@ function PreviewPaket() {
               <Col>
                 {isDataLoaded ? (
                   <Typography.Title level={2}>
-                    {dataPaket?.nama}
+                    {dataPaket?.description}
                   </Typography.Title>
                 ) : (
                   <Skeleton
@@ -167,7 +182,7 @@ function PreviewPaket() {
 
         <ModalCustom
           role={modalRole}
-          entity={`Soal untuk ${dataPaket?.nama}`}
+          entity={`Soal untuk ${dataPaket?.description}`}
           visible={isModalVisible}
           setVisible={setIsModalVisible}
           confirmLoading={isModalLoading}
@@ -178,15 +193,7 @@ function PreviewPaket() {
               <FormPilihSoal
                 handleSubmit={aksiTambahSoal}
                 setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
-                studiKasus={dataPaket?.studi_kasus}
-              />
-            ) : modalRole === "edit" ? (
-              <FormEditPilihSoal
-                handleSubmit={aksiEditSoal}
-                setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
-                currentSoal={currentSoal}
+                studiKasus={dataPaket?.CaseStudy}
               />
             ) : (
               <FormHapusSoal
@@ -200,7 +207,7 @@ function PreviewPaket() {
         {/* Content asli */}
         <ListComponent
           isLoading={!isDataLoaded}
-          dataSource={dataPaket?.pertanyaan || []}
+          dataSource={dataPaket?.questions || []}
           role={"soal-tiap-paket-dosen"}
           editPilihSoal={editPilihSoal}
           deleteSoal={deleteSoal}

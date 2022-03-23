@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import moment from "moment";
+import { axiosWithBearer, URL_SCHEDULE_API } from "../api";
 
 const mockJadwalData = [
   {
@@ -45,11 +46,6 @@ const mockJadwalData = [
   },
 ];
 
-const getJadwal = async () => {
-  let response = await axios.get("");
-  return response.data;
-};
-
 const mockGetJadwalByID = async (jadwalID) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -59,24 +55,39 @@ const mockGetJadwalByID = async (jadwalID) => {
     }, 1000);
   });
 };
-
-const getJadwalByID = async (jadwalID) => {
-  let response = await axios.get("");
+const getJadwal = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(`${URL_SCHEDULE_API}`);
   return response.data;
 };
 
-const postJadwal = async () => {
-  let response = await axios.post("");
+const getJadwalByID = async (bearerToken, jadwalID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_SCHEDULE_API}/${jadwalID}`
+  );
   return response.data;
 };
 
-const updateJadwal = async () => {
-  let response = await axios.put("");
+const postJadwal = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    URL_SCHEDULE_API,
+    values
+  );
+
   return response.data;
 };
 
-const deleteJadwal = async () => {
-  let response = await axios.delete("");
+const updateJadwal = async (bearerToken, values, jadwalID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_SCHEDULE_API}/${jadwalID}`,
+    values
+  );
+  return response.data;
+};
+
+const deleteJadwal = async (bearerToken, jadwalID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_SCHEDULE_API}/${jadwalID}`
+  );
   return response.data;
 };
 

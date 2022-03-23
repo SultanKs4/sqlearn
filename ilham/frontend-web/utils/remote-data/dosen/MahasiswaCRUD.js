@@ -1,5 +1,5 @@
 import axios from "axios";
-import { URL_CLASS_API } from "../api";
+import { axiosWithBearer, URL_CLASS_API } from "../api";
 
 const mockGetMhsPerKelas = (mhsID = 1) => {
   return new Promise((resolve, reject) => {
@@ -33,23 +33,17 @@ const mockGetMhsPerKelas = (mhsID = 1) => {
 };
 
 const postMhs = async (bearerToken, values, idKelas) => {
-  let response = await axios.post(`${URL_CLASS_API}/${idKelas}/add`, values, {
-    headers: {
-      Authorization: `Bearer ${bearerToken}`,
-    },
-  });
+  let response = await axiosWithBearer(bearerToken).post(
+    `${URL_CLASS_API}/${idKelas}/add`,
+    values
+  );
 
   return response.data;
 };
 
 const deleteMhs = async (bearerToken, idKelas, mhsID) => {
-  let response = await axios.delete(
-    `${URL_CLASS_API}/${idKelas}/remove/${mhsID}`,
-    {
-      headers: {
-        Authorization: `Bearer ${bearerToken}`,
-      },
-    }
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_CLASS_API}/${idKelas}/remove/${mhsID}`
   );
   return response.data;
 };

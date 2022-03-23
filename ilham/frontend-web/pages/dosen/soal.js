@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
@@ -10,13 +10,21 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import ModalCustom from "../../components/Modal";
 import FormEditSoal from "../../components/dosen/Soal/FormEditSoal";
 import FormHapusSoal from "../../components/dosen/Soal/FormHapusSoal";
-import { getSoal } from "../../utils/remote-data/dosen/SoalCRUD";
+import {
+  deleteSoal,
+  getSoal,
+  mockGetSoal,
+  postSoal,
+  updateSoal,
+} from "../../utils/remote-data/dosen/SoalCRUD";
 import ListComponent from "../../components/List";
 import FormTambahSoal from "../../components/dosen/Soal/FormTambahSoal";
 import RadioFilterCategory from "../../components/RadioFilterCategory";
+import { useSession } from "next-auth/react";
+import { formatToArray, removeHTML } from "../../utils/common";
 
 function HalamanSoal() {
-  const [formObj, setFormObj] = useState({});
+  const { data: session } = useSession();
 
   const [currentSoal, setCurrentSoal] = useState({});
 
@@ -37,81 +45,85 @@ function HalamanSoal() {
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
-    getSoal().then((response) => {
-      console.log(response.data);
-      setDataSoal(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
+    fetchDataSoal();
+  }, [session]);
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+  const fetchDataSoal = useCallback(() => {
+    if (session !== undefined)
+      getSoal(session?.user?.tokenJWT).then((res) => {
+        setDataSoal(res.data);
+        setIsDataLoaded(true);
+        formatToArray(res.data[0].answer);
+      });
 
-  const tambahSoal = () => {
+    // mockGetSoal().then((res) => {
+    //   setDataSoal(res.data);
+    //   setIsDataLoaded(true);
+    // });
+  }, [session]);
+
+  const handleToggleModal = (state = isModalVisible) =>
+    setIsModalVisible((prev) => state || !prev);
+
+  const handleToggleAlert = (state = isAlertActive) =>
+    setIsAlertActive((prev) => state || !prev);
+
+  const displayModalTambahSoal = () => {
     setModalRole("tambah");
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call POST API request dari SoalCRUD.js
-    // setCurrentSoal(SoalDariForm)
-    // setAlertMessage(`Data Soal ${currentSoal.nama} berhasil ditambahkan`);
   };
 
-  const editSoal = (soalObj) => {
+  const displayModalEditSoal = (soalObj) => {
     setModalRole("edit");
     setCurrentSoal(soalObj);
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call PUT API request dari SoalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Soal ${currentSoal.nama} berhasil diubah`);
-    // handleToggleAlert();
   };
 
-  const deleteSoal = (soalObj) => {
+  const displayModalDeleteSoal = (soalObj) => {
     setModalRole("delete");
     setCurrentSoal(soalObj);
     handleToggleModal();
-
-    // Mungkin ini nanti dibagian modal
-    // TODO : Call DELETE API request dari SoalCRUD.js
-    // ? Mock alert status
-    // setAlertStatus("success");
-    // setAlertMessage(`Data Soal ${currentSoal.nama} berhasil dihapus`);
-    // handleToggleAlert();
   };
 
   const aksiTambahSoal = (formSoal) => {
-    // TODO : Call POST API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    handleToggleAlert();
-
-    setAlertMessage(`Data berhasil ditambahkan`);
-
-    console.log("Hasil submit tambah", formSoal);
+    console.log("formSoal", formSoal);
+    //  postSoal(session?.user?.tokenJWT, formSoal)
+    //  .then(() => {
+    //    handleToggleAlert(true);
+    //    handleToggleModal(false);
+    //    setAlertMessage(`Data ${removeHTML(formSoal.text)} berhasil ditambahkan`);
+    //    setTimeout(() => handleToggleAlert(false), 5000);
+    //  })
+    //  .then(() => fetchDataSoal())
+    //  .catch((err) => console.log(err));
   };
 
   const aksiEditSoal = (formSoal) => {
-    // TODO : Call DELETE API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Data  berhasil diubah`);
-    handleToggleAlert();
-
-    console.log("Data berhasil diubah", formSoal);
+    console.log("formSoal", formSoal);
+    // updateSoal(session?.user?.tokenJWT, formSoal.id)
+    //  .then(() => {
+    //    handleToggleAlert(true);
+    //    handleToggleModal(false);
+    //    setAlertMessage(`Data ${removeHTML(formSoal.text)} berhasil diubah`);
+    //    setTimeout(() => handleToggleAlert(false), 5000);
+    //  })
+    //  .then(() => fetchDataSoal())
+    //  .catch((err) => console.log(err));
   };
 
   const aksiDeleteSoal = (formSoal) => {
-    // TODO : Call DELETE API request dari SoalCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Data  berhasil dihapus`);
-    handleToggleAlert();
-
-    console.log("Data terhapus", formSoal);
+    // ! (Error BE) : Internal Server Error 500, cannot delete or update a parent row: a foreign key constraint fails
+    deleteSoal(session?.user?.tokenJWT, formSoal.id)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(
+          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil dihapus`
+        );
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataSoal())
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -125,7 +137,7 @@ function HalamanSoal() {
             <Typography.Title level={2}>Soal </Typography.Title>
           </Col>
           <Col>
-            <Button type="primary" onClick={tambahSoal}>
+            <Button type="primary" onClick={displayModalTambahSoal}>
               Tambah Soal <PlusCircleOutlined />
             </Button>
           </Col>
@@ -157,13 +169,11 @@ function HalamanSoal() {
                 <FormTambahSoal
                   handleSubmit={aksiTambahSoal}
                   setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
                 />
               ) : modalRole === "edit" ? (
                 <FormEditSoal
                   handleSubmit={aksiEditSoal}
                   setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
                   currentSoal={currentSoal}
                 />
               ) : (
@@ -189,8 +199,8 @@ function HalamanSoal() {
           isLoading={!isDataLoaded}
           dataSource={isFilterActive ? soalFiltered : dataSoal}
           role={"data-soal-dosen"}
-          editSoal={editSoal}
-          deleteSoal={deleteSoal}
+          displayModalEditSoal={displayModalEditSoal}
+          displayModalDeleteSoal={displayModalDeleteSoal}
         />
       </PageLayout>
     </>

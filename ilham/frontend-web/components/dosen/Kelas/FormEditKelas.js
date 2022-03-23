@@ -11,15 +11,30 @@ import {
 } from "antd";
 import { LaptopOutlined, InboxOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
+import { addMahasiswaByExcel } from "../../../utils/remote-data/dosen/KelasCRUD";
+import { useSession } from "next-auth/react";
 
 function FormTambahKelas({ setVisible, handleSubmit, currentKelas, ...props }) {
+  const { data: session } = useSession();
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState();
+  const [isUploading, setIsUploading] = useState(false);
 
-  const onFinish = (values) => handleSubmit(values);
+  const onFinish = (values) => {
+    handleSubmit(values);
+    // handleUploadExcel();
+  };
 
   const handleCancel = () => setVisible(false);
 
   const normFile = (e) => console.log("Upload event:", e);
+
+  // TODO : Handler untuk edit kelas dan nembak API ke upload excel
+  // ! (Error 404), untuk endpoint upload excel dan perlu update code di FE juga
+  // const handleUploadExcel = () => {
+  //   const formData = new FormData();
+  //   fileList?.forEach((file) => 1);
+  // };
 
   useEffect(() => {
     form.setFieldsValue({
@@ -86,10 +101,10 @@ function FormTambahKelas({ setVisible, handleSubmit, currentKelas, ...props }) {
             noStyle
           >
             <Upload.Dragger
-              multiple={false}
-              accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-              name="files"
-              action="/upload.do"
+              {...addMahasiswaByExcel(
+                session?.user?.tokenJWT,
+                currentKelas?.id
+              )}
               style={{ padding: "3em" }}
             >
               <p className="ant-upload-drag-icon">

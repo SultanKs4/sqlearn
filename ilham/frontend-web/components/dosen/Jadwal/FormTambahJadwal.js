@@ -13,9 +13,13 @@ import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { useSession } from "next-auth/react";
+
+// TODO 21/03/2022 : Belum implement untuk JadwalCRUD, karena menunggu endpoint avail menerima kategori 'Close-Ended' || 'Open-Ended'
 
 function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
+  const { data: session } = useSession();
 
   const [dataKelas, setDataKelas] = useState([]);
   const [dataPaketSoal, setDataPaketSoal] = useState([]);
@@ -32,7 +36,9 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   };
 
   useEffect(() => {
-    getKelas(1).then((response) => setDataKelas(response.data));
+    getKelas(session?.user?.tokenJWT).then((response) =>
+      setDataKelas(response.data)
+    );
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 

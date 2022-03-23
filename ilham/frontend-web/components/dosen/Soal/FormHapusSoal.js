@@ -1,4 +1,5 @@
 import { Button, Col, Form, Row } from "antd";
+import { removeHTML } from "../../../utils/common";
 
 function FormHapusSoal({
   form,
@@ -10,7 +11,16 @@ function FormHapusSoal({
   return (
     <>
       <Row justify="center">
-        {`Apakah Anda yakin ingin menghapus ${currentSoal.nama} ?`}
+        <Col>
+          <span style={{ fontStyle: "italic" }}>
+            {removeHTML(currentSoal?.text)}
+          </span>
+          <br />
+          <span style={{ fontWeight: "bold" }}>
+            {" "}
+            Apakah Anda yakin ingin menghapus soal ini ?
+          </span>
+        </Col>
       </Row>
       <Row justify="center" style={{ marginTop: "1em" }} gutter={10}>
         <Col>
