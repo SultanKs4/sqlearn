@@ -1,8 +1,7 @@
 const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
-const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
 const errorHandling = require("../../lib/errorHandling");
-const { hashPassword, comparePassword } = require("../../lib/hashPassword");
+const { hashPassword } = require("../../lib/hashPassword");
 
 const User = require("./user.model");
 

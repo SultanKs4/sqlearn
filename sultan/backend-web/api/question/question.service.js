@@ -31,6 +31,7 @@ module.exports = {
                     {
                         model: QuestionLabel,
                         attributes: ["id", "name"],
+                        where: query.label ? { id: query.label } : {},
                     },
                 ],
             });

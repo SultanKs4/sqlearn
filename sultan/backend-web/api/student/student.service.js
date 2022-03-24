@@ -69,10 +69,10 @@ module.exports = {
         try {
             const [student, created] = await Student.findOrCreate({
                 where: {
-                    nim: data.nim,
+                    username: data.nim,
                 },
                 defaults: {
-                    username: data.nim,
+                    nim: data.nim,
                     password: hashPassword(data.nim),
                     name: data.name,
                 },

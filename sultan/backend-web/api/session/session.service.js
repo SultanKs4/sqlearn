@@ -8,14 +8,14 @@ const Schedule = require("../schedule/schedule.model");
 const Session = require("./session.model");
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const CaseStudy = require("../case-study/case-study.model");
-const { gradingRulesLatihan, gradingRulesUjian } = require("../../config/gradingRules");
+const { gradingRules } = require("../../config/gradingRules");
 const Score = require("../score/score.model");
-const getThreshold = require("../../lib/getThreshold");
 const DbList = require("../db-list/db-list.model");
 const Student = require("../student/student.model");
 const Class = require("../class/class.model");
 const path = require("path");
 const createHttpError = require("http-errors");
+const { findByType, dataThreshold } = require("../setting/setting.service");
 
 module.exports = {
     getAll: async () => {
@@ -189,7 +189,7 @@ module.exports = {
                 dbList,
                 queryMhs: data.answer,
                 queryKey: JSON.parse(question.answer),
-                threshold: await getThreshold(),
+                threshold: await dataThreshold().value,
             });
 
             // await LogSessionStudent.create({
@@ -269,7 +269,8 @@ module.exports = {
                 return acc;
             }, {});
 
-            const grade = gradeAssessment(type, totalQuestion, attemptsObj);
+            const dataRules = await findByType(type);
+            const grade = gradeAssessment(type, totalQuestion, attemptsObj, dataRules);
 
             await Score.create({
                 student_id: user.id,
@@ -294,7 +295,7 @@ module.exports = {
     },
 };
 
-function gradeAssessment(type, totalQuestion, attempts) {
+function gradeAssessment(type, totalQuestion, attempts, dataRules) {
     // const attempPerQuestion = attempts.map(attempt => attempt.count)
 
     let tempScore = 0;
@@ -304,13 +305,13 @@ function gradeAssessment(type, totalQuestion, attempts) {
     if (type == "latihan") {
         questionsIds.forEach((question) => {
             if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRulesLatihan(attempts[question]["test"].length + 1);
+                tempScore += gradingRules(attempts[question]["test"].length + 1, dataRules);
             }
         });
     } else {
         questionsIds.forEach((question) => {
             if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRulesUjian(attempts[question]["test"].length + 1);
+                tempScore += gradingRules(attempts[question]["test"].length + 1, dataRules);
             }
         });
     }
