@@ -2,13 +2,41 @@ const settingService = require("./setting.service");
 
 module.exports = {
     threshold: async (req, res) => {
-        const threshold = await settingService.getThreshold()
-        return res.json(threshold)
+        const resObj = await settingService.getThreshold();
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
     },
     thresholdUpdate: async (req, res) => {
-        const threshold = req.body.threshold
-        await settingService.updateThreshold(threshold)
+        const resObj = await settingService.updateThreshold(req.body.threshold);
+        const { httpCode, ...response } = resObj;
 
-        return res.json(threshold)
-    }
-}
+        return res.status(httpCode).json(response);
+    },
+    getRules: async (req, res) => {
+        const resObj = await settingService.getRules(req.query.type);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+    addRules: async (req, res) => {
+        const { attemps, value, type } = req.body;
+        const resObj = await settingService.addRules(attemps, value, type);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+    updateRules: async (req, res) => {
+        const { attemps, value, type } = req.body;
+        const resObj = await settingService.updateRules(req.params.id, attemps, value, type);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+    deleteRules: async (req, res) => {
+        const resObj = await settingService.deleteRules(req.params.id);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+};

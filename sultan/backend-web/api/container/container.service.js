@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const { Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
+const errorHandling = require("../../lib/errorHandling");
 const CaseStudy = require("../case-study/case-study.model");
 const QuestionContainer = require("../question-container/question-container.model");
 const Question = require("../question/question.model");
@@ -35,12 +36,7 @@ module.exports = {
             });
             return createResponseObject(200, "success", "Data kontainer berhasil didapatkan", containers);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -82,12 +78,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kontainer berhasil didapatkan", containerById);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -103,12 +94,7 @@ module.exports = {
             });
             return createResponseObject(201, "success", "Data kontainer baru berhasil ditambahkan", newContainer);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -132,12 +118,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kontainer berhasil diperbarui", container);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -185,12 +166,7 @@ module.exports = {
                 newQuestionContainer
             );
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -231,12 +207,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Berhasil mengeluarkan pertanyaan dari kontainer");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -253,12 +224,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data kontainer berhasil dihapus");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const { Op } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
+const errorHandling = require("../../lib/errorHandling");
 const Class = require("../class/class.model");
 const Container = require("../container/container.model");
 const Question = require("../question/question.model");
@@ -138,12 +139,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data schedule berhasil didapatkan", scheduleResponse);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -162,12 +158,7 @@ module.exports = {
             if (!schedule || schedule.length == 0) throw createHttpError(404, "schedule not found");
             return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -177,12 +168,7 @@ module.exports = {
             if (!schedule) throw createHttpError(404, "data schedule not found");
             return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -226,12 +212,7 @@ module.exports = {
 
             return createResponseObject(201, "success", "Data schedule berhasil ditambahkan", newSchedule);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -241,7 +222,7 @@ module.exports = {
             if (!schedule) throw createHttpError(404, "Tidak ada data schedule didapatkan");
 
             const container = await Container.findByPk(data.container_id);
-            if (!container) throw createResponseObject(404, "data container not found");
+            if (!container) throw createHttpError(404, "data container not found");
 
             const total_questions = await Question.findAndCountAll({
                 include: {
@@ -284,12 +265,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data schedule berhasil diperbarui", schedule);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
@@ -306,12 +282,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data schedule berhasil dihapus");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

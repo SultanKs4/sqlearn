@@ -11,6 +11,7 @@ const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const QuestionLabel = require("../questions-label/question-label.model");
 const DbList = require("../db-list/db-list.model");
 const createHttpError = require("http-errors");
+const errorHandling = require("../../lib/errorHandling");
 
 module.exports = {
     getAll: async (query = null) => {
@@ -30,17 +31,13 @@ module.exports = {
                     {
                         model: QuestionLabel,
                         attributes: ["id", "name"],
+                        where: query.label ? { id: query.label } : {},
                     },
                 ],
             });
             return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", questions);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     getAllExclude: async (containerId, query = null) => {
@@ -128,12 +125,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", question);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     insert: async (data, fileName, user) => {
@@ -160,11 +152,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data pertanyaan berhasil ditambahkan", newQuestion);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data pertanyaan gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
     update: async (questionId, data, fileName, user) => {
@@ -198,12 +186,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data pertanyaan berhasil diperbarui", question);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     deleteOne: async (id) => {
@@ -223,12 +206,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data pertanyaan berhasil dihapus");
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };

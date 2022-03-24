@@ -10,6 +10,7 @@ const deleteFile = require("../../lib/deleteFile");
 const path = require("path");
 const DbList = require("../db-list/db-list.model");
 const createHttpError = require("http-errors");
+const errorHandling = require("../../lib/errorHandling");
 
 module.exports = {
     getAll: async () => {
@@ -29,12 +30,7 @@ module.exports = {
             if (!caseStudies) throw createHttpError(404, "data studi kasus not found");
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", caseStudies);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     getOne: async (id) => {
@@ -61,12 +57,7 @@ module.exports = {
             csObj.tables = groupColumnsByTable(resDetail.data.data);
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", csObj);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     getOneDetail: async (id, tableName) => {
@@ -85,16 +76,7 @@ module.exports = {
             );
             return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", res.data.data);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (axios.isAxiosError(error) && error.response) {
-                let axiosData = error.response.data;
-                message = axiosData.message;
-                data = axiosData.data;
-            } else if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     store: async (name, user, file) => {
@@ -119,12 +101,7 @@ module.exports = {
             return createResponseObject(201, "success", "Data studi kasus berhasil ditambahkan", newCaseStudies);
         } catch (error) {
             await deleteFile(path.join(__dirname, `../../uploads/sqls/${file.filename}`));
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
     deleteOne: async (id) => {
@@ -151,12 +128,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Data studi kasus berhasil dihapus", caseStudy);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 };
