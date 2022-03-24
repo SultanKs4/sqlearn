@@ -7,6 +7,13 @@ const getStudiKasus = async (bearerToken) => {
   return response.data;
 };
 
+const getDataTableStudiKasus = async (bearerToken, caseStudyID, tableName) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_CASE_STUDY_API}/${caseStudyID}/data/${tableName}`
+  );
+  return response.data;
+};
+
 const getStudiKasusByID = async (bearerToken, studiKasusID) => {
   let response = await axiosWithBearer(bearerToken).get(
     `${URL_CASE_STUDY_API}/${studiKasusID}`
@@ -263,4 +270,5 @@ export {
   deleteStudiKasus,
   mockGetAllStudiKasus,
   mockGetAllDataStudiKasus,
+  getDataTableStudiKasus,
 };

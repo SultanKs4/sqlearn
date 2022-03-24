@@ -82,7 +82,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
   const onFinish = ({ kategori, ...values }) => {
     handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      kategori: selectedKategori === "Close-Ended" ? 2 : 1,
       ...values,
     });
   };

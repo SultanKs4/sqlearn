@@ -10,8 +10,13 @@ function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
     setEntityFiltered(
       data.filter((item) => {
         if (e.target.value === "Tanpa Kategori")
-          return item?.QuestionLabel?.name === "-";
-        else return item?.QuestionLabel?.name === e.target.value;
+          // ? Karena format dari backend ada 2 object untuk kategori close-ended / open-ended
+          return item?.QuestionLabel?.name === "-" || item?.label?.name === "-";
+        else
+          return (
+            item?.QuestionLabel?.name === e.target.value ||
+            item?.label?.name === e.target.value
+          );
       })
     );
   };

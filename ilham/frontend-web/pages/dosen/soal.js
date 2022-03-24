@@ -113,6 +113,8 @@ function HalamanSoal() {
 
   const aksiDeleteSoal = (formSoal) => {
     // ! (Error BE) : Internal Server Error 500, cannot delete or update a parent row: a foreign key constraint fails
+    // TODO : Perlu bikin soal dulu baru bisa test delete
+
     deleteSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {
         handleToggleAlert(true);

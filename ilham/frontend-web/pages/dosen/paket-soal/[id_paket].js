@@ -1,17 +1,6 @@
 import Head from "next/head";
 
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert,
-  Popover,
-  Tooltip,
-} from "antd";
+import { Skeleton, Typography, Row, Col, Button, Alert, Tooltip } from "antd";
 
 import { LeftOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
@@ -21,16 +10,13 @@ import {
   addQuestionToPaketSoal,
   deleteQuestionFromPaketSoal,
   getPaketSoalByID,
-  mockGetPaketSoal,
 } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import ListComponent from "../../../components/List";
 
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 import FormPilihSoal from "../../../components/dosen/Soal/FormPilihSoal";
-import FormEditSoal from "../../../components/dosen/Soal/FormEditSoal";
 import FormHapusSoal from "../../../components/dosen/Soal/FormHapusSoal";
-import FormEditPilihSoal from "../../../components/dosen/Soal/FormEditPiihSoal";
 import { useSession } from "next-auth/react";
 import { removeHTML } from "../../../utils/common";
 
@@ -53,8 +39,11 @@ function PreviewPaket() {
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+  const handleToggleModal = (state = isModalVisible) =>
+    setIsModalVisible((prev) => state || !prev);
+
+  const handleToggleAlert = (state = isAlertActive) =>
+    setIsAlertActive((prev) => state || !prev);
 
   useEffect(() => {
     fetchDataQuestionPaketSoal();
@@ -89,7 +78,7 @@ function PreviewPaket() {
   };
 
   const aksiTambahSoal = (formPilihSoal) => {
-    console.log(formPilihSoal);
+    // ! (Error BE) 409 Conflict: Habis bikin paket soal baru, mau nambah soal di paket tsb
     addQuestionToPaketSoal(
       session?.user?.tokenJWT,
       formPilihSoal,
@@ -194,6 +183,7 @@ function PreviewPaket() {
                 handleSubmit={aksiTambahSoal}
                 setVisible={setIsModalVisible}
                 studiKasus={dataPaket?.CaseStudy}
+                dataPaket={dataPaket}
               />
             ) : (
               <FormHapusSoal

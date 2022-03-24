@@ -5,9 +5,9 @@ import { useState } from "react";
 function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
   const [selectedKategori, setSelectedKategori] = useState("");
 
-  const onFinish = ({ kategori, ...values }) => {
+  const onFinish = ({ label_id, ...values }) => {
     handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      label_id: selectedKategori === "Close-Ended" ? 2 : 1,
       ...values,
     });
   };
@@ -24,7 +24,7 @@ function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="paket_nama"
+            name="description"
             label="Nama Paket"
             rules={[
               {
@@ -34,6 +34,7 @@ function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<CodeSandboxOutlined />}
               placeholder={` Contoh : Paket Soal E `}
             />
@@ -42,7 +43,7 @@ function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
         <Col>
           <Col span={12}>
             <Form.Item
-              name="kategori"
+              name="label_id"
               label="Kategori"
               rules={[
                 {

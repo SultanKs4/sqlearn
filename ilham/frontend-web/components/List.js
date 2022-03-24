@@ -422,8 +422,10 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={item?.label?.name === "-" ? "Kosong" : item?.label?.name}
+              color={
+                item?.label?.name === "Close-Ended" ? "geekblue" : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -433,20 +435,20 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row gutter={[50]}>
                         <Col span={4}>
                           <Typography.Text style={{ fontWeight: "bold" }}>
-                            {item.jadwal_nama}
+                            {item.description}
                           </Typography.Text>
                         </Col>
                         <Col span={4}>
                           <LaptopOutlined
                             style={{ fontSize: "1.2em", marginRight: ".5em" }}
                           />
-                          {item.kelas_nama}
+                          {item.class[0]?.name}
                         </Col>
                         <Col span={6}>
-                          <DatabaseOutlined
+                          <CodeSandboxOutlined
                             style={{ fontSize: "1.2em", marginRight: ".5em" }}
                           />
-                          {item.studi_kasus_nama}
+                          {item.container?.description}
                         </Col>
                         <Col span={8}>
                           <FieldTimeOutlined
@@ -456,15 +458,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <span
                             style={{
                               color:
-                                countTimeDifference(
-                                  moment(),
-                                  item?.tanggal_akhir
-                                )
+                                countTimeDifference(item?.start, item?.finish)
                                   .toLowerCase()
                                   .includes("terlewat") && "red",
                             }}
                           >
-                            {countTimeDifference(moment(), item?.tanggal_akhir)}
+                            {countTimeDifference(item?.start, item?.finish)}
                           </span>
                         </Col>
                       </Row>
@@ -478,7 +477,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<EditOutlined />}
                               size={"medium"}
-                              onClick={() => props.editJadwal(item)}
+                              onClick={() => props.displayModalEditJadwal(item)}
                             ></Button>
                           </Tooltip>
                         </Col>
@@ -488,7 +487,9 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="danger"
                               icon={<DeleteOutlined />}
                               size={"medium"}
-                              onClick={() => props.deleteJadwal(item)}
+                              onClick={() =>
+                                props.displayModalDeleteJadwal(item)
+                              }
                             ></Button>
                           </Tooltip>
                         </Col>

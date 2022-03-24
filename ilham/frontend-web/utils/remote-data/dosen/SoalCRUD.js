@@ -160,6 +160,17 @@ const getSoal = async (bearerToken) => {
   return response.data;
 };
 
+const getSoalByCaseStudyByCategory = async (
+  bearerToken,
+  caseStudyID,
+  labelID
+) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_QUESTION_API}?case_study=${caseStudyID}&label_id=${labelID}`
+  );
+  return response.data;
+};
+
 const getSoalByID = async (bearerToken, soalID) => {
   let response = await axiosWithBearer(bearerToken).get(
     `${URL_QUESTION_API}/${soalID}`
@@ -190,4 +201,12 @@ const deleteSoal = async (bearerToken, soalID) => {
   return response.data;
 };
 
-export { mockGetSoal, getSoal, getSoalByID, postSoal, updateSoal, deleteSoal };
+export {
+  mockGetSoal,
+  getSoal,
+  getSoalByID,
+  postSoal,
+  updateSoal,
+  deleteSoal,
+  getSoalByCaseStudyByCategory,
+};

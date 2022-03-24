@@ -11,11 +11,8 @@ import {
 import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
-import { isObjectEmpty } from "../../../utils/common";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { getPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import { useSession } from "next-auth/react";
-
-// TODO 21/03/2022 : Belum implement untuk JadwalCRUD, karena menunggu endpoint avail menerima kategori 'Close-Ended' || 'Open-Ended'
 
 function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
@@ -26,41 +23,41 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
 
   const [selectedKelas, setSelectedKelas] = useState({});
 
-  // ? : Kategori 1 = Close-ended, 2 = Open-Ended
-  const [selectedKategori, setSelectedKategori] = useState({});
-
   const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangeKategori = (kategori) => {
-    console.log(kategori);
-    setSelectedKategori(kategori);
-  };
 
   useEffect(() => {
-    getKelas(session?.user?.tokenJWT).then((response) =>
-      setDataKelas(response.data)
-    );
-    mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
+    getKelas(session?.user?.tokenJWT)
+      .then((response) => {
+        setDataKelas(response.data);
+      })
+      .catch((err) => console.log(err));
+
+    getPaketSoal(session?.user?.tokenJWT)
+      .then((response) => {
+        setDataPaketSoal(response.data);
+      })
+      .catch((err) => console.log(err));
   }, []);
 
-  const onFinish = ({ kategori, ...values }) => {
-    setFormObj(values);
+  const onFinish = ({ classes, container_id, start, finish, ...values }) => {
+    console.log(classes, container_id);
     handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      classes: classes,
+      start: start.toISOString(),
+      finish: finish.toISOString(),
+      container_id: parseInt(container_id),
       ...values,
     });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="jadwal_nama"
+            name="description"
             label="Nama Jadwal"
             rules={[
               {
@@ -70,6 +67,7 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<ScheduleOutlined />}
               placeholder={` Jadwal . . .`}
             />
@@ -78,29 +76,21 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
 
         <Col>
           <Form.Item
-            name="kategori"
-            label="Kategori"
-            tooltip={{
-              title: `Jadwal ini menggunakan kategori ${
-                isObjectEmpty(selectedKategori)
-                  ? " yang dipilih "
-                  : selectedKategori
-              }`,
-            }}
+            name="type"
+            label="Tipe"
             rules={[
               {
                 required: true,
-                message: "Mohon pilih Kategori!",
+                message: "Mohon pilih Tipe!",
               },
             ]}
           >
             <Select
               placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+              <Option key="latihan">latihan</Option>
+              <Option key="ujian">ujian</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -109,7 +99,7 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="tanggal_mulai"
+            name="start"
             label="Waktu Mulai"
             rules={[
               {
@@ -129,7 +119,7 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
         </Col>
         <Col>
           <Form.Item
-            name="tanggal_akhir"
+            name="finish"
             label="Waktu Selesai"
             rules={[
               {
@@ -151,13 +141,8 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="kelas_nama"
+            name="classes"
             label="Kelas"
-            tooltip={{
-              title: `Jadwal ini akan terlihat oleh kelas ${
-                isObjectEmpty(selectedKelas) ? " yang dipilih " : selectedKelas
-              }`,
-            }}
             rules={[
               {
                 required: true,
@@ -172,7 +157,9 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
               style={{ width: "200px" }}
             >
               {dataKelas?.map((item) => (
-                <Option key={item.name}>{item.name}</Option>
+                <Option key={item.name} value={item?.id} label={item?.name}>
+                  {item.name}
+                </Option>
               ))}
             </Select>
           </Form.Item>
@@ -180,7 +167,7 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
 
         <Col>
           <Form.Item
-            name="paket_soal"
+            name="container_id"
             label="Paket Soal"
             rules={[
               {
@@ -194,7 +181,14 @@ function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
               style={{ width: "200px" }}
             >
               {dataPaketSoal.map((item) => (
-                <Option key={item?.id_paket}> {item?.nama} </Option>
+                <Option
+                  key={item?.id}
+                  value={item?.id}
+                  label={item?.description}
+                >
+                  {" "}
+                  {item?.description}{" "}
+                </Option>
               ))}
             </Select>
           </Form.Item>

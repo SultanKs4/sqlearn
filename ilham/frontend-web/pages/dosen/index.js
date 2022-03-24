@@ -1,6 +1,6 @@
 // Ini jadwal latihan oleh dosen
 
-import { React, useEffect, useState } from "react";
+import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
@@ -28,14 +28,18 @@ import FormTambahJadwal from "../../components/dosen/Jadwal/FormTambahJadwal";
 import FormEditJadwal from "../../components/dosen/Jadwal/FormEditJadwal";
 import FormHapusJadwal from "../../components/dosen/Jadwal/FormHapusJadwal";
 import ListComponent from "../../components/List";
-import { mockGetJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
+import {
+  deleteJadwal,
+  getJadwal,
+  mockGetJadwal,
+  postJadwal,
+  updateJadwal,
+} from "../../utils/remote-data/dosen/JadwalCRUD";
 import RadioFilterCategory from "../../components/RadioFilterCategory";
 import { useSession } from "next-auth/react";
 
-// TODO 21/03/2022 : Belum implement untuk JadwalCRUD, karena menunggu endpoint avail menerima kategori 'Close-Ended' || 'Open-Ended'
-
 function Jadwal() {
-  const { data: token } = useSession();
+  const { data: session } = useSession();
 
   const [currentJadwal, setCurrentJadwal] = useState({});
   const [formObj, setFormObj] = useState({});
@@ -57,63 +61,84 @@ function Jadwal() {
   const [alertStatus, setAlertStatus] = useState("success");
   const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+  const handleToggleModal = (state = isModalVisible) =>
+    setIsModalVisible((prev) => state || !prev);
+
+  const handleToggleAlert = (state = isAlertActive) =>
+    setIsAlertActive((prev) => state || !prev);
 
   useEffect(() => {
-    mockGetJadwal().then((response) => {
-      setDataJadwal(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
+    fetchDataJadwal();
+  }, [session]);
 
-  console.log("Ini token JWT", token);
+  const fetchDataJadwal = useCallback(() => {
+    if (session !== undefined)
+      getJadwal(session?.user?.tokenJWT).then((res) => {
+        setDataJadwal(res?.data);
+        setIsDataLoaded(true);
+      });
+  }, [session, dataJadwal]);
 
   const tambahJadwal = () => {
     setModalRole("tambah");
     handleToggleModal();
   };
 
-  const editJadwal = (jadwalObj) => {
-    console.log(jadwalObj);
+  const displayModalEditJadwal = (jadwalObj) => {
     setModalRole("edit");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
   };
 
-  const deleteJadwal = (jadwalObj) => {
-    console.log(jadwalObj);
+  const displayModalDeleteJadwal = (jadwalObj) => {
     setModalRole("delete");
     setCurrentJadwal(jadwalObj);
     handleToggleModal();
   };
 
   const aksiTambahJadwal = (formJadwal) => {
-    // TODO : Call POST API request dari JadwalCRUD.js
-    // ...
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    handleToggleModal();
-    setAlertMessage(`Data ${formJadwal.jadwal_nama} berhasil ditambahkan`);
-    console.log("Hasil submit tambah", formJadwal);
+    console.log("formJadwal", formJadwal);
+    postJadwal(session?.user?.tokenJWT, formJadwal)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(
+          `Data jadwal "${formJadwal?.description}" berhasil ditambahkan`
+        );
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataJadwal())
+      .catch((err) => console.log(err));
   };
 
   const aksiEditJadwal = (formJadwal) => {
-    // TODO : Call PUT API request dari JadwalCRUD.js
-    // ...
-    setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil diubah`);
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Data berhasil diedit", formJadwal);
+    console.log("formJadwal", formJadwal);
+    updateJadwal(session?.user?.tokenJWT, formJadwal, currentJadwal?.id)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(
+          `Data jadwal "${formJadwal?.description}" berhasil diubah`
+        );
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataJadwal())
+      .catch((err) => console.log(err));
   };
 
   const aksiDeleteJadwal = (formJadwal) => {
-    // TODO : Call DELETE API request dari JadwalCRUD.js
-    // ...
-    setAlertMessage(`Data Jadwal ${currentJadwal.nama} berhasil dihapus`);
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Data terhapus", formJadwal);
+    console.log("formJadwal", formJadwal);
+    deleteJadwal(session?.user?.tokenJWT, formJadwal?.id)
+      .then(() => {
+        handleToggleAlert(true);
+        handleToggleModal(false);
+        setAlertMessage(
+          `Data jadwal ${formJadwal?.description} berhasil dihapus`
+        );
+        setTimeout(() => handleToggleAlert(false), 5000);
+      })
+      .then(() => fetchDataJadwal())
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -190,8 +215,8 @@ function Jadwal() {
         <ListComponent
           isLoading={!isDataLoaded}
           role={"jadwal-dosen"}
-          editJadwal={editJadwal}
-          deleteJadwal={deleteJadwal}
+          displayModalEditJadwal={displayModalEditJadwal}
+          displayModalDeleteJadwal={displayModalDeleteJadwal}
           dataSource={isFilterActive ? jadwalFiltered : dataJadwal}
         />
       </PageLayout>

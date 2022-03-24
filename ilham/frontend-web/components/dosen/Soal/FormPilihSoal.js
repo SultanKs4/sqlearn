@@ -3,16 +3,11 @@ import { useEffect, useState } from "react";
 import {
   getStudiKasus,
   getStudiKasusByID,
-  mockGetAllStudiKasus,
 } from "../../../utils/remote-data/dosen/StudiKasus";
-import { isObjectEmpty, removeHTML } from "../../../utils/common";
-import {
-  getSoal,
-  mockGetSoal,
-} from "../../../utils/remote-data/dosen/SoalCRUD";
+import { removeHTML } from "../../../utils/common";
+import { getSoalByCaseStudyByCategory } from "../../../utils/remote-data/dosen/SoalCRUD";
 import { useSession } from "next-auth/react";
 
-// ! (Sync FE) TODO : Menampilkan list pertanyaan yang ada untuk setiap studi kasus yang dipilih
 // ! (Bug BE) : Untuk Studi Kasus, yang bisa hanya id : 2
 
 const columns = [
@@ -34,7 +29,7 @@ const columns = [
   },
 ];
 
-function FormPilihSoal({ setVisible, handleSubmit, studiKasus, ...props }) {
+function FormPilihSoal({ setVisible, handleSubmit, dataPaket, ...props }) {
   const { data: session } = useSession();
 
   const [form] = Form.useForm();
@@ -74,13 +69,13 @@ function FormPilihSoal({ setVisible, handleSubmit, studiKasus, ...props }) {
   }, []);
 
   useEffect(() => {
-    getSoal(session?.user?.tokenJWT)
-      .then((response) => {
-        let tempSoalFiltered = response.data.filter((item) => {
-          return item?.CaseStudy?.id === selectedIDStudiKasus;
-        });
-
-        tempSoalFiltered = tempSoalFiltered.map((item) => {
+    getSoalByCaseStudyByCategory(
+      session?.user?.tokenJWT,
+      selectedIDStudiKasus,
+      dataPaket?.label_id
+    )
+      .then((res) => {
+        let tempSoalFiltered = res.data.map((item) => {
           return {
             key: item.id,
             ...item,
@@ -95,18 +90,19 @@ function FormPilihSoal({ setVisible, handleSubmit, studiKasus, ...props }) {
   }, [selectedIDStudiKasus]);
 
   useEffect(() => {
-    dataSoalByStudiKasus?.map((item) => {
-      setDataTable((prev) => [
-        ...prev,
-        {
-          key: item.id,
-          idSoal: item.id,
-          kategori: item.QuestionLabel?.name,
-          studi_kasus: item.CaseStudy?.name,
-          teksSoal: removeHTML(item.text),
-        },
-      ]);
-    });
+    let tempData = [];
+
+    dataSoalByStudiKasus?.map((item) =>
+      tempData.push({
+        key: item.id,
+        idSoal: item.id,
+        kategori: item.QuestionLabel?.name,
+        studi_kasus: item.CaseStudy?.name,
+        teksSoal: removeHTML(item.text),
+      })
+    );
+
+    setDataTable(tempData);
   }, [dataSoalByStudiKasus]);
 
   const onFinish = (values) => {

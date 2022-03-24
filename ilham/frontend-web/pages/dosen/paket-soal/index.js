@@ -11,7 +11,6 @@ import ModalCustom from "../../../components/Modal";
 import {
   deletePaketSoal,
   getPaketSoal,
-  mockGetPaketSoal,
   postPaketSoal,
 } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import ListComponent from "../../../components/List";
@@ -48,10 +47,6 @@ function PaketSoal() {
   const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
-    // mockGetPaketSoal().then((response) => {
-    //   setDataPaket(response.data);
-    //   setIsDataLoaded(true);
-    // });
     fetchDataPaketSoal();
   }, [session]);
 
@@ -77,12 +72,11 @@ function PaketSoal() {
   };
 
   const aksiTambahPaket = (formPaket) => {
-    console.log(formPaket, "ini formKelas");
     postPaketSoal(session?.user?.tokenJWT, formPaket)
       .then(() => {
         handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data ${formPaket.name} berhasil ditambahkan`);
+        setAlertMessage(`Data "${formPaket.description}" berhasil ditambahkan`);
         setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataPaketSoal())
@@ -94,7 +88,9 @@ function PaketSoal() {
       .then(() => {
         handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data Kelas ${formPaket.name} berhasil dihapus`);
+        setAlertMessage(
+          `Data paket "${formPaket.description}" berhasil dihapus`
+        );
         setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataPaketSoal())

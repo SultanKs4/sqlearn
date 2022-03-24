@@ -3,7 +3,7 @@ import moment from "moment";
 export const ucfirst = (word) => word.charAt(0).toUpperCase() + word.slice(1);
 
 export const countTimeDifference = (startDate = moment(), endDate) => {
-  let duration = moment.duration(endDate.diff(startDate));
+  let duration = moment.duration(moment(endDate).diff(moment(startDate)));
 
   if (duration.asHours() < 0)
     return `Terlewat ${Math.abs(parseInt(duration.asHours()))} jam`;

@@ -11,58 +11,79 @@ import {
 
 import moment from "moment";
 import { ScheduleOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
-import {
-  getKelas,
-  mockGetKelas,
-} from "../../../utils/remote-data/dosen/KelasCRUD";
-import { isObjectEmpty } from "../../../utils/common";
-import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
-import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { useCallback, useEffect, useState } from "react";
+import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import { getPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
+import { useSession } from "next-auth/react";
 
-function FormEditJadwal({
-  currentJadwal,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
-  const [form] = Form.useForm();
-
+function FormEditJadwal({ currentJadwal, setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
 
+  const { data: session } = useSession();
+  const [form] = Form.useForm();
+
   const [dataKelas, setDataKelas] = useState([]);
+  const [isDataKelasLoaded, setIsDataKelasLoaded] = useState(false);
+
   const [dataPaketSoal, setDataPaketSoal] = useState([]);
+  const [isDataPaketLoaded, setIsDataPaketLoaded] = useState(false);
 
-  const [selectedKelas, setSelectedKelas] = useState({});
-  const [selectedKategori, setSelectedKategori] = useState({});
+  const [startTime, setStartTime] = useState("");
+  const [finishTime, setFinishTime] = useState("");
 
-  const onChangeKelas = (kelas) => setSelectedKelas(kelas);
-  const onChangeKategori = (kategori) => {
-    setSelectedKategori(kategori);
+  const onChangeStartDateTime = (_, value) => {
+    setStartTime(new Date(value).toISOString());
+  };
+
+  const onChangeFinishDateTime = (_, value) => {
+    setFinishTime(new Date(value).toISOString());
   };
 
   useEffect(() => {
-    mockGetKelas(1).then((response) => setDataKelas(response.data));
-    mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
-  }, []);
+    fetchDataKelas();
+  }, [session]);
+
+  const fetchDataKelas = useCallback(() => {
+    if (session !== undefined) {
+      getKelas(session?.user?.tokenJWT)
+        .then((response) => {
+          setDataKelas(response.data);
+          setIsDataKelasLoaded(true);
+        })
+        .catch(() => console.log("Fetch Data Kelas gagal"));
+
+      getPaketSoal(session?.user?.tokenJWT)
+        .then((response) => {
+          setDataPaketSoal(response.data);
+          setIsDataPaketLoaded(true);
+        })
+        .catch(() => console.log("Fetch Data Paket gagal"));
+    }
+  }, [session, dataKelas]);
 
   useEffect(() => {
     form.setFieldsValue({
-      jadwal_nama: currentJadwal?.jadwal_nama,
-      tanggal_mulai: currentJadwal?.tanggal_mulai,
-      tanggal_akhir: currentJadwal?.tanggal_akhir,
-      kelas_nama: currentJadwal?.kelas_nama,
-      paket_soal: currentJadwal?.paket_soal,
-      kategori: currentJadwal?.kategori,
-      // ? Kategori 1 = Close-ended, 2 = Open-Ended
+      description: currentJadwal?.description,
+      start: moment(currentJadwal?.start),
+      finish: moment(currentJadwal?.finish),
+      classes: [currentJadwal?.class[0]?.id ?? ""],
+      container_id: currentJadwal?.container?.id,
+      type: currentJadwal?.type,
     });
   }, [currentJadwal]);
 
-  const onFinish = ({ kategori, ...values }) => {
-    setFormObj(values);
+  const onFinish = ({ classes, container_id, start, finish, ...values }) => {
+    let classList = [];
+
+    classes.map((itemClass) =>
+      classList.push(parseInt(itemClass.value || itemClass))
+    );
+
     handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      classes: classList,
+      start: startTime || moment(currentJadwal?.start)?._i,
+      finish: finishTime || moment(currentJadwal?.finish)?._i,
+      container_id: parseInt(container_id?.key) || currentJadwal?.container?.id,
       ...values,
     });
   };
@@ -77,7 +98,7 @@ function FormEditJadwal({
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="jadwal_nama"
+            name="description"
             label="Nama Jadwal"
             rules={[
               {
@@ -87,37 +108,26 @@ function FormEditJadwal({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<ScheduleOutlined />}
               placeholder={` Jadwal . . .`}
             />
           </Form.Item>
         </Col>
-
         <Col>
           <Form.Item
-            name="kategori"
-            label="Kategori"
-            tooltip={{
-              title: `Jadwal ini menggunakan kategori ${
-                isObjectEmpty(selectedKategori)
-                  ? " yang dipilih "
-                  : selectedKategori
-              }`,
-            }}
+            name="type"
+            label="Tipe"
             rules={[
               {
                 required: true,
-                message: "Mohon pilih Kategori!",
+                message: "Mohon pilih Tipe!",
               },
             ]}
           >
-            <Select
-              placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
-              style={{ width: "200px" }}
-            >
-              <Option key="Open-Ended">Open-Ended</Option>
-              <Option key="Close-Ended">Close-Ended</Option>
+            <Select placeholder="Pilih Tipe . . ." style={{ width: "200px" }}>
+              <Option key="latihan">latihan</Option>
+              <Option key="ujian">ujian</Option>
             </Select>
           </Form.Item>
         </Col>
@@ -126,7 +136,7 @@ function FormEditJadwal({
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="tanggal_mulai"
+            name="start"
             label="Waktu Mulai"
             rules={[
               {
@@ -138,6 +148,7 @@ function FormEditJadwal({
           >
             <DatePicker
               showTime
+              onChange={onChangeStartDateTime}
               placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
@@ -146,7 +157,7 @@ function FormEditJadwal({
         </Col>
         <Col>
           <Form.Item
-            name="tanggal_akhir"
+            name="finish"
             label="Waktu Selesai"
             rules={[
               {
@@ -158,6 +169,7 @@ function FormEditJadwal({
           >
             <DatePicker
               showTime
+              onChange={onChangeFinishDateTime}
               placeholder="Pilih waktu . . ."
               style={{ width: "200px" }}
               format="YYYY-MM-DD HH:mm"
@@ -167,53 +179,62 @@ function FormEditJadwal({
       </Row>
       <Row gutter={20}>
         <Col>
-          <Form.Item
-            name="kelas_nama"
-            label="Kelas"
-            tooltip={{
-              title: `Jadwal ini akan terlihat oleh kelas ${
-                isObjectEmpty(selectedKelas) ? " yang dipilih " : selectedKelas
-              }`,
-            }}
-            rules={[
-              {
-                required: true,
-                message: "Mohon pilih kelas!",
-              },
-            ]}
-          >
-            <Select
-              mode="multiple"
-              placeholder="Pilih kelas . . ."
-              onChange={onChangeKelas}
-              style={{ width: "200px" }}
+          {isDataKelasLoaded && (
+            <Form.Item
+              name="classes"
+              label="Kelas"
+              rules={[
+                {
+                  required: true,
+                  message: "Mohon pilih kelas!",
+                },
+              ]}
             >
-              {dataKelas?.map((item) => (
-                <Option key={item.name}>{item.name}</Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Select
+                labelInValue
+                mode="multiple"
+                placeholder="Pilih kelas . . ."
+                style={{ width: "200px" }}
+              >
+                {dataKelas?.map((item) => (
+                  <Option key={item.id} value={item?.id} label={item?.name}>
+                    {item.name}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
         </Col>
         <Col>
-          <Form.Item
-            name="paket_soal"
-            label="Paket Soal"
-            rules={[
-              {
-                required: true,
-                message: "Pilih paket soal!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Pilih paket soal . . ."
-              style={{ width: "200px" }}
+          {isDataPaketLoaded && (
+            <Form.Item
+              name="container_id"
+              label="Paket Soal"
+              rules={[
+                {
+                  required: true,
+                  message: "Pilih paket soal!",
+                },
+              ]}
             >
-              {dataPaketSoal.map((item) => (
-                <Option key={item?.id_paket}> {item?.nama} </Option>
-              ))}
-            </Select>
-          </Form.Item>
+              <Select
+                labelInValue
+                placeholder="Pilih paket soal . . ."
+                style={{ width: "200px" }}
+              >
+                {dataPaketSoal.map((item) => (
+                  <Option
+                    key={item?.id}
+                    value={item?.id}
+                    label={item?.description}
+                  >
+                    {" "}
+                    {item?.description}{" "}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+          )}
         </Col>
       </Row>
       <Divider />
