@@ -1,7 +1,16 @@
 import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
-import { Typography, Row, Col, Button, Skeleton, Tooltip, Alert } from "antd";
+import {
+  Typography,
+  Row,
+  Col,
+  Button,
+  Skeleton,
+  Tooltip,
+  Alert,
+  message,
+} from "antd";
 
 import { PlusCircleOutlined, LeftOutlined } from "@ant-design/icons";
 import PageLayout from "../../../components/PageLayout";
@@ -9,12 +18,10 @@ import { getMhsKelasByID } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { useRouter } from "next/router";
 import ModalCustom from "../../../components/Modal";
 import FormTambahMahasiswa from "../../../components/dosen/Kelas/FormTambahMahasiswa";
-import FormEditMahasiswa from "../../../components/dosen/Kelas/FormEditMahasiswa";
 import ListComponent from "../../../components/List";
 import FormHapusMahasiswa from "../../../components/dosen/Kelas/FormHapusMahasiswa";
 import {
   deleteMhs,
-  mockGetMhsPerKelas,
   postMhs,
 } from "../../../utils/remote-data/dosen/MahasiswaCRUD";
 import { useSession } from "next-auth/react";
@@ -34,12 +41,6 @@ function MahasiswaByID() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
-
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
     fetchDataMahasiswa();
@@ -60,18 +61,8 @@ function MahasiswaByID() {
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
 
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
-
   const tambahMahasiswa = () => {
     setModalRole("tambah");
-    handleToggleModal();
-  };
-
-  const editMahasiswa = (MahasiswaObj) => {
-    console.log("Selected, ", MahasiswaObj);
-    setModalRole("edit");
-    setCurrentMhs(MahasiswaObj);
     handleToggleModal();
   };
 
@@ -81,44 +72,36 @@ function MahasiswaByID() {
     handleToggleModal();
   };
 
+  // TODO : Sync FE sesuai kebutuhan BE (pakai ID dari Mahasiswa)
+  //  ? Opsi :  Convert ke Select Box Option
+
   const aksiTambahMahasiswa = (formMahasiswa) => {
     // ? (Bearer Token, values, idKelas)
     postMhs(session?.user?.tokenJWT, formMahasiswa, router.query.idKelas)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data ${formMahasiswa.name} berhasil ditambahkan`);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(
+          `Data Pertanyaan  ${formMahasiswa.name} berhasil ditambahkan`
+        );
       })
       .then(() => fetchDataMahasiswa())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(`Data Pertanyaan ${formMahasiswa.name} gagal ditambahkan`)
+      );
   };
-
-  // const aksiEditMahasiswa = (formMahasiswa) => {
-  //   // TODO : Call PUT API request dari MahasiswaCRUD.js
-  //   // ...
-  //   handleToggleAlert();
-  //   setTimeout(() => handleToggleAlert(false), 5000);
-  //   handleToggleModal();
-  //   setAlertMessage(
-  //     `Data Mahasiswa ${formMahasiswa.nama_mahasiswa} berhasil diubah`
-  //   );
-  //   handleToggleAlert();
-  //   console.log("Data berhasil diedit", formMahasiswa);
-  // };
 
   const aksiDeleteMahasiswa = (formMahasiswa) => {
     deleteMhs(session?.user?.tokenJWT, router.query.idKelas, currentMhs.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data Mahasiswa ${formMahasiswa.name} berhasil dihapus`
+        message.success(
+          `Data Pertanyaan  ${formMahasiswa.name} berhasil dihapus`
         );
-        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataMahasiswa())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(`Data Pertanyaan ${formMahasiswa.name} gagal dihapus`)
+      );
   };
 
   return (
@@ -165,19 +148,6 @@ function MahasiswaByID() {
           </Col>
         </Row>
 
-        {/* Content asli... */}
-
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
-
         <ModalCustom
           role={modalRole}
           entity={`Mahasiswa di ${DataKelas?.name}`}
@@ -192,14 +162,6 @@ function MahasiswaByID() {
                 setVisible={setIsModalVisible}
               />
             ) : (
-              // ) : modalRole === "edit" ? (
-              //   <FormEditMahasiswa
-              //     handleSubmit={aksiEditMahasiswa}
-              //     setVisible={setIsModalVisible}
-              //     setFormObj={setFormObj}
-              //     currentMhs={currentMhs}
-              //   />
-              // )
               <FormHapusMahasiswa
                 handleSubmit={aksiDeleteMahasiswa}
                 setVisible={setIsModalVisible}
@@ -212,7 +174,6 @@ function MahasiswaByID() {
         <ListComponent
           isLoading={!isDataMhsLoaded}
           role="daftar-mahasiswa-per-kelas"
-          editMahasiswa={editMahasiswa}
           deleteMahasiswa={deleteMahasiswa}
           dataSource={dataMhsPerKelas}
         />

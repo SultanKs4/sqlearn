@@ -27,6 +27,7 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<CodeSandboxOutlined />}
               placeholder={` Nomor Induk Dosen . . . `}
             />
@@ -46,6 +47,7 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Nama Dosen . . . `}
             />
@@ -62,7 +64,11 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
               },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder={` Username . . . `} />
+            <Input
+              autoComplete="off"
+              prefix={<UserOutlined />}
+              placeholder={` Username . . . `}
+            />
           </Form.Item>
         </Col>
       </Row>

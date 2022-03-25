@@ -227,6 +227,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         ]}
       >
         <Input
+          autoComplete="off"
           prefix={<ConsoleSqlOutlined />}
           placeholder={` Teks Pertanyaan . . .`}
         />
@@ -273,6 +274,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
                     noStyle
                   >
                     <Input
+                      autoComplete="off"
                       placeholder="Kunci SQL Query . . ."
                       style={{ width: "88%" }}
                     />
@@ -315,6 +317,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             ))}
             {inputTagsKomponenVisible && (
               <Input
+                autoComplete="off"
                 ref={refButton}
                 type="text"
                 size="small"
@@ -343,6 +346,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             ))}
             {inputTagsPetunjukVisible && (
               <Input
+                autoComplete="off"
                 ref={refButtonPetunjuk}
                 type="text"
                 size="small"
@@ -370,6 +374,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<ConsoleSqlOutlined />}
               placeholder={` Jawaban Benar . . .`}
             />
@@ -414,6 +419,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               disabled
               prefix={<ConsoleSqlOutlined />}
               placeholder={` Dibuat Oleh . . .`}

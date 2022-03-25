@@ -73,7 +73,11 @@ function FormEditPaket({
           },
         ]}
       >
-        <Input prefix={<ScheduleOutlined />} placeholder={` Paket . . .`} />
+        <Input
+          autoComplete="off"
+          prefix={<ScheduleOutlined />}
+          placeholder={` Paket . . .`}
+        />
       </Form.Item>
       <Row gutter={20}>
         <Col>

@@ -32,21 +32,12 @@ function PreviewNilaiTiapKelas() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   const previewNilaiMhs = (nilaiMhsObj) => {
     setSelectedMhs(nilaiMhsObj);
     setModalRole("preview");
     handleToggleModal();
-    // setModalText(
-    //   `Nilai Rata rata ${nilaiMhsObj.nama} adalah ${nilaiMhsObj.avgNilai}`
-    // );
   };
 
   useEffect(() => {
@@ -104,16 +95,6 @@ function PreviewNilaiTiapKelas() {
             </Row>
           </Col>
         </Row>
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         <ModalCustom
           role={modalRole}

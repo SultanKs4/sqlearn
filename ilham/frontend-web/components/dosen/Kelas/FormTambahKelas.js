@@ -26,6 +26,7 @@ function FormTambahKelas({ form, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<LaptopOutlined />}
               placeholder={` Format [Prodi]-[Kelas]-[Tahun] . . .`}
             />

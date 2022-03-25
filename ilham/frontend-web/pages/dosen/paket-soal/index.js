@@ -2,7 +2,7 @@ import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 
-import { Typography, Row, Col, Button, Alert } from "antd";
+import { Typography, Row, Col, Button, Alert, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -38,13 +38,7 @@ function PaketSoal() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
 
   useEffect(() => {
     fetchDataPaketSoal();
@@ -74,27 +68,31 @@ function PaketSoal() {
   const aksiTambahPaket = (formPaket) => {
     postPaketSoal(session?.user?.tokenJWT, formPaket)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data "${formPaket.description}" berhasil ditambahkan`);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(
+          `Data Pertanyaan  ${formPaket.description} berhasil ditambahkan`
+        );
       })
       .then(() => fetchDataPaketSoal())
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        message.error(
+          `Data Pertanyaan  ${formPaket.description} gagal ditambahkan`
+        )
+      );
   };
 
   const aksiDeletePaket = (formPaket) => {
     deletePaketSoal(session?.user?.tokenJWT, formPaket?.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data paket "${formPaket.description}" berhasil dihapus`
+        message.success(
+          `Data Pertanyaan  ${formPaket.description} berhasil dihapus`
         );
-        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataPaketSoal())
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        message.error(`Data Pertanyaan  ${formPaket.description} gagal dihapus`)
+      );
   };
 
   return (
@@ -113,16 +111,6 @@ function PaketSoal() {
             </Button>
           </Col>
         </Row>
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         {isModalVisible && (
           <ModalCustom

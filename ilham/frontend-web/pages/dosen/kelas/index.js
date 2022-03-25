@@ -8,7 +8,7 @@ import {
   postKelas,
   updateKelas,
 } from "../../../utils/remote-data/dosen/KelasCRUD";
-import { Typography, Row, Col, Button, Alert } from "antd";
+import { Typography, Row, Col, Button, Alert, message } from "antd";
 
 import {
   PlusCircleOutlined,
@@ -36,11 +36,6 @@ function DaftarKelas() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   useEffect(() => {
     fetchDataKelas();
   }, [session]);
@@ -59,16 +54,12 @@ function DaftarKelas() {
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
 
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
-
   const tambahKelas = () => {
     setModalRole("tambah");
     handleToggleModal();
   };
 
   const displayModalEditKelas = (kelasObj) => {
-    console.log("Selected, ", kelasObj);
     setModalRole("edit");
     setCurrentKelas(kelasObj);
     handleToggleModal();
@@ -82,41 +73,35 @@ function DaftarKelas() {
   };
 
   const aksiTambahKelas = (formKelas) => {
-    console.log(formKelas, "ini formKelas");
     postKelas(session?.user?.tokenJWT, formKelas)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data ${formKelas.name} berhasil ditambahkan`);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${formKelas.name} berhasil ditambahkan`);
       })
       .then(() => fetchDataKelas())
-      .catch((err) => console.error(err));
+      .catch((err) =>
+        message.error(`Data ${formKelas.name} gagal ditambahkan`)
+      );
   };
 
   const aksiEditKelas = (formKelas) => {
     updateKelas(session?.user?.tokenJWT, formKelas, currentKelas?.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data Kelas ${formKelas.name} berhasil diubah`);
-        console.log("Data berhasil diedit", formKelas);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${formKelas.name} berhasil diubah`);
       })
       .then(() => fetchDataKelas())
-      .catch((err) => console.error(err));
+      .catch((err) => message.error(`Data ${formKelas.name} gagal diubah`));
   };
 
   const aksiDeleteKelas = (kelasObj) => {
     deleteKelas(session?.user?.tokenJWT, kelasObj?.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data Kelas ${kelasObj.name} berhasil dihapus`);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${kelasObj.name} berhasil dihapus`);
       })
       .then(() => fetchDataKelas())
-      .catch((err) => console.error(err));
+      .catch((err) => message.error(`Data ${kelasObj.name} gagal dihapus`));
   };
 
   return (
@@ -147,17 +132,6 @@ function DaftarKelas() {
             </Row>
           </Col>
         </Row>
-
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         <ModalCustom
           role={modalRole}

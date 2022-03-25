@@ -1,6 +1,15 @@
 import Head from "next/head";
 
-import { Skeleton, Typography, Row, Col, Button, Alert, Tooltip } from "antd";
+import {
+  Skeleton,
+  Typography,
+  Row,
+  Col,
+  Button,
+  Alert,
+  Tooltip,
+  message,
+} from "antd";
 
 import { LeftOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
@@ -34,16 +43,8 @@ function PreviewPaket() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
-
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
 
   useEffect(() => {
     fetchDataQuestionPaketSoal();
@@ -65,7 +66,6 @@ function PreviewPaket() {
   };
 
   const editPilihSoal = (soalObj) => {
-    console.log(soalObj);
     setModalRole("edit");
     setCurrentSoal(soalObj);
     handleToggleModal();
@@ -85,13 +85,11 @@ function PreviewPaket() {
       router?.query?.id_paket
     )
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(`Data pertanyaan berhasil ditambahkan`);
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data Pertanyaan berhasil ditambahkan`);
       })
       .then(() => fetchDataQuestionPaketSoal())
-      .catch((err) => console.log(err));
+      .catch((err) => message.error(`Data Pertanyaan gagal ditambahkan`));
   };
 
   const aksiDeleteSoal = (pilihSoalObj) => {
@@ -102,17 +100,19 @@ function PreviewPaket() {
       pilihSoalObj.id
     )
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data Pertanyaan ${removeHTML(
-            pilihSoalObj.text
-          )} berhasil dikeluarkan dari paket soal "${dataPaket?.description}"`
+        message.success(
+          `Data Pertanyaan berhasil dikeluarkan dari paket soal "${dataPaket?.description}"`
         );
-        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataQuestionPaketSoal())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.log(
+          `Data Pertanyaan ${removeHTML(
+            dataPaket.description
+          )} gagal dikeluarkan`
+        )
+      );
   };
   return (
     <>
@@ -158,16 +158,6 @@ function PreviewPaket() {
             </Button>
           </Col>
         </Row>
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         <ModalCustom
           role={modalRole}

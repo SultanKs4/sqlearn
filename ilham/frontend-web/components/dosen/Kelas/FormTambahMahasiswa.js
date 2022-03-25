@@ -26,6 +26,7 @@ function FormTambahMahasiswa({ setVisible, handleSubmit }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Contoh : Muhammad Ilham . . .`}
             />
@@ -43,6 +44,7 @@ function FormTambahMahasiswa({ setVisible, handleSubmit }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Contoh : 18417200xx   . . .`}
             />

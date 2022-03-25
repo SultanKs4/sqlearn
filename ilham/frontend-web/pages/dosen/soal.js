@@ -3,7 +3,7 @@ import { React, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import { Typography, Row, Col, Button, Alert, Radio } from "antd";
+import { Typography, Row, Col, Button, Alert, Radio, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -39,11 +39,6 @@ function HalamanSoal() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   useEffect(() => {
     fetchDataSoal();
   }, [session]);
@@ -55,18 +50,10 @@ function HalamanSoal() {
         setIsDataLoaded(true);
         formatToArray(res.data[0].answer);
       });
-
-    // mockGetSoal().then((res) => {
-    //   setDataSoal(res.data);
-    //   setIsDataLoaded(true);
-    // });
   }, [session]);
 
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
-
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
 
   const displayModalTambahSoal = () => {
     setModalRole("tambah");
@@ -87,28 +74,28 @@ function HalamanSoal() {
 
   const aksiTambahSoal = (formSoal) => {
     console.log("formSoal", formSoal);
-    //  postSoal(session?.user?.tokenJWT, formSoal)
-    //  .then(() => {
-    //    handleToggleAlert(true);
-    //    handleToggleModal(false);
-    //    setAlertMessage(`Data ${removeHTML(formSoal.text)} berhasil ditambahkan`);
-    //    setTimeout(() => handleToggleAlert(false), 5000);
-    //  })
-    //  .then(() => fetchDataSoal())
-    //  .catch((err) => console.log(err));
+    postSoal(session?.user?.tokenJWT, formSoal)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(
+          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil ditambahkan`
+        );
+      })
+      .then(() => fetchDataSoal())
+      .catch((err) => message.error(`Data Pertanyaan gagal ditambahkan`));
   };
 
   const aksiEditSoal = (formSoal) => {
     console.log("formSoal", formSoal);
-    // updateSoal(session?.user?.tokenJWT, formSoal.id)
-    //  .then(() => {
-    //    handleToggleAlert(true);
-    //    handleToggleModal(false);
-    //    setAlertMessage(`Data ${removeHTML(formSoal.text)} berhasil diubah`);
-    //    setTimeout(() => handleToggleAlert(false), 5000);
-    //  })
-    //  .then(() => fetchDataSoal())
-    //  .catch((err) => console.log(err));
+    updateSoal(session?.user?.tokenJWT, formSoal.id)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(
+          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil diubah`
+        );
+      })
+      .then(() => fetchDataSoal())
+      .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
   };
 
   const aksiDeleteSoal = (formSoal) => {
@@ -117,15 +104,13 @@ function HalamanSoal() {
 
     deleteSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
+        message.success(
           `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil dihapus`
         );
-        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataSoal())
-      .catch((err) => console.log(err));
+      .catch((err) => message.error(`Data Pertanyaan gagal dihapus`));
   };
 
   return (
@@ -144,17 +129,6 @@ function HalamanSoal() {
             </Button>
           </Col>
         </Row>
-
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         {isModalVisible && (
           <ModalCustom

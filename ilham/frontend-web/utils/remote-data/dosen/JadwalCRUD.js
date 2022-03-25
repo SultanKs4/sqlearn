@@ -55,6 +55,7 @@ const mockGetJadwalByID = async (jadwalID) => {
     }, 1000);
   });
 };
+
 const getJadwal = async (bearerToken) => {
   let response = await axiosWithBearer(bearerToken).get(`${URL_SCHEDULE_API}`);
   return response.data;

@@ -3,7 +3,7 @@ import { React, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import { Typography, Row, Col, Button, Card, Alert } from "antd";
+import { Typography, Row, Col, Button, Card, Alert, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -32,11 +32,6 @@ function StudiKasus() {
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
-  const [isAlertActive, setIsAlertActive] = useState(false);
-
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   useEffect(() => {
     fetchDataStudiKasus();
@@ -52,9 +47,6 @@ function StudiKasus() {
 
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
-
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
 
   const previewStudiKasus = (studiKasusObj) => {
     setCurrentStudiKasus(studiKasusObj);
@@ -75,17 +67,21 @@ function StudiKasus() {
 
   const aksiTambahStudiKasus = (formStudiKasus) => {
     console.log("formStudiKasus", formStudiKasus);
-    // postStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
-    //   .then(() => {
-    //     handleToggleAlert(true);
-    //     handleToggleModal(false);
-    //     setAlertMessage(
-    //       `Data Pertanyaan ${removeHTML(formStudiKasus.name)} berhasil dihapus`
-    //     );
-    //     setTimeout(() => handleToggleAlert(false), 5000);
-    //   })
-    //   .then(() => fetchDataStudiKasus())
-    //   .catch((err) => console.log(err));
+    postStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(
+          `Data Pertanyaan ${removeHTML(
+            formStudiKasus.name
+          )} berhasil ditambahkan`
+        );
+      })
+      .then(() => fetchDataStudiKasus())
+      .catch((err) =>
+        message.error(
+          `Data Pertanyaan ${removeHTML(formStudiKasus.name)} gagal ditambahkan`
+        )
+      );
   };
 
   const aksiDeleteStudiKasus = (formStudiKasus) => {
@@ -93,15 +89,17 @@ function StudiKasus() {
     console.log("formStudiKasus", formStudiKasus);
     deleteStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
+        message.success(
           `Data Pertanyaan ${removeHTML(formStudiKasus.name)} berhasil dihapus`
         );
-        setTimeout(() => handleToggleAlert(false), 5000);
       })
       .then(() => fetchDataStudiKasus())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(
+          `Data Pertanyaan ${removeHTML(formStudiKasus.name)} gagal dihapus`
+        )
+      );
   };
 
   return (
@@ -120,17 +118,6 @@ function StudiKasus() {
             </Button>
           </Col>
         </Row>
-
-        {isAlertActive ? (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        ) : null}
 
         <ModalCustom
           role={modalRole}

@@ -36,6 +36,7 @@ function FormTambahStudiKasus({ form, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<DatabaseOutlined />}
               placeholder={` Studi Kasus . . .`}
             />

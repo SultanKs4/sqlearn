@@ -14,6 +14,9 @@ export const URL_SCHEDULE_API = `${BASE_URL}/api/schedules`;
 export const URL_SESSION_API = `${BASE_URL}/api/sessions`;
 export const URL_LOGIN_API = `${BASE_URL}/api/login`;
 
+// TODO : Tambah URL_NILAI_MHS_API
+export const URL_NILAI_MHS_API = `${BASE_URL}`;
+
 // ? BACKEND ASSESMENT
 export const URL_CREATE_DB_API = `${BASE_URL}/api/v2/database/create/testcreate`;
 export const URL_DESC_TABLE_API = `${BASE_URL}/api/v2/database/desc_table/auto_assess_tes`;

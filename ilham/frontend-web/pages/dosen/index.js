@@ -15,6 +15,7 @@ import {
   Alert,
   Form,
   Radio,
+  message,
 } from "antd";
 
 import {
@@ -55,17 +56,8 @@ function Jadwal() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
-
-  const handleToggleAlert = (state = isAlertActive) =>
-    setIsAlertActive((prev) => state || !prev);
 
   useEffect(() => {
     fetchDataJadwal();
@@ -97,48 +89,39 @@ function Jadwal() {
   };
 
   const aksiTambahJadwal = (formJadwal) => {
-    console.log("formJadwal", formJadwal);
     postJadwal(session?.user?.tokenJWT, formJadwal)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data jadwal "${formJadwal?.description}" berhasil ditambahkan`
-        );
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${formJadwal.description} berhasil ditambahkan`);
       })
       .then(() => fetchDataJadwal())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(`Data ${formJadwal.description} gagal ditambahkan`)
+      );
   };
 
   const aksiEditJadwal = (formJadwal) => {
-    console.log("formJadwal", formJadwal);
     updateJadwal(session?.user?.tokenJWT, formJadwal, currentJadwal?.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data jadwal "${formJadwal?.description}" berhasil diubah`
-        );
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${formJadwal.description} berhasil diubah`);
       })
       .then(() => fetchDataJadwal())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(`Data ${formJadwal.description} gagal diubah`)
+      );
   };
 
   const aksiDeleteJadwal = (formJadwal) => {
-    console.log("formJadwal", formJadwal);
     deleteJadwal(session?.user?.tokenJWT, formJadwal?.id)
       .then(() => {
-        handleToggleAlert(true);
         handleToggleModal(false);
-        setAlertMessage(
-          `Data jadwal ${formJadwal?.description} berhasil dihapus`
-        );
-        setTimeout(() => handleToggleAlert(false), 5000);
+        message.success(`Data ${formJadwal.description} berhasil dihapus`);
       })
       .then(() => fetchDataJadwal())
-      .catch((err) => console.log(err));
+      .catch((err) =>
+        message.error(`Data ${formJadwal.description} gagal dihapus`)
+      );
   };
 
   return (
@@ -157,18 +140,6 @@ function Jadwal() {
             </Button>
           </Col>
         </Row>
-
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-            onClose={() => handleToggleAlert()}
-          />
-        )}
 
         {isModalVisible && (
           <ModalCustom
