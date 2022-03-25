@@ -31,8 +31,20 @@ module.exports = {
 
         return res.status(httpCode).json(response);
     },
+    updatePassword: async (req, res) => {
+        const resObj = await studentService.updatePassword(req.params.id, req.body.passwordOld, req.body.passwordNew);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
     destroy: async (req, res) => {
         const resObj = await studentService.destroy(req.params.id);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+    resetPassword: async (req, res) => {
+        const resObj = await studentService.resetPassword(req.params.id);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);

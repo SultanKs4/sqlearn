@@ -31,7 +31,7 @@ module.exports = {
         return await executeDb(dbname, query);
     },
     selectTable: async (dbname, table) => {
-        const query = `SELECT * FROM  ${table};`;
+        const query = `SELECT * FROM ${table};`;
         return await executeDb(dbname, query);
     },
     runQuery: async (dbname, query, timeout) => {

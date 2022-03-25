@@ -31,7 +31,9 @@ async function verifyJWT(token) {
                 },
                 raw: true,
             });
-        } else if (role == JWT_ROLES.mahasiswa) {
+        }
+
+        if (role == JWT_ROLES.mahasiswa) {
             user = await Student.findByPk(id, {
                 attributes: {
                     exclude: ["password", "createdAt", "updatedAt"],

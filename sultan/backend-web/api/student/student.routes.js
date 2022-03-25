@@ -9,6 +9,8 @@ router.get("/classes/:class", studentController.indexExclude);
 router.get("/:id", studentController.show);
 router.post("/", studentController.store);
 router.put("/:id", studentController.update);
+router.put("/:id/password", studentController.updatePassword);
 router.delete("/:id", studentController.destroy);
+router.delete("/:id/password", studentController.resetPassword);
 
 module.exports = router;

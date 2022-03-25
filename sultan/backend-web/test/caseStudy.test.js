@@ -14,6 +14,7 @@ const req = supertest(app);
 
 let tokenDosen = null;
 let tokenMahasiswa = null;
+let dataCaseStudy = null;
 
 before("generate token", async () => {
     it("generate dosen token", async () => {
@@ -28,6 +29,32 @@ before("generate token", async () => {
 
 describe("case study route", () => {
     let prefix = "/api/casestudies";
+    it("need authorization header", async () => {
+        const response = await req.get(`${prefix}`);
+        expect(response.statusCode).equal(400);
+        expect(response.body.status).equal("fail");
+        expect(response.body.message).equal("headers authorization not found");
+        expect(response.body.data).equal(null);
+    });
+    it("authorization header malformed", async () => {
+        const response = await req.get(`${prefix}`).set("Authorization", `Bearer thisIsNotValidHeader`);
+        expect(response.statusCode).equal(400);
+        expect(response.body.status).equal("fail");
+        expect(response.body.message).equal("jwt malformed");
+        expect(response.body.data).equal(null);
+    });
+    it("authorization header invalid signature", async () => {
+        const response = await req
+            .get(`${prefix}`)
+            .set(
+                "Authorization",
+                `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c`
+            );
+        expect(response.statusCode).equal(400);
+        expect(response.body.status).equal("fail");
+        expect(response.body.message).equal("invalid signature");
+        expect(response.body.data).equal(null);
+    });
     it("mahasiswa can't access because unauthorized", async () => {
         const response = await req.get(`${prefix}`).set("Authorization", `Bearer ${tokenMahasiswa}`);
         expect(response.statusCode).equal(403);
@@ -71,7 +98,7 @@ describe("case study route", () => {
             expect(response.body.message).equal("validation failed");
         });
         it("return error data not found", async () => {
-            const response = await req.get(`${prefix}/99999`).set("Authorization", `Bearer ${tokenDosen}`);
+            const response = await req.get(`${prefix}/999/data/notfound`).set("Authorization", `Bearer ${tokenDosen}`);
             expect(response.statusCode).equal(404);
             expect(response.body.status).equal("error");
             expect(response.body.message).equal("studi kasus tidak dapat ditemukan");
@@ -119,6 +146,41 @@ describe("case study route", () => {
             expect(response.statusCode).equal(400);
             expect(response.body.status).equal("fail");
             expect(response.body.message).equal("Format file tidak didukung");
+        });
+        it("success post new data case study", async () => {
+            const response = await req
+                .post(`${prefix}/`)
+                .set("Authorization", `Bearer ${tokenDosen}`)
+                .field("name", "study case test")
+                .attach("sql", path.resolve(__dirname, "../seeder/sqlearn_cs_auto_assess_tes.sql"));
+            expect(response.statusCode).equal(201);
+            expect(response.body.status).equal("success");
+            expect(response.body.message).equal("Data studi kasus berhasil ditambahkan");
+            expect(response.body.data.name).equal("study case test");
+            dataCaseStudy = response.body.data;
+        });
+    });
+    describe("delete data case study newly created", async () => {
+        it("return fail validation params must be number", async () => {
+            const response = await req.delete(`${prefix}/aa`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(400);
+            expect(response.body.status).equal("fail");
+            expect(response.body.message).equal("validation failed");
+            expect(response.body.data.id.msg).equal("must be number");
+        });
+        it("return error because data not found for id given", async () => {
+            const response = await req.delete(`${prefix}/999`).set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(404);
+            expect(response.body.status).equal("error");
+            expect(response.body.message).equal("studi kasus tidak dapat ditemukan");
+        });
+        it("success delete data case study", async () => {
+            const response = await req
+                .delete(`${prefix}/${dataCaseStudy.id}`)
+                .set("Authorization", `Bearer ${tokenDosen}`);
+            expect(response.statusCode).equal(200);
+            expect(response.body.status).equal("success");
+            expect(response.body.message).equal("Data studi kasus berhasil dihapus");
         });
     });
 });

@@ -1,7 +1,7 @@
 const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const errorHandling = require("../../lib/errorHandling");
-const { hashPassword } = require("../../lib/hashPassword");
+const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 
 const User = require("./user.model");
 
@@ -70,6 +70,23 @@ module.exports = {
         }
     },
 
+    updatePassword: async (id, passwordOld, passwordNew) => {
+        try {
+            const user = await User.findByPk(id);
+            if (!user) throw createHttpError(404, "user not found");
+
+            const passwordOldMatch = comparePassword(passwordOld, user.password);
+            if (!passwordOldMatch) throw createHttpError(400, "old password not match with password at database");
+
+            user.password = hashPassword(passwordNew);
+            await user.save();
+
+            return createResponseObject(200, "success", "Password changed");
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
+
     destroy: async (id) => {
         try {
             const user = await User.findByPk(id);
@@ -82,6 +99,19 @@ module.exports = {
             });
 
             return createResponseObject(200, "success", "Data user berhasil dihapus");
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
+
+    resetPassword: async (id) => {
+        try {
+            const user = await User.findByPk(id);
+            if (!user) throw createHttpError(404, "user not found");
+
+            user.password = hashPassword(user.username);
+            await user.save();
+            return createResponseObject(200, "success", "password reset");
         } catch (error) {
             return errorHandling(error);
         }

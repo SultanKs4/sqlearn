@@ -10,7 +10,9 @@ module.exports = (error) => {
         let axiosData = error.response.data;
         message = axiosData.message;
         data = axiosData.data;
-    } else if (createHttpError.isHttpError(error)) code = error.statusCode;
+    }
+
+    if (createHttpError.isHttpError(error)) code = error.statusCode;
 
     return createResponseObject(code, "error", message, data);
 };

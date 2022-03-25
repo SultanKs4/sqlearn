@@ -86,7 +86,11 @@ module.exports = {
     },
     update: async (id, data) => {
         try {
-            const student = await Student.findByPk(id);
+            const student = await Student.findByPk(id, {
+                attributes: {
+                    exclude: ["password"],
+                },
+            });
             if (!student) throw createHttpError(404, "student not found");
 
             Object.keys(data).forEach((val) => {
@@ -96,6 +100,22 @@ module.exports = {
             await student.save();
 
             return createResponseObject(200, "success", "Data kelas berhasil diperbarui", student);
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
+    updatePassword: async (id, passwordOld, passwordNew) => {
+        try {
+            const student = await Student.findByPk(id);
+            if (!student) throw createHttpError(404, "student not found");
+
+            const passwordOldMatch = comparePassword(passwordOld, student.password);
+            if (!passwordOldMatch) throw createHttpError(400, "old password not match with password at database");
+
+            student.password = hashPassword(passwordNew);
+            await student.save();
+
+            return createResponseObject(200, "success", "Password changed");
         } catch (error) {
             return errorHandling(error);
         }
@@ -112,6 +132,18 @@ module.exports = {
             });
 
             return createResponseObject(200, "success", "Data mahasiswa berhasil dihapus");
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
+    resetPassword: async (id) => {
+        try {
+            const student = await Student.findByPk(id);
+            if (!student) throw createHttpError(404, "student not found");
+
+            student.password = hashPassword(student.username);
+            await student.save();
+            return createResponseObject(200, "success", "password reset");
         } catch (error) {
             return errorHandling(error);
         }

@@ -126,7 +126,7 @@ module.exports = {
                 },
             });
 
-            return createResponseObject(200, "success", "Data studi kasus berhasil dihapus", caseStudy);
+            return createResponseObject(200, "success", "Data studi kasus berhasil dihapus");
         } catch (error) {
             return errorHandling(error);
         }
