@@ -1,12 +1,14 @@
+const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const { encodeJWT, JWT_ROLES } = require("../../lib/encodeToken");
-const { hashPassword, comparePassword } = require("../../lib/hashPassword");
+const errorHandling = require("../../lib/errorHandling");
+const { comparePassword } = require("../../lib/hashPassword");
 const Student = require("../student/student.model");
 const User = require("../user/user.model");
 
 function checkPasswordAndEncodeJwt(password, user, role) {
     const isPasswordMatch = comparePassword(password, user.password);
-    if (!isPasswordMatch) throw new Error("username and password combination not match");
+    if (!isPasswordMatch) throw createHttpError(401, "username and password combination not match");
 
     const jwt = encodeJWT(user.id, role);
     const { password: passDb, ...userData } = user;
@@ -20,22 +22,21 @@ module.exports = {
             let user = await Student.findOne({ where: { username }, raw: true });
             if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.mahasiswa);
 
-            user = await User.findOne({ where: { username, level: JWT_ROLES.dosen }, raw: true });
-            if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.dosen);
+            if (!payloadResponse) {
+                user = await User.findOne({ where: { username, level: JWT_ROLES.dosen }, raw: true });
+                if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.dosen);
+            }
 
-            user = await User.findOne({ where: { username, level: JWT_ROLES.admin }, raw: true });
-            if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.admin);
+            if (!payloadResponse) {
+                user = await User.findOne({ where: { username, level: JWT_ROLES.admin }, raw: true });
+                if (user) payloadResponse = checkPasswordAndEncodeJwt(password, user, JWT_ROLES.admin);
+            }
 
-            if (!payloadResponse) throw new Error("username not found");
+            if (!payloadResponse) throw createHttpError(404, "username not found");
 
-            return createResponseObject("success", "login success", payloadResponse);
+            return createResponseObject(200, "success", "login success", payloadResponse);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "login gagal",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 };

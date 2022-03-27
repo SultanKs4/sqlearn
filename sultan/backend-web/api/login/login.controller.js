@@ -4,9 +4,8 @@ module.exports = {
     auth: async (req, res) => {
         const { username, password } = req.body;
         const resObj = await loginService.authentication(username, password);
+        const { httpCode, ...response } = resObj;
 
-        if (resObj.status == "error") return res.status(500).json(resObj);
-
-        return res.status(200).json(resObj);
+        return res.status(httpCode).json(response);
     },
 };

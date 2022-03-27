@@ -4,8 +4,6 @@ const router = express.Router();
 
 const studentController = require("./student.controller");
 
-router.post("/login", studentController.authenticate);
-router.use(verifyToken)
 router.get("/", studentController.index);
 router.get("/classes/:class", studentController.indexExclude);
 router.get("/:id", studentController.show);

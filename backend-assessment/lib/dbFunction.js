@@ -10,7 +10,7 @@ async function executeDb(dbname, query, timeout = false) {
             if (err) reject(err);
             resolve(result);
         });
-    });
+    }).finally(destroyConnection(dbname));
 }
 
 module.exports = {
@@ -39,5 +39,8 @@ module.exports = {
     },
     destroyConnection: (dbname) => {
         return destroyConnection(dbname);
+    },
+    getConnection: (dbname) => {
+        return getConnection(dbname);
     },
 };

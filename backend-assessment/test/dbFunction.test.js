@@ -1,3 +1,4 @@
+const { describe } = require("mocha");
 const { createDb, dropDb, descTable, selectTable } = require("../lib/dbFunction");
 const chai = require("chai"),
     expect = chai.expect;

@@ -1,5 +1,6 @@
 const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../../config/database");
+const DbList = require("../db-list/db-list.model");
 const User = require("../user/user.model");
 
 class CaseStudy extends Model {}
@@ -15,17 +16,17 @@ CaseStudy.init(
             type: DataTypes.STRING(50),
             allowNull: false,
         },
-        db_name: {
-            type: DataTypes.STRING(50),
-            allowNull: false,
-        },
-        db_file: {
-            type: DataTypes.TEXT("long"),
-        },
         user_id: {
             type: DataTypes.INTEGER,
             references: {
                 model: User,
+                key: "id",
+            },
+        },
+        db_list_id: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: DbList,
                 key: "id",
             },
         },

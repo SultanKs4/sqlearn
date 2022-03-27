@@ -5,6 +5,10 @@ module.exports = function permission(...roles) {
         const { user } = req;
 
         if (user && roles.includes(user.role)) next();
-        else res.status(401).json(createResponseObject("error", "roles unauthorized"));
+        else {
+            const resp = createResponseObject(403, "error", "roles unauthorized", null);
+            const { httpCode, ...response } = resp;
+            res.status(httpCode).json(response);
+        }
     };
 };

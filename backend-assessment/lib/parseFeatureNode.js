@@ -205,4 +205,11 @@ function parseFeatureNode(ast) {
     };
 }
 
-module.exports = parseFeatureNode;
+function getTypeAndTable(ast) {
+    return {
+        type: ast.type,
+        table: ast.type == "insert" ? getTable(ast.table) : getTable(ast.from),
+    };
+}
+
+module.exports = { parseFeatureNode, getTypeAndTable };

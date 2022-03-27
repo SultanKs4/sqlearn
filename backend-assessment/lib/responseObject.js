@@ -1,5 +1,6 @@
-module.exports = (status, data, message = null) => {
+module.exports = (httpCode, status, data, message = null) => {
     return {
+        httpCode,
         status,
         data,
         message,

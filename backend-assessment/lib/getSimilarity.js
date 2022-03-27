@@ -1,6 +1,6 @@
 const { Parser } = require("node-sql-parser");
 const { getCosineSimilarity } = require("./cosineSimilarity.js");
-const parseFeatureNode = require("./parseFeatureNode");
+const { parseFeatureNode } = require("./parseFeatureNode");
 // const util = require('util')
 
 function getSimilarity(query1, query2) {

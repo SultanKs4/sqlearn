@@ -8,7 +8,6 @@ const questionSanitizer = require("./question.sanitizer");
 
 router.get("/", questionSanitizer.checkQueryCaseOnly, questionController.index);
 router.get("/:id", questionSanitizer.checkGetData, questionController.show);
-router.use(verifyToken);
 router.get("/containers/:container", questionSanitizer.checkContainer, questionController.indexExclude);
 router.post("/", upload.single("answer_pic"), questionSanitizer.checkStore, questionController.store);
 router.put("/:id", upload.single("answer_pic"), questionSanitizer.checkUpdate, questionController.update);

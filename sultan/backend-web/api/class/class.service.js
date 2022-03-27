@@ -5,7 +5,8 @@ const { Op } = require("sequelize");
 const { hashPassword } = require("../../lib/hashPassword");
 const deleteFile = require("../../lib/deleteFile");
 const createResponseObject = require("../../lib/createResponseObject");
-const StudentClass = require("../student-class/student-class.model");
+const createHttpError = require("http-errors");
+const errorHandling = require("../../lib/errorHandling");
 
 module.exports = {
     getAll: async (user) => {
@@ -24,17 +25,14 @@ module.exports = {
                         as: "classes",
                         through: { attributes: [] },
                     },
-                }).then((result) => {
-                    return result.classes ? result.classes : null;
+                }).then((data) => {
+                    return data.classes;
                 });
             }
-            return createResponseObject("success", "Data kelas berhasil didapatkan", classes);
+            if (!classes || classes.length == 0) throw createHttpError(404, "data kelas tidak ada");
+            return createResponseObject(200, "success", "Data kelas berhasil didapatkan", classes);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data kelas gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
@@ -50,107 +48,78 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject("success", "Data studi kasus berhasil didapatkan", classById);
+            if (!classById) throw createHttpError(404, "data class not found");
+            return createResponseObject(200, "success", "Data studi kasus berhasil didapatkan", classById);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(
-                "error",
-                "Data studi kasus gagal didapatkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
     insert: async (data, user) => {
         try {
-            const exist = await Class.findOne({ where: { name: data.name, semester: data.semester } });
-            if (exist) throw new Error("data already created");
-            let classDb = await Class.create({
-                name: data.name,
-                semester: data.semester,
-                user_id: user.id,
+            const [dataClass, created] = await Class.findOrCreate({
+                where: { name: data.name, semester: data.semester },
+                defaults: { user_id: user.id },
             });
-            return createResponseObject("success", "Data kelas baru berhasil ditambahkan", newClass);
+
+            if (created) return createResponseObject(201, "success", "Data kelas baru berhasil ditambahkan", dataClass);
+            else throw createHttpError(409, "data already exist");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas baru gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
     convertExcel: async (data, user, file) => {
         try {
             // Class
-            const classDb = await Class.findOrCreate({
+            const [classDb] = await Class.findOrCreate({
                 where: {
                     name: data.name,
                     semester: data.semester,
                 },
                 defaults: {
-                    name: data.name,
-                    semester: data.semester,
                     user_id: user.id,
                 },
             });
-
-            if (classDb == null) {
-                await deleteFile(file);
-                throw new Error("Kelas tidak ada atau gagal dibuat");
-            }
 
             // Student
             const excelsData = convertExcel(file);
             const studentsExcel = excelToStudents(excelsData);
 
-            if (studentsExcel == null) {
-                await deleteFile(file);
-                throw new Error("Tidak berhasil parsing data dari excel");
-            }
-
-            const { arrStudents: arrStudentsNim } = destructurStudentsByField(studentsExcel, "nim");
-            const existedStudents = await findStudentsByNim(arrStudentsNim);
-            const { objStudents: nimExistedStudents } = destructurStudentsByField(existedStudents, "nim");
-            const newStudents = filterExistedStudents(studentsExcel, nimExistedStudents);
-
-            if (newStudents.length == 0) throw new Error("data mahasiswa kosong");
-
-            let isSuccess = await studentBulkInsert(newStudents);
-            if (isSuccess) throw new Error("gagal menambah data mahasiswa baru");
-
-            const existedStudentsNew = await findStudentsByNim(arrStudentsNim);
-            const studentClasses = studentToStudentClasses(classDb.id, existedStudentsNew);
-            const { arrStudents: arrStudentsId } = destructurStudentsByField(existedStudentsNew, "id");
-            const existedStudentClasses = await findExistedStudentClasses(classDb.id, arrStudentsId);
-            const { objStudentClasses: objStudentClassesStudentId } = destructurStudentClassesByField(
-                existedStudentClasses,
-                "student_id"
+            const arrStudentsNim = studentsExcel.map((student) => student.nim);
+            let existedStudents = await findStudentsByNim(arrStudentsNim).then((data) =>
+                data.map((student) => student.toJSON())
             );
-            const newStudentClasses = filterExistedStudentClasses(studentClasses, objStudentClassesStudentId);
-            if (newStudentClasses.length == 0) throw new Error("data mahasiswa kelas kosong");
+            let newStudents = [];
+            if (existedStudents.length > 0) {
+                newStudents = studentsExcel.filter(
+                    (student) => !existedStudents.some((existData) => existData.nim == student.nim)
+                );
+            } else newStudents = studentsExcel;
 
-            isSuccess = await studentClassesBulkInsert(newStudentClasses);
-            if (isSuccess) throw new Error("gagal menambahkan mahasiswa ke kelas");
+            if (newStudents.length > 0) await Student.bulkCreate(newStudents);
+
+            existedStudents = await findStudentsByNim(arrStudentsNim);
+            await classDb.addStudents(existedStudents);
+            let response = classDb.toJSON();
+            response.student = await classDb.getStudents({
+                attributes: ["id", "nim", "name"],
+                joinTableAttributes: [],
+            });
 
             await deleteFile(file);
 
-            return createResponseObject("success", "Data mahasiswa baru berhasil ditambahkan ke kelas");
+            return createResponseObject(201, "success", "Data mahasiswa baru berhasil ditambahkan ke kelas", response);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas dan mahasiswa baru gagal ditambahkan",
-                error == null ? null : error.message ? error.message : error
-            );
+            await deleteFile(file);
+            return errorHandling(error);
         }
     },
 
     update: async (id, data, user) => {
         try {
             const classDb = await Class.findByPk(id);
-            if (!classDb) throw new Error("data class by id not found");
+            if (!classDb) throw createHttpError(404, "data class by id not found");
 
             const checkData = await Class.findOne({
                 where: {
@@ -158,7 +127,7 @@ module.exports = {
                     semester: data.semester,
                 },
             });
-            if (!checkData) throw new Error("same data found, cannot update to same data");
+            if (checkData) throw createHttpError(409, "same data found, cannot update to same data");
 
             let dataUpdate = {
                 name: data.name,
@@ -170,77 +139,47 @@ module.exports = {
             });
             await classDb.save();
 
-            if (!classDb) throw new Error("class not found");
-
-            return createResponseObject("success", "Data kelas berhasil diperbarui", classOne);
+            return createResponseObject(200, "success", "Data kelas berhasil diperbarui", classDb);
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Data kelas gagal diperbarui",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
     addStudent: async (classId, studentIds) => {
-        console.log(studentIds);
         try {
-            const classOne = await Class.findOne(classId);
-            if (classOne == null) throw new Error("class not found");
-            const students = await Promise.all(
-                studentIds.map(async (id) => {
-                    let student = await Student.findByPk(id);
-                    if (student == null) throw new Error(`student id ${id} not found`);
-                    return {
-                        class_id: classOne.id,
-                        student_id: student.id,
-                    };
-                })
-            );
-            const newStudentClass = await StudentClass.bulkCreate(students);
+            const classOne = await Class.findByPk(classId);
+            if (!classOne) throw createHttpError(404, "class not found");
+            const students = await getStudentsFromIds(studentIds);
+            await classOne.addStudents(students);
+            let data = classOne.toJSON();
+            data.student = await classOne.getStudents({
+                attributes: ["id", "nim", "name"],
+                joinTableAttributes: [],
+            });
 
-            return createResponseObject("success", "Berhasil memasukkan mahasiswa ke kelas", newStudentClass);
+            return createResponseObject(201, "success", "Berhasil memasukkan mahasiswa ke kelas", data);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Gagal memasukkan mahasiswa ke kelas",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
-    removeStudent: async (classId, studentId) => {
+    removeStudent: async (classId, studentIds) => {
         try {
-            const studentClass = await StudentClass.findOne({
-                where: {
-                    class_id: classId,
-                    student_id: studentId,
-                },
-            });
-            if (studentClass == null) throw new Error("mahasiswa tidak terdapat di dalam kelas tersebut");
+            const classOne = await Class.findByPk(classId);
+            if (!classOne) throw createHttpError(404, "class not found");
+            const students = await getStudentsFromIds(studentIds);
+            await classOne.removeStudents(students);
 
-            await StudentClass.destroy({
-                where: {
-                    class_id: classId,
-                    student_id: studentId,
-                },
-            });
-
-            return createResponseObject("success", "Berhasil mengeluarkan mahasiswa dari kelas");
+            return createResponseObject(200, "success", "Berhasil mengeluarkan mahasiswa dari kelas");
         } catch (error) {
-            return createResponseObject(
-                "error",
-                "Gagal mengeluarkan mahasiswa dari kelas",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 
     destroy: async (id) => {
         try {
             const classOne = await Class.findByPk(id);
-            if (classOne == null) throw new Error("Tidak ada kelas yang dihapus");
+            if (!classOne) throw createHttpError(404, "Tidak ada kelas yang dihapus");
 
             await Class.destroy({
                 where: {
@@ -248,154 +187,52 @@ module.exports = {
                 },
             });
 
-            return createResponseObject("success", "Data kelas berhasil dihapus");
+            return createResponseObject(200, "success", "Data kelas berhasil dihapus");
         } catch (error) {
-            console.log(error);
-            return createResponseObject(
-                "error",
-                "Data kelas gagal dihapus",
-                error == null ? null : error.message ? error.message : error
-            );
+            return errorHandling(error);
         }
     },
 };
 
 function excelToStudents(data) {
-    if (!data["Daftar Mahasiswa"]) return null;
-
-    const students = data["Daftar Mahasiswa"].map((student) => {
-        nimAsString = student["nim"].toString();
-        return {
-            username: nimAsString,
-            password: hashPassword(nimAsString),
-            nim: nimAsString,
-            name: student["name"],
-        };
-    });
-
-    return students;
-}
-
-function studentToStudentClasses(classId, data) {
-    if (!data) return null;
-
-    const studentClasses = data.map((studentClass) => {
-        return {
-            student_id: studentClass["id"],
-            class_id: classId,
-        };
-    });
-
-    return studentClasses;
-}
-
-function destructurStudentsByField(students, field) {
-    if (!students || students.length == 0) {
-        return { objStudents: {}, arrStudents: [] };
+    try {
+        if (!data["Daftar Mahasiswa"]) throw createHttpError(400, "sheet excel different name");
+        const students = data["Daftar Mahasiswa"].map((student) => {
+            nimAsString = student["nim"].toString();
+            return {
+                username: nimAsString,
+                password: hashPassword(nimAsString),
+                nim: nimAsString,
+                name: student["name"],
+            };
+        });
+        if (!students || students.length == 0) throw createHttpError(404, "data mahasiswa at excel file not found");
+        return students;
+    } catch (error) {
+        throw error;
     }
-
-    const objStudents = {};
-    students.forEach((student) => (objStudents[student[field]] = true));
-
-    const arrStudents = students.map((student) => student[field]);
-
-    return { objStudents, arrStudents };
-}
-
-function destructurStudentClassesByField(studentClasses, field) {
-    if (!studentClasses || studentClasses.length == 0) {
-        return { objStudentClasses: {}, arrStudentClasses: [] };
-    }
-
-    const objStudentClasses = {};
-    studentClasses.forEach((studentClass) => (objStudentClasses[studentClass[field]] = true));
-
-    const arrStudentClasses = studentClasses.map((studentClass) => studentClass[field]);
-
-    return { objStudentClasses, arrStudentClasses };
 }
 
 async function findStudentsByNim(nims) {
-    if (!nims || nims.length == 0) {
-        return null;
-    }
-    try {
-        const students = await Student.findAll({
-            where: {
-                nim: {
-                    [Op.in]: nims,
-                },
+    return await Student.findAll({
+        where: {
+            nim: {
+                [Op.in]: nims,
             },
-            raw: true,
-        });
-        if (students.length != 0) {
-            return students;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.log(error);
-    }
+        },
+    });
 }
 
-function filterExistedStudents(students, objStudents) {
-    if (!students || students.length == 0) return null;
-    if (!objStudents) return students;
-
-    const filteredStudents = students.filter((student) => !objStudents[student["nim"]]);
-
-    return filteredStudents;
-}
-
-function filterExistedStudentClasses(studentClasses, objStudentClasses) {
-    if (!studentClasses || studentClasses.length == 0) return null;
-    if (!objStudentClasses) return studentClasses;
-
-    const filteredStudentClasses = studentClasses.filter(
-        (studentClass) => !objStudentClasses[studentClass["student_id"]]
-    );
-
-    return filteredStudentClasses;
-}
-
-async function studentBulkInsert(students) {
+async function getStudentsFromIds(studentIds) {
     try {
-        await Student.bulkCreate(students);
-        return true;
+        return await Promise.all(
+            studentIds.map(async (id) => {
+                let student = await Student.findByPk(id);
+                if (!student) throw createHttpError(404, `student id ${id} not found`);
+                return student;
+            })
+        );
     } catch (error) {
-        return false;
-    }
-}
-
-async function findExistedStudentClasses(classId, studentIds) {
-    if (!studentIds || studentIds.length == 0) {
-        return null;
-    }
-    try {
-        const studentClasses = await StudentClass.findAll({
-            where: {
-                student_id: {
-                    [Op.in]: studentIds,
-                },
-                class_id: classId,
-            },
-            raw: true,
-        });
-        if (studentClasses.length != 0) {
-            return studentClasses;
-        } else {
-            return null;
-        }
-    } catch (error) {
-        console.log(error);
-    }
-}
-
-async function studentClassesBulkInsert(studentClasses) {
-    try {
-        await StudentClass.bulkCreate(studentClasses);
-        return true;
-    } catch (error) {
-        return false;
+        throw error;
     }
 }
