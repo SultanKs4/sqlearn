@@ -46,9 +46,6 @@ function LatihanSoal() {
   // ? Untuk simpan jawaban kalau soal ini berkategori close-ended
   const [boxes, setBoxes] = useState([]);
 
-  // ? ini untuk hint sql parts close-ended
-  const [sqlUncomplete, setSqlUncomplete] = useState([]);
-
   const [currentPart, setCurrentPart] = useState(null);
 
   // ? Untuk simpan jawaban kalau soal ini berkategori open-ended
@@ -57,17 +54,14 @@ function LatihanSoal() {
   useEffect(() => {
     setIsAnswerSaved(false);
     setBoxes([]);
-    setSqlUncomplete([]);
-
     console.clear();
     mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
       setDataPertanyaan(response.data);
       setIsDataPertanyaanLoaded(true);
       resetLog();
-
-      console.log(response.data?.next?.soalID, "ini id next soal");
+      // console.log(response.data?.next?.soalID, "ini id next soal");
     });
-  }, [router.query.idSoal]);
+  }, [router.query.idSoal, dataPertanyaan]);
 
   useEffect(() => {
     // ? Biar timernya tetap berjalan dan tidak reset ketika direset
@@ -93,23 +87,52 @@ function LatihanSoal() {
         );
       }
       setIsTimeLoaded(true);
+      setupBoxes();
     }
   }, [isDataPertanyaanLoaded, dataPertanyaan]);
 
-  useEffect(() => {
-    setBoxes({
+  const setupBoxes = () => {
+    let fetchClue = dataPertanyaan?.sql_components?.filter(
+      (item) => item.role === "clue"
+    );
+
+    let clueComparisonWithAnswer = fetchClue?.map((item) =>
+      item.content.toLowerCase()
+    );
+
+    let sqlUncomplete = dataPertanyaan?.jawaban_benar
+      .split(" ")
+      .map((partJawaban, idx) => {
+        if (clueComparisonWithAnswer?.includes(partJawaban?.toLowerCase()))
+          return partJawaban;
+        else return "___";
+      });
+
+    // Ini assign boxes ketika pertanyaan di load
+
+    let createBoxes = {
       sql_parts: {
         items: dataPertanyaan?.sql_components?.filter(
           (item) => item.role === "part"
         ),
       },
-      sql_constructed: {
-        items: dataPertanyaan?.sql_components?.filter(
-          (item) => item.role === "clue"
-        ),
+      sql_clues: {
+        items: fetchClue,
       },
-    });
-  }, [dataPertanyaan]);
+      sql_constructed: {
+        items: sqlUncomplete?.map((item, idx) => {
+          return {
+            id: idx,
+            position: idx,
+            content: item,
+            role: item === "__" ? "part" : "clue",
+          };
+        }),
+      },
+    };
+
+    setBoxes(createBoxes);
+  };
 
   useEffect(() => {
     // ? Save Log ketika ada pergerakan komponen drag-and-drop
@@ -118,47 +141,39 @@ function LatihanSoal() {
 
   const onDragEnd = (result, boxes, setBoxes) => {
     if (!result.destination) return;
-
     const { source, destination } = result;
-
     if (source.droppableId !== destination.droppableId) {
-      //  ? Ini dijalankan ketika elemen drag and drop nya dipindah ke field yang berbeda
-      const sourceColumn = boxes[source.droppableId];
-      const destColumn = boxes[destination.droppableId];
-      const sourceItems = [...sourceColumn.items];
-      const destItems = [...destColumn.items];
+      // ? Ini kalau drag dari komponen SQL dan drop ke Jawaban SQL
+      let destinationParts = destination.droppableId.split("_");
+      let destinationKey = `${destinationParts[0]}_${destinationParts[1]}`;
+      let idDest = destinationParts[2]; // ? Output : id
+
+      let destColumn = boxes[destinationKey].items;
+
+      let sourceItems = [...boxes[source.droppableId].items];
+
+      let destItems = destColumn;
+
       const [removed] = sourceItems.splice(source.index, 1);
-      destItems.splice(destination.index, 0, removed);
+      destItems[idDest] = removed;
 
       setBoxes({
         ...boxes,
-        [source.droppableId]: {
-          ...sourceColumn,
+        sql_parts: {
           items: sourceItems,
         },
-        [destination.droppableId]: {
-          ...destColumn,
+        sql_constructed: {
           items: destItems,
         },
       });
-    } else {
-      //  ? Ini dijalankan ketika elemen drag and drop nya dipindah ke field yang sama
-      const column = boxes[source.droppableId];
-      const copiedItems = [...column.items];
-      const [removed] = copiedItems.splice(source.index, 1);
-      copiedItems.splice(destination.index, 0, removed);
-      setBoxes({
-        ...boxes,
-        [source.droppableId]: {
-          ...column,
-          items: copiedItems,
-        },
-      });
     }
-
     // ? Set Log per Drag & Drop
     setCurrentPart(result);
   };
+
+  useEffect(() => {
+    console.log(boxes, "boxes");
+  }, [boxes]);
 
   const previewTable = () => {
     setIsPreviewTable((prev) => !prev);
@@ -187,6 +202,7 @@ function LatihanSoal() {
     setIsAnswerSaved(true);
   };
 
+  // TODO : Update untuk sql_constructed dan sql_parts untuk lognya
   const saveLog = (values, role) => {
     setLogData((tempLogData) => [
       ...tempLogData,
@@ -222,6 +238,11 @@ function LatihanSoal() {
     setTimeout(() => {
       resetLog();
     }, 500);
+  };
+
+  const resetBox = () => {
+    setupBoxes();
+    saveLog(null, "reset");
   };
 
   useEffect(() => {
@@ -342,8 +363,8 @@ function LatihanSoal() {
               <SQLContainer
                 boxes={boxes}
                 jawaban={dataPertanyaan?.jawaban_benar}
-                sqlUncomplete={sqlUncomplete}
-                setSqlUncomplete={setSqlUncomplete}
+                // sqlUncomplete={sqlUncomplete}
+                // setSqlUncomplete={setSqlUncomplete}
                 setBoxes={setBoxes}
                 onDragEnd={onDragEnd}
               />
@@ -380,19 +401,31 @@ function LatihanSoal() {
                 </Row>
               </Col>
               <Col>
-                <Button
-                  style={{ backgroundColor: "#003A8C", color: "white" }}
-                  onClick={() =>
-                    submitAnswer(
-                      dataPertanyaan?.kategori === "Open-Ended"
-                        ? form.getFieldsValue()
-                        : ""
-                    )
-                  }
-                  htmlType="submit"
-                >
-                  Simpan Jawaban
-                </Button>
+                <Row gutter={10}>
+                  <Col>
+                    <Button
+                      style={{ backgroundColor: "red", color: "white" }}
+                      onClick={resetBox}
+                    >
+                      Reset
+                    </Button>
+                  </Col>
+                  <Col>
+                    <Button
+                      style={{ backgroundColor: "#003A8C", color: "white" }}
+                      onClick={() =>
+                        submitAnswer(
+                          dataPertanyaan?.kategori === "Open-Ended"
+                            ? form.getFieldsValue()
+                            : ""
+                        )
+                      }
+                      htmlType="submit"
+                    >
+                      Simpan Jawaban
+                    </Button>
+                  </Col>
+                </Row>
               </Col>
             </Row>
             <Row>

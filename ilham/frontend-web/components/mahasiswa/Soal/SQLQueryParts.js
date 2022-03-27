@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
 const SQLQueryParts = ({ sqlParts }) => {
@@ -6,6 +6,7 @@ const SQLQueryParts = ({ sqlParts }) => {
     <>
       <h3>Komponen SQL</h3>
       <Droppable
+        isDropDisabled
         droppableId={"sql_parts"}
         key={"sql_parts"}
         direction="horizontal"
