@@ -58,8 +58,8 @@ module.exports = {
     insert: async (data, user) => {
         try {
             const [dataClass, created] = await Class.findOrCreate({
-                where: { name: data.name, semester: data.semester },
-                defaults: { user_id: user.id },
+                where: { name: data.name },
+                defaults: { semester: data.semester, user_id: user.id },
             });
 
             if (created) return createResponseObject(201, "success", "Data kelas baru berhasil ditambahkan", dataClass);
@@ -75,9 +75,9 @@ module.exports = {
             const [classDb] = await Class.findOrCreate({
                 where: {
                     name: data.name,
-                    semester: data.semester,
                 },
                 defaults: {
+                    semester: data.semester,
                     user_id: user.id,
                 },
             });
@@ -87,9 +87,7 @@ module.exports = {
             const studentsExcel = excelToStudents(excelsData);
 
             const arrStudentsNim = studentsExcel.map((student) => student.nim);
-            let existedStudents = await findStudentsByNim(arrStudentsNim).then((data) =>
-                data.map((student) => student.toJSON())
-            );
+            let existedStudents = await findStudentsByNim(arrStudentsNim);
             let newStudents = [];
             if (existedStudents.length > 0) {
                 newStudents = studentsExcel.filter(
@@ -123,10 +121,10 @@ module.exports = {
             const checkData = await Class.findOne({
                 where: {
                     name: data.name,
-                    semester: data.semester,
                 },
             });
-            if (checkData) throw createHttpError(409, "same data found, cannot update to same data");
+            if (checkData && classDb.id != checkData.id)
+                throw createHttpError(409, "same data found, cannot update to same data");
 
             let dataUpdate = {
                 name: data.name,

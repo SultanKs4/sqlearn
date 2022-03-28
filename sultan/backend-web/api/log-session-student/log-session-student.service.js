@@ -31,12 +31,12 @@ module.exports = {
         try {
             const { session_id, question_id, log } = body;
 
-            // await Session.findByPk(session_id).then((data) => {
-            //     if (!data) throw createHttpError(404, "data session not found");
-            // });
-            // await Question.findByPk(question_id).then((data) => {
-            //     if (!data) throw createHttpError(404, "data question not found");
-            // });
+            await Session.findByPk(session_id).then((data) => {
+                if (!data) throw createHttpError(404, "data session not found");
+            });
+            await Question.findByPk(question_id).then((data) => {
+                if (!data) throw createHttpError(404, "data question not found");
+            });
 
             const dataLog = log.map((val) => {
                 return {
