@@ -34,7 +34,7 @@ CREATE TABLE `case_studies` (
   KEY `db_list_id` (`db_list_id`),
   CONSTRAINT `case_studies_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `case_studies_ibfk_2` FOREIGN KEY (`db_list_id`) REFERENCES `db_list` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +43,7 @@ CREATE TABLE `case_studies` (
 
 LOCK TABLES `case_studies` WRITE;
 /*!40000 ALTER TABLE `case_studies` DISABLE KEYS */;
-INSERT INTO `case_studies` VALUES (2,'Tes',1,1,'2021-05-05 16:31:57','2021-05-05 16:31:57'),(5,'dd',5,2,'2022-02-15 17:36:40','2022-02-15 17:36:40'),(6,'dd',5,3,'2022-02-15 17:37:13','2022-02-15 17:37:13'),(7,'dd',5,4,'2022-02-15 17:37:58','2022-02-15 17:37:58'),(8,'dd',5,5,'2022-02-15 17:38:28','2022-02-15 17:38:28'),(9,'dd',5,6,'2022-02-15 17:39:45','2022-02-15 17:39:45'),(10,'dd',5,7,'2022-02-15 17:41:05','2022-02-15 17:41:05'),(11,'dd',5,8,'2022-02-15 17:43:00','2022-02-15 17:43:00'),(12,'study case test',5,19,'2022-03-20 16:46:37','2022-03-20 16:46:37'),(13,'study case test',5,20,'2022-03-20 16:48:14','2022-03-20 16:48:14'),(20,'study case test',5,27,'2022-03-21 00:49:23','2022-03-21 00:49:23'),(23,'study case test',5,30,'2022-03-21 10:42:52','2022-03-21 10:42:52'),(24,'study case test',5,31,'2022-03-21 10:43:41','2022-03-21 10:43:41'),(32,'testt',5,39,'2022-03-23 00:57:33','2022-03-23 00:57:33'),(33,'testt',5,40,'2022-03-23 00:58:24','2022-03-23 00:58:24'),(48,'study case test',5,55,'2022-03-24 23:30:12','2022-03-24 23:30:12');
+INSERT INTO `case_studies` VALUES (2,'Tes',1,1,'2021-05-05 16:31:57','2021-05-05 16:31:57'),(5,'dd',5,2,'2022-02-15 17:36:40','2022-02-15 17:36:40'),(6,'dd',5,3,'2022-02-15 17:37:13','2022-02-15 17:37:13'),(7,'dd',5,4,'2022-02-15 17:37:58','2022-02-15 17:37:58'),(8,'dd',5,5,'2022-02-15 17:38:28','2022-02-15 17:38:28'),(9,'dd',5,6,'2022-02-15 17:39:45','2022-02-15 17:39:45'),(10,'dd',5,7,'2022-02-15 17:41:05','2022-02-15 17:41:05'),(11,'dd',5,8,'2022-02-15 17:43:00','2022-02-15 17:43:00'),(12,'study case test',5,19,'2022-03-20 16:46:37','2022-03-20 16:46:37'),(13,'study case test',5,20,'2022-03-20 16:48:14','2022-03-20 16:48:14'),(20,'study case test',5,27,'2022-03-21 00:49:23','2022-03-21 00:49:23');
 /*!40000 ALTER TABLE `case_studies` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -73,7 +73,7 @@ CREATE TABLE `class_schedules` (
 
 LOCK TABLES `class_schedules` WRITE;
 /*!40000 ALTER TABLE `class_schedules` DISABLE KEYS */;
-INSERT INTO `class_schedules` VALUES (14,11,'2021-06-17 04:45:05','2021-06-17 04:45:05'),(14,12,'2022-03-09 02:39:17','2022-03-09 02:39:17'),(14,13,'2022-03-09 02:39:38','2022-03-09 02:39:38'),(14,14,'2022-03-22 04:45:52','2022-03-22 04:45:52'),(14,15,'2022-03-22 04:47:40','2022-03-22 04:47:40'),(14,16,'2022-03-22 04:55:17','2022-03-22 04:55:17');
+INSERT INTO `class_schedules` VALUES (14,11,'2021-06-17 04:45:05','2021-06-17 04:45:05'),(14,12,'2022-03-09 02:39:17','2022-03-09 02:39:17'),(14,13,'2022-03-09 02:39:38','2022-03-09 02:39:38');
 /*!40000 ALTER TABLE `class_schedules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +95,7 @@ CREATE TABLE `classes` (
   UNIQUE KEY `name` (`name`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `classes_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +104,7 @@ CREATE TABLE `classes` (
 
 LOCK TABLES `classes` WRITE;
 /*!40000 ALTER TABLE `classes` DISABLE KEYS */;
-INSERT INTO `classes` VALUES (1,'TI-4C-2021',8,1,'2021-04-17 18:09:21','2021-04-17 18:09:21'),(3,'TI-3C-2020',8,1,'2021-04-17 19:26:00','2021-04-17 19:26:00'),(12,'TI-4D-2021',8,1,'2021-05-06 07:27:11','2021-05-06 07:27:11'),(14,'TI-4A-2021',8,5,'2021-05-30 17:58:11','2021-05-30 17:58:11'),(15,'TI-4H-2022',8,5,'2022-02-23 07:13:21','2022-02-23 07:13:21'),(16,'TI-4H-2023',8,5,'2022-03-21 14:32:43','2022-03-21 14:32:43'),(17,'TI-4H-2024',8,5,'2022-03-21 14:33:49','2022-03-21 14:33:49'),(18,'TI-4H-2026',8,5,'2022-03-21 14:34:40','2022-03-21 14:34:40'),(19,'TI-4Z-2025',8,1,'2022-03-22 11:24:20','2022-03-22 11:24:20'),(20,'TI-2D-2021',8,1,'2022-03-22 14:57:06','2022-03-22 14:57:06');
+INSERT INTO `classes` VALUES (1,'TI-4C-2021',8,1,'2021-04-17 18:09:21','2021-04-17 18:09:21'),(3,'TI-3C-2020',8,1,'2021-04-17 19:26:00','2021-04-17 19:26:00'),(12,'TI-4D-2021',8,1,'2021-05-06 07:27:11','2021-05-06 07:27:11'),(14,'TI-4A-2021',8,5,'2021-05-30 17:58:11','2021-05-30 17:58:11'),(15,'TI-4H-2022',8,5,'2022-02-23 07:13:21','2022-02-23 07:13:21');
 /*!40000 ALTER TABLE `classes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -154,7 +154,7 @@ CREATE TABLE `db_list` (
   `createdAt` datetime NOT NULL DEFAULT current_timestamp(),
   `updatedAt` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=61 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -163,7 +163,7 @@ CREATE TABLE `db_list` (
 
 LOCK TABLES `db_list` WRITE;
 /*!40000 ALTER TABLE `db_list` DISABLE KEYS */;
-INSERT INTO `db_list` VALUES (1,'sqlearn_cs_auto_assess_tes','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(2,'sqlearn_cs_dosencoba_dd_pr9k6l','1644946596364_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(3,'sqlearn_cs_dosencoba_dd_78ayum','1644946630914_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(4,'sqlearn_cs_dosencoba_dd_73uxn3','1644946674646_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(5,'sqlearn_cs_dosencoba_dd_v3004s','1644946706201_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(6,'sqlearn_cs_dosencoba_dd_fp58ey','1644946783711_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(7,'sqlearn_cs_dosencoba_dd_1yxfzl','1644946863058_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(8,'sqlearn_cs_dosencoba_dd_dpyyd6','1644946978679_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(17,'sqlearn_cs_auto_assess_tes_45_1_key','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-12 04:19:11','2022-03-12 04:19:11'),(18,'sqlearn_cs_auto_assess_tes_45_1_student','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-12 04:19:21','2022-03-12 04:19:21'),(19,'sqlearn_cs_dosencoba_study_case_test_xx5zc9','1647794797646_92197aa7-4bd1-46d7-bcba-3789a8b91e59.sql','2022-03-20 16:46:37','2022-03-20 16:46:37'),(20,'sqlearn_cs_dosencoba_study_case_test_swgfzo','1647794894496_b0a82b02-2b58-4050-9896-62d80a16868c.sql','2022-03-20 16:48:14','2022-03-20 16:48:14'),(21,'sqlearn_cs_dosencoba_study_case_test_rt6s41','1647794926801_c7238364-f1f0-4c64-8e89-4a2186437a80.sql','2022-03-20 16:48:46','2022-03-20 16:48:46'),(22,'sqlearn_cs_dosencoba_study_case_test_0vtk0p','1647794973048_a4bab00d-8bd4-44b2-92ab-05d2094c9879.sql','2022-03-20 16:49:33','2022-03-20 16:49:33'),(27,'sqlearn_cs_dosencoba_study_case_test_hf5lmk','1647823763629_379e7ba5-b58e-4c9e-9dd3-a774eceb690f.sql','2022-03-21 00:49:23','2022-03-21 00:49:23'),(30,'sqlearn_cs_dosencoba_study_case_test_4w533m','1647859372319_90297d67-86a5-4e10-a904-ffea00147886.sql','2022-03-21 10:42:52','2022-03-21 10:42:52'),(31,'sqlearn_cs_dosencoba_study_case_test_1g8yib','1647859421598_81ae4da8-a3ec-4763-923d-bb3102e8bdbf.sql','2022-03-21 10:43:41','2022-03-21 10:43:41'),(39,'sqlearn_cs_dosencoba_testt_wspeuk','1647997053035_2a2f0ba6-c8b6-412c-8483-33ff88823cda.sql','2022-03-23 00:57:33','2022-03-23 00:57:33'),(40,'sqlearn_cs_dosencoba_testt_m5ib0o','1647997104019_279b5ae8-cc9f-438b-91cd-667094ad3fe1.sql','2022-03-23 00:58:24','2022-03-23 00:58:24'),(55,'sqlearn_cs_dosencoba_study_case_test_xkesqd','1648164612756_1b053339-1677-492d-82f0-4ec17e09e5f5.sql','2022-03-24 23:30:12','2022-03-24 23:30:12');
+INSERT INTO `db_list` VALUES (1,'sqlearn_cs_auto_assess_tes','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(2,'sqlearn_cs_dosencoba_dd_pr9k6l','1644946596364_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(3,'sqlearn_cs_dosencoba_dd_78ayum','1644946630914_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(4,'sqlearn_cs_dosencoba_dd_73uxn3','1644946674646_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(5,'sqlearn_cs_dosencoba_dd_v3004s','1644946706201_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(6,'sqlearn_cs_dosencoba_dd_fp58ey','1644946783711_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(7,'sqlearn_cs_dosencoba_dd_1yxfzl','1644946863058_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(8,'sqlearn_cs_dosencoba_dd_dpyyd6','1644946978679_sql_bumdes.sql','2022-03-11 11:16:39','2022-03-11 11:16:39'),(17,'sqlearn_cs_auto_assess_tes_45_1_key','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-12 04:19:11','2022-03-12 04:19:11'),(18,'sqlearn_cs_auto_assess_tes_45_1_student','1642994333691_sql_sqlearn_cs_auto_assess_tes.sql','2022-03-12 04:19:21','2022-03-12 04:19:21'),(19,'sqlearn_cs_dosencoba_study_case_test_xx5zc9','1647794797646_92197aa7-4bd1-46d7-bcba-3789a8b91e59.sql','2022-03-20 16:46:37','2022-03-20 16:46:37'),(20,'sqlearn_cs_dosencoba_study_case_test_swgfzo','1647794894496_b0a82b02-2b58-4050-9896-62d80a16868c.sql','2022-03-20 16:48:14','2022-03-20 16:48:14'),(21,'sqlearn_cs_dosencoba_study_case_test_rt6s41','1647794926801_c7238364-f1f0-4c64-8e89-4a2186437a80.sql','2022-03-20 16:48:46','2022-03-20 16:48:46'),(22,'sqlearn_cs_dosencoba_study_case_test_0vtk0p','1647794973048_a4bab00d-8bd4-44b2-92ab-05d2094c9879.sql','2022-03-20 16:49:33','2022-03-20 16:49:33'),(27,'sqlearn_cs_dosencoba_study_case_test_hf5lmk','1647823763629_379e7ba5-b58e-4c9e-9dd3-a774eceb690f.sql','2022-03-21 00:49:23','2022-03-21 00:49:23');
 /*!40000 ALTER TABLE `db_list` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,7 +321,7 @@ CREATE TABLE `schedules` (
   KEY `user_id` (`user_id`),
   CONSTRAINT `schedules_ibfk_575` FOREIGN KEY (`container_id`) REFERENCES `containers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `schedules_ibfk_576` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -330,7 +330,7 @@ CREATE TABLE `schedules` (
 
 LOCK TABLES `schedules` WRITE;
 /*!40000 ALTER TABLE `schedules` DISABLE KEYS */;
-INSERT INTO `schedules` VALUES (11,'2021-07-25 07:00:00','2021-08-31 23:59:00',5,'Sesi Tes','latihan',5,'2021-06-17 04:45:05','2021-06-17 04:45:05',5),(12,'2022-08-03 08:52:52','2022-10-03 08:53:52',8,'UAS 3','ujian',5,'2022-03-09 02:39:17','2022-03-09 02:39:17',0),(13,'2022-08-03 08:52:52','2022-10-03 08:53:52',8,'UAS 5','ujian',5,'2022-03-09 02:39:38','2022-03-09 02:39:38',0),(14,'2022-03-22 04:45:01','2022-03-23 04:45:01',8,'UAS 5','ujian',5,'2022-03-22 04:45:52','2022-03-22 04:45:52',0),(15,'2022-03-22 04:45:01','2022-03-23 04:45:01',8,'UAS 5','ujian',5,'2022-03-22 04:47:40','2022-03-22 04:47:40',0),(16,'2022-03-20 04:45:01','2022-03-21 04:45:01',8,'UAS 5','ujian',5,'2022-03-22 04:55:17','2022-03-22 04:55:17',0);
+INSERT INTO `schedules` VALUES (11,'2021-07-25 07:00:00','2021-08-31 23:59:00',5,'Sesi Tes','latihan',5,'2021-06-17 04:45:05','2021-06-17 04:45:05',5),(12,'2022-08-03 08:52:52','2022-10-03 08:53:52',8,'UAS 3','ujian',5,'2022-03-09 02:39:17','2022-03-09 02:39:17',0),(13,'2022-08-03 08:52:52','2022-10-03 08:53:52',8,'UAS 5','ujian',5,'2022-03-09 02:39:38','2022-03-09 02:39:38',0);
 /*!40000 ALTER TABLE `schedules` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -437,13 +437,17 @@ DROP TABLE IF EXISTS `settings`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `attemps` tinyint(4) DEFAULT NULL,
-  `value` text DEFAULT NULL,
-  `type` enum('threshold','latihan','ujian') DEFAULT NULL,
+  `key_tag` varchar(100) NOT NULL,
+  `tag_1` text DEFAULT NULL,
+  `tag_2` text DEFAULT NULL,
+  `tag_3` text DEFAULT NULL,
+  `tag_4` text DEFAULT NULL,
+  `tag_5` text DEFAULT NULL,
+  `tag_6` text DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -452,7 +456,7 @@ CREATE TABLE `settings` (
 
 LOCK TABLES `settings` WRITE;
 /*!40000 ALTER TABLE `settings` DISABLE KEYS */;
-INSERT INTO `settings` VALUES (2,3,'90','latihan','2022-03-24 00:05:36','2022-03-24 00:05:36'),(4,3,'90','ujian','2022-03-24 00:41:58','2022-03-24 00:41:58'),(5,0,'50','latihan','2022-03-24 00:05:36','2022-03-24 00:05:36'),(6,12,'80','latihan','2022-03-24 00:05:36','2022-03-24 00:05:36'),(7,6,'95','latihan','2022-03-24 00:05:36','2022-03-24 00:05:36'),(8,NULL,'0.8','threshold','2022-03-24 00:05:36','2022-03-24 02:52:34'),(9,15,'69','ujian','2022-03-24 05:23:34','2022-03-24 05:55:19');
+INSERT INTO `settings` VALUES (1,'threshold','0.6',NULL,NULL,NULL,NULL,NULL,'0000-00-00 00:00:00','2021-07-24 17:40:53');
 /*!40000 ALTER TABLE `settings` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -482,7 +486,7 @@ CREATE TABLE `student_classes` (
 
 LOCK TABLES `student_classes` WRITE;
 /*!40000 ALTER TABLE `student_classes` DISABLE KEYS */;
-INSERT INTO `student_classes` VALUES (1,1,'2021-04-17 18:12:33','2021-04-17 18:12:33'),(1,3,'2021-05-06 08:11:18','2021-05-06 08:11:18'),(2,1,'2021-04-17 18:12:33','2021-04-17 18:12:33'),(2,12,'2021-05-06 08:10:23','2021-05-06 08:10:23'),(3,1,'2021-05-06 08:03:51','2021-05-06 08:03:51'),(3,3,'2021-05-06 08:11:18','2021-05-06 08:11:18'),(3,12,'2021-05-06 08:11:05','2021-05-06 08:11:05'),(8,12,'2021-05-06 08:11:05','2021-05-06 08:11:05'),(10,14,'2021-05-30 17:58:11','2021-05-30 17:58:11'),(11,14,'2021-05-30 17:58:11','2021-05-30 17:58:11'),(14,20,'2022-03-22 16:43:25','2022-03-22 16:43:25'),(15,20,'2022-03-22 16:43:25','2022-03-22 16:43:25'),(16,20,'2022-03-22 16:43:25','2022-03-22 16:43:25'),(17,20,'2022-03-22 16:43:25','2022-03-22 16:43:25');
+INSERT INTO `student_classes` VALUES (1,1,'2021-04-17 18:12:33','2021-04-17 18:12:33'),(1,3,'2021-05-06 08:11:18','2021-05-06 08:11:18'),(2,1,'2021-04-17 18:12:33','2021-04-17 18:12:33'),(2,12,'2021-05-06 08:10:23','2021-05-06 08:10:23'),(3,1,'2021-05-06 08:03:51','2021-05-06 08:03:51'),(3,3,'2021-05-06 08:11:18','2021-05-06 08:11:18'),(3,12,'2021-05-06 08:11:05','2021-05-06 08:11:05'),(8,12,'2021-05-06 08:11:05','2021-05-06 08:11:05'),(10,14,'2021-05-30 17:58:11','2021-05-30 17:58:11'),(11,14,'2021-05-30 17:58:11','2021-05-30 17:58:11');
 /*!40000 ALTER TABLE `student_classes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -503,7 +507,7 @@ CREATE TABLE `students` (
   `updatedAt` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `nim` (`nim`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -512,7 +516,7 @@ CREATE TABLE `students` (
 
 LOCK TABLES `students` WRITE;
 /*!40000 ALTER TABLE `students` DISABLE KEYS */;
-INSERT INTO `students` VALUES (1,'1741720017','$2a$10$xvH9iYn3Bs8J91xAODjuwO2sKTNKFN2Z2nonD0zQkb4JCg5DaS7Lq','1741720017','Daffa','2021-04-17 18:09:33','2021-04-17 18:09:33'),(2,'1741721000','$2a$10$als9qVk4GdMgcFOXhcGl/uiiVxpuXOJXJHVC/a9SgbumeG8RC3WQu','1741721000','Baru','2021-04-17 18:09:33','2021-04-17 18:09:33'),(3,'1741720024','$2a$10$xmprmdrDbuPmipwBRLH6v.hjEPP/EBDksB/KJXO4eExN0J/9Pmu/u','1741720024','Test','2021-04-19 05:32:20','2021-04-19 05:32:20'),(8,'1741720018','$2a$10$u0IUHJakBhkZ5zTi6/HUI.CBcsYwxcu2WUVqlck3ydS67lQQWEGYu','1741720018','Akbar','2021-05-06 07:27:11','2021-05-06 07:27:11'),(10,'1741710101','$2a$10$8GwpchPd.KS30fS6cQAOXeNJQUNhuqOVOejLo.ZBYlUi6gNFiGmZO','1741710101','John Doe','2021-05-30 17:58:11','2021-05-30 17:58:11'),(11,'1741710102','$2a$10$gUyBm.qZBB3RdklMS3BwvOioAxZYB0sw5/qvaAKk58bu1EtTR4aji','1741710102','Jane Doe','2021-05-30 17:58:11','2021-05-30 17:58:11'),(12,'20417....','$2a$10$zFSNcF.la5Va/eWJH8CTRuDhZ3j32fwxfGgyziaFMI1j00Odep3vK','20417....','John Doe','2022-03-22 11:24:21','2022-03-22 11:24:21'),(13,'NIM mahasiswa','$2a$10$xayF6kMUvQ56DAgHfB2u0O/RFWx4o1y6VdqT/mU2X3XRfzJGmyDCO','NIM mahasiswa','Nama mahasiswa','2022-03-22 11:24:21','2022-03-22 11:24:21'),(14,'2041731324','$2a$10$zqhYmYEd8L1zotT4aXnefepAPMuSTWSsbKqY1Mf18O3ZeRkCyqI4S','2041731324','John Doe','2022-03-22 15:01:30','2022-03-22 15:01:30'),(15,'2041731325','$2a$10$qJwIoNA/uaC9K4nBXROUxuxoRw4eR/1vqNHJUlYhsRD2ci1zbMEG2','2041731325','John DoeL','2022-03-22 15:01:30','2022-03-22 15:01:30'),(16,'2041731326','$2a$10$58BdlLULaNKOvJqt9b9fq.rZKdNmzlrXkGganqsARM9Dqg4w/suWu','2041731326','John DoeZ','2022-03-22 15:01:30','2022-03-22 15:01:30'),(17,'2041731327','$2a$10$ADJpplMRyEl/HgHKNZKcjOEVkjxRyzktHVXK81J8mwJ7DfRisOXZe','2041731327','John DoeQ','2022-03-22 15:01:30','2022-03-22 15:01:30');
+INSERT INTO `students` VALUES (1,'1741720017','$2a$10$xvH9iYn3Bs8J91xAODjuwO2sKTNKFN2Z2nonD0zQkb4JCg5DaS7Lq','1741720017','Daffa','2021-04-17 18:09:33','2021-04-17 18:09:33'),(2,'1741721000','$2a$10$als9qVk4GdMgcFOXhcGl/uiiVxpuXOJXJHVC/a9SgbumeG8RC3WQu','1741721000','Baru','2021-04-17 18:09:33','2021-04-17 18:09:33'),(3,'1741720024','$2a$10$xmprmdrDbuPmipwBRLH6v.hjEPP/EBDksB/KJXO4eExN0J/9Pmu/u','1741720024','Test','2021-04-19 05:32:20','2021-04-19 05:32:20'),(8,'1741720018','$2a$10$u0IUHJakBhkZ5zTi6/HUI.CBcsYwxcu2WUVqlck3ydS67lQQWEGYu','1741720018','Akbar','2021-05-06 07:27:11','2021-05-06 07:27:11'),(10,'1741710101','$2a$10$8GwpchPd.KS30fS6cQAOXeNJQUNhuqOVOejLo.ZBYlUi6gNFiGmZO','1741710101','John Doe','2021-05-30 17:58:11','2021-05-30 17:58:11'),(11,'1741710102','$2a$10$gUyBm.qZBB3RdklMS3BwvOioAxZYB0sw5/qvaAKk58bu1EtTR4aji','1741710102','Jane Doe','2021-05-30 17:58:11','2021-05-30 17:58:11');
 /*!40000 ALTER TABLE `students` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -592,4 +596,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-03-25 16:12:30
+-- Dump completed on 2022-03-21 17:15:25

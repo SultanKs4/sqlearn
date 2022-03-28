@@ -19,3 +19,4 @@ router.use("/api/containers", require("../api/container/container.routes"));
 router.use("/api/schedules", require("../api/schedule/schedule.routes"));
 router.use("/api/sessions", require("../api/session/session.routes"));
 router.use("/api/scores", require("../api/score/score.routes"));
+router.use("/api/log", require("../api/log-session-student/log-session-student.routes"));

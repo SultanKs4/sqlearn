@@ -27,9 +27,6 @@ Schedule.init(
                 key: "id",
             },
         },
-        total_questions: {
-            type: DataTypes.INTEGER,
-        },
         type: {
             type: DataTypes.ENUM(["latihan", "ujian"]),
             allowNull: false,

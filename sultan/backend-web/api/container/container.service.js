@@ -124,40 +124,18 @@ module.exports = {
 
     addQuestion: async (containerId, questionIds) => {
         try {
-            const container = await Container.findByPk(containerId);
+            const container = await Container.findByPk(containerId, { include: { model: Schedule } });
             if (!container) throw createHttpError(404, "container not found");
 
-            const questions = await Promise.all(
-                questionIds.map(async (id) => {
-                    let question = await Question.findByPk(id);
-                    if (!question) throw createHttpError(404, `question id ${id} not found`);
-                    if (container.label_id != question.label_id)
-                        throw createHttpError(409, `question id ${id} has different label`);
-                    return {
-                        question_id: question.id,
-                        container_id: container.id,
-                    };
-                })
-            );
-            const newQuestionContainer = await QuestionContainer.bulkCreate(questions);
+            await questionIds.map(async (id) => {
+                let question = await Question.findByPk(id);
+                if (!question) throw createHttpError(404, `question id ${id} not found`);
+                if (container.label_id != question.label_id)
+                    throw createHttpError(409, `question id ${id} has different label`);
+                await container.addQuestions(question);
+            });
 
-            let schedules = await Schedule.findAll({ where: { container_id: containerId } });
-            if (Object.keys(schedules).length > 0) {
-                const total_questions = await Question.findAndCountAll({
-                    include: {
-                        model: Container,
-                        as: "containers",
-                        where: {
-                            id: containerId,
-                        },
-                    },
-                });
-
-                for (const schedule of schedules) {
-                    schedule.total_questions = total_questions;
-                    schedule.save();
-                }
-            }
+            const newQuestionContainer = await container.getQuestions();
 
             return createResponseObject(
                 201,
@@ -172,38 +150,12 @@ module.exports = {
 
     removeQuestion: async (containerId, questionId) => {
         try {
-            const questionContainer = await QuestionContainer.findOne({
-                where: {
-                    question_id: questionId,
-                    container_id: containerId,
-                },
-            });
-            if (!questionContainer) throw createHttpError(404, "pertanyaan tidak terdapat dalam kontainer");
-
-            await QuestionContainer.destroy({
-                where: {
-                    question_id: questionId,
-                    container_id: containerId,
-                },
-            });
-
-            let schedules = await Schedule.findAll({ where: { container_id: containerId } });
-            if (Object.keys(schedules).length > 0) {
-                const total_questions = await Question.findAndCountAll({
-                    include: {
-                        model: Container,
-                        as: "containers",
-                        where: {
-                            id: containerId,
-                        },
-                    },
-                });
-
-                for (const schedule of schedules) {
-                    schedule.total_questions = total_questions;
-                    schedule.save();
-                }
-            }
+            const container = await Container.findByPk(containerId);
+            if (!container) throw createHttpError(404, "container data not found");
+            const question = await Question.findByPk(questionId);
+            if (!question) throw createHttpError(404, "question data not found");
+            if (container.hasQuestions(question)) await container.removeQuestion(question);
+            else throw createHttpError(404, "pertanyaan tidak terdapat dalam kontainer");
 
             return createResponseObject(200, "success", "Berhasil mengeluarkan pertanyaan dari kontainer");
         } catch (error) {

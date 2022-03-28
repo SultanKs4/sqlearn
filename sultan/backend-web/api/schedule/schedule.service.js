@@ -111,32 +111,33 @@ module.exports = {
             });
             if (!schedules || schedules.length == 0) throw createHttpError(404, "data schedule not found");
 
-            const scheduleResponse = schedules.map((val) => {
-                let classData = val.classes.map((e) => {
+            const scheduleResponse = await Promise.all(
+                schedules.map(async (val) => {
+                    let classData = val.classes.map((e) => {
+                        return {
+                            id: e.id,
+                            name: e.name,
+                        };
+                    });
                     return {
-                        id: e.id,
-                        name: e.name,
+                        id: val.id,
+                        description: val.description,
+                        total_questions: await val.Container.countQuestions(),
+                        type: val.type,
+                        start: val.start,
+                        finish: val.finish,
+                        class: classData,
+                        container: {
+                            id: val.Container.id,
+                            description: val.Container.description,
+                        },
+                        label: {
+                            id: val.Container.QuestionLabel.id,
+                            name: val.Container.QuestionLabel.name,
+                        },
                     };
-                });
-                return {
-                    id: val.id,
-                    description: val.description,
-                    total_questions: val.total_questions,
-                    type: val.type,
-                    start: val.start,
-                    finish: val.finish,
-                    class: classData,
-                    container: {
-                        id: val.Container.id,
-                        description: val.Container.description,
-                    },
-                    label: {
-                        id: val.Container.QuestionLabel.id,
-                        name: val.Container.QuestionLabel.name,
-                    },
-                };
-            });
-
+                })
+            );
             return createResponseObject(200, "success", "Data schedule berhasil didapatkan", scheduleResponse);
         } catch (error) {
             return errorHandling(error);
@@ -145,7 +146,7 @@ module.exports = {
 
     getAllByClass: async (classId) => {
         try {
-            const schedule = await Schedule.findAll({
+            const schedules = await Schedule.findAll({
                 include: {
                     attributes: [],
                     model: Class,
@@ -155,8 +156,16 @@ module.exports = {
                     },
                 },
             });
-            if (!schedule || schedule.length == 0) throw createHttpError(404, "schedule not found");
-            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
+            if (!schedules || schedules.length == 0) throw createHttpError(404, "schedules not found");
+            const data = [];
+            for (const schedule of schedules) {
+                let tmp = schedule.toJSON();
+                tmp.total_questions = await Container.findByPk(schedule.container_id).then(async (data) => {
+                    return await data.countQuestions();
+                });
+                data.push(tmp);
+            }
+            return createResponseObject(200, "success", "Data schedules berhasil didapatkan", data);
         } catch (error) {
             return errorHandling(error);
         }
@@ -166,7 +175,11 @@ module.exports = {
         try {
             const schedule = await Schedule.findByPk(id);
             if (!schedule) throw createHttpError(404, "data schedule not found");
-            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", schedule);
+            const data = schedule.toJSON();
+            data.total_questions = await Container.findByPk(schedule.container_id).then(async (data) => {
+                return await data.countQuestions();
+            });
+            return createResponseObject(200, "success", "Data schedule berhasil didapatkan", data);
         } catch (error) {
             return errorHandling(error);
         }
@@ -176,16 +189,6 @@ module.exports = {
         try {
             const container = await Container.findByPk(data.container_id);
             if (!container) throw createHttpError(404, "data container not found");
-
-            const total_questions = await Question.findAndCountAll({
-                include: {
-                    model: Container,
-                    as: "containers",
-                    where: {
-                        id: data.container_id,
-                    },
-                },
-            });
 
             for (const val of data.classes) {
                 let classData = await Class.findOne({
@@ -203,12 +206,11 @@ module.exports = {
                 description: data.description,
                 start: data.start,
                 finish: data.finish,
-                total_questions: total_questions.count,
                 type: data.type,
                 user_id: user.id,
             });
 
-            await newSchedule.setClasses(data.classes);
+            await newSchedule.addClasses(data.classes);
 
             return createResponseObject(201, "success", "Data schedule berhasil ditambahkan", newSchedule);
         } catch (error) {
@@ -223,16 +225,6 @@ module.exports = {
 
             const container = await Container.findByPk(data.container_id);
             if (!container) throw createHttpError(404, "data container not found");
-
-            const total_questions = await Question.findAndCountAll({
-                include: {
-                    model: Container,
-                    as: "containers",
-                    where: {
-                        id: data.container_id,
-                    },
-                },
-            });
 
             for (const val of data.classes) {
                 let classData = await Class.findOne({
@@ -250,7 +242,6 @@ module.exports = {
                 description: data.description,
                 start: data.start,
                 finish: data.finish,
-                total_questions: total_questions.count,
                 type: data.type,
                 user_id: user.id,
             };
