@@ -1,4 +1,3 @@
-const createResponseObject = require("../../lib/createResponseObject");
 const caseStudyService = require("./case-study.service");
 
 module.exports = {

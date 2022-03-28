@@ -124,24 +124,22 @@ module.exports = {
 
     addQuestion: async (containerId, questionIds) => {
         try {
-            const container = await Container.findByPk(containerId);
+            const container = await Container.findByPk(containerId, { include: { model: Schedule } });
             if (!container) throw createHttpError(404, "container not found");
 
-            const questions = await Promise.all(
-                questionIds.map(async (id) => {
-                    let question = await Question.findByPk(id);
-                    if (!question) throw createHttpError(404, `question id ${id} not found`);
-                    if (container.label_id != question.label_id)
-                        throw createHttpError(409, `question id ${id} has different label`);
-                    return {
-                        question_id: question.id,
-                        container_id: container.id,
-                    };
-                })
-            );
-            const newQuestionContainer = await QuestionContainer.bulkCreate(questions);
+            const questionss = await questionIds.reduce(async (prev, curr) => {
+                await prev;
+                let question = await Question.findByPk(curr);
+                if (!question) throw createHttpError(404, `question id ${curr} not found`);
+                if (container.label_id != question.label_id)
+                    throw createHttpError(409, `question id ${curr} has different label`);
+                container.addQuestions(question);
+            }, Promise.resolve());
 
-            let schedules = await Schedule.findAll({ where: { container_id: containerId } });
+            let schedules = container.schedules;
+            for (const schedule of schedules) {
+                const total_questions = await container.countQuestions();
+            }
             if (Object.keys(schedules).length > 0) {
                 const total_questions = await Question.findAndCountAll({
                     include: {

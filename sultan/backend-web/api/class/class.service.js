@@ -97,9 +97,8 @@ module.exports = {
                 );
             } else newStudents = studentsExcel;
 
-            if (newStudents.length > 0) await Student.bulkCreate(newStudents);
+            if (newStudents.length > 0) existedStudents = await Student.bulkCreate(newStudents, { returning: true });
 
-            existedStudents = await findStudentsByNim(arrStudentsNim);
             await classDb.addStudents(existedStudents);
             let response = classDb.toJSON();
             response.student = await classDb.getStudents({

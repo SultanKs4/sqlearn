@@ -31,9 +31,10 @@ LogSessionStudent.init(
         },
         answer_json: {
             type: DataTypes.JSON,
+            defaultValue: null,
         },
         type: {
-            type: DataTypes.ENUM(["start", "test", "submit"]),
+            type: DataTypes.ENUM(["start", "test", "submit", "move"]),
         },
         similarity: {
             type: DataTypes.DECIMAL(10, 2),
@@ -41,6 +42,9 @@ LogSessionStudent.init(
         },
         is_equal: {
             type: DataTypes.BOOLEAN,
+        },
+        timer: {
+            type: DataTypes.TIME,
         },
     },
     {
