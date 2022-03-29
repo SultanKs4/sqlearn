@@ -142,12 +142,15 @@ module.exports = {
         }
     },
 
-    addStudent: async (classId, studentIds) => {
+    addStudent: async (classId, nim, name) => {
         try {
             const classOne = await Class.findByPk(classId);
             if (!classOne) throw createHttpError(404, "class not found");
-            const students = await getStudentsFromIds(studentIds);
-            await classOne.addStudents(students);
+            const [student] = await Student.findOrCreate({
+                where: { name, nim },
+                defaults: { username: nim, password: hashPassword(nim) },
+            });
+            await classOne.addStudents(student);
             let data = classOne.toJSON();
             data.student = await classOne.getStudents({
                 attributes: ["id", "nim", "name"],
@@ -160,11 +163,11 @@ module.exports = {
         }
     },
 
-    removeStudent: async (classId, studentIds) => {
+    removeStudent: async (classId, studentId) => {
         try {
             const classOne = await Class.findByPk(classId);
             if (!classOne) throw createHttpError(404, "class not found");
-            const students = await getStudentsFromIds(studentIds);
+            const students = await Student.findByPk(studentId);
             await classOne.removeStudents(students);
 
             return createResponseObject(200, "success", "Berhasil mengeluarkan mahasiswa dari kelas");
@@ -218,18 +221,4 @@ async function findStudentsByNim(nims) {
             },
         },
     });
-}
-
-async function getStudentsFromIds(studentIds) {
-    try {
-        return await Promise.all(
-            studentIds.map(async (id) => {
-                let student = await Student.findByPk(id);
-                if (!student) throw createHttpError(404, `student id ${id} not found`);
-                return student;
-            })
-        );
-    } catch (error) {
-        throw error;
-    }
 }
