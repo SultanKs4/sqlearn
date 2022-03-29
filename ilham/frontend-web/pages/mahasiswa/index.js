@@ -140,7 +140,7 @@ function Beranda() {
             </Card>
           </Col>
         </Row>
-        <Row style={{ marginTop: "1em" }}>
+        {/* <Row style={{ marginTop: "1em" }}>
           <Col span={24}>
             <Card style={{ minHeight: "50vh" }}>
               <Typography.Title level={3}>
@@ -150,7 +150,7 @@ function Beranda() {
               <Divider />
             </Card>
           </Col>
-        </Row>
+        </Row> */}
       </PageLayout>
     </>
   );

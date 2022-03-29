@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 import Head from "next/head";
 import {
   Skeleton,
@@ -11,6 +11,7 @@ import {
   Avatar,
   List,
   Spin,
+  message,
 } from "antd";
 
 import { mockKelasDiajar } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
@@ -21,6 +22,8 @@ import SearchBar from "../../../components/SearchBar";
 
 import { RightOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 
 const mockNilaiMhs = [
   {
@@ -57,6 +60,7 @@ const mockNilaiMhs = [
 
 function HalamanNilai() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [data, setData] = useState([]);
   const [searchResult, setSearchResult] = useState([]);
@@ -79,12 +83,24 @@ function HalamanNilai() {
     );
   };
 
+  const fetchDataKelas = useCallback(() => {
+    if (session !== undefined)
+      getKelas(session?.user?.tokenJWT)
+        .then((res) => {
+          setData(res?.data);
+          setIsDataLoaded(true);
+        })
+        .catch(() => message.error("Terjadi kesalahan fetching data"));
+  }, [session]);
+
   useEffect(() => {
-    mockKelasDiajar().then((response) => {
-      setData(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
+    // mockKelasDiajar().then((response) => {
+    //   setData(response.data);
+    //   setIsDataLoaded(true);
+    // });
+
+    fetchDataKelas();
+  }, [session]);
 
   return (
     <>
@@ -97,8 +113,6 @@ function HalamanNilai() {
             <Typography.Title level={2}>Rekap Nilai </Typography.Title>
           </Col>
         </Row>
-
-        {/* Content asli... */}
 
         <ModalCustom
           role={modalRole}
@@ -127,37 +141,11 @@ function HalamanNilai() {
         )}
 
         {isDataLoaded ? (
-          <List
-            itemLayout="horizontal"
-            dataSource={isSearching ? searchResult : data}
-            renderItem={(item) => (
-              <Card style={{ marginBottom: "1em" }}>
-                <Row justify="space-between">
-                  <Col>
-                    <Typography.Title level={3}> {item.nama} </Typography.Title>
-                  </Col>
-                  <Col>
-                    <Button
-                      type="primary"
-                      shape="round"
-                      icon={<RightOutlined />}
-                      onClick={() =>
-                        router.push(`/dosen/nilai-mahasiswa/kelas/${item.id}`)
-                      }
-                    >
-                      Preview Kelas
-                    </Button>{" "}
-                  </Col>
-                </Row>
-                <ListComponent
-                  role={"lihat-nilai"}
-                  kelas={item}
-                  isLoading={!isDataLoaded}
-                  dataSource={mockNilaiMhs}
-                  previewDetailNilai={previewNilaiMhs}
-                />
-              </Card>
-            )}
+          <ListComponent
+            role={"lihat-nilai"}
+            isLoading={!isDataLoaded}
+            dataSource={data}
+            previewDetailNilai={previewNilaiMhs}
           />
         ) : (
           <Skeleton active paragraph="4" avatar />

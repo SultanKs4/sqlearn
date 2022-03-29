@@ -31,7 +31,7 @@ import {
   FieldTimeOutlined,
   DeleteOutlined,
   UserOutlined,
-  CheckOutlined,
+  RightOutlined,
   CalendarOutlined,
   LaptopOutlined,
   DatabaseOutlined,
@@ -246,77 +246,52 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         />
       );
     case "lihat-nilai":
-      let topThreeStudents = dataSource.slice().splice(0, 3);
-
       return (
-        <Card>
+        <>
           <List
             itemLayout="horizontal"
-            dataSource={props.displayAllData ? dataSource : topThreeStudents}
+            dataSource={dataSource}
             renderItem={(item) => (
-              <List.Item>
-                <Row justify="space-around" style={{ width: "100vw" }}>
-                  <Col span={18}>
-                    <Row gutter={[50]}>
-                      <Col span={8}>{item.nama}</Col>
-                      <Col span={6}>
-                        <ConsoleSqlOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item.jumlahLatihanDikerjakan} Pertanyaan
-                      </Col>
-                      <Col span={5}>
-                        <FieldTimeOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item.avgDurasi} menit
-                      </Col>
-                      <Col span={5}>
-                        <FormOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        Nilai :{item.avgNilai}
-                      </Col>
-                    </Row>
-                  </Col>
+              <Card>
+                <List.Item style={{ padding: 0, marginBottom: ".5em" }}>
+                  <Row justify="space-around" style={{ width: "100vw" }}>
+                    <Col span={18}>
+                      <Row gutter={[50]}>
+                        <Col span={8} style={{ fontWeight: "bold" }}>
+                          {item.name}
+                        </Col>
+                        <Col span={6}>Semester {item.semester}</Col>
+                      </Row>
+                    </Col>
 
-                  <Col span={4}>
-                    <Row gutter={20} justify="end">
-                      <Col>
-                        <Tooltip title="Preview Nilai Mhs">
-                          <Button
-                            type="primary"
-                            icon={<SearchOutlined />}
-                            style={{
-                              color: "white",
-                              backgroundColor: "purple",
-                            }}
-                            size={"medium"}
-                            onClick={() => props.previewDetailNilai(item)}
-                          ></Button>
-                        </Tooltip>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </List.Item>
+                    <Col span={4}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          <Tooltip
+                            title={`Preview Nilai Mhs dari kelas ${item.name}`}
+                          >
+                            <Button
+                              type="primary"
+                              shape="round"
+                              icon={<RightOutlined />}
+                              onClick={() =>
+                                router.push(
+                                  `/dosen/nilai-mahasiswa/kelas/${item.id}`
+                                )
+                              }
+                            >
+                              Preview Kelas
+                            </Button>{" "}
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </List.Item>
+              </Card>
             )}
           />
-          {!props.displayAllData && (
-            <Typography.Paragraph
-              underline
-              style={{ color: "grey", textAlign: "center", marginTop: "1em" }}
-            >
-              <Tooltip
-                title={`Preview Kelas untuk melihat daftar mahasiswa dalam kelas ${
-                  props?.kelas?.nama || "ini"
-                }`}
-              >
-                Terdapat total {dataSource.length} mahasiswa
-              </Tooltip>
-            </Typography.Paragraph>
-          )}
-        </Card>
+        </>
       );
     case "sesi-latihan-mahasiswa":
       return (

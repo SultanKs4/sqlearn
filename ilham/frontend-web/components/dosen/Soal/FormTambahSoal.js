@@ -1,7 +1,6 @@
 import {
   Button,
   Col,
-  DatePicker,
   Divider,
   Form,
   Input,
@@ -17,9 +16,13 @@ import {
   PlusOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "antd/lib/form/Form";
-import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+import {
+  getStudiKasus,
+  getStudiKasusByID,
+} from "../../../utils/remote-data/dosen/StudiKasus";
+import { useSession } from "next-auth/react";
 
 const formItemLayout = {
   labelCol: {
@@ -39,12 +42,18 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
+// ! BE perlu nambah key "hint" dan "jawaban_benar" untuk endpoint Create Soal
+
 function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
+  const { data: session } = useSession();
+
   const [form] = useForm();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
-  const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
+  const [dataTabel, setDataTabel] = useState([]);
+
   const [selectedKategori, setSelectedKategori] = useState(1);
+  const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
 
   // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
@@ -61,22 +70,20 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
     useState(false);
 
-  const onChangeStudiKasus = (kelas) => {
-    console.log(kelas);
-    setSelectedStudiKasus(kelas);
-  };
-
   const onChangeKategori = (kategori) => {
     console.log(kategori);
     setSelectedKategori(kategori);
   };
 
-  useEffect(() => {
-    mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
-    form.setFieldsValue({
-      dosen_pembuat: "Dosen Coba",
-    });
-  }, []);
+  const onChangeStudiKasus = (studiKasusID) =>
+    setSelectedStudiKasus(studiKasusID);
+
+  const fetchDataStudiKasus = useCallback(() => {
+    if (session !== undefined)
+      getStudiKasus(session?.user?.tokenJWT).then((response) =>
+        setDataStudiKasus(response.data)
+      );
+  }, [session]);
 
   const onFinish = ({ kategori, ...values }) => {
     handleSubmit({
@@ -91,6 +98,15 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   };
 
   const normFile = (e) => console.log("Upload event:", e);
+
+  useEffect(() => {
+    getStudiKasusByID(session?.user?.tokenJWT, selectedStudiKasus?.value)
+      .then((res) => setDataTabel(res.data?.tables))
+      .catch((err) => {
+        setDataTabel({});
+        message.error("Data Tabel tidak dapat dimuat");
+      });
+  }, [selectedStudiKasus]);
 
   useEffect(() => {
     form.setFieldsValue({
@@ -118,6 +134,13 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   useEffect(() => {
     refButtonPetunjuk?.current?.input.focus();
   }, [inputTagsPetunjukVisible]);
+
+  useEffect(() => {
+    fetchDataStudiKasus();
+    form.setFieldsValue({
+      dosen_pembuat: session?.user?.name,
+    });
+  }, [session]);
 
   const handleInputChange = (e) => setInputTagsKomponenValue(e.target.value);
   const handleInputPetunjukChange = (e) =>
@@ -153,31 +176,8 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Row justify="space-between" gutter={8}>
-        <Col span={24}>
-          <Form.Item
-            name="kategori"
-            label="Kategori"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Kategori!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
-            >
-              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-
       <Form.Item
-        name="teksSoal"
+        name="text"
         label="Teks Soal"
         rules={[
           {
@@ -345,7 +345,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
       <Form.Item label="Preview Hasil">
         <Form.Item
-          name="preview_hasil"
+          name="answer_pic"
           valuePropName="fileList"
           getValueFromEvent={normFile}
           noStyle
@@ -388,7 +388,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         </Col>
         <Col span={12}>
           <Form.Item
-            name="studi_kasus"
+            name="case_study"
             label="Studi Kasus"
             rules={[
               {
@@ -398,17 +398,64 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Select
-              placeholder="Pilih Studi Kasus . . ."
+              labelInValue
               onChange={onChangeStudiKasus}
+              placeholder="Pilih Studi Kasus . . ."
             >
               {dataStudiKasus?.map((item) => (
-                <Select.Option key={item.nama}>{item.nama}</Select.Option>
+                <Select.Option key={item.id} value={item.id}>
+                  {item.name}
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
         </Col>
       </Row>
+      <Row justify="space-between" gutter={8}>
+        <Col span={12}>
+          <Form.Item
+            name="tables"
+            label={`Gunakan Tabel dari ${selectedStudiKasus?.label || ""}`}
+            rules={[
+              {
+                required: true,
+                message: "Mohon pilih tabel yang akan digunakan!",
+              },
+            ]}
+          >
+            <Select placeholder="Pilih tabel . . .">
+              {Object.keys(dataTabel) !== 0 &&
+                Object.keys(dataTabel)?.map((item, id) => (
+                  <Select.Option key={id || 0} value={item || ""}>
+                    {" "}
+                    {item || ""}{" "}
+                  </Select.Option>
+                ))}
+            </Select>
+          </Form.Item>
+        </Col>
 
+        <Col span={12}>
+          <Form.Item
+            name="label_id"
+            label="Kategori"
+            rules={[
+              {
+                required: true,
+                message: "Mohon masukkan nama Kategori!",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Pilih Kategori . . ."
+              onChange={onChangeKategori}
+            >
+              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
       <Divider />
       <Row justify="end" gutter={10} style={{ padding: 0, margin: 0 }}>
         <Col>

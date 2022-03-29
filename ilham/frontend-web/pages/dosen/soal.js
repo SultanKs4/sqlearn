@@ -77,9 +77,7 @@ function HalamanSoal() {
     postSoal(session?.user?.tokenJWT, formSoal)
       .then(() => {
         handleToggleModal(false);
-        message.success(
-          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil ditambahkan`
-        );
+        message.success(`Data Pertanyaan berhasil ditambahkan`);
       })
       .then(() => fetchDataSoal())
       .catch((err) => message.error(`Data Pertanyaan gagal ditambahkan`));
@@ -90,9 +88,7 @@ function HalamanSoal() {
     updateSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {
         handleToggleModal(false);
-        message.success(
-          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil diubah`
-        );
+        message.success(`Data Pertanyaan berhasil diubah`);
       })
       .then(() => fetchDataSoal())
       .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
@@ -105,9 +101,7 @@ function HalamanSoal() {
     deleteSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {
         handleToggleModal(false);
-        message.success(
-          `Data Pertanyaan ${removeHTML(formSoal.text)} berhasil dihapus`
-        );
+        message.success(`Data Pertanyaan berhasil dihapus`);
       })
       .then(() => fetchDataSoal())
       .catch((err) => message.error(`Data Pertanyaan gagal dihapus`));

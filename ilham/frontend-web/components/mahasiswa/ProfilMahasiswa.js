@@ -5,7 +5,7 @@ import styles from "../../styles/mahasiswa/beranda.module.css";
 
 function ProfilMahasiswa() {
   return (
-    <Card style={{ minHeight: "60vh" }}>
+    <Card style={{ minHeight: "80vh" }}>
       <Typography.Title level={2}> Profil </Typography.Title>
       <Divider />
       <Row justify="center">

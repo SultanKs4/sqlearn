@@ -19,6 +19,7 @@ import {
   postStudiKasus,
 } from "../../utils/remote-data/dosen/StudiKasus";
 import { useSession } from "next-auth/react";
+import { removeHTML } from "../../utils/common";
 
 function StudiKasus() {
   const { data: session } = useSession();
@@ -67,13 +68,13 @@ function StudiKasus() {
 
   const aksiTambahStudiKasus = (formStudiKasus) => {
     console.log("formStudiKasus", formStudiKasus);
-    postStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
+    postStudiKasus(session?.user?.tokenJWT, formStudiKasus)
       .then(() => {
         handleToggleModal(false);
         message.success(
-          `Data Pertanyaan ${removeHTML(
-            formStudiKasus.name
-          )} berhasil ditambahkan`
+          `Data Pertanyaan 
+            ${formStudiKasus.name}
+          berhasil ditambahkan`
         );
       })
       .then(() => fetchDataStudiKasus())

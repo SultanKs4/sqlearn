@@ -73,6 +73,7 @@ function DaftarKelas() {
   };
 
   const aksiTambahKelas = (formKelas) => {
+    console.log("formKelas", formKelas);
     postKelas(session?.user?.tokenJWT, formKelas)
       .then(() => {
         handleToggleModal(false);

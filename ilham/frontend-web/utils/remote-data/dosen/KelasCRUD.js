@@ -54,30 +54,22 @@ const getMhsKelasByID = async (bearerToken, kelasID) => {
   return response.data;
 };
 
-// TODO : Handle Upload Excel File
-
-const addMahasiswaByExcel = (bearerToken, kelasID, setFileList, fileList) => {
-  //   const props = {
-  //     name: "file",
-  //     beforeUpload: (file) => {
-  //       setFileList((state) => ({
-  //         fileList: [...state, file],
-  //       }));
-  //       return false;
-  //     },
-  //     accept:
-  //       "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  //     action: `${URL_CLASS_API}/upload`,
-  //     headers: {
-  //       Authorization: `Bearer ${bearerToken}`,
-  //     },
-  //   };
-  //   return props;
+const addMahasiswaByExcel = (bearerToken, setFileList) => {
+  const props = {
+    name: "file",
+    beforeUpload: (file) => {
+      setFileList(file);
+      return false;
+    },
+    accept:
+      "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    action: `${URL_CLASS_API}/upload`,
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  };
+  return props;
 };
-
-// const handleUploadExcel = (fileList) => {
-
-// }
 
 const downloadExcelTemplate = async () => {
   axios({
@@ -95,7 +87,28 @@ const downloadExcelTemplate = async () => {
 };
 
 const postKelas = async (bearerToken, values) => {
-  let response = await axiosWithBearer(bearerToken).post(URL_CLASS_API, values);
+  let response;
+  if (values?.excel !== undefined) {
+    // Convert to Form data
+    let bodyFormData = new FormData();
+    console.log("ini values", values);
+
+    Object.keys(values).forEach((key) => {
+      bodyFormData.append(key, values[key]);
+    });
+
+    response = await axiosWithBearer(bearerToken).post(
+      `${URL_CLASS_API}/upload`,
+      bodyFormData,
+      {
+        headers: {
+          "Content-Type": "application/sql",
+        },
+      }
+    );
+  } else
+    response = await axiosWithBearer(bearerToken).post(URL_CLASS_API, values);
+
   return response.data;
 };
 
