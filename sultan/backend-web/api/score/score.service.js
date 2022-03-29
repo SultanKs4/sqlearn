@@ -7,6 +7,9 @@ const Student = require("../student/student.model");
 const Class = require("../class/class.model");
 const Question = require("../question/question.model");
 const Session = require("../session/session.model");
+const errorHandling = require("../../lib/errorHandling");
+const createHttpError = require("http-errors");
+const LogSessionStudent = require("../log-session-student/log-session-student.model");
 
 module.exports = {
     getAllByStudent: async (user, kelas = null) => {
@@ -85,8 +88,7 @@ module.exports = {
 
             return createResponseObject(true, "Data nilai berhasil didapatkan", scoresResponse);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(false, "Data nilai gagal didapatkan");
+            return errorHandling(error);
         }
     },
 
@@ -124,19 +126,20 @@ module.exports = {
 
             return createResponseObject(true, "Data nilai berhasil didapatkan", scores);
         } catch (error) {
-            console.error(error);
-            return createResponseObject(false, "Data nilai gagal didapatkan");
+            return errorHandling(error);
         }
     },
 
     getOne: async (student, schedule) => {
         try {
             const studentDb = await Student.findByPk(student);
+            if (!studentDb) throw createHttpError(404, "data student not found");
             const scheduleDb = await Schedule.findByPk(schedule);
+            if (!scheduleDb) throw createHttpError(404, "data schedule not found");
             const answer = await Question.findAll({
                 include: [
                     {
-                        model: SessionStudentAnswer,
+                        model: LogSessionStudent,
                         required: true,
                         include: [
                             {
@@ -167,62 +170,7 @@ module.exports = {
                 answer,
             });
         } catch (error) {
-            console.error(error);
-            return createResponseObject(false, "Data pertanyaan gagal didapatkan");
-        }
-    },
-
-    insert: async (data) => {
-        try {
-            let newUser = await User.create({
-                username: data.username,
-                password: hashPassword(data.password),
-                no_induk: data.no_induk,
-                name: data.name,
-            });
-            return createResponseObject(true, "Data user berhasil ditambahkan", newUser);
-        } catch (error) {
-            console.log(error);
-            return createResponseObject(false, "Data user gagal ditambahkan");
-        }
-    },
-
-    update: async (id, data) => {
-        try {
-            const user = await User.findByPk(id, {
-                attributes: {
-                    exclude: ["password"],
-                },
-            });
-            if (!user) return createResponseObject(false, "Tidak ada data user didapatkan");
-
-            Object.keys(data).forEach((val) => {
-                user[val] = data[val];
-            });
-
-            await user.save();
-
-            return createResponseObject(true, "Data user berhasil diperbarui", user);
-        } catch (error) {
-            return createResponseObject(false, "Data user gagal diperbarui");
-        }
-    },
-
-    destroy: async (id) => {
-        try {
-            const user = await User.findByPk(id);
-            if (!user) return createResponseObject(false, "Tidak ada user yang dihapus");
-
-            await User.destroy({
-                where: {
-                    id,
-                },
-            });
-
-            return createResponseObject(true, "Data user berhasil dihapus");
-        } catch (error) {
-            console.log(error);
-            return createResponseObject(false, "Data user gagal dihapus");
+            return errorHandling(error);
         }
     },
 };

@@ -24,10 +24,10 @@ const storage = multer.diskStorage({
 function fileFilter(req, file, cb) {
     let filetypes = /^/;
 
-    if (file.fieldname == "sql") filetypes = /sql/;
-    else if (file.fieldname == "answer_pic") filetypes = /jpeg|png/;
+    if (file.fieldname == "sql") filetypes = /sql|octet-stream/;
+    else if (file.fieldname == "answer_pic") filetypes = /jpeg|png|octet-stream/;
     else if (file.fieldname == "excel") {
-        filetypes = /ms-excel|openxmlformats-officedocument.spreadsheetml.sheet/;
+        filetypes = /ms-excel|openxmlformats-officedocument.spreadsheetml.sheet|octet-stream/;
     }
 
     if (filetypes.test(file.mimetype)) return cb(null, true);

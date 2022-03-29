@@ -1,5 +1,7 @@
 const settingService = require("./setting.service");
 
+/* TODO: Sanitizer , full postman docs (including bug fixes etc)*/
+
 module.exports = {
     threshold: async (req, res) => {
         const resObj = await settingService.getThreshold();

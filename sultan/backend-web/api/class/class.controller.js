@@ -1,6 +1,5 @@
 const createResponseObject = require("../../lib/createResponseObject");
 const classService = require("./class.service");
-const ExcelJS = require("exceljs");
 
 module.exports = {
     index: async (req, res) => {

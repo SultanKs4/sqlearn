@@ -15,15 +15,15 @@ async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
     try {
         if (similarity <= Number(threshold) && similarity >= 0)
             throw new createHttpError(406, "Query yang diinputkan tidak sesuai dengan kriteria soal");
-        let dbStudent;
-        let dbKey;
-        if (dbname.length < 2) throw new createHttpError(400, "db must be key and student db");
+        let dbStudent = null;
+        let dbKey = null;
+        if (dbname.length < 2) throw createHttpError(400, "db list lenght minimal 2");
         dbname.forEach((e) => {
-            if (/[_student]+$/gm.test(e)) dbStudent = e;
-            else if (/[_key]+$/gm.test(e)) dbKey = e;
+            if (/_student$/gm.test(e)) dbStudent = e;
+            if (/_key$/gm.test(e)) dbKey = e;
         });
-        const parser = new Parser();
-        const typeAndTable = getTypeAndTable(parser.astify(queryKey));
+        if (dbStudent == null || dbKey == null) throw createHttpError(400, "db student or key null");
+        const typeAndTable = getTypeAndTable(new Parser().astify(queryKey));
         let resQueryMhs = await dbFunctions.runQuery(dbStudent, `${queryMhs}`, true);
         let resQueryKey = await dbFunctions.runQuery(dbKey, `${queryKey}`, true);
         if (typeAndTable.type == "insert") {
@@ -36,7 +36,6 @@ async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
             res_query: resQueryMhs,
         });
     } catch (error) {
-        if (dbFunctions.getConnection(dbname)) dbFunctions.destroyConnection(dbname);
         return responseObj(error.statusCode, "error", { similarity, is_equal: false }, error.message);
     }
 }

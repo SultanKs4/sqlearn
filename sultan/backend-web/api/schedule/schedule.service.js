@@ -4,7 +4,6 @@ const createResponseObject = require("../../lib/createResponseObject");
 const errorHandling = require("../../lib/errorHandling");
 const Class = require("../class/class.model");
 const Container = require("../container/container.model");
-const Question = require("../question/question.model");
 const QuestionLabel = require("../questions-label/question-label.model");
 const Score = require("../score/score.model");
 const Session = require("../session/session.model");

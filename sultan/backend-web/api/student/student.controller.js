@@ -1,5 +1,7 @@
 const studentService = require("./student.service");
 
+/* TODO: Sanitizer , full postman docs (including bug fixes etc)*/
+
 module.exports = {
     index: async (req, res) => {
         const resObj = await studentService.getAll();
