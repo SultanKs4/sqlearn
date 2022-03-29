@@ -1,8 +1,9 @@
-const axios = require("axios");
+const axios = require("axios").default;
 const { Op, Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const runSql = require("../../lib/runSql");
 const Container = require("../container/container.model");
+const LogSessionStudent = require("../log-session-student/log-session-student.model");
 const Question = require("../question/question.model");
 const Schedule = require("../schedule/schedule.model");
 const Session = require("./session.model");
@@ -16,6 +17,7 @@ const Class = require("../class/class.model");
 const path = require("path");
 const createHttpError = require("http-errors");
 const { findByType, dataThreshold } = require("../setting/setting.service");
+const errorHandling = require("../../lib/errorHandling");
 
 module.exports = {
     getAll: async () => {
@@ -23,7 +25,7 @@ module.exports = {
             const sessions = await Session.findAll();
             return createResponseObject(200, "success", "Data session berhasil didapatkan", sessions);
         } catch (error) {
-            return createResponseObject(404, "error", "Data session gagal didapatkan");
+            return errorHandling(error);
         }
     },
 
@@ -64,7 +66,7 @@ module.exports = {
             };
             return createResponseObject(200, "success", "Data session berhasil didapatkan", responseObj);
         } catch (error) {
-            return createResponseObject(500, "error", "Data session gagal didapatkan");
+            return errorHandling(error);
         }
     },
 
@@ -143,33 +145,26 @@ module.exports = {
                             }).then(async (data) => {
                                 await session.addDbLists(data);
                             });
-                            await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`);
-                            const resRunSql = await runSql(
-                                currDbName,
-                                path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
-                            );
-                            if (!resRunSql) {
-                                throw {
-                                    data: resRunSql,
-                                    message: "Clone Database Gagal dilakukan",
-                                };
-                            }
+                            await axios
+                                .post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`)
+                                .then(async () => {
+                                    const resRunSql = await runSql(
+                                        currDbName,
+                                        path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
+                                    );
+                                    if (!resRunSql) throw createHttpError(500, "Clone Database Gagal dilakukan");
+                                });
                         }, Promise.resolve());
                     }, Promise.resolve());
                 });
             }
             return createResponseObject(200, "success", "Data session berhasil ditambahkan", session);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
-
-            return createResponseObject(code, "error", message, data);
+            return errorHandling(error);
         }
     },
 
-    answer: async (sessionId, questionId, data, user) => {
+    answer: async (sessionId, questionId, log, user) => {
         try {
             const dbList = await Session.findOne({
                 where: { id: sessionId, student_id: user.id },
@@ -181,77 +176,83 @@ module.exports = {
                 });
             });
 
-            await Question.findByPk(questionId).then((data) => {
+            const question = await Question.findByPk(questionId).then((data) => {
                 if (!data) throw createHttpError(404, "Tidak ada data pertanyaan didapatkan");
             });
 
-            const similarityResponse = await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
-                dbList,
-                queryMhs: data.answer,
-                queryKey: JSON.parse(question.answer),
-                threshold: await dataThreshold().value,
-            });
+            let similarityResponse = null;
+            let dataLogReady = await Promise.all(
+                log.map(async (val, i) => {
+                    let dataObj = {
+                        session_id: sessionId,
+                        question_id: questionId,
+                        answer: val.answer,
+                        type: val.type,
+                        similarity: -1.0,
+                        is_equal: 0,
+                        timer: val.timer,
+                    };
+                    if (i == log.length - 1) {
+                        similarityResponse = await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
+                            dbList,
+                            queryMhs: val.answer,
+                            queryKey: JSON.parse(question.answer),
+                            threshold: await dataThreshold().value,
+                        });
+                        dataObj.similarity = similarityResponse.data.similarity;
+                        dataObj.is_equal = similarityResponse.data.is_equal;
+                    }
+                    return dataObj;
+                })
+            );
 
-            // await LogSessionStudent.create({
-            //     session_id: sessionId,
-            //     question_id: questionId,
-            //     answer: data.answer,
-            //     type: data.type,
-            //     similarity: similarityResponse.data.similarity,
-            //     is_equal: similarityResponse.data.isEqual,
-            // });
+            await LogSessionStudent.bulkCreate(dataLogReady);
 
             return createResponseObject(200, "success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
         } catch (error) {
-            let code = 500;
-            let message = error.message;
-            let data = null;
-            if (createHttpError.isHttpError(error)) code = error.statusCode;
+            return errorHandling(error);
+        }
+    },
 
-            return createResponseObject(code, "error", message, data);
+    reset: async (sessionId) => {
+        try {
+            const sessionData = await Session.findByPk(sessionId);
+            if (!sessionData) throw createHttpError(404, "session data not found");
+            const dbLists = await sessionData.getDbLists();
+            for (const dbList of dbLists) {
+                await axios.delete(`${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${dbList.db_name}`);
+                await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbList.db_name}`);
+                await runSql(dbList.db_name, path.join(__dirname, `../../uploads/sqls/${dbList.db_filename}`));
+            }
+            return createResponseObject(200, "success", "database reset");
+        } catch (error) {
+            return errorHandling(error);
         }
     },
 
     grade: async (session, user) => {
         try {
-            const scheduleType = await Session.findByPk(session, {
-                // attributes: [],
+            const sessionData = await Session.findByPk(session, {
                 include: [
                     {
                         model: Schedule,
-                        attributes: ["type", "id"],
+                        attributes: ["type", "id", "container_id"],
                         include: [
                             {
                                 model: Container,
-                                attributes: [
-                                    "id",
-                                    [
-                                        Sequelize.fn("COUNT", Sequelize.col("Schedule->Container->questions.id")),
-                                        "questionCount",
-                                    ],
-                                ],
-                                include: [
-                                    {
-                                        model: Question,
-                                        as: "questions",
-                                        attributes: [],
-                                        through: { attributes: [] },
-                                    },
-                                ],
-                                group: ["questions.id"],
+                                attributes: ["id"],
                             },
                         ],
                     },
                 ],
-                raw: true,
-                nest: true,
             });
+            if (!sessionData) throw createHttpError(404, "session data not found");
 
-            const type = scheduleType["Schedule"]["type"];
-            const scheduleId = scheduleType["Schedule"]["id"];
-            const totalQuestion = scheduleType["Schedule"]["Container"]["questionCount"];
+            const type = sessionData.Schedule.type;
+            const scheduleId = sessionData.Schedule.id;
+            const totalQuestion = await sessionData.Schedule.Container.countQuestions();
 
-            const studentAnswer = await SessionStudentAnswer.findAll({
+            const studentAnswer = await LogSessionStudent.findAll({
                 where: {
                     session_id: session,
                 },
@@ -259,18 +260,16 @@ module.exports = {
             });
 
             const attemptsObj = studentAnswer.reduce((acc, val) => {
-                if (!acc[val.question_id]) acc[val.question_id] = { submit: {}, test: [] };
+                if (!acc[val.question_id]) acc[val.question_id] = { start: {}, move: [], submit: {}, test: [] };
 
                 acc[val.question_id][val.type] =
-                    val.type == "submit"
+                    val.type == "submit" || val.type == "start"
                         ? { isEqual: val.is_equal }
                         : [...acc[val.question_id][val.type], { isEqual: val.is_equal }];
-
                 return acc;
             }, {});
 
-            const dataRules = await findByType(type);
-            const grade = gradeAssessment(type, totalQuestion, attemptsObj, dataRules);
+            const grade = gradeAssessment(type, totalQuestion, attemptsObj, await findByType(type));
 
             await Score.create({
                 student_id: user.id,
@@ -289,8 +288,7 @@ module.exports = {
 
             return createResponseObject(200, "success", "Proses grading berhasil dilakukan", grade);
         } catch (error) {
-            console.log(error);
-            return createResponseObject(500, "error", "Proses grading gagal dilakukan");
+            return errorHandling(error);
         }
     },
 };
@@ -305,13 +303,13 @@ function gradeAssessment(type, totalQuestion, attempts, dataRules) {
     if (type == "latihan") {
         questionsIds.forEach((question) => {
             if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRules(attempts[question]["test"].length + 1, dataRules);
+                tempScore += gradingRules(attempts[question]["test"].length, dataRules);
             }
         });
     } else {
         questionsIds.forEach((question) => {
             if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRules(attempts[question]["test"].length + 1, dataRules);
+                tempScore += gradingRules(attempts[question]["test"].length, dataRules);
             }
         });
     }

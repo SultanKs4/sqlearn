@@ -1,4 +1,4 @@
-const axios = require("axios");
+const axios = require("axios").default;
 const CaseStudy = require("../case-study/case-study.model");
 const Container = require("../container/container.model");
 const Question = require("../question/question.model");

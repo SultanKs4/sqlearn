@@ -1,7 +1,7 @@
 const convertToSnakeCase = require("../../lib/convertSnakeCase");
 const shortIdGen = require("../../lib/shortIdGen");
 const CaseStudy = require("./case-study.model");
-const axios = require("axios");
+const axios = require("axios").default;
 const runSql = require("../../lib/runSql");
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const User = require("../user/user.model");

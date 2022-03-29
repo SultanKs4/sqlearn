@@ -205,7 +205,7 @@ describe("Route Test", () => {
                 });
                 it("query mahasiswa and query key executed success select statement", async () => {
                     const response = await req.post(`${prefixRoute}/assessment/single_key`).send({
-                        dbList: ["sqlearn_cs_auto_assess_tes_42_1_key", "sqlearn_cs_auto_assess_tes_42_1_student"],
+                        dbList: ["sqlearn_cs_auto_assess_tes_45_1_key", "sqlearn_cs_auto_assess_tes_45_1_student"],
                         queryMhs: "select * from mahasiswa",
                         queryKey: "select * from mahasiswa",
                         threshold: 0.6,
@@ -218,6 +218,38 @@ describe("Route Test", () => {
                 });
             });
             describe("multi key", () => {
+                it("return error because db list not 2 element", async () => {
+                    const response = await req.post(`${prefixRoute}/assessment/multi_key`).send({
+                        dbList: ["auto_assess_tes"],
+                        queryMhs: `insert into mahasiswa (nama, kelas, ipk) values ("Sultan", "4H", 3.9)`,
+                        queryKey: [
+                            `insert into mahasiswa values ("Sultan", "4H", 3.9)`,
+                            `insert into mahasiswa (nama, kelas, ipk) values ("Sultan", "4H", 3.9)`,
+                        ],
+                        threshold: 0.6,
+                    });
+                    expect(response.statusCode).equal(400);
+                    expect(response.body).to.deep.include({
+                        status: "error",
+                        message: "db list lenght minimal 2",
+                    });
+                });
+                it("return error because db list element not db student or db key", async () => {
+                    const response = await req.post(`${prefixRoute}/assessment/multi_key`).send({
+                        dbList: ["auto_assess_tes", "sqlearn_cs_auto_assess_tes_42_1_key"],
+                        queryMhs: `insert into mahasiswa (nama, kelas, ipk) values ("Sultan", "4H", 3.9)`,
+                        queryKey: [
+                            `insert into mahasiswa values ("Sultan", "4H", 3.9)`,
+                            `insert into mahasiswa (nama, kelas, ipk) values ("Sultan", "4H", 3.9)`,
+                        ],
+                        threshold: 0.6,
+                    });
+                    expect(response.statusCode).equal(400);
+                    expect(response.body).to.deep.include({
+                        status: "error",
+                        message: "db student or key null",
+                    });
+                });
                 it("query mahasiswa and query key below threshold", async () => {
                     const response = await req.post(`${prefixRoute}/assessment/multi_key`).send({
                         dbList: ["auto_assess_tes"],
@@ -235,7 +267,7 @@ describe("Route Test", () => {
                 });
                 it("query mahasiswa and query key executed and similarity result 0.9", async () => {
                     const response = await req.post(`${prefixRoute}/assessment/multi_key`).send({
-                        dbList: ["sqlearn_cs_auto_assess_tes_42_1_key", "sqlearn_cs_auto_assess_tes_42_1_student"],
+                        dbList: ["sqlearn_cs_auto_assess_tes_45_1_key", "sqlearn_cs_auto_assess_tes_45_1_student"],
                         queryMhs: `insert into mahasiswa (nama, kelas, ipk) values ("Sultan", "4H", 3.9)`,
                         queryKey: [
                             `insert into mahasiswa values ("Sultan", "4H", 3.9)`,
