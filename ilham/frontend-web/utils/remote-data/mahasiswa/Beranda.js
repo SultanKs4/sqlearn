@@ -44,7 +44,7 @@ const mockGetAllPractices = async (username) => {
             durasi: "2 jam",
             tanggal_mulai: "2022-02-24 10:00:00",
             tanggal_akhir: "2022-02-24 12:00:00",
-            kategori: 1,
+            kategori: "Close-Ended",
             status: "tersedia",
           },
           {
@@ -55,7 +55,7 @@ const mockGetAllPractices = async (username) => {
             tanggal_akhir: "-",
             status: "selesai",
             nilai: 100,
-            kategori: 1,
+            kategori: "Close-Ended",
             totalPercobaan: 4,
           },
           {
@@ -65,7 +65,7 @@ const mockGetAllPractices = async (username) => {
             durasi: "2 jam",
             tanggal_mulai: "2022-02-24 10:00:00",
             tanggal_akhir: "2022-02-24 12:00:00",
-            kategori: 2,
+            kategori: "Open-Ended",
             status: "tersedia",
           },
         ],

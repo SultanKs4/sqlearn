@@ -11,7 +11,7 @@ const mockJadwalData = [
     kelas_nama: "TI-1C",
     studi_kasus_nama: "Studi Kasus B",
     paket_soal: "Paket Soal A",
-    kategori: 1,
+    kategori: "Close-Ended",
   },
   {
     id: 2,
@@ -21,7 +21,7 @@ const mockJadwalData = [
     kelas_nama: "TI-1G",
     studi_kasus_nama: "Studi Kasus B",
     paket_soal: "Paket Soal B",
-    kategori: 2,
+    kategori: "Open-Ended",
   },
   {
     id: 3,
@@ -31,7 +31,7 @@ const mockJadwalData = [
     kelas_nama: "TI-1H",
     studi_kasus_nama: "Studi Kasus A",
     paket_soal: "Paket Soal D",
-    kategori: 1,
+    kategori: "Close-Ended",
   },
   {
     id: 4,
@@ -41,7 +41,7 @@ const mockJadwalData = [
     kelas_nama: "TI-1C",
     studi_kasus_nama: "Studi Kasus B",
     paket_soal: "Paket Soal D",
-    kategori: 2,
+    kategori: "Open-Ended",
   },
 ];
 

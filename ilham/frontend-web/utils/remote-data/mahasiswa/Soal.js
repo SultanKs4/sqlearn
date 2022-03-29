@@ -14,42 +14,52 @@ const data = [
     sql_components: [
       {
         id: 1,
+        position: 1,
         content: "SELECT",
+        role: "clue",
       },
       {
         id: 2,
+        position: 2,
         content: "COUNT",
+        role: "part",
       },
       {
         id: 3,
+        position: 3,
         content: "nama",
+        role: "part",
       },
       {
         id: 4,
+        position: 4,
         content: "FROM",
+        role: "clue",
       },
       {
         id: 5,
+        position: 5,
         content: "MAHASISWA",
+        role: "part",
       },
       {
         id: 6,
+        position: 6,
         content: "Employee",
+        role: "part",
       },
       {
         id: 7,
+        position: 7,
         content: "STUDENTS",
+        role: "part",
       },
     ],
     jawaban_benar: "SELECT COUNT nama FROM MAHASISWA",
     teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
-    kategori: 1,
-    finished_time: "23:30:10",
-    finished_date: "2022-02-21",
-    timer: {
-      hours: 2,
-      minute: 0,
-      seconds: 0,
+    kategori: "Close-Ended",
+    next: {
+      soalID: 2,
     },
   },
   {
@@ -58,56 +68,119 @@ const data = [
     sql_components: [
       {
         id: 1,
+        position: 1,
         content: "SELECT",
+        role: "clue",
       },
       {
         id: 2,
+        position: 2,
         content: "kelas",
+        role: "clue",
       },
       {
         id: 3,
-        content: ",COUNT(id_mahasiswa)",
+        position: 3,
+        content: "nama",
+        role: "part",
       },
       {
         id: 4,
-        content: "as",
+        position: 4,
+        content: "FROM",
+        role: "clue",
       },
       {
         id: 5,
-        content: "jumlah_mhs",
+        position: 5,
+        content: "MAHASISWA",
+        role: "part",
       },
       {
         id: 6,
-        content: "FROM",
+        position: 6,
+        content: "Karyawan",
+        role: "part",
       },
       {
         id: 7,
-        content: "mahasiswa",
-      },
-      {
-        id: 7,
-        content: "GROUP BY",
-      },
-      {
-        id: 7,
-        content: "kelas",
-      },
-      {
-        id: 7,
-        content: "mahasiswa",
+        position: 7,
+        content: "Murid",
+        role: "part",
       },
     ],
+    jawaban_benar: "SELECT nama kelas FROM MAHASISWA",
+    teksSoal: "Dosen ingin mengetahui informasi nama dan kelas dari mahasiswa",
+    kategori: "Close-Ended",
+    next: {
+      soalID: 4,
+    },
+  },
+  {
+    id: 3 /* idSoal */,
+    studi_kasus: "Studi Kasus B" /* Soal nya */,
+    sql_components: [],
     jawaban_benar:
       "SELECT kelas, COUNT(id_mahasiswa) as jumlah_mhs FROM mahasiswa GROUP BY kelas",
     teksSoal:
       "Administrator ingin mengetahui jumlah mahasiswa dari setiap kelas, tampilkan nama kelas dan jumlah mahasiswa dari kelas tersebut",
-    kategori: 2,
-    finished_time: "23:30:10",
-    finished_date: "2022-02-21",
-    timer: {
-      hours: 2,
-      minute: 0,
-      seconds: 0,
+    kategori: "Open-Ended",
+    next: {
+      soalID: 5,
+    },
+  },
+  {
+    id: 4 /* idSoal */,
+    studi_kasus: "Studi Kasus B" /* Soal nya */,
+    sql_components: [
+      {
+        id: 1,
+        position: 1,
+        content: "SELECT",
+        role: "part",
+      },
+      {
+        id: 2,
+        position: 2,
+        content: "*",
+        role: "clue",
+      },
+      {
+        id: 3,
+        position: 3,
+        content: "nama",
+        role: "part",
+      },
+      {
+        id: 4,
+        position: 4,
+        content: "FROM",
+        role: "part",
+      },
+      {
+        id: 5,
+        position: 5,
+        content: "MAHASISWA",
+        role: "clue",
+      },
+    ],
+    jawaban_benar: "SELECT * FROM MAHASISWA",
+    teksSoal: "Dosen ingin mengetahui jumlah mahasiswa yang ada",
+    kategori: "Close-Ended",
+    next: {
+      soalID: false,
+    },
+  },
+  {
+    id: 5 /* idSoal */,
+    studi_kasus: "Studi Kasus B" /* Soal nya */,
+    sql_components: [],
+    jawaban_benar: "SELECT * FROM mahasiswa WHERE nama LIKE 'D%'",
+    teksSoal:
+      "Dosen ingin menampilkan semua data mahasiswa yang namanya diawali dengan huruf 'D'",
+    kategori: "Open-Ended",
+    next: {
+      soalID: false,
     },
   },
 ];
@@ -128,9 +201,18 @@ const mockGetAllSoal = async () => {
   });
 };
 
+const mockGetSoalByCategory = async (kategori) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve({
+        data: data.filter((item) => item.kategori === kategori),
+      });
+    }, 1000);
+  });
+};
+
 // TODO : 1 jadwal = 1 studi paket soal
 const mockGetSoalByID = async (jadwalID) => {
-  console.log(data, jadwalID);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve({
@@ -210,4 +292,5 @@ export {
   testQuery,
   submitJawaban,
   mockGetSoalByID,
+  mockGetSoalByCategory,
 };
