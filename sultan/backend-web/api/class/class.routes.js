@@ -13,7 +13,7 @@ router.post("/", classSanitizer.checkPost, classController.store);
 router.post("/upload", upload.single("excel"), classSanitizer.checkPost, classController.upload);
 router.put("/:id", classSanitizer.checkPut, classController.update);
 router.post("/:id/add", classSanitizer.checkAddStudent, classController.addStudent);
-router.delete("/:id/remove", classSanitizer.checkDelStudent, classController.removeStudent);
+router.delete("/:id/remove/:mhsid", classSanitizer.checkDelStudent, classController.removeStudent);
 router.delete("/:id", classSanitizer.checkIdOnly, classController.destroy);
 
 module.exports = router;

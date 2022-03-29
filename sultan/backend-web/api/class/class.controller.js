@@ -40,14 +40,14 @@ module.exports = {
     },
 
     addStudent: async (req, res) => {
-        const resObj = await classService.addStudent(req.params.id, req.body.students);
+        const resObj = await classService.addStudent(req.params.id, req.body.nim, req.body.name);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
     },
 
     removeStudent: async (req, res) => {
-        const resObj = await classService.removeStudent(req.params.id, req.body.students);
+        const resObj = await classService.removeStudent(req.params.id, req.params.mhsid);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
