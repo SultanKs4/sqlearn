@@ -32,8 +32,11 @@ const checkClasses = body("classes", "cannot empty")
         });
         return true;
     });
+const checkDateOptional = query(["start", "finish"], "data is not ISO8601 date format").optional().isISO8601();
+const checkClassOptional = query("kelas", "must be int").optional().isInt();
 
 module.exports = {
+    checkDateQuery: [checkDateOptional, checkClassOptional, validationHandle],
     checkIdOnly: [checkId, validationHandle],
     checkPost: [checkContainerId, checkDescription, checkType, checkClasses, checkDate, validationHandle],
     checkPut: [checkId, checkContainerId, checkDescription, checkType, checkClasses, checkDate, validationHandle],
