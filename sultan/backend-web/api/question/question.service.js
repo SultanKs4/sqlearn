@@ -136,8 +136,8 @@ module.exports = {
                 include: { model: Schedule, include: { model: Container } },
             });
             if (!session) throw createHttpError(404, "data session not found");
-            // if (session.student_id != user.id)
-            //     throw createHttpError(409, "your session not match with your credentials");
+            if (session.student_id != user.id)
+                throw createHttpError(409, "your session not match with your credentials");
             let whereQuestionId = {};
             if (questionAnsweredIds) whereQuestionId = { id: { [Op.notIn]: questionAnsweredIds } };
             const question = await session.Schedule.Container.getQuestions({
@@ -162,8 +162,8 @@ module.exports = {
 
             const newQuestion = await Question.create({
                 text: data.text,
-                sql_hints: data.sql_hints,
-                sql_parts: data.sql_parts,
+                sql_hints: JSON.parse(data.sql_hints),
+                sql_parts: JSON.parse(data.sql_parts),
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
@@ -190,8 +190,8 @@ module.exports = {
 
             let dataUpdate = {
                 text: data.text,
-                sql_hints: data.sql_hints,
-                sql_parts: data.sql_parts,
+                sql_hints: JSON.parse(data.sql_hints),
+                sql_parts: JSON.parse(data.sql_parts),
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
