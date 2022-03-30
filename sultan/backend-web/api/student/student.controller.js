@@ -34,7 +34,7 @@ module.exports = {
         return res.status(httpCode).json(response);
     },
     updatePassword: async (req, res) => {
-        const resObj = await studentService.updatePassword(req.params.id, req.body.passwordOld, req.body.passwordNew);
+        const resObj = await studentService.updatePassword(req.params.id, req.body.password_old, req.body.password_new);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);

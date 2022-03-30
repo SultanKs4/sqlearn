@@ -1,4 +1,3 @@
-const createResponseObject = require("../../lib/createResponseObject");
 const questionService = require("./question.service");
 
 module.exports = {
@@ -10,6 +9,16 @@ module.exports = {
     },
     indexExclude: async (req, res) => {
         const resObj = await questionService.getAllExclude(req.params.container, req.query);
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
+    indexRandomSession: async (req, res) => {
+        const resObj = await questionService.getOneRandomBySession(
+            req.user,
+            req.body.session_id,
+            req.body.question_answered
+        );
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
