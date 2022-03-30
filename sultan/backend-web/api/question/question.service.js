@@ -5,13 +5,15 @@ const User = require("../user/user.model");
 const Question = require("./question.model");
 const path = require("path");
 const Container = require("../container/container.model");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const axios = require("axios").default;
 const { AUTO_ASSESS_BACKEND } = require("../../config/endpoints");
 const QuestionLabel = require("../questions-label/question-label.model");
 const DbList = require("../db-list/db-list.model");
 const createHttpError = require("http-errors");
 const errorHandling = require("../../lib/errorHandling");
+const Session = require("../session/session.model");
+const Schedule = require("../schedule/schedule.model");
 
 module.exports = {
     getAll: async (query = null) => {
@@ -124,6 +126,28 @@ module.exports = {
             }, Promise.resolve({}));
 
             return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", question);
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
+    getOneRandomBySession: async (user, sessionId, questionAnsweredIds) => {
+        try {
+            const session = await Session.findByPk(sessionId, {
+                include: { model: Schedule, include: { model: Container } },
+            });
+            if (!session) throw createHttpError(404, "data session not found");
+            // if (session.student_id != user.id)
+            //     throw createHttpError(409, "your session not match with your credentials");
+            let whereQuestionId = {};
+            if (questionAnsweredIds) whereQuestionId = { id: { [Op.notIn]: questionAnsweredIds } };
+            const question = await session.Schedule.Container.getQuestions({
+                attributes: { exclude: ["answer"] },
+                where: whereQuestionId,
+                limit: 1,
+                order: Sequelize.literal("rand()"),
+                joinTableAttributes: [],
+            });
+            return createResponseObject(200, "success", "get question not answered", question);
         } catch (error) {
             return errorHandling(error);
         }
