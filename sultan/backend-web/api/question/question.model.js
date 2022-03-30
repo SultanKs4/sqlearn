@@ -17,6 +17,14 @@ Question.init(
             type: DataTypes.TEXT,
             allowNull: false,
         },
+        sql_hints: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
+        sql_parts: {
+            type: DataTypes.JSON,
+            allowNull: true,
+        },
         answer: {
             type: DataTypes.TEXT,
             allowNull: false,
