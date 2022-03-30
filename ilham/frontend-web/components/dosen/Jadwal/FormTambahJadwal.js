@@ -14,13 +14,7 @@ import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 
-function FormTambahJadwal({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
 
   const [dataKelas, setDataKelas] = useState([]);
@@ -42,9 +36,12 @@ function FormTambahJadwal({
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {
@@ -96,8 +93,8 @@ function FormTambahJadwal({
               onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key={1}>Close-Ended</Option>
-              <Option key={2}>Open-Ended</Option>
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

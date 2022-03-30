@@ -9,6 +9,14 @@ function CountdownTimer({ expiryTimestamp, setTimerLeft }) {
 
   useEffect(() => {
     setTimerLeft(`${hours}:${minutes}:${seconds}`);
+    window.localStorage.setItem(
+      "timerLeft",
+      JSON.stringify({
+        hour: hours,
+        minute: minutes,
+        second: seconds,
+      })
+    );
   }, [seconds]);
 
   return (

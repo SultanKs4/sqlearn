@@ -12,7 +12,10 @@ import {
 import moment from "moment";
 import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
-import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
+import {
+  getKelas,
+  mockGetKelas,
+} from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 import { mockGetPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
@@ -40,7 +43,7 @@ function FormEditJadwal({
   };
 
   useEffect(() => {
-    getKelas(1).then((data) => setDataKelas(data));
+    mockGetKelas(1).then((response) => setDataKelas(response.data));
     mockGetPaketSoal().then((response) => setDataPaketSoal(response.data));
   }, []);
 
@@ -56,9 +59,12 @@ function FormEditJadwal({
     });
   }, [currentJadwal]);
 
-  const onFinish = (values) => {
+  const onFinish = ({ kategori, ...values }) => {
     setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({
+      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      ...values,
+    });
   };
 
   const handleCancel = () => {
@@ -110,8 +116,8 @@ function FormEditJadwal({
               onChange={onChangeKategori}
               style={{ width: "200px" }}
             >
-              <Option key="1">Close-Ended</Option>
-              <Option key="2">Open-Ended</Option>
+              <Option key="Open-Ended">Open-Ended</Option>
+              <Option key="Close-Ended">Close-Ended</Option>
             </Select>
           </Form.Item>
         </Col>

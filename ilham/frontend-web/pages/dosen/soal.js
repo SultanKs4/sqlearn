@@ -89,7 +89,7 @@ function HalamanSoal() {
     handleToggleModal();
     handleToggleAlert();
 
-    setAlertMessage(`Data ${formSoal.nama_soal} berhasil ditambahkan`);
+    setAlertMessage(`Data berhasil ditambahkan`);
 
     console.log("Hasil submit tambah", formSoal);
   };
@@ -98,7 +98,7 @@ function HalamanSoal() {
     // TODO : Call DELETE API request dari SoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama_soal} berhasil diubah`);
+    setAlertMessage(`Data  berhasil diubah`);
     handleToggleAlert();
 
     console.log("Data berhasil diubah", formSoal);
@@ -108,25 +108,10 @@ function HalamanSoal() {
     // TODO : Call DELETE API request dari SoalCRUD.js
     // ...
     handleToggleModal();
-    setAlertMessage(`Data ${formSoal.nama} berhasil dihapus`);
+    setAlertMessage(`Data  berhasil dihapus`);
     handleToggleAlert();
 
     console.log("Data terhapus", formSoal);
-  };
-
-  const filterCategory = (e) => {
-    e.target.value === "Semua"
-      ? setIsFilterActive(false)
-      : setIsFilterActive(true);
-
-    console.log(e.target.value);
-    setSoalFiltered(
-      dataSoal.filter((item) => {
-        // ? : Kategori 1 = Close-ended, 2 = Open-Ended
-        if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else return item?.kategori === parseInt(e.target.value);
-      })
-    );
   };
 
   return (

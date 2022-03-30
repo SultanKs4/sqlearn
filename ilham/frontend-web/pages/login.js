@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -13,6 +13,7 @@ import {
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
+import { getProviders, getSession, signIn, useSession } from "next-auth/react";
 
 const { Option } = Select;
 
@@ -30,23 +31,36 @@ const mockValidate = (valueInput) => {
   }
 };
 
-const Login = () => {
+const Login = ({ providers, csrfToken }) => {
   const router = useRouter();
-
+  const { data: session } = useSession();
   const [form] = Form.useForm();
 
   const [loginType, setLoginType] = useState("mahasiswa");
+  const [providersAuth, setProvidersAuth] = useState("");
 
   const onRequiredTypeChange = (activeRole) => setLoginType(activeRole);
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    if (mockValidate(values)) {
-      if (values.loginTypeValue === "mahasiswa")
-        router.push("/mahasiswa/beranda");
-      else router.push("/dosen/jadwal");
-    }
+    console.log(
+      "redirect to : ",
+      `http://localhost:3000/${values.loginTypeValue}`
+    );
+
+    signIn(providersAuth?.credentials?.id, {
+      callbackUrl: `http://localhost:3000/${values.loginTypeValue}`,
+      username: values.username,
+      loginTypeValue: values.loginTypeValue,
+      password: values.password,
+    });
   };
+
+  useEffect(() => {
+    getProviders().then((result) => {
+      setProvidersAuth(result);
+    });
+  }, []);
 
   return (
     <>
@@ -61,6 +75,7 @@ const Login = () => {
           }}
         >
           <Form
+            method="POST"
             name="normal_login"
             className="login-form"
             initialValues={{
@@ -81,7 +96,6 @@ const Login = () => {
               <Col>
                 <Form.Item name="loginTypeValue">
                   <Select
-                    defaultValue="mahasiswa"
                     onChange={onRequiredTypeChange}
                     style={{ width: "150px" }}
                   >
@@ -137,7 +151,7 @@ const Login = () => {
                   <a
                     className="login-form-forgot"
                     onClick={() => {
-                      router.push("/auth/forgot_password");
+                      router.push("/forgot_password");
                     }}
                   >
                     Forgot password
@@ -161,7 +175,7 @@ const Login = () => {
                   Or{" "}
                   <a
                     onClick={() => {
-                      router.push("/auth/register");
+                      router.push("/register");
                     }}
                   >
                     Register now!
@@ -175,5 +189,24 @@ const Login = () => {
     </>
   );
 };
+
+// Login.getInitialProps = async (context) => {
+//   const { req, res } = context;
+//   const session = await getSession({ req });
+
+//   if (session && res && session.accessToken) {
+//     res.writeHead(302, {
+//       Location: "/dosen",
+//     });
+//     res.end();
+//     return;
+//   }
+
+//   return {
+//     session: undefined,
+//     providers: await providers(context),
+//     csrfToken: await csrfToken(context),
+//   };
+// };
 
 export default Login;
