@@ -130,18 +130,16 @@ module.exports = {
     },
     insert: async (data, fileName, user) => {
         try {
-            const caseStudy = await CaseStudy.findByPk(data.case_study, {
-                raw: true,
-            });
+            const caseStudy = await CaseStudy.findByPk(data.case_study);
             if (!caseStudy) throw createHttpError(404, "case study not found");
 
-            const label = await QuestionLabel.findByPk(data.label_id, {
-                raw: true,
-            });
+            const label = await QuestionLabel.findByPk(data.label_id);
             if (!label) throw createHttpError(404, "label not found");
 
             const newQuestion = await Question.create({
                 text: data.text,
+                sql_hints: data.sql_hints,
+                sql_parts: data.sql_parts,
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
@@ -160,18 +158,16 @@ module.exports = {
             const questionData = await Question.findByPk(questionId);
             if (!questionData) throw createHttpError(404, "question not found");
 
-            const caseStudy = await CaseStudy.findByPk(data.case_study, {
-                raw: true,
-            });
+            const caseStudy = await CaseStudy.findByPk(data.case_study);
             if (!caseStudy) throw createHttpError(404, "case study not found");
 
-            const label = await QuestionLabel.findByPk(data.label_id, {
-                raw: true,
-            });
+            const label = await QuestionLabel.findByPk(data.label_id);
             if (!label) throw createHttpError(404, "label not found");
 
             let dataUpdate = {
                 text: data.text,
+                sql_hints: data.sql_hints,
+                sql_parts: data.sql_parts,
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
@@ -184,7 +180,7 @@ module.exports = {
             });
             await questionData.save();
 
-            return createResponseObject(200, "success", "Data pertanyaan berhasil diperbarui", question);
+            return createResponseObject(200, "success", "Data pertanyaan berhasil diperbarui", questionData);
         } catch (error) {
             return errorHandling(error);
         }

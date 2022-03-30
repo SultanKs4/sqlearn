@@ -46,7 +46,7 @@ module.exports = {
                 include: {
                     model: Question,
                     as: "questions",
-                    attributes: ["id", "text", "answer"],
+                    attributes: ["id", "text"],
                     through: { attributes: [] },
                     include: [
                         {
@@ -63,7 +63,7 @@ module.exports = {
                         },
                     ],
                 },
-                // order: Sequelize.literal("rand()"),
+                order: Sequelize.literal("rand()"),
             });
 
             if (!containerById) throw createHttpError(404, "container not found");

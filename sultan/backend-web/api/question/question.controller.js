@@ -21,14 +21,24 @@ module.exports = {
         return res.status(httpCode).json(response);
     },
     store: async (req, res) => {
-        if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"));
+        if (!req.file)
+            return res.status(400).json({
+                status: "fail",
+                message: "Format file tidak didukung",
+                data: null,
+            });
         const resObj = await questionService.insert(req.body, req.file.filename, req.user);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
     },
     update: async (req, res) => {
-        if (!req.file) return res.status(400).json(createResponseObject(false, "Format file tidak disupport"));
+        if (!req.file)
+            return res.status(400).json({
+                status: "fail",
+                message: "Format file tidak didukung",
+                data: null,
+            });
         const resObj = await questionService.update(req.params.id, req.body, req.file.filename, req.user);
         const { httpCode, ...response } = resObj;
 
