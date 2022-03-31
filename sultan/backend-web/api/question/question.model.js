@@ -26,7 +26,7 @@ Question.init(
             allowNull: true,
         },
         answer: {
-            type: DataTypes.TEXT,
+            type: DataTypes.JSON,
             allowNull: false,
         },
         answer_pic: {
