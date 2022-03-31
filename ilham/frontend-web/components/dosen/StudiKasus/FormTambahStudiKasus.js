@@ -9,10 +9,8 @@ function FormTambahStudiKasus({ form, setVisible, handleSubmit, ...props }) {
   const [fileList, setFileList] = useState();
 
   const normFile = (e) => {
-    if (!e.file.name.includes(".sql")) {
-      console.log("bukan sql");
+    if (!e.file.name.includes(".sql"))
       message.error(`${e.file.name} is not a .sql file`);
-    }
   };
 
   const onFinish = (values) => {

@@ -1,21 +1,42 @@
 import { React, useEffect } from "react";
 
 import Head from "next/head";
-import { Button, Card, Form, Input, Typography, Row, Col } from "antd";
+import { Button, Card, Form, Input, Typography, Row, Col, message } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../components/PageLayout";
+import { signOut, useSession } from "next-auth/react";
+import { axiosWithBearer, BASE_URL } from "../../utils/remote-data/api";
+
+const editPassword = async (bearerToken, userID, values) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${BASE_URL}/api/users/${userID}/password`,
+    values
+  );
+  return response.data;
+};
 
 function EditProfile() {
+  const { data: session } = useSession();
+
   const onFinish = (values) => {
     console.log(values);
+    editPassword(session?.user?.tokenJWT, session?.user?.id, values)
+      .then((res) => {
+        message.success(
+          `Password berhasil diubah. Anda akan logout dalam 3 detik`
+        );
+        setTimeout(() => {
+          signOut();
+        }, 3000);
+        signOut();
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Password gagal diubah");
+      });
   };
 
-  // TODO Sync with backend
-
-  useEffect(() => {
-    // ? Fetch data admin
-  }, []);
   return (
     <>
       <Head>
@@ -41,6 +62,8 @@ function EditProfile() {
                   ]}
                 >
                   <Input
+                    style={{ width: "220px" }}
+                    autoComplete="off"
                     prefix={<UserOutlined />}
                     placeholder={` Username . . .`}
                   />
@@ -48,7 +71,7 @@ function EditProfile() {
               </Col>
               <Col>
                 <Form.Item
-                  name="password"
+                  name="password_old"
                   label="Password"
                   rules={[
                     {
@@ -57,10 +80,47 @@ function EditProfile() {
                     },
                   ]}
                 >
-                  <Input
+                  <Input.Password
                     type="password"
                     prefix={<LockOutlined />}
                     placeholder={` Password . . .`}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col>
+                <Form.Item
+                  name="password_new"
+                  label="Password baru"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Mohon masukkan Password baru !",
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    prefix={<UserOutlined />}
+                    placeholder={` Password baru . . .`}
+                  />
+                </Form.Item>
+              </Col>
+              <Col>
+                <Form.Item
+                  name="password_confirmation"
+                  label="Konfirmasi Password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Mohon konfirmasi password !",
+                    },
+                  ]}
+                >
+                  <Input.Password
+                    type="password"
+                    prefix={<LockOutlined />}
+                    placeholder={` Konfirmasi Password . . .`}
                   />
                 </Form.Item>
               </Col>
@@ -71,7 +131,7 @@ function EditProfile() {
               type="primary"
               style={{ marginTop: "1em" }}
             >
-              Submit Data
+              Submit{" "}
             </Button>
           </Form>
         </Card>

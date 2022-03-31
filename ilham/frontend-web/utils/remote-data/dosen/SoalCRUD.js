@@ -178,11 +178,43 @@ const getSoalByID = async (bearerToken, soalID) => {
   return response.data;
 };
 
+const propsUploadImage = (bearerToken, setFileList) => {
+  const props = {
+    name: "file",
+    beforeUpload: (file) => {
+      setFileList(file);
+      return false;
+    },
+    accept: "image/png, image/jpeg, image/jpg",
+    headers: {
+      Authorization: `Bearer ${bearerToken}`,
+    },
+  };
+  return props;
+};
+
 const postSoal = async (bearerToken, values) => {
-  let response = await axiosWithBearer(bearerToken).post(
-    URL_QUESTION_API,
-    values
-  );
+  console.log(values, "values");
+  let response;
+  if (values?.answer_pic !== undefined) {
+    // Convert to Form data
+    let bodyFormData = new FormData();
+
+    Object.keys(values).forEach((key) => {
+      bodyFormData.append(key, values[key]);
+    });
+
+    response = await axiosWithBearer(bearerToken).post(
+      URL_QUESTION_API,
+      bodyFormData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+  }
+
   return response.data;
 };
 
@@ -208,5 +240,6 @@ export {
   postSoal,
   updateSoal,
   deleteSoal,
+  propsUploadImage,
   getSoalByCaseStudyByCategory,
 };

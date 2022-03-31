@@ -91,7 +91,6 @@ const postKelas = async (bearerToken, values) => {
   if (values?.excel !== undefined) {
     // Convert to Form data
     let bodyFormData = new FormData();
-    console.log("ini values", values);
 
     Object.keys(values).forEach((key) => {
       bodyFormData.append(key, values[key]);

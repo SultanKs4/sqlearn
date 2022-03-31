@@ -48,7 +48,7 @@ function HalamanSoal() {
       getSoal(session?.user?.tokenJWT).then((res) => {
         setDataSoal(res.data);
         setIsDataLoaded(true);
-        formatToArray(res.data[0].answer);
+        // formatToArray(res.data[0].answer);
       });
   }, [session]);
 
@@ -74,6 +74,7 @@ function HalamanSoal() {
 
   const aksiTambahSoal = (formSoal) => {
     console.log("formSoal", formSoal);
+    // ? Close-ended udah bisa
     postSoal(session?.user?.tokenJWT, formSoal)
       .then(() => {
         handleToggleModal(false);
@@ -85,18 +86,17 @@ function HalamanSoal() {
 
   const aksiEditSoal = (formSoal) => {
     console.log("formSoal", formSoal);
-    updateSoal(session?.user?.tokenJWT, formSoal.id)
-      .then(() => {
-        handleToggleModal(false);
-        message.success(`Data Pertanyaan berhasil diubah`);
-      })
-      .then(() => fetchDataSoal())
-      .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
+    // updateSoal(session?.user?.tokenJWT, formSoal.id)
+    //   .then(() => {
+    //     handleToggleModal(false);
+    //     message.success(`Data Pertanyaan berhasil diubah`);
+    //   })
+    //   .then(() => fetchDataSoal())
+    //   .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
   };
 
   const aksiDeleteSoal = (formSoal) => {
-    // ! (Error BE) : Internal Server Error 500, cannot delete or update a parent row: a foreign key constraint fails
-    // TODO : Perlu bikin soal dulu baru bisa test delete
+    console.log("formSoal", formSoal);
 
     deleteSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {

@@ -81,12 +81,12 @@ function MahasiswaByID() {
       .then(() => {
         handleToggleModal(false);
         message.success(
-          `Data Pertanyaan  ${formMahasiswa.name} berhasil ditambahkan`
+          `Data Mahasiswa  ${formMahasiswa.name} berhasil ditambahkan`
         );
       })
       .then(() => fetchDataMahasiswa())
       .catch((err) =>
-        message.error(`Data Pertanyaan ${formMahasiswa.name} gagal ditambahkan`)
+        message.error(`Data Mahasiswa ${formMahasiswa.name} gagal ditambahkan`)
       );
   };
 
@@ -95,12 +95,12 @@ function MahasiswaByID() {
       .then(() => {
         handleToggleModal(false);
         message.success(
-          `Data Pertanyaan  ${formMahasiswa.name} berhasil dihapus`
+          `Data Mahasiswa  ${formMahasiswa.name} berhasil dihapus`
         );
       })
       .then(() => fetchDataMahasiswa())
       .catch((err) =>
-        message.error(`Data Pertanyaan ${formMahasiswa.name} gagal dihapus`)
+        message.error(`Data Mahasiswa ${formMahasiswa.name} gagal dihapus`)
       );
   };
 

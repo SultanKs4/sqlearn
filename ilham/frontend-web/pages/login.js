@@ -190,23 +190,4 @@ const Login = ({ providers, csrfToken }) => {
   );
 };
 
-// Login.getInitialProps = async (context) => {
-//   const { req, res } = context;
-//   const session = await getSession({ req });
-
-//   if (session && res && session.accessToken) {
-//     res.writeHead(302, {
-//       Location: "/dosen",
-//     });
-//     res.end();
-//     return;
-//   }
-
-//   return {
-//     session: undefined,
-//     providers: await providers(context),
-//     csrfToken: await csrfToken(context),
-//   };
-// };
-
 export default Login;
