@@ -10,8 +10,11 @@ const checkCaseStudyBodyInt = body(["case_study", "label_id"], "cannot null")
     .bail()
     .isInt()
     .withMessage("must be number");
-const checkSqlPartsHints = body(["sql_parts", "sql_hints"]).if(body("label_id").equals("2")).notEmpty().isArray();
-const checkAnswerArray = body("answer").isArray();
+const checkSqlPartsHints = body(["sql_parts", "sql_hints"]).if(body("label_id").equals("2")).notEmpty();
+const checkStringToArray = body(["sql_hints", "sql_parts", "answer"]).custom((val) => {
+    if (!Array.isArray(JSON.parse(val))) throw new Error("params must array");
+    return true;
+});
 
 module.exports = {
     checkIdOnly: [checkId, validationHandle],
@@ -20,16 +23,16 @@ module.exports = {
     checkContainer: [containerCheck, checkCaseStudyQuery, validationHandle],
     checkStore: [
         checkCaseStudyBodyString,
-        checkAnswerArray,
         checkSqlPartsHints,
+        checkStringToArray,
         checkCaseStudyBodyInt,
         validationHandle,
     ],
     checkUpdate: [
         checkId,
         checkCaseStudyBodyString,
-        checkAnswerArray,
         checkSqlPartsHints,
+        checkStringToArray,
         checkCaseStudyBodyInt,
         validationHandle,
     ],
