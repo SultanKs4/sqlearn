@@ -162,8 +162,8 @@ module.exports = {
 
             const newQuestion = await Question.create({
                 text: data.text,
-                sql_hints: JSON.parse(data.sql_hints),
-                sql_parts: JSON.parse(data.sql_parts),
+                sql_hints: data.sql_hints,
+                sql_parts: data.sql_parts,
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
@@ -190,8 +190,8 @@ module.exports = {
 
             let dataUpdate = {
                 text: data.text,
-                sql_hints: JSON.parse(data.sql_hints),
-                sql_parts: JSON.parse(data.sql_parts),
+                sql_hints: data.sql_hints,
+                sql_parts: data.sql_parts,
                 answer: data.answer,
                 answer_pic: fileName,
                 tables: data.tables,
