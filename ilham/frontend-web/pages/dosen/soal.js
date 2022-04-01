@@ -21,7 +21,6 @@ import ListComponent from "../../components/List";
 import FormTambahSoal from "../../components/dosen/Soal/FormTambahSoal";
 import RadioFilterCategory from "../../components/RadioFilterCategory";
 import { useSession } from "next-auth/react";
-import { formatToArray, removeHTML } from "../../utils/common";
 
 function HalamanSoal() {
   const { data: session } = useSession();
@@ -86,13 +85,13 @@ function HalamanSoal() {
 
   const aksiEditSoal = (formSoal) => {
     console.log("formSoal", formSoal);
-    // updateSoal(session?.user?.tokenJWT, formSoal.id)
-    //   .then(() => {
-    //     handleToggleModal(false);
-    //     message.success(`Data Pertanyaan berhasil diubah`);
-    //   })
-    //   .then(() => fetchDataSoal())
-    //   .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
+    updateSoal(session?.user?.tokenJWT, formSoal)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(`Data Pertanyaan berhasil diubah`);
+      })
+      .then(() => fetchDataSoal())
+      .catch((err) => message.error(`Data Pertanyaan gagal diubah`));
   };
 
   const aksiDeleteSoal = (formSoal) => {

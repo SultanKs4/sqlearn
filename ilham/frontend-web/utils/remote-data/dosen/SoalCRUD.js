@@ -1,3 +1,4 @@
+import { message } from "antd";
 import { axiosWithBearer, URL_QUESTION_API } from "../api";
 
 const mockGetSoal = async () => {
@@ -213,16 +214,33 @@ const postSoal = async (bearerToken, values) => {
         },
       }
     );
-  }
+  } else message.error("Please upload image");
 
   return response.data;
 };
 
-const updateSoal = async (bearerToken, values, soalID) => {
-  let response = await axiosWithBearer(bearerToken).put(
-    `${URL_QUESTION_API}/${soalID}`,
-    values
-  );
+const updateSoal = async (bearerToken, values) => {
+  let response;
+
+  if (values?.answer_pic !== undefined) {
+    // Convert to Form data
+    let bodyFormData = new FormData();
+
+    Object.keys(values).forEach((key) => {
+      bodyFormData.append(key, values[key]);
+    });
+
+    response = await axiosWithBearer(bearerToken).put(
+      `${URL_QUESTION_API}/${values?.id}`,
+      bodyFormData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+  } else message.error("Please upload image");
+
   return response.data;
 };
 

@@ -24,6 +24,7 @@ import {
 } from "../../../utils/remote-data/dosen/StudiKasus";
 import { formatToArray, removeHTML } from "../../../utils/common";
 import { useSession } from "next-auth/react";
+import { propsUploadImage } from "../../../utils/remote-data/dosen/SoalCRUD";
 
 const formItemLayout = {
   labelCol: {
@@ -44,11 +45,11 @@ const formItemLayoutWithOutLabel = {
 };
 
 function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
-  // ! BE perlu nambah key "hint" dan "jawaban_benar" untuk endpoint Update Soal
-
   const { data: session } = useSession();
 
   const [form] = useForm();
+
+  const [fileList, setFileList] = useState();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
   const [selectedStudiKasus, setSelectedStudiKasus] = useState(
@@ -65,12 +66,8 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const refButton = useRef(null);
   const refButtonPetunjuk = useRef(null);
 
-  const [tagsKomponen, setTagsKomponen] = useState(
-    currentSoal?.kategori === "Close-Ended"
-      ? currentSoal?.jawaban[0]?.split(" ")
-      : []
-  );
-  const [tagsPetunjuk, setTagsPetunjuk] = useState([]);
+  const [tagsKomponen, setTagsKomponen] = useState();
+  const [tagsPetunjuk, setTagsPetunjuk] = useState();
 
   const [inputTagsKomponenValue, setInputTagsKomponenValue] = useState("");
   const [inputTagsKomponenVisible, setInputTagsKomponenVisible] =
@@ -80,26 +77,46 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
     useState(false);
 
-  const normFile = (e) => console.log("Upload event:", e);
-
-  const validateImageFile = (file) => {
-    if (!file.type.includes("image")) {
-      console.log("bukan gambar", file);
-      message.error(`${file.name} is not an image`);
-    }
-    return file.type.includes("image") ? true : Upload.LIST_IGNORE;
+  const normFile = (e) => {
+    if (
+      !e.file.type === "image/jpeg" ||
+      !e.file.type === "image/png" ||
+      !e.file.type === "image/jpg"
+    )
+      message.error(`${e.file.name} is not an image`);
   };
 
-  const onFinish = ({ kategori, ...values }) => {
-    handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 2 : 1,
+  const onFinish = (values) => {
+    let submitObject = {
       ...values,
-    });
+      id: currentSoal?.id,
+      label_id: selectedKategori === "Close-Ended" ? 2 : 1,
+      case_study: isEditingForm
+        ? values?.case_study?.value
+        : values?.case_study,
+      answer: JSON.stringify(
+        selectedKategori === "Close-Ended" && isEditingForm
+          ? [values?.answer]
+          : values?.answer
+      ),
+      tables: values.tables.toString(),
+      answer_pic: fileList,
+      sql_hints: JSON.stringify(
+        selectedKategori === "Close-Ended" ? tagsPetunjuk : []
+      ),
+      sql_parts: JSON.stringify(
+        selectedKategori === "Close-Ended" ? tagsKomponen : []
+      ),
+    };
+
+    if (fileList.length === 0) delete submitObject.answer_pic;
+
+    handleSubmit(submitObject);
   };
 
-  const onChangeStudiKasus = (studiKasusID) => {
+  const onChangeStudiKasus = (studiKasus) => {
     setIsEditingForm(true);
-    setSelectedStudiKasus(studiKasusID);
+    setSelectedStudiKasus(studiKasus);
   };
 
   const fetchDataStudiKasus = useCallback(() => {
@@ -107,26 +124,26 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       getStudiKasus(session?.user?.tokenJWT).then((response) =>
         setDataStudiKasus(response.data)
       );
-    return () => {
-      setDataStudiKasus({}); // This worked for me
-    };
+    return () => setDataStudiKasus({}); // This worked for me
   }, [session]);
 
+  // Done
   useEffect(() => {
-    getStudiKasusByID(
-      session?.user?.tokenJWT,
-      isEditingForm ? selectedStudiKasus?.value : selectedStudiKasus.id
-    )
-      .then((res) => setDataTabel(res.data?.tables))
-      .catch((err) => {
-        setDataTabel({});
-        message.error("Data Tabel tidak dapat dimuat");
-      });
+    console.log(selectedStudiKasus, "selectedStudiKasus");
+    if (selectedStudiKasus !== "")
+      getStudiKasusByID(
+        session?.user?.tokenJWT,
+        isEditingForm ? selectedStudiKasus?.value : currentSoal?.CaseStudy?.id
+      )
+        .then((res) => setDataTabel(res.data?.tables))
+        .catch((err) => {
+          setDataTabel({});
+          message.error("Data Tabel tidak dapat dimuat");
+        });
   }, [selectedStudiKasus]);
 
   const onChangeKategori = (kategori) => {
     setIsEditingForm(true);
-    console.log(kategori);
     setSelectedKategori(kategori);
   };
 
@@ -134,47 +151,43 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
     if (session !== undefined) fetchDataStudiKasus();
   }, []);
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
-
-  // ? Ini untuk menyesuaikan data form dengan remote data dari BE
-  useEffect(() => {
-    console.log(form.getFieldsValue());
-    form.setFieldsValue({
-      ...form,
-      answer:
-        selectedKategori === "Close-Ended"
-          ? tagsKomponen
-          : form.getFieldValue("answer"),
-      kategori: selectedKategori,
-    });
-  }, [tagsKomponen, selectedKategori]);
+  const handleCancel = () => setVisible(false);
 
   // ? Ini untuk menyesuaikan data form dengan user input
   useEffect(() => {
     form.setFieldsValue({
       ...form,
-      answer: tagsKomponen,
-      petunjuk_jawaban: tagsPetunjuk,
+      sql_parts: tagsKomponen,
+      sql_hints: tagsPetunjuk,
     });
   }, [tagsKomponen, tagsPetunjuk]);
 
   useEffect(() => {
     console.log("ini currentSoal", currentSoal);
-    if (currentSoal !== undefined)
+    if (currentSoal !== undefined) {
+      if (
+        currentSoal.QuestionLabel?.name === "Close-Ended" &&
+        currentSoal.sql_parts !== undefined &&
+        currentSoal.sql_hints !== undefined
+      ) {
+        setTagsKomponen(JSON.parse(currentSoal?.sql_parts));
+        setTagsPetunjuk(JSON.parse(currentSoal?.sql_hints));
+      }
+
       form.setFieldsValue({
         label_id: selectedKategori,
         text: removeHTML(currentSoal?.text),
         tables: currentSoal?.tables,
-        // ? Sementara seperti ini
         answer: formatToArray(currentSoal?.answer),
-        jawaban_benar: formatToArray(currentSoal?.answer)[0],
         dosen_pembuat: currentSoal?.User?.name,
-        case_study: currentSoal?.CaseStudy?.name,
+        case_study: currentSoal?.CaseStudy?.id,
       });
+    }
   }, [currentSoal]);
+
+  useEffect(() => {
+    console.log("ini form", form.getFieldsValue());
+  }, [form]);
 
   const showInput = () => setInputTagsKomponenVisible(true);
   const showInputPetunjuk = () => setInputTagsPetunjukVisible(true);
@@ -187,10 +200,16 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
     refButtonPetunjuk?.current?.input.focus();
   }, [inputTagsPetunjukVisible]);
 
-  const handleInputChange = (e) => setInputTagsKomponenValue(e.target.value);
+  const handleInputChange = (e) => {
+    setInputTagsKomponenValue(e.target.value);
+    setIsEditingForm(true);
+  };
 
-  const handleInputPetunjukChange = (e) =>
+  const handleInputPetunjukChange = (e) => {
+    setIsEditingForm(true);
+
     setInputTagsPetunjukValue(e.target.value);
+  };
 
   const onRemoveTagsKomponen = (removedTag) =>
     setTagsKomponen((prevTagsKomponen) =>
@@ -237,6 +256,21 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
           prefix={<ConsoleSqlOutlined />}
           placeholder={` Teks Pertanyaan . . .`}
         />
+      </Form.Item>
+      <Form.Item
+        name="label_id"
+        label="Kategori"
+        rules={[
+          {
+            required: true,
+            message: "Mohon masukkan nama Kategori!",
+          },
+        ]}
+      >
+        <Select placeholder="Pilih Kategori . . ." onChange={onChangeKategori}>
+          <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+          <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+        </Select>
       </Form.Item>
       {selectedKategori === "-" ? (
         " "
@@ -312,10 +346,11 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       ) : (
         <>
           <Form.Item name="answer" label="Opsi Jawaban">
-            {tagsKomponen.map((item, idx) => (
+            {tagsKomponen?.map((item, idx) => (
               <Tag
                 key={idx}
-                closable
+                // Hanya Komponen terakhir yang bisa dihapus
+                closable={tagsKomponen.length === idx + 1 ? true : false}
                 onClose={() => onRemoveTagsKomponen(item)}
               >
                 {item}
@@ -340,11 +375,12 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
               </Button>
             )}
           </Form.Item>
-          <Form.Item name="petunjuk_jawaban" label="Petunjuk Jawaban">
-            {tagsPetunjuk.map((item, idx) => (
+          <Form.Item name="sql_hints" label="Petunjuk Jawaban">
+            {tagsPetunjuk?.map((item, idx) => (
               <Tag
                 key={idx}
-                closable
+                // Hanya Komponen terakhir yang bisa dihapus
+                closable={tagsPetunjuk.length === idx + 1 ? true : false}
                 onClose={() => onRemoveTagsPetunjuk(item)}
               >
                 {item}
@@ -370,7 +406,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             )}
           </Form.Item>
           <Form.Item
-            name="jawaban_benar"
+            name="answer"
             label="Jawaban Benar"
             rules={[
               {
@@ -397,9 +433,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         >
           <Upload.Dragger
             multiple={false}
-            beforeUpload={(file) => validateImageFile(file)}
-            name="files"
-            action="/upload.do"
+            {...propsUploadImage(session?.user?.tokenJWT, setFileList)}
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -415,21 +449,24 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       <Row justify="space-between" gutter={8}>
         <Col span={12}>
           <Form.Item
-            name="dosen_pembuat"
-            label="Dibuat oleh"
+            name="tables"
+            label={`Gunakan Tabel dari ${selectedStudiKasus?.label || ""}`}
             rules={[
               {
                 required: true,
-                message: "Mohon masukkan dosen pembuat!",
+                message: "Mohon pilih tabel yang akan digunakan!",
               },
             ]}
           >
-            <Input
-              autoComplete="off"
-              disabled
-              prefix={<ConsoleSqlOutlined />}
-              placeholder={` Dibuat Oleh . . .`}
-            />
+            <Select placeholder="Pilih tabel . . ." mode="multiple" allowClear>
+              {Object.keys(dataTabel) !== 0 &&
+                Object.keys(dataTabel)?.map((item, id) => (
+                  <Select.Option key={id || 0} value={item || ""}>
+                    {" "}
+                    {item || ""}{" "}
+                  </Select.Option>
+                ))}
+            </Select>
           </Form.Item>
         </Col>
         <Col span={12}>
@@ -453,52 +490,6 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
                   {item.name}
                 </Select.Option>
               ))}
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-
-      <Row justify="space-between" gutter={8}>
-        <Col span={12}>
-          <Form.Item
-            name="tables"
-            label={`Gunakan Tabel dari ${selectedStudiKasus?.label || ""}`}
-            rules={[
-              {
-                required: true,
-                message: "Mohon pilih tabel yang akan digunakan!",
-              },
-            ]}
-          >
-            <Select placeholder="Pilih tabel . . .">
-              {Object.keys(dataTabel) !== 0 &&
-                Object.keys(dataTabel)?.map((item, id) => (
-                  <Select.Option key={id || 0} value={item || ""}>
-                    {" "}
-                    {item || ""}{" "}
-                  </Select.Option>
-                ))}
-            </Select>
-          </Form.Item>
-        </Col>
-
-        <Col span={12}>
-          <Form.Item
-            name="label_id"
-            label="Kategori"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Kategori!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
-            >
-              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
             </Select>
           </Form.Item>
         </Col>

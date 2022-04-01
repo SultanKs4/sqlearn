@@ -50,7 +50,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
   const [form] = useForm();
 
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState();
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
   const [dataTabel, setDataTabel] = useState([]);
@@ -97,13 +97,14 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   };
 
   const onFinish = (values) => {
+    // if (values.answer_pic.length === 0) console.log("Gambar tidak diubh");
+
     handleSubmit({
       ...values,
       label_id: selectedKategori === "Close-Ended" ? 2 : 1,
       sql_parts: JSON.stringify(values?.sql_parts || []),
       sql_hints: JSON.stringify(values?.sql_hints || []),
       case_study: values?.case_study?.value,
-      // answer: JSON.stringify(values?.answer.split(/[, ]+/)),
       answer: JSON.stringify(
         selectedKategori === "Close-Ended" ? [values?.answer] : values?.answer
       ),
