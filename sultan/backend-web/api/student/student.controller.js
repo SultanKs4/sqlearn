@@ -1,7 +1,5 @@
 const studentService = require("./student.service");
 
-/* TODO: Sanitizer , full postman docs (including bug fixes etc)*/
-
 module.exports = {
     index: async (req, res) => {
         const resObj = await studentService.getAll();
@@ -22,13 +20,14 @@ module.exports = {
         return res.status(httpCode).json(response);
     },
     store: async (req, res) => {
-        const resObj = await studentService.insert(req.body);
+        const { nim, name } = req.body;
+        const resObj = await studentService.insert(nim, name);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
     },
     update: async (req, res) => {
-        const resObj = await studentService.update(req.params.id, req.body);
+        const resObj = await studentService.update(req.params.id, req.body.name);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);

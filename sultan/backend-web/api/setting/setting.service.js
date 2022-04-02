@@ -27,11 +27,11 @@ module.exports = {
             return errorHandling(error);
         }
     },
-    updateThreshold: async (data) => {
+    updateThreshold: async (value) => {
         try {
             const threshold = await thresholdData();
 
-            threshold.value = data;
+            threshold.value = value;
             await threshold.save();
             return createResponseObject(200, "success", "data threshold updated", threshold);
         } catch (error) {

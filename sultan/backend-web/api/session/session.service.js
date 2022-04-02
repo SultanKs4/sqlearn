@@ -31,38 +31,26 @@ module.exports = {
 
     getOne: async (id) => {
         try {
-            const existedAnswer = await SessionStudentAnswer.findAll({
-                attributes: ["question_id"],
-                where: {
-                    session_id: id,
-                    type: "submit",
-                },
-            });
-            const existedAnswerId = existedAnswer.map((val) => val.question_id);
             const session = await Session.findByPk(id, {
-                attributes: ["questions"],
                 include: [
                     {
                         model: Schedule,
-                        attributes: ["id", "finish"],
+                        attributes: ["id", "container_id", "finish"],
+                        include: [{ model: Container }],
                     },
                 ],
             });
-
-            const filteredQuestions = JSON.parse(session.questions).filter(
-                (question) => !existedAnswerId.includes(question)
-            );
-            const questions = await Question.findAll({
-                where: {
-                    id: {
-                        [Op.in]: filteredQuestions,
-                    },
-                },
+            const listQuestion = await session.Schedule.Container.getQuestions({
+                attributes: { exclude: ["answer"] },
+                joinTableAttributes: [],
             });
+            const questionAnswered = await session.getLogSessionStudents({ where: { type: "submit" } });
+
+            const questionNotAnswered = listQuestion.filter((question) => !questionAnswered.includes(question.id));
 
             const responseObj = {
                 session,
-                questions,
+                questionNotAnswered,
             };
             return createResponseObject(200, "success", "Data session berhasil didapatkan", responseObj);
         } catch (error) {
@@ -70,42 +58,11 @@ module.exports = {
         }
     },
 
-    insert: async (data, user) => {
+    insert: async (schedule_id, user) => {
         try {
-            await Schedule.findOne({
-                where: { id: data.schedule },
-            }).then((data) => {
-                if (!data) throw createHttpError(404, "schedule data not found");
-            });
-
-            await Student.findOne({
-                where: { id: user.id },
-                include: {
-                    model: Class,
-                    through: { attributes: [] },
-                    as: "classes",
-                    include: {
-                        model: Schedule,
-                        through: { attributes: [] },
-                        where: { id: data.schedule },
-                        as: "schedules",
-                    },
-                },
-            }).then((data) => {
-                if (data.classes.length == 0) throw createHttpError(409, "student don't belong to this schedule");
-            });
-
-            const [session, created] = await Session.findOrCreate({
-                where: {
-                    student_id: user.id,
-                    schedule_id: data.schedule,
-                },
-            });
-
-            if (created) {
-                await Schedule.findOne({
-                    where: { id: data.schedule },
-                    include: {
+            let scheduleData = await Schedule.findByPk(schedule_id, {
+                include: [
+                    {
                         model: Container,
                         attributes: ["id"],
                         include: {
@@ -120,43 +77,64 @@ module.exports = {
                             },
                         },
                     },
-                }).then(async (data) => {
-                    const dbNameSet = new Set();
-                    const dbArr = data.Container.questions.reduce((prev, curr) => {
-                        if (!dbNameSet.has(curr.CaseStudy.DbList.db_name)) {
-                            dbNameSet.add(curr.CaseStudy.DbList.db_name);
-                            prev.push({
-                                dbName: [
-                                    `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_key`,
-                                    `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_student`,
-                                ],
-                                dbFilename: curr.CaseStudy.DbList.db_filename,
+                    {
+                        model: Class,
+                        through: { attributes: [] },
+                        include: { model: Student, where: { id: user.id }, as: "students" },
+                        as: "classes",
+                    },
+                ],
+            }).then((data) => {
+                if (!data) throw createHttpError(404, "schedule data not found");
+                if (data.classes.length == 0) throw createHttpError(409, "student don't belong to this schedule");
+                return data;
+            });
+
+            const [session, created] = await Session.findOrCreate({
+                where: {
+                    student_id: user.id,
+                    schedule_id,
+                },
+            });
+
+            let dbLists = await session.getDbLists();
+
+            if (created || dbLists.length == 0) {
+                const dbNameSet = new Set();
+                const dbArr = scheduleData.Container.questions.reduce((prev, curr) => {
+                    if (!dbNameSet.has(curr.CaseStudy.DbList.db_name)) {
+                        dbNameSet.add(curr.CaseStudy.DbList.db_name);
+                        prev.push({
+                            dbName: [
+                                `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_key`,
+                                `${curr.CaseStudy.DbList.db_name}_${session.id}_${user.id}_student`,
+                            ],
+                            dbFilename: curr.CaseStudy.DbList.db_filename,
+                        });
+                    }
+                    return prev;
+                }, []);
+                await dbArr.reduce(async (prevDbArr, currDbArr) => {
+                    await prevDbArr;
+                    await currDbArr.dbName.reduce(async (prevDbName, currDbName) => {
+                        await prevDbName;
+                        await DbList.create({
+                            db_name: currDbName,
+                            db_filename: currDbArr.dbFilename,
+                        }).then(async (data) => {
+                            await session.addDbLists(data);
+                        });
+                        await axios
+                            .post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`)
+                            .then(async () => {
+                                const resRunSql = await runSql(
+                                    currDbName,
+                                    path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
+                                );
+                                if (!resRunSql) throw createHttpError(500, "Clone Database Gagal dilakukan");
                             });
-                        }
-                        return prev;
-                    }, []);
-                    await dbArr.reduce(async (prevDbArr, currDbArr) => {
-                        await prevDbArr;
-                        await currDbArr.dbName.reduce(async (prevDbName, currDbName) => {
-                            await prevDbName;
-                            await DbList.create({
-                                db_name: currDbName,
-                                db_filename: currDbArr.dbFilename,
-                            }).then(async (data) => {
-                                await session.addDbLists(data);
-                            });
-                            await axios
-                                .post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`)
-                                .then(async () => {
-                                    const resRunSql = await runSql(
-                                        currDbName,
-                                        path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
-                                    );
-                                    if (!resRunSql) throw createHttpError(500, "Clone Database Gagal dilakukan");
-                                });
-                        }, Promise.resolve());
                     }, Promise.resolve());
-                });
+                }, Promise.resolve());
             }
             return createResponseObject(200, "success", "Data session berhasil ditambahkan", session);
         } catch (error) {
@@ -178,6 +156,7 @@ module.exports = {
 
             const question = await Question.findByPk(questionId).then((data) => {
                 if (!data) throw createHttpError(404, "Tidak ada data pertanyaan didapatkan");
+                return data;
             });
 
             let similarityResponse = null;
@@ -193,18 +172,24 @@ module.exports = {
                         timer: val.timer,
                     };
                     if (i == log.length - 1) {
-                        similarityResponse = await axios.post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
-                            dbList,
-                            queryMhs: val.answer,
-                            queryKey: JSON.parse(question.answer),
-                            threshold: await dataThreshold().value,
-                        });
-                        dataObj.similarity = similarityResponse.data.similarity;
-                        dataObj.is_equal = similarityResponse.data.is_equal;
+                        if (val.type == "test" || val.type == "submit") {
+                            similarityResponse = await axios.post(
+                                `${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`,
+                                {
+                                    dbList,
+                                    queryMhs: val.answer,
+                                    queryKey: JSON.parse(question.answer),
+                                    threshold: await dataThreshold().value,
+                                }
+                            );
+                            dataObj.similarity = similarityResponse.data.data.similarity;
+                            dataObj.is_equal = similarityResponse.data.data.is_equal;
+                        } else throw createHttpError(500, "end log doesn't test or submit type");
                     }
                     return dataObj;
                 })
             );
+            if (dataLogReady.length == 0) throw createHttpError(404, "data log empty");
 
             await LogSessionStudent.bulkCreate(dataLogReady);
 

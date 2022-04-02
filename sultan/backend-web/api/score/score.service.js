@@ -95,7 +95,6 @@ module.exports = {
     getAllByDosen: async (kelas, jadwal) => {
         try {
             const scores = await Score.findAll({
-                attributes: ["id", "student_id", "schedule_id", "score"],
                 include: [
                     {
                         model: Schedule,
@@ -124,7 +123,7 @@ module.exports = {
                 nest: true,
             });
 
-            return createResponseObject(true, "Data nilai berhasil didapatkan", scores);
+            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", scores);
         } catch (error) {
             return errorHandling(error);
         }
@@ -164,7 +163,7 @@ module.exports = {
                     },
                 ],
             });
-            return createResponseObject(true, "Data pertanyaan berhasil didapatkan", {
+            return createResponseObject(200, "success", "Data pertanyaan berhasil didapatkan", {
                 student: studentDb,
                 schedule: scheduleDb,
                 answer,

@@ -65,16 +65,16 @@ module.exports = {
             return errorHandling(error);
         }
     },
-    insert: async (data) => {
+    insert: async (nim, name) => {
         try {
             const [student, created] = await Student.findOrCreate({
                 where: {
-                    username: data.nim,
+                    username: nim,
                 },
                 defaults: {
-                    nim: data.nim,
-                    password: hashPassword(data.nim),
-                    name: data.name,
+                    nim: nim,
+                    password: hashPassword(nim),
+                    name: name,
                 },
             });
             if (created)
@@ -84,7 +84,7 @@ module.exports = {
             return errorHandling(error);
         }
     },
-    update: async (id, data) => {
+    update: async (id, name) => {
         try {
             const student = await Student.findByPk(id, {
                 attributes: {
@@ -93,10 +93,7 @@ module.exports = {
             });
             if (!student) throw createHttpError(404, "student not found");
 
-            Object.keys(data).forEach((val) => {
-                student[val] = data[val];
-            });
-
+            student.name = name;
             await student.save();
 
             return createResponseObject(200, "success", "Data kelas berhasil diperbarui", student);

@@ -1,6 +1,7 @@
 const createHttpError = require("http-errors");
 const createResponseObject = require("../../lib/createResponseObject");
 const errorHandling = require("../../lib/errorHandling");
+const { Op } = require("sequelize");
 const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 
 const User = require("./user.model");
@@ -34,13 +35,11 @@ module.exports = {
         }
     },
 
-    insert: async (username, password, no_induk, name, level = "dosen") => {
+    insert: async (username, no_induk, name, level) => {
         try {
             const [newUser, created] = await User.findOrCreate({
-                where: {
-                    username: username,
-                },
-                defaults: { password: hashPassword(password), no_induk, name, level },
+                where: { [Op.or]: [{ username }, { no_induk }] },
+                defaults: { password: hashPassword(username), username, no_induk, name, level },
             });
             if (created) return createResponseObject(200, "success", "Data user berhasil ditambahkan", newUser);
             else throw createHttpError(409, "user already exist");
