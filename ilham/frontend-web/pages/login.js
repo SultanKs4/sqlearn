@@ -13,7 +13,7 @@ import {
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getProviders, getSession, signIn, useSession } from "next-auth/react";
+import { getProviders, signIn, useSession } from "next-auth/react";
 
 const { Option } = Select;
 

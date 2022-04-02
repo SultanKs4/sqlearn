@@ -67,7 +67,6 @@ function StudiKasus() {
   };
 
   const aksiTambahStudiKasus = (formStudiKasus) => {
-    console.log("formStudiKasus", formStudiKasus);
     postStudiKasus(session?.user?.tokenJWT, formStudiKasus)
       .then(() => {
         handleToggleModal(false);
@@ -86,8 +85,6 @@ function StudiKasus() {
   };
 
   const aksiDeleteStudiKasus = (formStudiKasus) => {
-    // ! (Bug BE) : Untuk remove studi kasus, responsenya error 500 tapi studi kasusnya ke-delete
-    console.log("formStudiKasus", formStudiKasus);
     deleteStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
       .then(() => {
         handleToggleModal(false);

@@ -3,7 +3,7 @@ import { React, useCallback, useEffect, useState } from "react";
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import { Typography, Row, Col, Button, Alert, Radio, message } from "antd";
+import { Typography, Row, Col, Button, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -13,7 +13,6 @@ import FormHapusSoal from "../../components/dosen/Soal/FormHapusSoal";
 import {
   deleteSoal,
   getSoal,
-  mockGetSoal,
   postSoal,
   updateSoal,
 } from "../../utils/remote-data/dosen/SoalCRUD";

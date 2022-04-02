@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Button,
-  Avatar,
   Typography,
   Card,
   Tooltip,
@@ -17,13 +16,11 @@ import {
 import {
   countTimeDifference,
   formatToArray,
-  getHours,
   removeHTML,
   ucfirst,
 } from "../utils/common";
 
 import {
-  PlusCircleOutlined,
   ConsoleSqlOutlined,
   IssuesCloseOutlined,
   SearchOutlined,
@@ -37,7 +34,6 @@ import {
   DatabaseOutlined,
   FileTextOutlined,
   CodeSandboxOutlined,
-  TeamOutlined,
   FormOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";

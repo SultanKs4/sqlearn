@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Button,
-  Alert,
   Tooltip,
   message,
   Card,
@@ -17,27 +16,14 @@ import {
 import { LeftOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../../components/PageLayout";
-import ListComponent from "../../../../components/List";
 
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {
-  getNilaiMhsByID,
-  mockGetNilaiTiapKelas,
-  mockKelasDiajar,
-} from "../../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
-import ModalCustom from "../../../../components/Modal";
-import PreviewLogMahasiswa from "../../../../components/dosen/NilaiMhs/PreviewLogMahasiswa";
+import { getNilaiMhsByID } from "../../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
 import { useSession } from "next-auth/react";
 import { removeHTML } from "../../../../utils/common";
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
-
-function PreviewNilaiTiapKelas() {
+const PreviewNilaiTiapKelas = () => {
   const { Panel } = Collapse;
 
   const { data: session } = useSession();
@@ -45,13 +31,6 @@ function PreviewNilaiTiapKelas() {
 
   const [dataNilaiMhs, setDataNilaiMhs] = useState({});
   const [isDataNilaiLoaded, setisDataNilaiLoaded] = useState(false);
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
-
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
   useEffect(() => {
     if (session !== undefined)
@@ -149,6 +128,6 @@ function PreviewNilaiTiapKelas() {
       </PageLayout>
     </>
   );
-}
+};
 
 export default PreviewNilaiTiapKelas;

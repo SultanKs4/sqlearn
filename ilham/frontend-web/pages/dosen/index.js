@@ -4,25 +4,9 @@ import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  List,
-  Card,
-  Alert,
-  Form,
-  Radio,
-  message,
-} from "antd";
+import { Typography, Row, Col, Button, message } from "antd";
 
-import {
-  PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
 import FormTambahJadwal from "../../components/dosen/Jadwal/FormTambahJadwal";
@@ -32,7 +16,6 @@ import ListComponent from "../../components/List";
 import {
   deleteJadwal,
   getJadwal,
-  mockGetJadwal,
   postJadwal,
   updateJadwal,
 } from "../../utils/remote-data/dosen/JadwalCRUD";

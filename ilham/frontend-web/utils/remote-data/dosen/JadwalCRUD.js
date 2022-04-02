@@ -1,5 +1,3 @@
-import axios from "axios";
-
 import moment from "moment";
 import { axiosWithBearer, URL_SCHEDULE_API } from "../api";
 

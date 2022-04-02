@@ -1,4 +1,3 @@
-import axios from "axios";
 import { axiosWithBearer, URL_NILAI_MHS_API } from "../api";
 
 // ? Sementara kelas_id = 1
