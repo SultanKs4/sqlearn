@@ -1,7 +1,5 @@
 const userService = require("./user.service");
 
-/* TODO: Sanitizer , full postman docs (including bug fixes etc)*/
-
 module.exports = {
     index: async (req, res) => {
         const resObj = await userService.getAll();
@@ -18,8 +16,8 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const { username, password, no_induk, name, level } = req.body;
-        const resObj = await userService.insert(username, password, no_induk, name, level);
+        const { username, no_induk, name, level } = req.body;
+        const resObj = await userService.insert(username, no_induk, name, level);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);

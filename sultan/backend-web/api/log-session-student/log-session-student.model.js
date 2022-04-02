@@ -34,7 +34,7 @@ LogSessionStudent.init(
             defaultValue: null,
         },
         type: {
-            type: DataTypes.ENUM(["start", "test", "submit", "move"]),
+            type: DataTypes.ENUM(["start", "test", "submit", "move", "reset"]),
         },
         similarity: {
             type: DataTypes.DECIMAL(10, 2),

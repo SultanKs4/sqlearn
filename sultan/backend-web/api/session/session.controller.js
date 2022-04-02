@@ -1,7 +1,5 @@
 const sessionService = require("./session.service");
 
-/* TODO: Sanitizer , full postman docs (including bug fixes etc)*/
-
 module.exports = {
     index: async (req, res) => {
         const resObj = await sessionService.getAll();
@@ -18,7 +16,7 @@ module.exports = {
     },
 
     store: async (req, res) => {
-        const resObj = await sessionService.insert(req.body, req.user);
+        const resObj = await sessionService.insert(req.params.scheduleid, req.user);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
