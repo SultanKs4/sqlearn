@@ -258,9 +258,10 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                     <Col span={18}>
                       <Row gutter={[50]}>
                         <Col span={8} style={{ fontWeight: "bold" }}>
-                          {item.name}
+                          {item?.Student?.name}
                         </Col>
-                        <Col span={6}>Semester {item.semester}</Col>
+                        <Col span={6}>NIM {item?.Student?.nim}</Col>
+                        <Col span={6}>Score : {item?.score}</Col>
                       </Row>
                     </Col>
 
@@ -268,19 +269,21 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row gutter={20} justify="end">
                         <Col>
                           <Tooltip
-                            title={`Preview Nilai Mhs dari kelas ${item.name}`}
+                            title={`Preview Nilai ${item?.Student?.name}`}
                           >
                             <Button
                               type="primary"
-                              shape="round"
                               icon={<RightOutlined />}
                               onClick={() =>
-                                router.push(
-                                  `/dosen/nilai-mahasiswa/kelas/${item.id}`
-                                )
+                                router.push({
+                                  pathname: `/dosen/nilai-mahasiswa/mhs/${item?.Student?.id}`,
+                                  query: {
+                                    jadwalID: item?.schedule_id,
+                                  },
+                                })
                               }
                             >
-                              Preview Kelas
+                              Lihat Detail
                             </Button>{" "}
                           </Tooltip>
                         </Col>

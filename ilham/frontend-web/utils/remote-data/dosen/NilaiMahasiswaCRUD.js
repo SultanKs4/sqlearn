@@ -205,9 +205,20 @@ const getNilaiMhs = async (bearerToken) => {
   return response.data;
 };
 
-const getNilaiMhsByID = async (bearerToken, mhsID) => {
+const filterNilaiMhsByKelasAndJadwal = async (
+  bearerToken,
+  jadwalID,
+  kelasID
+) => {
   let response = await axiosWithBearer(bearerToken).get(
-    `${URL_NILAI_MHS_API}/${mhsID}`
+    `${URL_NILAI_MHS_API}/class/${kelasID}/schedule/${jadwalID}`
+  );
+  return response.data;
+};
+
+const getNilaiMhsByID = async (bearerToken, mhsID, jadwalID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_NILAI_MHS_API}/student/${mhsID}/schedule/${jadwalID}`
   );
   return response.data;
 };
@@ -243,4 +254,5 @@ export {
   updateNilaiMhs,
   deleteNilaiMhs,
   mockGetNilaiTiapKelas,
+  filterNilaiMhsByKelasAndJadwal,
 };

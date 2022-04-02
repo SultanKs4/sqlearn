@@ -1,77 +1,24 @@
-import { React, useState, useEffect, useCallback } from "react";
+import { React, useState } from "react";
 import Head from "next/head";
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  Card,
-  Alert,
-  Avatar,
-  List,
-  Spin,
-  message,
-} from "antd";
+import { Skeleton, Typography, Row, Col, Card, message, Empty } from "antd";
 
-import { mockKelasDiajar } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
 import PageLayout from "../../../components/PageLayout";
-import ListComponent from "../../../components/List";
-import ModalCustom from "../../../components/Modal";
-import SearchBar from "../../../components/SearchBar";
-
-import { RightOutlined } from "@ant-design/icons";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
-
-const mockNilaiMhs = [
-  {
-    nama: "Muhammad Ilham Adhim",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Dharma Y",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Rasyid M",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Sultan A",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Ilham Rizky",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-];
+import ListComponent from "../../../components/List";
+import SearchNilai from "../../../components/dosen/NilaiMhs/SearchNilai";
+import { filterNilaiMhsByKelasAndJadwal } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
 
 function HalamanNilai() {
-  const router = useRouter();
   const { data: session } = useSession();
 
-  const [data, setData] = useState([]);
-  const [searchResult, setSearchResult] = useState([]);
+  const [dataMahasiswa, setDataMahasiswa] = useState();
 
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isFetchingData, setIsFetchingData] = useState(true);
+
   const [isSearching, setIsSearching] = useState(false);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
+  const [selectedKelas, setSelectedKelas] = useState("Test Kelas");
+  const [selectedJadwal, setSelectedJadwal] = useState("Test Jadwal");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
@@ -83,24 +30,22 @@ function HalamanNilai() {
     );
   };
 
-  const fetchDataKelas = useCallback(() => {
-    if (session !== undefined)
-      getKelas(session?.user?.tokenJWT)
-        .then((res) => {
-          setData(res?.data);
-          setIsDataLoaded(true);
-        })
-        .catch(() => message.error("Terjadi kesalahan fetching data"));
-  }, [session]);
-
-  useEffect(() => {
-    // mockKelasDiajar().then((response) => {
-    //   setData(response.data);
-    //   setIsDataLoaded(true);
-    // });
-
-    fetchDataKelas();
-  }, [session]);
+  const onFinish = ({ jadwal, kelas }) => {
+    // TODO : Fetch data mahasiswa dengan jadwal id dan kelas id
+    setIsSearching(true);
+    console.log("Received values of form: ", jadwal.value, kelas.value);
+    // filterNilaiMhsByKelasAndJadwal(session?.user?.tokenJWT, jadwal.value, kelas.value).then((data) => {
+    filterNilaiMhsByKelasAndJadwal(session?.user?.tokenJWT, 11, 1)
+      .then((res) => {
+        message.success("Nilai Mahasiswa berhasil diambil");
+        setDataMahasiswa(res.data);
+        setIsFetchingData(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Terjadi kesalahan saat mengambil data");
+      });
+  };
 
   return (
     <>
@@ -114,41 +59,45 @@ function HalamanNilai() {
           </Col>
         </Row>
 
-        <ModalCustom
-          role={modalRole}
-          entity="Nilai Mahasiswa"
-          visible={isModalVisible}
-          setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
-          modalText={modalText}
-          setModalText={setModalText}
-        />
-
-        {isDataLoaded ? (
-          <SearchBar
-            dataSource={data}
-            searchKey="nama"
-            role="kelas"
-            isSearching={isSearching}
-            setIsSearching={setIsSearching}
-            setSearchResult={setSearchResult}
+        <Card>
+          <SearchNilai
+            onFinish={onFinish}
+            setSelectedJadwal={setSelectedJadwal}
+            setSelectedKelas={setSelectedKelas}
           />
-        ) : (
-          <Row justify="center">
-            <Spin />
-          </Row>
-        )}
+        </Card>
 
-        {isDataLoaded ? (
-          <ListComponent
-            role={"lihat-nilai"}
-            isLoading={!isDataLoaded}
-            dataSource={data}
-            previewDetailNilai={previewNilaiMhs}
-          />
+        {isSearching ? (
+          <>
+            {!isFetchingData ? (
+              <div style={{ marginTop: "1em" }}>
+                <Row>
+                  <Typography.Title level={4}>
+                    Nilai untuk kelas {selectedKelas?.label}
+                  </Typography.Title>
+                </Row>
+
+                <ListComponent
+                  role={"lihat-nilai"}
+                  isLoading={isFetchingData}
+                  dataSource={dataMahasiswa}
+                />
+              </div>
+            ) : (
+              <Card style={{ marginTop: "1em" }}>
+                <Skeleton
+                  style={{ marginTop: "2em" }}
+                  active
+                  paragraph="4"
+                  avatar
+                />
+              </Card>
+            )}
+          </>
         ) : (
-          <Skeleton active paragraph="4" avatar />
+          <Card style={{ marginTop: "1em" }}>
+            <Empty description={"Harap pilih nama kelas dan jadwal"} />
+          </Card>
         )}
       </PageLayout>
     </>
