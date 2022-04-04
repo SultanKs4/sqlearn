@@ -2,7 +2,16 @@ import { React, useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import { Card, Row, Col, Skeleton, Button, Typography, Badge } from "antd";
+import {
+  Card,
+  Row,
+  Col,
+  Skeleton,
+  Button,
+  Typography,
+  Badge,
+  message,
+} from "antd";
 
 import PageLayout from "../../../../components/PageLayout";
 import { mockGetSoalByCategory } from "../../../../utils/remote-data/mahasiswa/Soal";
@@ -30,11 +39,10 @@ function Practice() {
   useEffect(() => {
     // ? Ini aslinya fetch data getJadwalByID, ambil dari router.query.idPaket
     mockGetAllPractices().then((response) => {
-      // console.log(response.data, "dan", router.query.idPaket);
+      console.log(router.query.idPaket);
       setDataPractice(
-        response.data.find(
-          (item) => parseInt(item.id) === parseInt(router.query.idPaket)
-        )
+        // ! ini datanya masih demo,
+        response.data.find((item) => parseInt(item.id) === parseInt(1))
       );
       setIsDataPracticeLoaded(true);
     });
@@ -77,6 +85,7 @@ function Practice() {
 
   useEffect(() => {
     console.clear();
+    message.info("Halaman ini masih dalam tahap pengembangan");
   }, []);
 
   return (

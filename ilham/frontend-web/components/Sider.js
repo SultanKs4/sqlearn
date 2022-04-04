@@ -120,26 +120,6 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
             Beranda
           </Menu.Item>
           <Menu.Item
-            key="soal"
-            icon={<FileTextOutlined />}
-            onClick={() => {
-              router.push("/mahasiswa/soal");
-            }}
-          >
-            {" "}
-            Soal
-          </Menu.Item>
-          <Menu.Item
-            key="lihat-nilai"
-            icon={<BarChartOutlined />}
-            onClick={() => {
-              router.push("/mahasiswa/lihat-nilai");
-            }}
-          >
-            {" "}
-            Lihat Nilai
-          </Menu.Item>
-          <Menu.Item
             key="edit-profile"
             icon={<FormOutlined />}
             onClick={() => router.push("/mahasiswa/edit-profile")}

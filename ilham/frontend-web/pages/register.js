@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Button, Card, Row, Col, Typography, Select } from "antd";
 import {
   InfoCircleOutlined,
@@ -8,39 +8,33 @@ import {
 import Head from "next/head";
 
 import { useRouter } from "next/router";
+import { getProviders, signIn } from "next-auth/react";
 const { Option } = Select;
 
-const Register = () => {
+const Register = ({ providers, csrfToken }) => {
   const router = useRouter();
 
   const [form] = Form.useForm();
   const [registerType, setRegisterType] = useState("mahasiswa");
-
-  const onRequiredTypeChange = (activeRole) => setRegisterType(activeRole);
-
-  const mockRegister = (valueInput) => {
-    if (valueInput.registerTypeValue === "mahasiswa")
-      return valueInput.username === "1841720076" &&
-        valueInput.password === "1841720076"
-        ? true
-        : false;
-    else {
-      return valueInput.username === "dosencoba" &&
-        valueInput.password === "dosencoba"
-        ? true
-        : false;
-    }
-  };
+  const [providersAuth, setProvidersAuth] = useState("");
 
   const onFinish = (values) => {
     console.log("Received values of form: ", values);
-    console.log(mockRegister(values));
-    if (mockRegister(values)) {
-      if (values.registerTypeValue === "mahasiswa")
-        router.push("/mahasiswa/beranda");
-      else router.push("/dosen/jadwal");
-    }
+    console.log("redirect to : ", `http://localhost:3000/${values.level}`);
+
+    // signIn(providersAuth?.credentials?.id, {
+    //   callbackUrl: `http://localhost:3000/${values.levl}`,
+    //   username: values.username,
+    //   registerType: values.registerType,
+    //   password: values.password,
+    // });
   };
+
+  useEffect(() => {
+    getProviders().then((result) => {
+      setProvidersAuth(result);
+    });
+  }, []);
 
   return (
     <>
@@ -77,12 +71,8 @@ const Register = () => {
                 </Typography.Text>{" "}
               </Col>
               <Col>
-                <Form.Item name="registerTypeValue">
-                  <Select
-                    defaultValue="mahasiswa"
-                    onChange={onRequiredTypeChange}
-                    style={{ width: "150px" }}
-                  >
+                <Form.Item name="level">
+                  <Select style={{ width: "150px" }} defaultValue="mahasiswa">
                     <Option value="mahasiswa">Mahasiswa</Option>
                     <Option value="dosen">Dosen</Option>
                   </Select>
@@ -91,10 +81,7 @@ const Register = () => {
             </Row>
             <Form.Item
               name="username"
-              label={`Username / ${
-                registerType === "mahasiswa" ? "NIM" : "NIDN"
-              }`}
-              e
+              label={`Username`}
               rules={[
                 {
                   required: true,
@@ -104,10 +91,26 @@ const Register = () => {
               tooltip="This is a required field"
             >
               <Input
+                autoComplete="off"
                 prefix={<UserOutlined />}
-                placeholder={`Input Username / ${
-                  registerType === "mahasiswa" ? "NIM" : "NIDN"
-                } `}
+                placeholder={`Input Username`}
+              />
+            </Form.Item>
+            <Form.Item
+              name="name"
+              label={`Nama`}
+              rules={[
+                {
+                  required: true,
+                  message: "Please input your name!",
+                },
+              ]}
+              tooltip="This is a required field"
+            >
+              <Input
+                autoComplete="off"
+                prefix={<UserOutlined />}
+                placeholder={`Input Name . . .`}
               />
             </Form.Item>
             <Form.Item

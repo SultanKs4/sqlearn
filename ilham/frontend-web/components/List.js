@@ -38,7 +38,14 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
-function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
+function ListComponent({
+  isLoading,
+  dataSource,
+  dataSourceDemo,
+  role,
+  showDetail,
+  ...props
+}) {
   const router = useRouter();
 
   if (isLoading) {
@@ -111,7 +118,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       break;
   }
 
-  if (dataSource.length === 0)
+  if (dataSource?.length === 0)
     return (
       <Card>
         <Empty
@@ -298,34 +305,38 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
-            <List.Item key={item.id}>
+            <List.Item key={item?.id}>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <Col span={18}>
                   <Row gutter={[10]}>
                     <Col span={showDetail ? 4 : 6}>
                       <Typography.Text
                         style={{ fontWeight: "bold" }}
-                        children={item.nama}
+                        children={
+                          item?.hasOwnProperty("score")
+                            ? item?.schedule?.description
+                            : item?.description
+                        }
                       />
                     </Col>
                     <Col span={showDetail ? 6 : 9}>
                       <ConsoleSqlOutlined
                         style={{ fontSize: "1.2em", marginRight: ".5em" }}
                       />
-                      {item.jumlahSoal} Pertanyaan
+                      {item?.total_questions} Pertanyaan
                     </Col>
 
-                    {item.hasOwnProperty("nilai") && showDetail && (
+                    {item?.hasOwnProperty("score") && showDetail && (
                       <Col span={showDetail ? 6 : 9}>
                         <FormOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        Skor : {item.nilai}
+                        Skor : {item?.score}
                       </Col>
                     )}
 
                     <Col span={showDetail ? 6 : 9}>
-                      {item.hasOwnProperty("nilai") ? (
+                      {item?.hasOwnProperty("score") ? (
                         <>
                           <IssuesCloseOutlined
                             style={{
@@ -333,7 +344,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               marginRight: ".5em",
                             }}
                           />
-                          {`${item.totalPercobaan}x percobaan`}
+                          {/* {`${item?.totalPercobaan}x percobaan`} */}x
+                          percobaan
                         </>
                       ) : (
                         <div
@@ -341,7 +353,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             color:
                               countTimeDifference(
                                 moment(),
-                                moment(item?.tanggal_akhir)
+                                moment(item?.finish)
                               )
                                 .toLowerCase()
                                 .includes("terlewat") && "red",
@@ -353,10 +365,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               marginRight: ".5em",
                             }}
                           />
-                          {countTimeDifference(
-                            moment(),
-                            moment(item?.tanggal_akhir)
-                          )}
+                          {countTimeDifference(moment(), moment(item?.finish))}
                         </div>
                       )}
                     </Col>
@@ -366,17 +375,15 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                 <Col span={6}>
                   <Row gutter={20} justify="end">
                     <Col>
-                      {item.hasOwnProperty("nilai") ? (
-                        <div style={{ color: "#52c41a" }}>
-                          {ucfirst(item.status)}
-                        </div>
+                      {item?.hasOwnProperty("score") ? (
+                        <div style={{ color: "#52c41a" }}>Selesai</div>
                       ) : (
                         <Button
                           ghost
                           type="primary"
                           icon={<EditOutlined />}
                           size={"medium"}
-                          onClick={() => props.kerjakanLatihan(item.id)}
+                          onClick={() => props.kerjakanLatihan(item?.id)}
                         >
                           Kerjakan
                         </Button>

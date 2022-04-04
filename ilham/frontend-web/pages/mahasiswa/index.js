@@ -1,50 +1,34 @@
 //  ? Ini beranda mahasiswa
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 import PageLayout from "../../components/PageLayout";
 import EmptyData from "../../components/EmptyData";
-import ModalCustom from "../../components/Modal";
 
-import { Typography, Row, Col, Divider, Card, Tabs } from "antd";
+import { Typography, Card, Tabs, message } from "antd";
 
 import {} from "@ant-design/icons";
 
-import ProfilMahasiswa from "../../components/mahasiswa/ProfilMahasiswa";
-import StudiKasusBeranda from "../../components/mahasiswa/StudiKasusBeranda";
-import { mockGetAllPractices } from "../../utils/remote-data/mahasiswa/Beranda";
 import ListComponent from "../../components/List";
+import { useSession } from "next-auth/react";
+import { getJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
+import { getScoreByClassID } from "../../utils/remote-data/dosen/ScoreCRUD";
+import { getDetailMahasiswa } from "../../utils/remote-data/mahasiswa/DetailMahasiswa";
 
 const { TabPane } = Tabs;
 
 function Beranda() {
   const router = useRouter();
 
-  const [dataProfile, setDataProfile] = useState([]);
-  const [dataLatihan, setDataLatihan] = useState([]);
-  const [dataFilteredLatihan, setDataFilteredLatihan] = useState([]);
-  const [dataStudiKasus, setDataStudiKasus] = useState([]);
+  const { data: session } = useSession();
 
-  const [activeFilterLatihan, setActiveFilterLatihan] = useState("tersedia");
+  const [dataJadwal, setDataJadwal] = useState([]);
+  const [isDataJadwalLoaded, setIsDataJadwalLoaded] = useState(false);
 
-  const [isDataProfileLoaded, setIsDataProfileLoaded] = useState(false);
-  const [isDataLatihanLoaded, setIsDataLatihanLoaded] = useState(false);
-  const [isDataStudiKasusLoaded, setIsDataStudiKasusLoaded] = useState(false);
-
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
-
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-
-  const previewStudiKasus = (studObj) => {
-    setModalRole("preview");
-    handleToggleModal();
-    setModalText(`Ini  ${studObj.nama}`);
-  };
+  const [dataLatihanSelesai, setDataLatihanSelesai] = useState([]);
+  const [isDataSelesaiLoaded, setIsDataSelesaiLoaded] = useState(false);
 
   const handleKerjakanLatihan = (id) => {
     router.push(`/mahasiswa/soal/${id}`);
@@ -52,32 +36,55 @@ function Beranda() {
 
   // ? key = status : "tersedia" || "selesai"
   const switchTabPractice = (key) => {
-    let status = key;
-    // TODO : Kalau sudah bikin di mockapi ini diuncomment
-    setActiveFilterLatihan(status);
-    setDataFilteredLatihan(
-      dataLatihan.filter((item) => item.status === status)
-    );
+    console.log("key", key);
+    if (key === "tersedia") fetchDataLatihan();
+    else if (key === "selesai") fetchDataLatihanSelesai();
   };
 
-  useEffect(() => {
-    // TODO : Consume Data Profil (State Loading dan Data)
+  const fetchDataLatihan = useCallback(() => {
+    if (session !== undefined)
+      getJadwal(session?.user?.tokenJWT)
+        .then((res) => {
+          setIsDataJadwalLoaded(true);
+          setDataJadwal(res.data);
+          console.log("data jadwal", res.data);
+        })
+        .catch(() => message.error("Terjadi kesalahan"));
+  }, [session]);
 
-    // TODO : Consume Data Latihan (State Loading dan Data)
-    mockGetAllPractices().then((responseData) => {
-      setDataLatihan(responseData.data);
-      setIsDataLatihanLoaded(true);
-      setDataFilteredLatihan(
-        responseData.data.filter((item) => item.status === activeFilterLatihan)
+  const fetchDataLatihanSelesai = useCallback(async () => {
+    if (session !== undefined) {
+      let classID;
+
+      let dataMhs = await getDetailMahasiswa(
+        session?.user?.tokenJWT,
+        session?.user?.id
       );
-    });
 
-    // TODO : Consume Data Studi Kasus (State Loading dan Data)
-  }, []);
+      try {
+        classID = await dataMhs?.data?.classes[0]?.id;
+      } catch (error) {
+        console.log(error);
+      }
+
+      getScoreByClassID(session?.user?.tokenJWT, classID)
+        .then((res) => {
+          setIsDataSelesaiLoaded(true);
+          setDataLatihanSelesai(res.data);
+          console.log(res.data, "ini data latihan selesai");
+        })
+
+        .catch((err) =>
+          /* Hanya untuk fase development */
+          message.error(` Data Latihan selesai : ${err.message}`)
+        );
+    }
+  }, [session]);
 
   useEffect(() => {
-    console.log(dataFilteredLatihan);
-  }, [dataFilteredLatihan, dataLatihan]);
+    fetchDataLatihan();
+    fetchDataLatihanSelesai();
+  }, [fetchDataLatihan, fetchDataLatihanSelesai]);
 
   return (
     <>
@@ -85,72 +92,41 @@ function Beranda() {
         <title>SQLearn | Mahasiswa - Beranda </title>
       </Head>
       <PageLayout role="mahasiswa">
-        <ModalCustom
-          role={modalRole}
-          entity="Studi Kasus"
-          visible={isModalVisible}
-          setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
-          modalText={modalText}
-          setModalText={setModalText}
-        />
-
-        <Row gutter={[10, 10]}>
-          <Col sm={24} md={10} lg={10}>
-            <ProfilMahasiswa />
-          </Col>
-          <Col sm={24} md={14} lg={14}>
-            <Card style={{ height: "100%" }}>
-              <Typography.Title level={2}> Latihan </Typography.Title>
-              <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
-                <TabPane tab="Tersedia" key="tersedia">
-                  {dataFilteredLatihan.length > 0 ? (
-                    <ListComponent
-                      dataSource={dataFilteredLatihan}
-                      isLoading={!isDataLatihanLoaded}
-                      role="sesi-latihan-mahasiswa"
-                      kerjakanLatihan={handleKerjakanLatihan}
-                    />
-                  ) : (
-                    <EmptyData
-                      description="Tidak ada latihan tersedia"
-                      withAction={false}
-                    />
-                  )}
-                </TabPane>
-                <TabPane tab="Selesai" key="selesai">
-                  {dataFilteredLatihan.length > 0 ? (
-                    <ListComponent
-                      dataSource={dataFilteredLatihan}
-                      isLoading={!isDataLatihanLoaded}
-                      role="sesi-latihan-mahasiswa"
-                      kerjakanLatihan={handleKerjakanLatihan}
-                    />
-                  ) : (
-                    <EmptyData
-                      description="Tidak ada Latihan yang telah dikerjakan"
-                      withAction={true}
-                      textAction="Lihat Nilai"
-                      toURL="/mahasiswa/lihat-nilai"
-                    />
-                  )}
-                </TabPane>
-              </Tabs>
-            </Card>
-          </Col>
-        </Row>
-        {/* <Row style={{ marginTop: "1em" }}>
-          <Col span={24}>
-            <Card style={{ minHeight: "50vh" }}>
-              <Typography.Title level={3}>
-                Studi Kasus Tersedia
-              </Typography.Title>
-              <StudiKasusBeranda previewStudiKasus={previewStudiKasus} />
-              <Divider />
-            </Card>
-          </Col>
-        </Row> */}
+        <Card style={{ height: "100%" }}>
+          <Typography.Title level={2}> Latihan </Typography.Title>
+          <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
+            <TabPane tab="Tersedia" key="tersedia">
+              {dataJadwal?.length > 0 ? (
+                <ListComponent
+                  dataSource={dataJadwal}
+                  isLoading={!isDataJadwalLoaded}
+                  role="sesi-latihan-mahasiswa"
+                  kerjakanLatihan={handleKerjakanLatihan}
+                />
+              ) : (
+                <EmptyData
+                  withAction={false}
+                  description="Tidak ada latihan tersedia"
+                />
+              )}
+            </TabPane>
+            <TabPane tab="Selesai" key="selesai">
+              {dataLatihanSelesai.length > 0 ? (
+                <ListComponent
+                  dataSource={dataLatihanSelesai}
+                  isLoading={!isDataSelesaiLoaded}
+                  role="sesi-latihan-mahasiswa"
+                  kerjakanLatihan={handleKerjakanLatihan}
+                />
+              ) : (
+                <EmptyData
+                  withAction={false}
+                  description="Tidak ada Latihan yang telah dikerjakan"
+                />
+              )}
+            </TabPane>
+          </Tabs>
+        </Card>
       </PageLayout>
     </>
   );

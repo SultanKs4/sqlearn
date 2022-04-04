@@ -17,20 +17,6 @@ import { getProviders, signIn, useSession } from "next-auth/react";
 
 const { Option } = Select;
 
-const mockValidate = (valueInput) => {
-  if (valueInput.loginTypeValue === "mahasiswa")
-    return valueInput.username === "1841720076" &&
-      valueInput.password === "1841720076"
-      ? true
-      : false;
-  else {
-    return valueInput.username === "dosencoba" &&
-      valueInput.password === "dosencoba"
-      ? true
-      : false;
-  }
-};
-
 const Login = ({ providers, csrfToken }) => {
   const router = useRouter();
   const { data: session } = useSession();
@@ -101,6 +87,7 @@ const Login = ({ providers, csrfToken }) => {
                   >
                     <Option value="mahasiswa">Mahasiswa</Option>
                     <Option value="dosen">Dosen</Option>
+                    <Option value="admin">Admin</Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -108,11 +95,6 @@ const Login = ({ providers, csrfToken }) => {
 
             <Form.Item
               name="username"
-              tooltip={{
-                title: `Bisa menggunakan ${
-                  loginType === "mahasiswa" ? "NIM" : "NIDN"
-                }`,
-              }}
               rules={[
                 {
                   required: true,
@@ -121,6 +103,7 @@ const Login = ({ providers, csrfToken }) => {
               ]}
             >
               <Input
+                autoComplete="off"
                 prefix={<UserOutlined />}
                 placeholder={`Username ${loginType} . . .`}
               />

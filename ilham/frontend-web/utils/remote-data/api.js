@@ -16,6 +16,10 @@ export const URL_LOGIN_API = `${BASE_URL}/api/login`;
 
 export const URL_NILAI_MHS_API = `${BASE_URL}/api/scores`;
 
+// ? API User
+export const URL_USERS_API = `${BASE_URL}/api/users`;
+export const URL_STUDENTS_API = `${BASE_URL}/api/students`;
+
 // ? BACKEND ASSESMENT
 export const URL_CREATE_DB_API = `${BASE_URL}/api/v2/database/create/testcreate`;
 export const URL_DESC_TABLE_API = `${BASE_URL}/api/v2/database/desc_table/auto_assess_tes`;
