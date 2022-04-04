@@ -1,5 +1,4 @@
 const createResponseObject = require("../../lib/createResponseObject");
-const { hashPassword } = require("../../lib/hashPassword");
 const Schedule = require("../schedule/schedule.model");
 const ClassModel = require("../class/class.model");
 const Score = require("./score.model");
@@ -10,6 +9,8 @@ const Session = require("../session/session.model");
 const errorHandling = require("../../lib/errorHandling");
 const createHttpError = require("http-errors");
 const LogSessionStudent = require("../log-session-student/log-session-student.model");
+const Container = require("../container/container.model");
+const QuestionLabel = require("../questions-label/question-label.model");
 
 module.exports = {
     getAllByStudent: async (user, kelas = null) => {
@@ -25,25 +26,27 @@ module.exports = {
                 include: [
                     {
                         model: Schedule,
-                        attributes: ["start_date", "description"],
+                        attributes: ["start", "description", "finish"],
                         include: [
                             {
-                                attributes: ["id", "name"],
                                 model: ClassModel,
+                                attributes: ["id", "name"],
                                 as: "classes",
                                 include: [
                                     {
-                                        attributes: [],
                                         model: Student,
+                                        attributes: [],
                                         as: "students",
-                                        where: {
-                                            id: user.id,
-                                        },
+                                        where: { id: user.id },
                                         through: { attributes: [] },
                                     },
                                 ],
                                 where: whereKelas,
                                 through: { attributes: [] },
+                            },
+                            {
+                                model: Container,
+                                include: [{ model: QuestionLabel }],
                             },
                         ],
                     },
@@ -51,42 +54,32 @@ module.exports = {
                 where: {
                     student_id: user.id,
                 },
-                raw: true,
-                nest: true,
             });
 
-            const scoresResponse = scores.reduce((acc, curr) => {
-                if (curr["Schedule"]["start_date"]) {
-                    const score = curr["score"];
-                    const schedule = curr["Schedule"]["description"];
-                    const start_date = curr["Schedule"]["start_date"];
-                    const className = curr["Schedule"]["classes"]["name"];
-                    const obj = {
-                        className,
-                        schedule,
-                        start_date,
-                        score,
-                    };
-                    acc = [...acc, obj];
-                }
-                return acc;
-            }, []);
-            // const scoresResponse = scores.map(val => {
-            //     if (val['Schedule']['start_date']) {
-            //         const score = val['score']
-            //         const schedule = val['Schedule']['description']
-            //         const start_date = val['Schedule']['start_date']
-            //         const className = val['Schedule']['classes']['name']
-            //         return {
-            //             className,
-            //             schedule,
-            //             start_date,
-            //             score
-            //         }
-            //     }
-            // })
+            if (scores.length == 0) throw createHttpError(404, "data score not found");
 
-            return createResponseObject(true, "Data nilai berhasil didapatkan", scoresResponse);
+            const scoresResponse = await scores.reduce(async (prevScore, currScore) => {
+                let arrScore = await prevScore;
+                let arrObj = await currScore.Schedule.classes.reduce(async (prevClass, currClass) => {
+                    let arrClass = await prevClass;
+                    const obj = {
+                        class_name: currClass.name,
+                        score: currScore.score,
+                        schedule: {
+                            description: currScore.Schedule.description,
+                            start: currScore.Schedule.start,
+                            finish: currScore.Schedule.finish,
+                        },
+                        total_questions: await currScore.Schedule.Container.countQuestions(),
+                    };
+                    arrClass = [...arrClass, obj];
+                    return arrClass;
+                }, Promise.resolve([]));
+                arrScore = [...arrScore, ...arrObj];
+                return arrScore;
+            }, Promise.resolve([]));
+
+            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", scoresResponse);
         } catch (error) {
             return errorHandling(error);
         }
