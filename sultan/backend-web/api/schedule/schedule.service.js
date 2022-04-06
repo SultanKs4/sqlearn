@@ -1,13 +1,16 @@
 const createHttpError = require("http-errors");
-const { Op } = require("sequelize");
+const { Op, Sequelize } = require("sequelize");
 const createResponseObject = require("../../lib/createResponseObject");
 const errorHandling = require("../../lib/errorHandling");
+const CaseStudy = require("../case-study/case-study.model");
 const Class = require("../class/class.model");
 const Container = require("../container/container.model");
+const Question = require("../question/question.model");
 const QuestionLabel = require("../questions-label/question-label.model");
 const Score = require("../score/score.model");
 const Session = require("../session/session.model");
 const Student = require("../student/student.model");
+const User = require("../user/user.model");
 const Schedule = require("./schedule.model");
 
 async function getWhereDosen(query, userId) {
@@ -79,6 +82,15 @@ async function getWhereStudent(user) {
         },
     };
     return { whereSchedule, whereClass };
+}
+
+function msToHMS(ms) {
+    let seconds = ms / 1000;
+    const hours = parseInt(seconds / 3600); // 3,600 seconds in 1 hour
+    seconds = seconds % 3600; // seconds remaining after extracting hours
+    const minutes = parseInt(seconds / 60); // 60 seconds in 1 minute
+    seconds = seconds % 60;
+    return hours + ":" + minutes + ":" + seconds;
 }
 
 module.exports = {
@@ -172,12 +184,37 @@ module.exports = {
 
     getOne: async (id) => {
         try {
-            const schedule = await Schedule.findByPk(id);
+            const schedule = await Schedule.findByPk(id, {
+                include: [
+                    {
+                        model: Container,
+                        include: [
+                            {
+                                model: Question,
+                                as: "questions",
+                                attributes: ["id", "text"],
+                                through: { attributes: [] },
+                                include: [
+                                    {
+                                        model: CaseStudy,
+                                        attributes: ["id", "name"],
+                                    },
+                                ],
+                            },
+                            {
+                                model: QuestionLabel,
+                                attributes: ["id", "name"],
+                            },
+                        ],
+                        order: Sequelize.literal("rand()"),
+                    },
+                ],
+            });
             if (!schedule) throw createHttpError(404, "data schedule not found");
             const data = schedule.toJSON();
-            data.total_questions = await Container.findByPk(schedule.container_id).then(async (data) => {
-                return await data.countQuestions();
-            });
+            data.Container.total_questions = await schedule.Container.countQuestions();
+            let ms = new Date(data.finish).getTime() - new Date(data.start).getTime();
+            data.timer = msToHMS(ms);
             return createResponseObject(200, "success", "Data schedule berhasil didapatkan", data);
         } catch (error) {
             return errorHandling(error);
