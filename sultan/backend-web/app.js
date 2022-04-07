@@ -10,7 +10,7 @@ require("./api/modelAssociation");
 app.use(express.json());
 app.use(cors());
 app.use(logger("tiny"));
-app.use(helmet());
+app.use(helmet({ crossOriginEmbedderPolicy: false }));
 
 app.use("/static", express.static("static"));
 app.use("/images", express.static("uploads/images"));
