@@ -6,7 +6,7 @@ const questionController = require("./question.controller");
 const questionSanitizer = require("./question.sanitizer");
 
 router.get("/", questionSanitizer.checkQueryCaseOnly, questionController.index);
-router.get("/session", questionController.indexRandomSession);
+router.get("/session", questionSanitizer.checkQuestionUniSess, questionController.indexRandomSession);
 router.get("/:id", questionSanitizer.checkGetData, questionController.show);
 router.get("/containers/:container", questionSanitizer.checkContainer, questionController.indexExclude);
 router.post("/", upload.single("answer_pic"), questionSanitizer.checkStore, questionController.store);

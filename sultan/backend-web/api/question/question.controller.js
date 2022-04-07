@@ -16,8 +16,8 @@ module.exports = {
     indexRandomSession: async (req, res) => {
         const resObj = await questionService.getOneRandomBySession(
             req.user,
-            req.body.session_id,
-            req.body.question_answered
+            req.query.session_id,
+            req.query.question_answered
         );
         const { httpCode, ...response } = resObj;
 
