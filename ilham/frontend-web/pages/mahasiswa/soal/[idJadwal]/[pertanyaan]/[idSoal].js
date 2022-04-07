@@ -56,9 +56,10 @@ function LatihanSoal() {
     setBoxes([]);
     console.clear();
     mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
+      resetLog();
+
       setDataPertanyaan(response.data);
       setIsDataPertanyaanLoaded(true);
-      resetLog();
       // console.log(response.data?.next?.soalID, "ini id next soal");
     });
   }, [router.query.idSoal, dataPertanyaan]);
@@ -229,7 +230,7 @@ function LatihanSoal() {
   const testQuery = (values) => {
     saveLog(values, "test");
 
-    // TODO : Call POST API request dari ... , terus define try catch nya disini
+    // TODO : Call POST API request dari Answer Question , terus define try catch nya disini
     // ? Kalau berhasil alertMessage = 'success' dan reset lognya, kalau gagal alertMessage = 'error', lognya tetep
     setIsAlertActive(true);
     setTimeout(() => setIsAlertActive(false), 5000);
@@ -402,14 +403,17 @@ function LatihanSoal() {
               </Col>
               <Col>
                 <Row gutter={10}>
-                  <Col>
-                    <Button
-                      style={{ backgroundColor: "red", color: "white" }}
-                      onClick={resetBox}
-                    >
-                      Reset
-                    </Button>
-                  </Col>
+                  {dataPertanyaan?.kategori === "Close-Ended" && (
+                    <Col>
+                      <Button
+                        style={{ backgroundColor: "red", color: "white" }}
+                        onClick={resetBox}
+                      >
+                        Reset
+                      </Button>
+                    </Col>
+                  )}
+
                   <Col>
                     <Button
                       style={{ backgroundColor: "#003A8C", color: "white" }}

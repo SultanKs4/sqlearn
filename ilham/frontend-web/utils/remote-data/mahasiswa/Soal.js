@@ -27,7 +27,7 @@ const data = [
       {
         id: 3,
         position: 3,
-        content: "nama",
+        content: "(nama)",
         role: "part",
       },
       {
@@ -224,41 +224,7 @@ const mockGetSoalByID = async (jadwalID) => {
 
 const getSoalByID = async (soalID) => {
   let response = await axios.get("");
-  //   ? Output :
-  /* 
-    {
-      sql-components : [
-        {
-        id : 1,
-        content : "SELECT"
-      },
-      {
-        id : 2,
-        content : "COUNT"
-      },
-      {
-        id : 3,
-        content : "nama"
-      },
-      {
-        id : 4,
-        content : "FROM"
-      },
-      {
-        id : 5,
-        content : "MAHASISWA"
-      },
-      {
-        id : 6,
-        content : "Employee"
-      },
-      {
-        id : 7,
-        content : "STUDENTS"
-      },
-    ],
-    }  
-  */
+
   return response.data;
 };
 

@@ -305,94 +305,111 @@ function ListComponent({
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
-            <List.Item key={item?.id}>
-              <Row justify="space-around" style={{ width: "100vw" }}>
-                <Col span={18}>
-                  <Row gutter={[10]}>
-                    <Col span={showDetail ? 4 : 6}>
-                      <Typography.Text
-                        style={{ fontWeight: "bold" }}
-                        children={
-                          item?.hasOwnProperty("score")
-                            ? item?.schedule?.description
-                            : item?.description
-                        }
-                      />
-                    </Col>
-                    <Col span={showDetail ? 6 : 9}>
-                      <ConsoleSqlOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      {item?.total_questions} Pertanyaan
-                    </Col>
-
-                    {item?.hasOwnProperty("score") && showDetail && (
-                      <Col span={showDetail ? 6 : 9}>
-                        <FormOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        Skor : {item?.score}
-                      </Col>
-                    )}
-
-                    <Col span={showDetail ? 6 : 9}>
-                      {item?.hasOwnProperty("score") ? (
-                        <>
-                          <IssuesCloseOutlined
-                            style={{
-                              fontSize: "1.2em",
-                              marginRight: ".5em",
-                            }}
+            <Badge.Ribbon
+              text={item?.label?.name === "-" ? "Kosong" : item?.label?.name}
+              color={
+                item?.label?.name === "Close-Ended" ? "geekblue" : "purple"
+              }
+              placement="start"
+              style={{
+                marginLeft: ".5em",
+                display: "label" in item ? "block" : "none",
+              }}
+            >
+              <List.Item style={{ padding: 0 }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                  <Row justify="space-around" style={{ marginTop: "1em" }}>
+                    <Col span={18}>
+                      <Row gutter={[50]}>
+                        <Col span={showDetail ? 4 : 6}>
+                          <Typography.Text
+                            style={{ fontWeight: "bold" }}
+                            children={
+                              item?.hasOwnProperty("score")
+                                ? item?.schedule?.description
+                                : item?.description
+                            }
                           />
-                          {/* {`${item?.totalPercobaan}x percobaan`} */}x
-                          percobaan
-                        </>
-                      ) : (
-                        <div
-                          style={{
-                            color:
-                              countTimeDifference(
+                        </Col>
+                        <Col span={showDetail ? 6 : 9}>
+                          <ConsoleSqlOutlined
+                            style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                          />
+                          {item?.total_questions} Pertanyaan
+                        </Col>
+
+                        {item?.hasOwnProperty("score") && showDetail && (
+                          <Col span={showDetail ? 6 : 9}>
+                            <FormOutlined
+                              style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                            />
+                            Skor : {item?.score}
+                          </Col>
+                        )}
+
+                        <Col span={showDetail ? 6 : 9}>
+                          {item?.hasOwnProperty("score") ? (
+                            <>
+                              <IssuesCloseOutlined
+                                style={{
+                                  fontSize: "1.2em",
+                                  marginRight: ".5em",
+                                }}
+                              />
+                              {/* {`${item?.totalPercobaan}x percobaan`} */}x
+                              percobaan
+                            </>
+                          ) : (
+                            <div
+                              style={{
+                                color:
+                                  countTimeDifference(
+                                    moment(),
+                                    moment(item?.finish)
+                                  )
+                                    .toLowerCase()
+                                    .includes("terlewat") && "red",
+                              }}
+                            >
+                              <FieldTimeOutlined
+                                style={{
+                                  fontSize: "1.2em",
+                                  marginRight: ".5em",
+                                }}
+                              />
+                              {countTimeDifference(
                                 moment(),
                                 moment(item?.finish)
-                              )
-                                .toLowerCase()
-                                .includes("terlewat") && "red",
-                          }}
-                        >
-                          <FieldTimeOutlined
-                            style={{
-                              fontSize: "1.2em",
-                              marginRight: ".5em",
-                            }}
-                          />
-                          {countTimeDifference(moment(), moment(item?.finish))}
-                        </div>
-                      )}
+                              )}
+                            </div>
+                          )}
+                        </Col>
+                      </Row>
                     </Col>
-                  </Row>
-                </Col>
 
-                <Col span={6}>
-                  <Row gutter={20} justify="end">
-                    <Col>
-                      {item?.hasOwnProperty("score") ? (
-                        <div style={{ color: "#52c41a" }}>Selesai</div>
-                      ) : (
-                        <Button
-                          ghost
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.kerjakanLatihan(item?.id)}
-                        >
-                          Kerjakan
-                        </Button>
-                      )}
+                    <Col span={6}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          {item?.hasOwnProperty("score") ? (
+                            <div style={{ color: "#52c41a" }}>Selesai</div>
+                          ) : (
+                            <Button
+                              ghost
+                              type="primary"
+                              icon={<EditOutlined />}
+                              size={"medium"}
+                              onClick={() => props.kerjakanLatihan(item?.id)}
+                            >
+                              Kerjakan
+                            </Button>
+                          )}
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-            </List.Item>
+                </Card>
+              </List.Item>
+            </Badge.Ribbon>
           )}
         />
       );
@@ -573,7 +590,7 @@ function ListComponent({
                         <Typography.Text children={"Opsi Jawaban : "} />
                         <List
                           size="small"
-                          dataSource={formatToArray(item.answer)}
+                          dataSource={formatToArray(item?.answer)}
                           locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
                           renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
                         />
@@ -613,12 +630,12 @@ function ListComponent({
                           <DatabaseOutlined />
                           <Typography.Text
                             style={{ fontWeight: "bold", marginLeft: "1em" }}
-                            children={item.studi_kasus}
+                            children={item?.CaseStudy?.name}
                           />
                         </Col>
                       </Row>
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
-                        <Col> {item.teksSoal} </Col>
+                        <Col> {item?.text} </Col>
                       </Row>
                     </Col>
                   </Row>

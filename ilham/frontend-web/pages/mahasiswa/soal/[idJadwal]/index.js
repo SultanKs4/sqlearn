@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -19,56 +19,21 @@ import { mockGetAllPractices } from "../../../../utils/remote-data/mahasiswa/Ber
 import ListComponent from "../../../../components/List";
 import moment from "moment";
 import { JadwalContext } from "../../../../utils/context/JadwalContext";
+import { useSession } from "next-auth/react";
+import { getJadwalByID } from "../../../../utils/remote-data/dosen/JadwalCRUD";
 
 function Practice() {
   const router = useRouter();
+  const { data: session } = useSession();
 
   const { addTimer } = useContext(JadwalContext);
 
-  const [dataPractice, setDataPractice] = useState({});
+  const [dataJadwal, setDataJadwal] = useState([]);
+
+  const [isDataJadwalLoaded, setIsDataJadwalLoaded] = useState(false);
 
   const [isTimerReady, setIsTimerReady] = useState(false);
   const [timerFromServer, setTimerFromServer] = useState("");
-  const [isDataPracticeLoaded, setIsDataPracticeLoaded] = useState(false);
-
-  //?  Ini dataListPertanyaan by jadwal
-  const [dataListPertanyaan, setDataListPertanyaan] = useState([]);
-  const [isDataListPertanyaanLoaded, setIsDataListPertanyaanLoaded] =
-    useState(false);
-
-  useEffect(() => {
-    // ? Ini aslinya fetch data getJadwalByID, ambil dari router.query.idPaket
-    mockGetAllPractices().then((response) => {
-      console.log(router.query.idPaket);
-      setDataPractice(
-        // ! ini datanya masih demo,
-        response.data.find((item) => parseInt(item.id) === parseInt(1))
-      );
-      setIsDataPracticeLoaded(true);
-    });
-  }, [router.query.idPaket]);
-
-  useEffect(() => {
-    // ? Ini aslinya fetch data getQuestionByJadwal
-    mockGetSoalByCategory(dataPractice?.kategori).then((response) => {
-      console.log(response.data[0]);
-      setDataListPertanyaan(response.data);
-      setIsDataListPertanyaanLoaded(true);
-    });
-  }, [dataPractice, router.query.idPaket]);
-
-  useEffect(() => {
-    setTimerFromServer(
-      moment
-        .utc(
-          moment(dataPractice?.tanggal_akhir, "YYYY-MM-DD HH:mm:ss").diff(
-            moment(dataPractice?.tanggal_mulai, "YYYY-MM-DD HH:mm:ss")
-          )
-        )
-        .format("HH:mm:ss")
-    );
-    setIsTimerReady(true);
-  }, [isDataPracticeLoaded, dataPractice]);
 
   useEffect(() => {
     addTimer(({ text, format }) => {
@@ -83,6 +48,22 @@ function Practice() {
     });
   }, [isTimerReady, timerFromServer]);
 
+  const fetchDataLatihan = useCallback(() => {
+    if (session !== undefined)
+      getJadwalByID(session?.user?.tokenJWT, router.query.idJadwal).then(
+        (res) => {
+          setDataJadwal(res.data);
+          setIsDataJadwalLoaded(true);
+          setTimerFromServer(res.data?.timer);
+          setIsTimerReady(true);
+        }
+      );
+  }, [session]);
+
+  useEffect(() => {
+    fetchDataLatihan();
+  }, [fetchDataLatihan]);
+
   useEffect(() => {
     console.clear();
     message.info("Halaman ini masih dalam tahap pengembangan");
@@ -95,22 +76,22 @@ function Practice() {
       </Head>
       <PageLayout role="mahasiswa">
         <Card>
-          {/* ! Mock */}
-          {isDataPracticeLoaded ? (
+          {/* SYNC */}
+          {isDataJadwalLoaded ? (
             <Row justify="space-between">
               <Col>
                 <Typography.Title level={3}>
-                  {dataPractice?.nama}
+                  {dataJadwal?.description}
                 </Typography.Title>
               </Col>
               <Col>
                 <Badge.Ribbon
                   color={
-                    dataPractice?.kategori === "Close-Ended"
+                    dataJadwal?.Container?.QuestionLabel?.name === "Close-Ended"
                       ? "geekblue"
                       : "purple"
                   }
-                  text={dataPractice?.kategori}
+                  text={dataJadwal?.Container?.QuestionLabel?.name}
                   placement="end"
                 ></Badge.Ribbon>
               </Col>
@@ -125,31 +106,27 @@ function Practice() {
           )}
 
           <Row>
-            Lorem ipsumm ini deskripsi tentang latihan yang akan dikerjakan....
+            {/* Lorem ipsumm ini deskripsi tentang latihan yang akan dikerjakan.... */}
           </Row>
           <Row style={{ marginTop: "2em" }} justify="space-between">
             <Col>
               {" "}
               <Typography.Title level={4}>List Pertanyaan</Typography.Title>
             </Col>
-            <Col>
-              {isTimerReady && isDataPracticeLoaded
-                ? timerFromServer
-                : "Loading . . ."}
-            </Col>
+            <Col>{isTimerReady ? timerFromServer : "Loading . . ."}</Col>
           </Row>
 
-          {isDataListPertanyaanLoaded && (
+          {isDataJadwalLoaded && (
             <ListComponent
-              dataSource={dataListPertanyaan}
+              dataSource={dataJadwal?.Container?.questions}
               role="data-soal-mahasiswa"
-              isLoading={!isDataListPertanyaanLoaded}
+              isLoading={!isDataJadwalLoaded}
               //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
               kerjakanLatihan={(id) =>
                 router.push(
                   `/mahasiswa/soal/${parseInt(
-                    router.query.idPaket
-                  )}/pertanyaan/${dataListPertanyaan[0].id}`
+                    router.query.idJadwal
+                  )}/pertanyaan/${dataJadwal?.Container?.questions[0].id}`
                 )
               }
             />

@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import { getJadwal } from "../../utils/remote-data/dosen/JadwalCRUD";
 import { getScoreByClassID } from "../../utils/remote-data/dosen/ScoreCRUD";
 import { getDetailMahasiswa } from "../../utils/remote-data/mahasiswa/DetailMahasiswa";
+import RadioFilterCategory from "../../components/RadioFilterCategory";
 
 const { TabPane } = Tabs;
 
@@ -27,12 +28,13 @@ function Beranda() {
   const [dataJadwal, setDataJadwal] = useState([]);
   const [isDataJadwalLoaded, setIsDataJadwalLoaded] = useState(false);
 
+  const [jadwalFiltered, setJadwalFiltered] = useState([]);
+  const [isFilterActive, setIsFilterActive] = useState(false);
+
   const [dataLatihanSelesai, setDataLatihanSelesai] = useState([]);
   const [isDataSelesaiLoaded, setIsDataSelesaiLoaded] = useState(false);
 
-  const handleKerjakanLatihan = (id) => {
-    router.push(`/mahasiswa/soal/${id}`);
-  };
+  const handleKerjakanLatihan = (id) => router.push(`/mahasiswa/soal/${id}`);
 
   // ? key = status : "tersedia" || "selesai"
   const switchTabPractice = (key) => {
@@ -94,15 +96,23 @@ function Beranda() {
       <PageLayout role="mahasiswa">
         <Card style={{ height: "100%" }}>
           <Typography.Title level={2}> Latihan </Typography.Title>
+
           <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
             <TabPane tab="Tersedia" key="tersedia">
               {dataJadwal?.length > 0 ? (
-                <ListComponent
-                  dataSource={dataJadwal}
-                  isLoading={!isDataJadwalLoaded}
-                  role="sesi-latihan-mahasiswa"
-                  kerjakanLatihan={handleKerjakanLatihan}
-                />
+                <>
+                  <RadioFilterCategory
+                    data={dataJadwal}
+                    setIsFilterActive={setIsFilterActive}
+                    setEntityFiltered={setJadwalFiltered}
+                  />
+                  <ListComponent
+                    dataSource={isFilterActive ? jadwalFiltered : dataJadwal}
+                    isLoading={!isDataJadwalLoaded}
+                    role="sesi-latihan-mahasiswa"
+                    kerjakanLatihan={handleKerjakanLatihan}
+                  />
+                </>
               ) : (
                 <EmptyData
                   withAction={false}
