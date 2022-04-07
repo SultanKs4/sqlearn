@@ -40,41 +40,37 @@ module.exports = {
         }
     },
 
-    getOne: async (id) => {
+    getOne: async (id, user) => {
         try {
+            let attributes = ["id", "text"];
+            if (user.role == "dosen") attributes.push("answer");
             let containerById = await Container.findByPk(id, {
-                include: {
-                    model: Question,
-                    as: "questions",
-                    attributes: ["id", "text"],
-                    through: { attributes: [] },
-                    include: [
-                        {
-                            model: CaseStudy,
-                            attributes: ["id", "name"],
-                        },
-                        {
-                            model: User,
-                            attributes: ["id", "name"],
-                        },
-                        {
-                            model: QuestionLabel,
-                            attributes: ["id", "name"],
-                        },
-                    ],
-                },
+                include: [
+                    {
+                        model: Question,
+                        as: "questions",
+                        attributes: attributes,
+                        through: { attributes: [] },
+                        include: [
+                            {
+                                model: CaseStudy,
+                                attributes: ["id", "name"],
+                            },
+                            {
+                                model: User,
+                                attributes: ["id", "name"],
+                            },
+                        ],
+                    },
+                    {
+                        model: QuestionLabel,
+                        attributes: ["id", "name"],
+                    },
+                ],
                 order: Sequelize.literal("rand()"),
             });
 
             if (!containerById) throw createHttpError(404, "container not found");
-
-            containerById = containerById.toJSON();
-
-            containerById.questions.forEach((val, i) => {
-                let next_id = null;
-                if (i != containerById.questions.length - 1) next_id = containerById.questions[i + 1].id;
-                val.next_id = next_id;
-            });
 
             return createResponseObject(200, "success", "Data kontainer berhasil didapatkan", containerById);
         } catch (error) {

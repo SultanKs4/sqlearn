@@ -9,7 +9,7 @@ module.exports = {
     },
 
     show: async (req, res) => {
-        const resObj = await containerService.getOne(req.params.id);
+        const resObj = await containerService.getOne(req.params.id, req.user);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
