@@ -139,7 +139,7 @@ module.exports = {
             if (session.student_id != user.id)
                 throw createHttpError(409, "your session not match with your credentials");
             let whereQuestionId = {};
-            if (questionAnsweredIds) whereQuestionId = { id: { [Op.notIn]: questionAnsweredIds } };
+            if (questionAnsweredIds) whereQuestionId = { id: { [Op.notIn]: questionAnsweredIds.split(",") } };
             const question = await session.Schedule.Container.getQuestions({
                 attributes: { exclude: ["answer"] },
                 where: whereQuestionId,
