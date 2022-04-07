@@ -147,7 +147,7 @@ module.exports = {
                 order: Sequelize.literal("rand()"),
                 joinTableAttributes: [],
             });
-            return createResponseObject(200, "success", "get question not answered", question);
+            return createResponseObject(200, "success", "get question not answered", question[0]);
         } catch (error) {
             return errorHandling(error);
         }
