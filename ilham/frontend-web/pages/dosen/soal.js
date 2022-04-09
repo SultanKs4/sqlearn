@@ -128,10 +128,7 @@ function HalamanSoal() {
             entity="Soal"
             visible={isModalVisible}
             setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
             modalText={modalText}
-            setModalText={setModalText}
             modalContent={
               modalRole === "tambah" ? (
                 <FormTambahSoal

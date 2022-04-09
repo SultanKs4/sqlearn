@@ -635,7 +635,7 @@ function ListComponent({
                         </Col>
                       </Row>
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
-                        <Col> {item?.text} </Col>
+                        <Col> {removeHTML(item?.text) || item?.text} </Col>
                       </Row>
                     </Col>
                   </Row>

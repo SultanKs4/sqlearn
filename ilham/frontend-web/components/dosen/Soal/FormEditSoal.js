@@ -49,7 +49,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
   const [form] = useForm();
 
-  const [fileList, setFileList] = useState();
+  const [fileList, setFileList] = useState([]);
 
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
   const [selectedStudiKasus, setSelectedStudiKasus] = useState(
@@ -94,11 +94,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       case_study: isEditingForm
         ? values?.case_study?.value
         : values?.case_study,
-      answer: JSON.stringify(
-        selectedKategori === "Close-Ended" && isEditingForm
-          ? [values?.answer]
-          : values?.answer
-      ),
+      answer: JSON.stringify(values?.answer),
       tables: values.tables.toString(),
       answer_pic: fileList,
       sql_hints: JSON.stringify(
@@ -109,9 +105,10 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       ),
     };
 
-    if (fileList.length === 0) delete submitObject.answer_pic;
-
-    handleSubmit(submitObject);
+    console.log(submitObject);
+    if (fileList.length === 0)
+      message.error("Mohon memasukkan gambar preview hasil");
+    else handleSubmit(submitObject);
   };
 
   const onChangeStudiKasus = (studiKasus) => {
@@ -178,7 +175,7 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         label_id: selectedKategori,
         text: removeHTML(currentSoal?.text),
         tables: currentSoal?.tables,
-        answer: formatToArray(currentSoal?.answer),
+        answer: JSON.parse(currentSoal?.answer)[0] || "",
         dosen_pembuat: currentSoal?.User?.name,
         case_study: currentSoal?.CaseStudy?.id,
       });

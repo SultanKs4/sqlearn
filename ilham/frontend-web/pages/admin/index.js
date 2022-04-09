@@ -135,10 +135,7 @@ function DaftarDosen() {
               entity="Dosen"
               visible={isModalVisible}
               setVisible={setIsModalVisible}
-              confirmLoading={isModalLoading}
-              setConfirmLoading={setIsModalLoading}
               modalText={modalText}
-              setModalText={setModalText}
               modalContent={
                 modalRole === "tambah" ? (
                   <FormTambahDosen

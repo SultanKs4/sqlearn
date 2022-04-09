@@ -1,37 +1,3 @@
-import axios from "axios";
-
-const getUserInfo = async (username) => {
-  // TODO : API Request GET : ?username={username}
-  // ? Output :
-  /*
-    {
-        kelas : "",
-        sesi : [],
-        username: "",
-    }
-    */
-  let response = await axios.get("");
-  return response.data;
-};
-
-const getStudiKasus = async (kelasID, sesiID) => {
-  // TODO : API Request GET : ?kelasID={kelasID}&sesiID={sesiID}
-  let response = await axios.get("");
-  return response.data;
-};
-
-const getFinishedPractices = async (username) => {
-  // TODO : API Request GET : ?username={username}
-  let response = await axios.get("");
-  return response.data;
-};
-
-const getAvailablePractices = async (username) => {
-  // TODO : API Request GET : ?username={username}
-  let response = await axios.get("");
-  return response.data;
-};
-
 const mockGetAllPractices = async (username) => {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -74,10 +40,4 @@ const mockGetAllPractices = async (username) => {
   });
 };
 
-export {
-  getUserInfo,
-  getStudiKasus,
-  getFinishedPractices,
-  getAvailablePractices,
-  mockGetAllPractices,
-};
+export { mockGetAllPractices };

@@ -26,7 +26,6 @@ function Jadwal() {
   const { data: session } = useSession();
 
   const [currentJadwal, setCurrentJadwal] = useState({});
-  const [formObj, setFormObj] = useState({});
 
   const [dataJadwal, setDataJadwal] = useState([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -35,7 +34,7 @@ function Jadwal() {
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
+
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
@@ -130,22 +129,18 @@ function Jadwal() {
             entity="Jadwal"
             visible={isModalVisible}
             setVisible={setIsModalVisible}
-            confirmLoading={isModalLoading}
-            setConfirmLoading={setIsModalLoading}
             modalText={modalText}
             modalContent={
               modalRole === "tambah" ? (
                 <FormTambahJadwal
                   handleSubmit={aksiTambahJadwal}
                   setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
                 />
               ) : modalRole === "edit" ? (
                 <FormEditJadwal
                   currentJadwal={currentJadwal}
                   handleSubmit={aksiEditJadwal}
                   setVisible={setIsModalVisible}
-                  setFormObj={setFormObj}
                 />
               ) : (
                 <FormHapusJadwal
@@ -155,7 +150,6 @@ function Jadwal() {
                 />
               )
             }
-            setModalText={setModalText}
           />
         )}
 

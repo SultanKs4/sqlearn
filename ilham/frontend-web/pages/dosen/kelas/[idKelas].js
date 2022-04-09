@@ -153,8 +153,6 @@ function MahasiswaByID() {
           entity={`Mahasiswa di ${DataKelas?.name}`}
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
           modalContent={
             modalRole === "tambah" ? (
               <FormTambahMahasiswa

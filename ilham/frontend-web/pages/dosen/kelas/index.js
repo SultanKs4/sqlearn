@@ -139,8 +139,6 @@ function DaftarKelas() {
           entity="Kelas"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
           modalText={modalText}
           setModalText={setModalText}
           modalContent={

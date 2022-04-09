@@ -164,8 +164,6 @@ function PreviewPaket() {
           entity={`Soal untuk ${dataPaket?.description}`}
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
           setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (

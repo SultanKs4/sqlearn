@@ -122,8 +122,6 @@ function StudiKasus() {
           entity="Studi Kasus"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
           modalText={modalText}
           setModalText={setModalText}
           modalContent={
