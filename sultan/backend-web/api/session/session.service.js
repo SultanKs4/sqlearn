@@ -233,6 +233,8 @@ module.exports = {
                 ],
             });
             if (!sessionData) throw createHttpError(404, "session data not found");
+            if (sessionData.student_id != user.id)
+                return createHttpError(404, "this session don't belong to your credentials");
 
             const type = sessionData.Schedule.type;
             const scheduleId = sessionData.Schedule.id;
@@ -246,16 +248,14 @@ module.exports = {
             });
 
             const attemptsObj = studentAnswer.reduce((acc, val) => {
-                if (!acc[val.question_id]) acc[val.question_id] = { start: {}, move: [], submit: {}, test: [] };
+                if (!acc[val.question_id]) acc[val.question_id] = { submit: [], test: [] };
 
-                acc[val.question_id][val.type] =
-                    val.type == "submit" || val.type == "start"
-                        ? { isEqual: val.is_equal }
-                        : [...acc[val.question_id][val.type], { isEqual: val.is_equal }];
+                if (val.type == "test" || val.type == "submit")
+                    acc[val.question_id][val.type] = [...acc[val.question_id][val.type], { isEqual: val.is_equal }];
                 return acc;
             }, {});
 
-            const grade = gradeAssessment(type, totalQuestion, attemptsObj, await findByType(type));
+            const grade = gradeAssessment(totalQuestion, attemptsObj, await findByType(type));
 
             await Score.create({
                 student_id: user.id,
@@ -263,14 +263,8 @@ module.exports = {
                 score: grade,
             });
 
-            await Session.update(
-                { is_finished: true },
-                {
-                    where: {
-                        id: session,
-                    },
-                }
-            );
+            sessionData.is_finished = true;
+            await sessionData.save();
 
             return createResponseObject(200, "success", "Proses grading berhasil dilakukan", grade);
         } catch (error) {
@@ -279,28 +273,18 @@ module.exports = {
     },
 };
 
-function gradeAssessment(type, totalQuestion, attempts, dataRules) {
+function gradeAssessment(totalQuestion, attempts, dataRules) {
     // const attempPerQuestion = attempts.map(attempt => attempt.count)
 
     let tempScore = 0;
 
-    const questionsIds = Object.keys(attempts);
-
-    if (type == "latihan") {
-        questionsIds.forEach((question) => {
-            if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRules(attempts[question]["test"].length, dataRules);
-            }
-        });
-    } else {
-        questionsIds.forEach((question) => {
-            if (attempts[question]["submit"] && attempts[question]["submit"]["isEqual"]) {
-                tempScore += gradingRules(attempts[question]["test"].length, dataRules);
-            }
-        });
+    for (const key in attempts) {
+        const submit = attempts[key]["submit"];
+        if (submit && submit[submit.length - 1]["isEqual"]) {
+            const attempsSum = attempts[key]["test"].length + attempts[key]["submit"].length;
+            tempScore += gradingRules(attempsSum, dataRules);
+        }
     }
 
-    const finalScore = tempScore / totalQuestion;
-
-    return finalScore;
+    return tempScore / totalQuestion;
 }
