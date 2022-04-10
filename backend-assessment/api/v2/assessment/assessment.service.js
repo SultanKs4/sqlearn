@@ -14,7 +14,7 @@ function calculateSimilarity(queryMhs, queryKey) {
 async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
     try {
         if (similarity <= Number(threshold) && similarity >= 0)
-            throw new createHttpError(406, "Query yang diinputkan tidak sesuai dengan kriteria soal");
+            throw createHttpError(406, "Query yang diinputkan tidak sesuai dengan kriteria soal");
         let dbStudent = null;
         let dbKey = null;
         if (dbname.length < 2) throw createHttpError(400, "db list lenght minimal 2");
@@ -36,7 +36,12 @@ async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
             res_query: resQueryMhs,
         });
     } catch (error) {
-        return responseObj(error.statusCode, "error", { similarity, is_equal: false }, error.message);
+        return responseObj(
+            error.statusCode ? error.statusCode : 500,
+            "error",
+            { similarity, is_equal: false },
+            error.message
+        );
     }
 }
 

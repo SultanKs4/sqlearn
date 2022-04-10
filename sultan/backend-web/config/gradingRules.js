@@ -12,7 +12,7 @@ function gradingRules(attempt, dataRules) {
         },
         { prevData: {}, grade: 0 }
     );
-    return grade;
+    return parseInt(grade);
 }
 
 module.exports = {
