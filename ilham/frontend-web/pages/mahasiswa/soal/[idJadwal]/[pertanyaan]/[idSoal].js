@@ -1,4 +1,4 @@
-import { React, useState, useEffect, useContext } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
@@ -9,7 +9,6 @@ import {
   Typography,
   Button,
   Divider,
-  Alert,
   Form,
   Input,
 } from "antd";
@@ -17,233 +16,94 @@ import {
 import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../../../../components/PageLayout";
-import { mockGetSoalByID } from "../../../../../utils/remote-data/mahasiswa/Soal";
 import SQLContainer from "../../../../../components/mahasiswa/Soal/SQLContainer";
 import CountdownTimer from "../../../../../components/CountdownTimer";
-import { JadwalContext } from "../../../../../utils/context/JadwalContext";
+import { getSoalByID } from "../../../../../utils/remote-data/dosen/SoalCRUD";
+import { useSession } from "next-auth/react";
+import { URL_IMAGES } from "../../../../../utils/remote-data/api";
+import { removeHTML } from "../../../../../utils/common";
+import ModalCustom from "../../../../../components/Modal";
+import FormResetDatabase from "../../../../../components/mahasiswa/Soal/FormResetDatabase";
+
+import useBoxes from "../../../../../utils/hooks/PengerjaanSoal/useBoxes";
+import useNextQuestion from "../../../../../utils/hooks/PengerjaanSoal/useNextQuestion";
+import useLogs from "../../../../../utils/hooks/PengerjaanSoal/useLogs";
+import useInitializeTimer from "../../../../../utils/hooks/PengerjaanSoal/useInitializeTimer";
 
 function LatihanSoal() {
   const router = useRouter();
 
-  const { timer } = useContext(JadwalContext);
+  const { data: session } = useSession();
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
+  const [currentPart, setCurrentPart] = useState(null);
   const [isDataPertanyaanLoaded, setIsDataPertanyaanLoaded] = useState(false);
-  const [isTimeLoaded, setIsTimeLoaded] = useState(false);
-  const [scheduleDate, setScheduleDate] = useState(new Date());
-
-  const [isAnswerSaved, setIsAnswerSaved] = useState(false);
 
   const [isPreviewTable, setIsPreviewTable] = useState(false);
-  const [logData, setLogData] = useState([]);
 
-  const [timerLeftCounter, setTimerLeftCounter] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalRole, setModalRole] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
+  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
-  // ? Untuk simpan jawaban kalau soal ini berkategori close-ended
-  const [boxes, setBoxes] = useState([]);
+  const [isTimeLoaded, scheduleDate, timerLeftCounter, setTimerLeftCounter] =
+    useInitializeTimer(isDataPertanyaanLoaded, dataPertanyaan);
 
-  const [currentPart, setCurrentPart] = useState(null);
+  const [boxes, setBoxes, resetBox] = useBoxes(
+    isDataPertanyaanLoaded,
+    dataPertanyaan
+  );
 
-  // ? Untuk simpan jawaban kalau soal ini berkategori open-ended
+  const [logData, saveLog, resetLog] = useLogs(
+    boxes,
+    dataPertanyaan,
+    timerLeftCounter,
+    setCurrentPart
+  );
+
+  const [
+    dataNextPertanyaan,
+    isAnswerSaved,
+    setIsAnswerSaved,
+    setIsTestingQuery,
+  ] = useNextQuestion(logData, resetLog);
+
+  // ? Untuk simpan jawaban kalau soal ini berQuestionLabel?.name open-ended
   const [form] = Form.useForm();
 
-  useEffect(() => {
-    setIsAnswerSaved(false);
-    setBoxes([]);
-    console.clear();
-    mockGetSoalByID(parseInt(router.query.idSoal)).then((response) => {
-      resetLog();
-
-      setDataPertanyaan(response.data);
-      setIsDataPertanyaanLoaded(true);
-      // console.log(response.data?.next?.soalID, "ini id next soal");
-    });
-  }, [router.query.idSoal, dataPertanyaan]);
-
-  useEffect(() => {
-    // ? Biar timernya tetap berjalan dan tidak reset ketika direset
-    if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) {
-      const backupTimer = JSON.parse(window?.localStorage.getItem("timerLeft"));
-      const currentTime = new Date();
-      const { hour, minute, second } = timer?.format;
-      setScheduleDate(
-        currentTime.setHours(
-          currentTime.getHours() + hour,
-          currentTime.getMinutes() + minute,
-          currentTime.getSeconds() + second
-        )
+  const fetchDataPertanyaan = useCallback(() => {
+    if (session !== undefined && router?.query?.idSoal !== undefined) {
+      getSoalByID(session?.user?.tokenJWT, router?.query?.idSoal).then(
+        (response) => {
+          setIsAnswerSaved(false);
+          setBoxes([]);
+          console.clear();
+          setDataPertanyaan(response.data);
+          setIsDataPertanyaanLoaded(true);
+        }
       );
-
-      if (hour === 0 && minute === 0 && second === 0) {
-        setScheduleDate(
-          currentTime.setHours(
-            currentTime.getHours() + backupTimer.hour,
-            currentTime.getMinutes() + backupTimer.minute,
-            currentTime.getSeconds() + backupTimer.second
-          )
-        );
-      }
-      setIsTimeLoaded(true);
-      setupBoxes();
     }
-  }, [isDataPertanyaanLoaded, dataPertanyaan]);
+  }, [session, router.query.idSoal]);
 
-  const setupBoxes = () => {
-    let fetchClue = dataPertanyaan?.sql_components?.filter(
-      (item) => item.role === "clue"
-    );
-
-    let clueComparisonWithAnswer = fetchClue?.map((item) =>
-      item.content.toLowerCase()
-    );
-
-    let sqlUncomplete = dataPertanyaan?.jawaban_benar
-      .split(" ")
-      .map((partJawaban, idx) => {
-        if (clueComparisonWithAnswer?.includes(partJawaban?.toLowerCase()))
-          return partJawaban;
-        else return "___";
-      });
-
-    // Ini assign boxes ketika pertanyaan di load
-
-    let createBoxes = {
-      sql_parts: {
-        items: dataPertanyaan?.sql_components?.filter(
-          (item) => item.role === "part"
-        ),
-      },
-      sql_clues: {
-        items: fetchClue,
-      },
-      sql_constructed: {
-        items: sqlUncomplete?.map((item, idx) => {
-          return {
-            id: idx,
-            position: idx,
-            content: item,
-            role: item === "__" ? "part" : "clue",
-          };
-        }),
-      },
-    };
-
-    setBoxes(createBoxes);
-  };
+  useEffect(() => {
+    fetchDataPertanyaan();
+  }, [fetchDataPertanyaan]);
 
   useEffect(() => {
     // ? Save Log ketika ada pergerakan komponen drag-and-drop
     if (currentPart !== null) saveLog(currentPart, "move");
   }, [boxes, currentPart]);
 
-  const onDragEnd = (result, boxes, setBoxes) => {
-    if (!result.destination) return;
-    const { source, destination } = result;
-    if (source.droppableId !== destination.droppableId) {
-      // ? Ini kalau drag dari komponen SQL dan drop ke Jawaban SQL
-      let destinationParts = destination.droppableId.split("_");
-      let destinationKey = `${destinationParts[0]}_${destinationParts[1]}`;
-      let idDest = destinationParts[2]; // ? Output : id
-
-      let destColumn = boxes[destinationKey].items;
-
-      let sourceItems = [...boxes[source.droppableId].items];
-
-      let destItems = destColumn;
-
-      const [removed] = sourceItems.splice(source.index, 1);
-      destItems[idDest] = removed;
-
-      setBoxes({
-        ...boxes,
-        sql_parts: {
-          items: sourceItems,
-        },
-        sql_constructed: {
-          items: destItems,
-        },
-      });
-    }
-    // ? Set Log per Drag & Drop
-    setCurrentPart(result);
-  };
-
-  useEffect(() => {
-    console.log(boxes, "boxes");
-  }, [boxes]);
-
-  const previewTable = () => {
-    setIsPreviewTable((prev) => !prev);
-    console.log("table preview");
-  };
-
-  const resetLog = () => {
-    console.log("resetted log");
-    setLogData([]);
-    setCurrentPart(null);
-  };
+  const previewTable = () => setIsPreviewTable((prev) => !prev);
 
   const submitAnswer = (values) => {
     saveLog(values, "submit");
-
-    // TODO : Call POST API request dari ... , terus define try catch nya disini
-    // ? Kalau berhasil alertMessage = 'success' dan reset lognya, kalau gagal alertMessage = 'error', lognya tetep
-
-    setIsAlertActive(true);
-    setTimeout(() => setIsAlertActive(false), 5000);
-    setAlertMessage(`Jawaban berhasil disimpan !`);
-
-    setTimeout(() => {
-      resetLog();
-    }, 500);
-    setIsAnswerSaved(true);
-  };
-
-  // TODO : Update untuk sql_constructed dan sql_parts untuk lognya
-  const saveLog = (values, role) => {
-    setLogData((tempLogData) => [
-      ...tempLogData,
-      {
-        timerLeft: timerLeftCounter,
-        type: role,
-        answer:
-          dataPertanyaan?.kategori === "Open-Ended"
-            ? values?.jawaban_siswa
-            : boxes?.sql_constructed?.items
-                ?.map((item) => item.content)
-                .join(" "),
-        answer_json:
-          role === "move"
-            ? {
-                from: values.source,
-                to: values.destination,
-              }
-            : {},
-      },
-    ]);
+    setIsTestingQuery(true);
   };
 
   const testQuery = (values) => {
     saveLog(values, "test");
-
-    // TODO : Call POST API request dari Answer Question , terus define try catch nya disini
-    // ? Kalau berhasil alertMessage = 'success' dan reset lognya, kalau gagal alertMessage = 'error', lognya tetep
-    setIsAlertActive(true);
-    setTimeout(() => setIsAlertActive(false), 5000);
-    setAlertMessage(`Jawaban anda benar !`);
-
-    setTimeout(() => {
-      resetLog();
-    }, 500);
-  };
-
-  const resetBox = () => {
-    setupBoxes();
-    saveLog(null, "reset");
+    setIsTestingQuery(true);
   };
 
   useEffect(() => {
@@ -269,7 +129,7 @@ function LatihanSoal() {
                     textAlign: "justify",
                   }}
                 >
-                  {dataPertanyaan?.teksSoal}
+                  {removeHTML(dataPertanyaan?.text) || dataPertanyaan?.text}
                 </Typography.Paragraph>
               </>
             ) : (
@@ -290,20 +150,28 @@ function LatihanSoal() {
                 display: isPreviewTable ? "block" : "none",
               }}
             >
-              <img src="https://via.placeholder.com/380x200"></img>
+              {isDataPertanyaanLoaded && (
+                <img
+                  width={380}
+                  src={URL_IMAGES + dataPertanyaan?.answer_pic}
+                  alt={`${URL_IMAGES}/${dataPertanyaan?.answer_pic}`}
+                ></img>
+              )}
             </Row>
 
             <Row style={{ marginTop: "1em" }}>
-              {dataPertanyaan?.next?.soalID !== false ? (
+              {dataNextPertanyaan !== null ? (
                 <Button
-                  // disabled={isAnswerSaved ? false : true}
+                  disabled={isAnswerSaved ? false : true}
                   type="primary"
                   onClick={() => {
                     resetLog();
                     router.push(
                       `/mahasiswa/soal/${parseInt(
-                        router.query.idPaket
-                      )}/pertanyaan/${dataPertanyaan?.next?.soalID}`
+                        router.query.idJadwal
+                      )}/pertanyaan/${dataNextPertanyaan?.id}?session_id=${
+                        router.query?.session_id
+                      }`
                     );
                   }}
                 >
@@ -311,14 +179,14 @@ function LatihanSoal() {
                 </Button>
               ) : (
                 <Button
-                  // disabled={isAnswerSaved ? false : true}
+                  disabled={isAnswerSaved ? false : true}
                   type="primary"
                   ghost
                   onClick={() => {
                     resetLog();
                     router.push(
                       `/mahasiswa/soal/${parseInt(
-                        router.query.idPaket
+                        router.query.idJadwal
                       )}/ujian-selesai`
                     );
                   }}
@@ -349,11 +217,12 @@ function LatihanSoal() {
                 </h2>
               </Col>
             </Row>
-            {dataPertanyaan?.kategori === "Open-Ended" ? (
+            {dataPertanyaan?.QuestionLabel?.name === "Open-Ended" ? (
               <>
                 <Form form={form} layout="vertical">
                   <Form.Item name="jawaban_siswa">
                     <Input
+                      autoComplete="off"
                       prefix={<ConsoleSqlOutlined />}
                       placeholder={` Masukkan Jawaban SQL Disini . . .`}
                     />
@@ -364,10 +233,8 @@ function LatihanSoal() {
               <SQLContainer
                 boxes={boxes}
                 jawaban={dataPertanyaan?.jawaban_benar}
-                // sqlUncomplete={sqlUncomplete}
-                // setSqlUncomplete={setSqlUncomplete}
                 setBoxes={setBoxes}
-                onDragEnd={onDragEnd}
+                setCurrentPart={setCurrentPart}
               />
             )}
 
@@ -379,7 +246,7 @@ function LatihanSoal() {
                       type="primary"
                       onClick={() =>
                         testQuery(
-                          dataPertanyaan?.kategori === "Open-Ended"
+                          dataPertanyaan?.QuestionLabel?.name === "Open-Ended"
                             ? form.getFieldsValue()
                             : ""
                         )
@@ -388,12 +255,14 @@ function LatihanSoal() {
                       Test Query
                     </Button>
                   </Col>
-                  {dataPertanyaan?.kategori === "Open-Ended" && (
+                  {dataPertanyaan?.QuestionLabel?.name === "Open-Ended" && (
                     <Col>
                       <Button
                         type="danger"
-                        // TODO : Tambah event handler untuk reset db
-                        onClick={() => {}}
+                        onClick={() => {
+                          setModalRole("delete");
+                          handleToggleModal();
+                        }}
                       >
                         Reset Database
                       </Button>
@@ -403,7 +272,7 @@ function LatihanSoal() {
               </Col>
               <Col>
                 <Row gutter={10}>
-                  {dataPertanyaan?.kategori === "Close-Ended" && (
+                  {dataPertanyaan?.QuestionLabel?.name === "Close-Ended" && (
                     <Col>
                       <Button
                         style={{ backgroundColor: "red", color: "white" }}
@@ -419,7 +288,7 @@ function LatihanSoal() {
                       style={{ backgroundColor: "#003A8C", color: "white" }}
                       onClick={() =>
                         submitAnswer(
-                          dataPertanyaan?.kategori === "Open-Ended"
+                          dataPertanyaan?.QuestionLabel?.name === "Open-Ended"
                             ? form.getFieldsValue()
                             : ""
                         )
@@ -432,17 +301,17 @@ function LatihanSoal() {
                 </Row>
               </Col>
             </Row>
-            <Row>
-              {isAlertActive && (
-                <Alert
-                  message={alertMessage}
-                  type={alertStatus}
-                  closable
-                  showIcon
-                  style={{ marginTop: "1em", width: "100%" }}
-                />
-              )}
-            </Row>
+            {isModalVisible && (
+              <ModalCustom
+                role={modalRole}
+                entity="Database"
+                visible={isModalVisible}
+                setVisible={setIsModalVisible}
+                modalContent={
+                  <FormResetDatabase setVisible={setIsModalVisible} />
+                }
+              />
+            )}
           </Col>
         </Row>
       </PageLayout>

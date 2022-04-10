@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useTimer } from "react-timer-hook";
 
 function CountdownTimer({ expiryTimestamp, setTimerLeft, ...props }) {
@@ -7,7 +7,7 @@ function CountdownTimer({ expiryTimestamp, setTimerLeft, ...props }) {
     onExpire: () => console.warn("onExpire called"),
   });
 
-  useEffect(() => {
+  const updateTimer = useCallback(() => {
     setTimerLeft(`${hours}:${minutes}:${seconds}`);
     window.localStorage.setItem(
       "timerLeft",
@@ -18,6 +18,10 @@ function CountdownTimer({ expiryTimestamp, setTimerLeft, ...props }) {
       })
     );
   }, [seconds]);
+
+  useEffect(() => {
+    updateTimer();
+  }, [updateTimer]);
 
   return (
     <div style={{ textAlign: "center" }}>

@@ -1,10 +1,9 @@
 import axios from "axios";
-
-/* TODO beberapa fitur untuk Soal.js:
-    1. Fetch Data Soal -> @param id
-    2. Test Query -> @param SQL Query
-    3. Submit jawaban -> @param SQL Query, log timer, log berapa kali dia test query
-*/
+import {
+  axiosWithBearer,
+  URL_SESSION_API,
+  URL_UNANSWERED_QUESTIONS,
+} from "../api";
 
 //  ? Mock data Soal
 const data = [
@@ -222,41 +221,53 @@ const mockGetSoalByID = async (jadwalID) => {
   });
 };
 
-const getSoalByID = async (soalID) => {
-  let response = await axios.get("");
-
+const getUnansweredQuestion = async (
+  bearerToken,
+  sessionID,
+  questionAnswered
+) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    "https://api.sqlearn.sultanachmad.me/api/questions/session",
+    {
+      params: {
+        session_id: sessionID,
+        question_answered: questionAnswered.toString() || [],
+      },
+    }
+  );
   return response.data;
 };
 
-const testQuery = async (sqlQuery) => {
-  // TODO : API Request POST: URL ?soalID={soalID, studiKasusID, username} data : attempt++
-  // ...
-  // TODO : API Request GET: URL ?soalID={soalID}
-  //   ? Output :
-  /* 
-  {
-    checkResult : boolean,
-    attempt : number
-  }  
-  */
-
-  let response = await axios.get("");
+const resetOpenEndedDatabase = async (bearerToken, sessionID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_SESSION_API}/reset/${sessionID}`
+  );
   return response.data;
 };
 
-const submitJawaban = async (sqlQuery, timer, attempts, username) => {
-  // TODO : API Request POST : URL ?username={username} data : {sqlQuery, timer, attempts }
+const testQueryBackend = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    `${URL_SESSION_API}/answer`,
+    values
+  );
+  return response.data;
+};
 
-  let response = await axios.post("");
+const submitJawaban = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    `${URL_SESSION_API}/answer`,
+    values
+  );
   return response.data;
 };
 
 export {
   getAllSoal,
   mockGetAllSoal,
-  getSoalByID,
-  testQuery,
+  getUnansweredQuestion,
+  testQueryBackend,
   submitJawaban,
   mockGetSoalByID,
   mockGetSoalByCategory,
+  resetOpenEndedDatabase,
 };

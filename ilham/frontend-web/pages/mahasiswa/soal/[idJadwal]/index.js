@@ -2,25 +2,15 @@ import { React, useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
 
-import {
-  Card,
-  Row,
-  Col,
-  Skeleton,
-  Button,
-  Typography,
-  Badge,
-  message,
-} from "antd";
+import { Card, Row, Col, Skeleton, Typography, Badge, message } from "antd";
 
 import PageLayout from "../../../../components/PageLayout";
-import { mockGetSoalByCategory } from "../../../../utils/remote-data/mahasiswa/Soal";
-import { mockGetAllPractices } from "../../../../utils/remote-data/mahasiswa/Beranda";
+import { getUnansweredQuestion } from "../../../../utils/remote-data/mahasiswa/Soal";
 import ListComponent from "../../../../components/List";
-import moment from "moment";
 import { JadwalContext } from "../../../../utils/context/JadwalContext";
 import { useSession } from "next-auth/react";
 import { getJadwalByID } from "../../../../utils/remote-data/dosen/JadwalCRUD";
+import { createSession } from "../../../../utils/remote-data/mahasiswa/Session";
 
 function Practice() {
   const router = useRouter();
@@ -36,29 +26,33 @@ function Practice() {
   const [timerFromServer, setTimerFromServer] = useState("");
 
   useEffect(() => {
-    addTimer(({ text, format }) => {
-      return {
-        text: timerFromServer,
-        format: {
-          hour: parseInt(timerFromServer.split(":")[0]),
-          minute: parseInt(timerFromServer.split(":")[1]),
-          second: parseInt(timerFromServer.split(":")[2]),
-        },
-      };
-    });
+    if (isTimerReady) {
+      console.log(timerFromServer, "timer from server");
+      addTimer(({ text, format }) => {
+        return {
+          text: timerFromServer,
+          format: {
+            hour: parseInt(timerFromServer.split(":")[0]),
+            minute: parseInt(timerFromServer.split(":")[1]),
+            second: parseInt(timerFromServer.split(":")[2]),
+          },
+        };
+      });
+    }
   }, [isTimerReady, timerFromServer]);
 
   const fetchDataLatihan = useCallback(() => {
-    if (session !== undefined)
-      getJadwalByID(session?.user?.tokenJWT, router.query.idJadwal).then(
+    if (session !== undefined && router?.query?.idJadwal !== undefined)
+      getJadwalByID(session?.user?.tokenJWT, router?.query?.idJadwal).then(
         (res) => {
           setDataJadwal(res.data);
           setIsDataJadwalLoaded(true);
+          console.log(res.data, "data jadwal");
           setTimerFromServer(res.data?.timer);
           setIsTimerReady(true);
         }
       );
-  }, [session]);
+  }, [session, router?.query?.idJadwal]);
 
   useEffect(() => {
     fetchDataLatihan();
@@ -68,6 +62,29 @@ function Practice() {
     console.clear();
     message.info("Halaman ini masih dalam tahap pengembangan");
   }, []);
+
+  const kerjakanLatihan = async () => {
+    createSession(session?.user?.tokenJWT, router.query.idJadwal)
+      .then((sesi) => {
+        console.log(sesi, "data sesi");
+        getUnansweredQuestion(session?.user?.tokenJWT, sesi?.data?.id, [])
+          .then((res) => {
+            router.push({
+              pathname: `/mahasiswa/soal/${parseInt(
+                router.query.idJadwal
+              )}/pertanyaan/${res.data?.id}`,
+              query: {
+                session_id: sesi?.data?.id,
+              },
+            });
+          })
+          .catch((e) => {
+            console.log(e);
+            message.error("Tidak dapat ambil data pertanyaan");
+          });
+      })
+      .catch((e) => message.error("Tidak dapat membuat sesi"));
+  };
 
   return (
     <>
@@ -122,13 +139,7 @@ function Practice() {
               role="data-soal-mahasiswa"
               isLoading={!isDataJadwalLoaded}
               //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
-              kerjakanLatihan={(id) =>
-                router.push(
-                  `/mahasiswa/soal/${parseInt(
-                    router.query.idJadwal
-                  )}/pertanyaan/${dataJadwal?.Container?.questions[0].id}`
-                )
-              }
+              kerjakanLatihan={kerjakanLatihan}
             />
           )}
         </Card>

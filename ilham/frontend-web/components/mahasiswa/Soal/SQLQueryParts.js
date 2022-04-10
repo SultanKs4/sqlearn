@@ -27,8 +27,8 @@ const SQLQueryParts = ({ sqlParts }) => {
             {sqlParts?.map((item, index) => {
               return (
                 <Draggable
-                  key={item.id.toString()}
-                  draggableId={item.id.toString()}
+                  key={index.toString()}
+                  draggableId={index.toString()}
                   index={index}
                 >
                   {(provided, snapshot) => {
@@ -50,7 +50,7 @@ const SQLQueryParts = ({ sqlParts }) => {
                           ...provided.draggableProps.style,
                         }}
                       >
-                        {item.content}
+                        {item}
                       </div>
                     );
                   }}
