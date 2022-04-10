@@ -16,11 +16,7 @@ module.exports = {
     getAllByStudent: async (user, kelas = null) => {
         try {
             let whereKelas = {};
-            if (kelas) {
-                whereKelas = {
-                    id: kelas,
-                };
-            }
+            if (kelas) whereKelas.id = kelas;
             const scores = await Score.findAll({
                 attributes: ["score"],
                 include: [
@@ -60,6 +56,7 @@ module.exports = {
 
             const scoresResponse = await scores.reduce(async (prevScore, currScore) => {
                 let arrScore = await prevScore;
+                if (!currScore.Schedule) throw createHttpError(404, "data schedule or class not found");
                 let arrObj = await currScore.Schedule.classes.reduce(async (prevClass, currClass) => {
                     let arrClass = await prevClass;
                     const obj = {
