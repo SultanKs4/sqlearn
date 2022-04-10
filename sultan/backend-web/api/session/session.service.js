@@ -166,6 +166,7 @@ module.exports = {
                         session_id: sessionId,
                         question_id: questionId,
                         answer: val.answer,
+                        answer_json: val.answer_json,
                         type: val.type,
                         similarity: -1.0,
                         is_equal: 0,
