@@ -4,7 +4,7 @@ const router = express.Router();
 const userController = require("./user.controller");
 const userSanitizer = require("./user.sanitizer");
 
-router.get("/", userController.index);
+router.get("/", userSanitizer.checkLevel, userController.index);
 router.get("/:id", userSanitizer.checkIdOnly, userController.show);
 router.post("/", userSanitizer.checkPost, userController.store);
 router.put("/:id", userSanitizer.checkPut, userController.update);

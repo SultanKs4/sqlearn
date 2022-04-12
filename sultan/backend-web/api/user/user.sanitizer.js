@@ -1,7 +1,8 @@
-const { param, body } = require("express-validator");
+const { param, body, query } = require("express-validator");
 const validationHandle = require("../../middlewares/validationHandle.middleware");
 
 const checkIdParams = param("id", "cannot null").notEmpty().bail().isInt().withMessage("must be integer");
+const checkLevelQuery = query("level").optional().isIn(["dosen", "admin"]).withMessage("query must be dosen or admin");
 const checkBodyPost = body(["name", "level", "no_induk", "username"], "cannot null").notEmpty();
 const checkBodyPut = body(["name", "level"], "cannot null").notEmpty();
 const checkNoInduk = body("no_induk", "must be number").isNumeric();
@@ -13,6 +14,7 @@ const checkPasswordConfirmation = body("password_confirmation").custom((val, { r
 });
 
 module.exports = {
+    checkLevel: [checkLevelQuery, validationHandle],
     checkIdOnly: [checkIdParams, validationHandle],
     checkPost: [checkBodyPost, checkNoInduk, validationHandle],
     checkPut: [checkIdParams, checkBodyPut, validationHandle],

@@ -62,7 +62,10 @@ module.exports = {
             const rules = await Setting.findByPk(id);
             if (!rules) throw createHttpError(404, "data rules not found");
 
-            if (rules.attemps == 0 || rules.attemps == null) throw createHttpError(400, "cannot update this rules");
+            if (rules.attemps == null) throw createHttpError(400, "cannot update this rules");
+
+            if (rules.attemps == 0 && rules.attemps != attemps)
+                throw createHttpError(400, "cannot update default rules attemps");
 
             const dataExist = await Setting.findOne({ where: { attemps, type } });
             if (dataExist && dataExist.id != rules.id)

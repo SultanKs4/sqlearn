@@ -66,6 +66,7 @@ module.exports = {
                             finish: currScore.Schedule.finish,
                         },
                         total_questions: await currScore.Schedule.Container.countQuestions(),
+                        label: currScore.Schedule.Container.QuestionLabel.name,
                     };
                     arrScore = [...arrScore, obj];
                 }
