@@ -7,12 +7,13 @@ const { hashPassword, comparePassword } = require("../../lib/hashPassword");
 const User = require("./user.model");
 
 module.exports = {
-    getAll: async () => {
+    getAll: async (level = null) => {
         try {
             const users = await User.findAll({
                 attributes: {
                     exclude: ["password"],
                 },
+                where: { level },
             });
             if (!users) throw createHttpError(404, "user not found");
             return createResponseObject(200, "success", "Data user berhasil didapatkan", users);

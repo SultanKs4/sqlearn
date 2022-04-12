@@ -2,7 +2,7 @@ const userService = require("./user.service");
 
 module.exports = {
     index: async (req, res) => {
-        const resObj = await userService.getAll();
+        const resObj = await userService.getAll(req.query.level);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
