@@ -56,11 +56,9 @@ module.exports = {
 
             const scoresResponse = await scores.reduce(async (prevScore, currScore) => {
                 let arrScore = await prevScore;
-                if (!currScore.Schedule) throw createHttpError(404, "data schedule or class not found");
-                let arrObj = await currScore.Schedule.classes.reduce(async (prevClass, currClass) => {
-                    let arrClass = await prevClass;
-                    const obj = {
-                        class_name: currClass.name,
+                if (currScore.Schedule) {
+                    let obj = {
+                        class_name: currScore.Schedule.classes[0]["name"],
                         score: currScore.score,
                         schedule: {
                             description: currScore.Schedule.description,
@@ -69,10 +67,8 @@ module.exports = {
                         },
                         total_questions: await currScore.Schedule.Container.countQuestions(),
                     };
-                    arrClass = [...arrClass, obj];
-                    return arrClass;
-                }, Promise.resolve([]));
-                arrScore = [...arrScore, ...arrObj];
+                    arrScore = [...arrScore, obj];
+                }
                 return arrScore;
             }, Promise.resolve([]));
 
