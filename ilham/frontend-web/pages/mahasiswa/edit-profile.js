@@ -18,7 +18,6 @@ import PageLayout from "../../components/PageLayout";
 function EditProfile() {
   const onFinish = (values) => {
     console.log(values);
-    // setFormObj(values);
     // handleSubmit(values);
   };
 

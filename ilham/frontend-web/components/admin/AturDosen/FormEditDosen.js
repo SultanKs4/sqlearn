@@ -2,19 +2,10 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 
-function FormEditDosen({
-  currentDosen,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
+  const onFinish = (values) => handleSubmit(values);
 
   const handleCancel = () => {
     console.log("Clicked cancel button");

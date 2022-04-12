@@ -1,4 +1,4 @@
-import { React, useEffect } from "react";
+import { React } from "react";
 
 import Head from "next/head";
 import { Button, Card, Form, Input, Typography, Row, Col, message } from "antd";
@@ -6,15 +6,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../components/PageLayout";
 import { signOut, useSession } from "next-auth/react";
-import { axiosWithBearer, BASE_URL } from "../../utils/remote-data/api";
-
-const editPassword = async (bearerToken, userID, values) => {
-  let response = await axiosWithBearer(bearerToken).put(
-    `${BASE_URL}/api/users/${userID}/password`,
-    values
-  );
-  return response.data;
-};
+import { editPassword } from "../../utils/remote-data/admin/DataUSer";
 
 function EditProfile() {
   const { data: session } = useSession();

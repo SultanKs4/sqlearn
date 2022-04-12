@@ -14,7 +14,7 @@ import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { getPaketSoal } from "../../../utils/remote-data/dosen/PaketSoalCRUD";
 import { useSession } from "next-auth/react";
 
-function FormTambahJadwal({ setFormObj, setVisible, handleSubmit, ...props }) {
+function FormTambahJadwal({ setVisible, handleSubmit, ...props }) {
   const { Option } = Select;
   const { data: session } = useSession();
 

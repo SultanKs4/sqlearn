@@ -16,11 +16,9 @@ import {
 } from "@ant-design/icons";
 import FormEditDosen from "../../components/admin/AturDosen/FormEditDosen";
 import FormHapusDosen from "../../components/admin/AturDosen/FormHapusDosen";
-import { mockGetDosen } from "../../utils/remote-data/admin/DataDosen";
+import { mockGetDosen } from "../../utils/remote-data/admin/DataUser";
 
 function DaftarDosen() {
-  const [formObj, setFormObj] = useState({});
-
   const [currentDosen, setCurrentDosen] = useState({});
 
   const [dataDosen, setDataDosen] = useState([]);
@@ -47,10 +45,6 @@ function DaftarDosen() {
       setIsDataLoaded(true);
     });
   }, []);
-
-  useEffect(() => {
-    console.log(isAlertActive);
-  }, [isAlertActive]);
 
   const tambahDosen = () => {
     setModalRole("tambah");
@@ -141,13 +135,11 @@ function DaftarDosen() {
                   <FormTambahDosen
                     handleSubmit={aksiTambahDosen}
                     setVisible={setIsModalVisible}
-                    setFormObj={setFormObj}
                   />
                 ) : modalRole === "edit" ? (
                   <FormEditDosen
                     handleSubmit={aksiEditDosen}
                     setVisible={setIsModalVisible}
-                    setFormObj={setFormObj}
                     currentDosen={currentDosen}
                   />
                 ) : (

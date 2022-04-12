@@ -1,16 +1,10 @@
 import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined, UserOutlined } from "@ant-design/icons";
 
-function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
+function FormTambahDosen({ setVisible, handleSubmit, ...props }) {
+  const onFinish = (values) => handleSubmit(values);
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">

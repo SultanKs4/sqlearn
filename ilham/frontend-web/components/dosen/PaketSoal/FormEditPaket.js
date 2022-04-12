@@ -9,20 +9,13 @@ import {
   Select,
 } from "antd";
 
-import moment from "moment";
 import { ScheduleOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { isObjectEmpty } from "../../../utils/common";
 import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
 
-function FormEditPaket({
-  currentPaket,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormEditPaket({ currentPaket, setVisible, handleSubmit, ...props }) {
   const [form] = Form.useForm();
 
   const { Option } = Select;
@@ -51,15 +44,9 @@ function FormEditPaket({
     });
   }, [currentPaket]);
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
+  const onFinish = (values) => handleSubmit(values);
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">

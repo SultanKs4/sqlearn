@@ -35,6 +35,9 @@ import {
   FileTextOutlined,
   CodeSandboxOutlined,
   FormOutlined,
+  ExperimentOutlined,
+  TagsOutlined,
+  MonitorOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
@@ -117,6 +120,10 @@ function ListComponent({
     case "lihat-nilai":
       icon = null;
       emptyDescription = "Nilai dalam kelas ini";
+      break;
+    case "grading-rules":
+      icon = null;
+      emptyDescription = "Grading Rules";
       break;
     default:
       break;
@@ -829,6 +836,61 @@ function ListComponent({
                         ></Button>
                       </Col>
                     </Row>
+                  </Col>
+                </Row>
+              </Card>
+            </List.Item>
+          )}
+        />
+      );
+    case "grading-rules":
+      return (
+        <List
+          itemLayout="horizontal"
+          dataSource={dataSource}
+          renderItem={(item, id) => (
+            <List.Item key={id} style={{ padding: 0 }}>
+              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                <Row justify="space-around">
+                  <Col span={18}>
+                    <Row gutter={20}>
+                      <Col span={6}>
+                        <TagsOutlined />
+                        <Typography.Text
+                          style={{ marginLeft: "1em" }}
+                          children={ucfirst(item?.type)}
+                        />
+                      </Col>
+                      <Col span={8}>
+                        <Typography.Text style={{ marginRight: "1em" }}>
+                          Jumlah percobaan : {item?.attemps}
+                        </Typography.Text>
+                        <ExperimentOutlined />
+                      </Col>
+                      <Col span={6}>
+                        <Typography.Text>Skor : {item?.value}</Typography.Text>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col span={6}>
+                    {/* <Row gutter={20} justify="end">
+                      <Col>
+                        <Button
+                          type="primary"
+                          icon={<EditOutlined />}
+                          size={"medium"}
+                          onClick={() => props.editGradingRules(item)}
+                        ></Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          type="danger"
+                          icon={<DeleteOutlined />}
+                          size={"medium"}
+                          onClick={() => props.deleteGradingRules(item)}
+                        ></Button>
+                      </Col>
+                    </Row> */}
                   </Col>
                 </Row>
               </Card>
