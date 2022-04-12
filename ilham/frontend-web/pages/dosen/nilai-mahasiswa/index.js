@@ -18,24 +18,16 @@ function HalamanNilai() {
   const [isSearching, setIsSearching] = useState(false);
 
   const [selectedKelas, setSelectedKelas] = useState("Test Kelas");
-  const [selectedJadwal, setSelectedJadwal] = useState("Test Jadwal");
-
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-
-  const previewNilaiMhs = (nilaiMhsObj) => {
-    setModalRole("preview");
-    handleToggleModal();
-    setModalText(
-      `Nilai Rata rata ${nilaiMhsObj.nama} adalah ${nilaiMhsObj.avgNilai}`
-    );
-  };
 
   const onFinish = ({ jadwal, kelas }) => {
     // TODO : Fetch data mahasiswa dengan jadwal id dan kelas id
     setIsSearching(true);
     console.log("Received values of form: ", jadwal.value, kelas.value);
-    // filterNilaiMhsByKelasAndJadwal(session?.user?.tokenJWT, jadwal.value, kelas.value).then((data) => {
-    filterNilaiMhsByKelasAndJadwal(session?.user?.tokenJWT, 11, 1)
+    filterNilaiMhsByKelasAndJadwal(
+      session?.user?.tokenJWT,
+      jadwal.value,
+      kelas.value
+    )
       .then((res) => {
         message.success("Nilai Mahasiswa berhasil diambil");
         setDataMahasiswa(res.data);
@@ -62,7 +54,6 @@ function HalamanNilai() {
         <Card>
           <SearchNilai
             onFinish={onFinish}
-            setSelectedJadwal={setSelectedJadwal}
             setSelectedKelas={setSelectedKelas}
           />
         </Card>

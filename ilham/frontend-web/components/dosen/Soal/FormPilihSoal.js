@@ -8,8 +8,6 @@ import { removeHTML } from "../../../utils/common";
 import { getSoalByCaseStudyByCategory } from "../../../utils/remote-data/dosen/SoalCRUD";
 import { useSession } from "next-auth/react";
 
-// ! (Bug BE) : Untuk Studi Kasus, yang bisa hanya id : 2
-
 const columns = [
   {
     title: "id",
@@ -110,10 +108,7 @@ function FormPilihSoal({ setVisible, handleSubmit, dataPaket, ...props }) {
     handleSubmit({ questions: values.questions });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">

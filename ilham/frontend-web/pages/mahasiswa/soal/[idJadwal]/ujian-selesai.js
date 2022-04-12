@@ -15,7 +15,6 @@ function UjianSelesai() {
   useEffect(() => {
     // ? Ini aslinya fetch data getJadwalByID, ambil dari router.query.idPaket
     mockGetAllPractices().then((response) => {
-      // console.log(response.data, "dan", router.query.idPaket);
       setDataPractice(
         response.data.find(
           (item) => parseInt(item.id) === parseInt(router.query.idPaket)
@@ -43,18 +42,20 @@ function UjianSelesai() {
               <Col>
                 <Row justify="center" style={{ margin: "1em 0" }}>
                   <Typography.Title level={4}>
-                    Anda baru saja menyelesaikan{" "}
-                  </Typography.Title>
-                </Row>
-                <Row justify="center" style={{ margin: "1em 0" }}>
-                  <Typography.Title level={4}>
-                    {dataPractice?.nama}
+                    Terimakasih atas partisipasi Anda
                   </Typography.Title>
                 </Row>
                 <Row justify="center" style={{ margin: "1em 0" }}>
                   <Button
                     type="primary"
-                    onClick={() => router.push("/mahasiswa/lihat-nilai")}
+                    onClick={() =>
+                      router.push({
+                        pathname: "/mahasiswa",
+                        query: {
+                          type: "selesai",
+                        },
+                      })
+                    }
                   >
                     Lihat Nilai Saya
                   </Button>

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Col,
   Divider,
@@ -8,6 +9,7 @@ import {
   Row,
   Select,
   Tag,
+  Tooltip,
   Upload,
 } from "antd";
 import {
@@ -24,6 +26,7 @@ import {
 } from "../../../utils/remote-data/dosen/StudiKasus";
 import { useSession } from "next-auth/react";
 import { propsUploadImage } from "../../../utils/remote-data/dosen/SoalCRUD";
+import { duration } from "moment";
 
 const formItemLayout = {
   labelCol: {
@@ -99,6 +102,12 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const onFinish = (values) => {
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
+    else if (!values.answer?.includes(values.tables?.toString()))
+      // ? Pesan ini ditampilkan selama 6 detik
+      message.error(
+        "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
+        6
+      );
     else
       handleSubmit({
         ...values,
@@ -289,7 +298,11 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       ) : (
         // ? Close-Ended
         <>
-          <Form.Item name="sql_parts" label="Komponen SQL">
+          <Form.Item
+            name="sql_parts"
+            label="Komponen SQL"
+            tooltip="Ini adalah komponen yang dapat di drag-and-drop ketika siswa mengerjakan soal"
+          >
             {tagsKomponen.map((item, idx) => (
               <Tag
                 key={idx}
@@ -318,7 +331,22 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
               </Button>
             )}
           </Form.Item>
-          <Form.Item name="sql_hints" label="Petunjuk Jawaban">
+          <Form.Item
+            name="sql_hints"
+            label="Petunjuk Jawaban"
+            tooltip={{
+              overlayStyle: { width: 600 },
+              title:
+                "Terdiri dari susunan query yang sudah benar. Komponen yang kosong akan diisi dengan bagian komponen SQL diatas",
+              placement: "left",
+            }}
+          >
+            <Alert
+              showIcon
+              type="info"
+              message="Untuk bagian komponen yang kosong dapat diisi dengan '__' (double-underscore) "
+              style={{ marginBottom: "1em" }}
+            />
             {tagsPetunjuk.map((item, idx) => (
               <Tag
                 key={idx}
@@ -361,7 +389,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
             <Input
               autoComplete="off"
               prefix={<ConsoleSqlOutlined />}
-              placeholder={` Jawaban Benar . . .`}
+              placeholder={`Jawaban Benar . . .`}
             />
           </Form.Item>
         </>
@@ -425,7 +453,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
               },
             ]}
           >
-            <Select placeholder="Pilih tabel . . ." mode="multiple" allowClear>
+            <Select placeholder="Pilih tabel . . ." allowClear>
               {Object.keys(dataTabel) !== 0 &&
                 Object.keys(dataTabel)?.map((item, id) => (
                   <Select.Option key={id || 0} value={item || ""}>

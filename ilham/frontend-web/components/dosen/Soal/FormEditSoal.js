@@ -1,4 +1,5 @@
 import {
+  Alert,
   Button,
   Col,
   Divider,
@@ -94,7 +95,9 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       case_study: isEditingForm
         ? values?.case_study?.value
         : values?.case_study,
-      answer: JSON.stringify(values?.answer),
+      answer: JSON.stringify(
+        selectedKategori === "Close-Ended" ? [values?.answer] : values?.answer
+      ),
       tables: values.tables.toString(),
       answer_pic: fileList,
       sql_hints: JSON.stringify(
@@ -108,6 +111,12 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
     console.log(submitObject);
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
+    else if (!values.answer?.includes(values.tables?.toString()))
+      // ? Pesan ini ditampilkan selama 6 detik
+      message.error(
+        "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
+        6
+      );
     else handleSubmit(submitObject);
   };
 
@@ -342,7 +351,11 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         </Form.List>
       ) : (
         <>
-          <Form.Item name="answer" label="Opsi Jawaban">
+          <Form.Item
+            name="sql_parts"
+            label="Komponen SQL"
+            tooltip="Ini adalah komponen yang dapat di drag-and-drop ketika siswa mengerjakan soal"
+          >
             {tagsKomponen?.map((item, idx) => (
               <Tag
                 key={idx}
@@ -372,7 +385,22 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
               </Button>
             )}
           </Form.Item>
-          <Form.Item name="sql_hints" label="Petunjuk Jawaban">
+          <Form.Item
+            name="sql_hints"
+            label="Petunjuk Jawaban"
+            tooltip={{
+              overlayStyle: { width: 600 },
+              title:
+                "Terdiri dari susunan query yang sudah benar. Komponen yang kosong akan diisi dengan bagian komponen SQL diatas",
+              placement: "left",
+            }}
+          >
+            <Alert
+              showIcon
+              type="info"
+              message="Untuk bagian komponen yang kosong dapat diisi dengan '__' (double-underscore) "
+              style={{ marginBottom: "1em" }}
+            />
             {tagsPetunjuk?.map((item, idx) => (
               <Tag
                 key={idx}

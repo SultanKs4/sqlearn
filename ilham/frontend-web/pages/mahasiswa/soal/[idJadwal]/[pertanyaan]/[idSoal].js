@@ -29,6 +29,7 @@ import useBoxes from "../../../../../utils/hooks/PengerjaanSoal/useBoxes";
 import useNextQuestion from "../../../../../utils/hooks/PengerjaanSoal/useNextQuestion";
 import useLogs from "../../../../../utils/hooks/PengerjaanSoal/useLogs";
 import useInitializeTimer from "../../../../../utils/hooks/PengerjaanSoal/useInitializeTimer";
+import ModalFinishSession from "../../../../../components/mahasiswa/Soal/ModalFinishSession";
 
 function LatihanSoal() {
   const router = useRouter();
@@ -106,6 +107,21 @@ function LatihanSoal() {
     setIsTestingQuery(true);
   };
 
+  const onClickButtonNext = () => {
+    resetLog();
+
+    if (dataNextPertanyaan !== null)
+      router.push(
+        `/mahasiswa/soal/${parseInt(router.query.idJadwal)}/pertanyaan/${
+          dataNextPertanyaan?.id
+        }?session_id=${router.query?.session_id}`
+      );
+    else {
+      setModalRole("akhiri");
+      setIsModalVisible(true);
+    }
+  };
+
   useEffect(() => {
     console.group("info LogData");
     console.log(logData);
@@ -160,40 +176,15 @@ function LatihanSoal() {
             </Row>
 
             <Row style={{ marginTop: "1em" }}>
-              {dataNextPertanyaan !== null ? (
-                <Button
-                  disabled={isAnswerSaved ? false : true}
-                  type="primary"
-                  onClick={() => {
-                    resetLog();
-                    router.push(
-                      `/mahasiswa/soal/${parseInt(
-                        router.query.idJadwal
-                      )}/pertanyaan/${dataNextPertanyaan?.id}?session_id=${
-                        router.query?.session_id
-                      }`
-                    );
-                  }}
-                >
-                  Soal Selanjutnya
-                </Button>
-              ) : (
-                <Button
-                  disabled={isAnswerSaved ? false : true}
-                  type="primary"
-                  ghost
-                  onClick={() => {
-                    resetLog();
-                    router.push(
-                      `/mahasiswa/soal/${parseInt(
-                        router.query.idJadwal
-                      )}/ujian-selesai`
-                    );
-                  }}
-                >
-                  Akhiri ujian
-                </Button>
-              )}
+              <Button
+                disabled={isAnswerSaved ? false : true}
+                type="primary"
+                onClick={onClickButtonNext}
+              >
+                {dataNextPertanyaan !== null
+                  ? "Soal Selanjutnya"
+                  : "Akhiri Ujian"}
+              </Button>
             </Row>
           </Col>
           <Col lg={1}>
@@ -304,11 +295,15 @@ function LatihanSoal() {
             {isModalVisible && (
               <ModalCustom
                 role={modalRole}
-                entity="Database"
+                entity={modalRole === "edit" ? "Database" : "Ujian"}
                 visible={isModalVisible}
                 setVisible={setIsModalVisible}
                 modalContent={
-                  <FormResetDatabase setVisible={setIsModalVisible} />
+                  modalRole === "edit" ? (
+                    <FormResetDatabase setVisible={setIsModalVisible} />
+                  ) : (
+                    <ModalFinishSession setVisible={setIsModalVisible} />
+                  )
                 }
               />
             )}

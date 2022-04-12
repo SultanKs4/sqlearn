@@ -34,10 +34,9 @@ const useNextQuestion = (logData, resetLog) => {
             setQuestionAnswered((prev) => [prev, router?.query?.idSoal]);
           }
         })
-        .catch((e) => {
-          message.error("Gagal test query, ", e);
-          console.log(e);
-        });
+        .catch((e) =>
+          message.error("Gagal test query, jawaban anda belum benar ")
+        );
     setIsTestingQuery(false);
   }, [isTestingQuery]);
 

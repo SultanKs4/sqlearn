@@ -114,6 +114,10 @@ function ListComponent({
         />
       );
       break;
+    case "lihat-nilai":
+      icon = null;
+      emptyDescription = "Nilai dalam kelas ini";
+      break;
     default:
       break;
   }
@@ -122,9 +126,9 @@ function ListComponent({
     return (
       <Card>
         <Empty
-          image={icon}
+          image={icon || Empty.PRESENTED_IMAGE_DEFAULT}
           description={
-            <Typography.Text style={{ color: "gray", fontWeight: "bold" }}>
+            <Typography.Text style={{ color: "gray" }}>
               Tidak ada data {emptyDescription}
             </Typography.Text>
           }
@@ -356,8 +360,7 @@ function ListComponent({
                                   marginRight: ".5em",
                                 }}
                               />
-                              {/* {`${item?.totalPercobaan}x percobaan`} */}x
-                              percobaan
+                              Score : {item?.score}
                             </>
                           ) : (
                             <div
@@ -456,12 +459,18 @@ function ListComponent({
                           <span
                             style={{
                               color:
-                                countTimeDifference(item?.start, item?.finish)
+                                countTimeDifference(
+                                  moment(),
+                                  moment(item?.finish)
+                                )
                                   .toLowerCase()
                                   .includes("terlewat") && "red",
                             }}
                           >
-                            {countTimeDifference(item?.start, item?.finish)}
+                            {countTimeDifference(
+                              moment(),
+                              moment(item?.finish)
+                            )}
                           </span>
                         </Col>
                       </Row>

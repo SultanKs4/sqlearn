@@ -77,7 +77,6 @@ const SearchNilai = ({
                 style={{ width: 400 }}
                 showSearch
                 placeholder="Masukkan Kelas. . ."
-                // onSearch={onSearch}
                 onChange={(val) => setSelectedKelas(val)}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
@@ -115,7 +114,6 @@ const SearchNilai = ({
                 showSearch
                 style={{ width: 400 }}
                 placeholder="Masukkan Jadwal. . ."
-                onChange={(val) => setSelectedJadwal(val)}
                 optionFilterProp="children"
                 filterOption={(input, option) =>
                   option.children.toLowerCase().indexOf(input.toLowerCase()) >=

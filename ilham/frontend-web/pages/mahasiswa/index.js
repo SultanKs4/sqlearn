@@ -51,7 +51,7 @@ function Beranda() {
           setDataJadwal(res.data);
           console.log("data jadwal", res.data);
         })
-        .catch(() => message.error("Terjadi kesalahan"));
+        .catch(() => console.error("Data Latihan tersedia kosong"));
   }, [session]);
 
   const fetchDataLatihanSelesai = useCallback(async () => {
@@ -64,7 +64,8 @@ function Beranda() {
       );
 
       try {
-        classID = await dataMhs?.data?.classes[0]?.id;
+        console.log(dataMhs?.data);
+        classID = await dataMhs?.data?.classes.pop().id;
       } catch (error) {
         console.log(error);
       }
@@ -78,7 +79,7 @@ function Beranda() {
 
         .catch((err) =>
           /* Hanya untuk fase development */
-          message.error(` Data Latihan selesai : ${err.message}`)
+          console.error(` Data Latihan selesai kosong`)
         );
     }
   }, [session]);
@@ -97,7 +98,10 @@ function Beranda() {
         <Card style={{ height: "100%" }}>
           <Typography.Title level={2}> Latihan </Typography.Title>
 
-          <Tabs defaultActiveKey="tersedia" onChange={switchTabPractice}>
+          <Tabs
+            defaultActiveKey={router.query?.type || "tersedia"}
+            onChange={switchTabPractice}
+          >
             <TabPane tab="Tersedia" key="tersedia">
               {dataJadwal?.length > 0 ? (
                 <>
