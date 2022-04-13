@@ -3,7 +3,7 @@ import axios from "axios";
 export const BASE_URL = "https://api.sqlearn.sultanachmad.me";
 // ? BACKEND WEB
 
-export const URL_SETTINGS_API = `${BASE_URL}/api/settings/`;
+export const URL_SETTINGS_API = `${BASE_URL}/api/settings`;
 
 // API KELAS
 export const URL_CLASS_API = `${BASE_URL}/api/classes`;

@@ -72,9 +72,6 @@ function MahasiswaByID() {
     handleToggleModal();
   };
 
-  // TODO : Sync FE sesuai kebutuhan BE (pakai ID dari Mahasiswa)
-  //  ? Opsi :  Convert ke Select Box Option
-
   const aksiTambahMahasiswa = (formMahasiswa) => {
     // ? (Bearer Token, values, idKelas)
     postMhs(session?.user?.tokenJWT, formMahasiswa, router.query.idKelas)

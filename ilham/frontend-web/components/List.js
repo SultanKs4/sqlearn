@@ -316,8 +316,13 @@ function ListComponent({
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
+            // ? Yang item?.label itu karena response dari BE langsung string, bukan object yang isinya ada name dan id
             <Badge.Ribbon
-              text={item?.label?.name === "-" ? "Kosong" : item?.label?.name}
+              text={
+                item?.label?.name === "-"
+                  ? "Kosong"
+                  : item?.label?.name || item?.label
+              }
               color={
                 item?.label?.name === "Close-Ended" ? "geekblue" : "purple"
               }
@@ -796,52 +801,59 @@ function ListComponent({
       );
     case "admin-data-dosen":
       return (
-        <List
-          itemLayout="horizontal"
-          dataSource={dataSource}
-          renderItem={(item) => (
-            <List.Item style={{ padding: 0 }}>
-              <Card style={{ width: "100vw", marginBottom: ".4em" }}>
-                <Row justify="space-around">
-                  <Col span={18}>
-                    <Row gutter={20}>
-                      <Col span={8}>
-                        <UserOutlined />
-                        <Typography.Text
-                          style={{ marginLeft: "1em" }}
-                          children={item?.nama_dosen}
-                        />
-                      </Col>
-                      <Col span={6}>
-                        <Typography.Text children={item?.nomor_induk} />
-                      </Col>
-                    </Row>
-                  </Col>
-                  <Col span={6}>
-                    <Row gutter={20} justify="end">
-                      <Col>
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editDosen(item)}
-                        ></Button>
-                      </Col>
-                      <Col>
-                        <Button
-                          type="danger"
-                          icon={<DeleteOutlined />}
-                          size={"medium"}
-                          onClick={() => props.deleteDosen(item)}
-                        ></Button>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </Card>
-            </List.Item>
-          )}
-        />
+        <>
+          <Row gutter={20} style={{ marginLeft: "1em" }}>
+            <Col span={6}>Nama Dosen</Col>
+            <Col>No Induk</Col>
+          </Row>
+          <Divider />
+          <List
+            itemLayout="horizontal"
+            dataSource={dataSource}
+            renderItem={(item) => (
+              <List.Item style={{ padding: 0 }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                  <Row justify="space-around">
+                    <Col span={18}>
+                      <Row gutter={20}>
+                        <Col span={8}>
+                          <UserOutlined />
+                          <Typography.Text
+                            style={{ marginLeft: "1em" }}
+                            children={item?.name}
+                          />
+                        </Col>
+                        <Col>
+                          <Typography.Text children={item?.no_induk} />
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={6}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editDosen(item)}
+                          ></Button>
+                        </Col>
+                        <Col>
+                          <Button
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            size={"medium"}
+                            onClick={() => props.deleteDosen(item)}
+                          ></Button>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </>
       );
     case "grading-rules":
       return (
@@ -873,13 +885,13 @@ function ListComponent({
                     </Row>
                   </Col>
                   <Col span={6}>
-                    {/* <Row gutter={20} justify="end">
+                    <Row gutter={20} justify="end">
                       <Col>
                         <Button
                           type="primary"
                           icon={<EditOutlined />}
                           size={"medium"}
-                          onClick={() => props.editGradingRules(item)}
+                          onClick={() => props.displayEditGradingRules(item)}
                         ></Button>
                       </Col>
                       <Col>
@@ -887,10 +899,10 @@ function ListComponent({
                           type="danger"
                           icon={<DeleteOutlined />}
                           size={"medium"}
-                          onClick={() => props.deleteGradingRules(item)}
+                          onClick={() => props.displayDeleteGradingRules(item)}
                         ></Button>
                       </Col>
-                    </Row> */}
+                    </Row>
                   </Col>
                 </Row>
               </Card>

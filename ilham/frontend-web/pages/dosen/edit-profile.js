@@ -6,7 +6,7 @@ import { UserOutlined, LockOutlined } from "@ant-design/icons";
 
 import PageLayout from "../../components/PageLayout";
 import { signOut, useSession } from "next-auth/react";
-import { editPassword } from "../../utils/remote-data/admin/DataUSer";
+import { editPassword } from "../../utils/remote-data/admin/DataUser";
 
 function EditProfile() {
   const { data: session } = useSession();

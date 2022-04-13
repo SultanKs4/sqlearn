@@ -20,7 +20,6 @@ function HalamanNilai() {
   const [selectedKelas, setSelectedKelas] = useState("Test Kelas");
 
   const onFinish = ({ jadwal, kelas }) => {
-    // TODO : Fetch data mahasiswa dengan jadwal id dan kelas id
     setIsSearching(true);
     console.log("Received values of form: ", jadwal.value, kelas.value);
     filterNilaiMhsByKelasAndJadwal(

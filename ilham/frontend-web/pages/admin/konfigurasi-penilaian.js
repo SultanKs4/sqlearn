@@ -1,27 +1,23 @@
 import { React, useState, useCallback } from "react";
 
 import Head from "next/head";
-import {
-  Alert,
-  Button,
-  Card,
-  Col,
-  Collapse,
-  Form,
-  Input,
-  Row,
-  Typography,
-} from "antd";
+import { Card, Collapse, Form, message, Typography } from "antd";
 import PageLayout from "../../components/PageLayout";
-import { ConsoleSqlOutlined } from "@ant-design/icons";
 import { useSession } from "next-auth/react";
-import { getThreshold } from "../../utils/remote-data/admin/Threshold";
-import { getGradingRules } from "../../utils/remote-data/admin/GradingRules";
+import {
+  getThreshold,
+  updateThreshold,
+} from "../../utils/remote-data/admin/Threshold";
+import {
+  getGradingRules,
+  postGradingRules,
+} from "../../utils/remote-data/admin/GradingRules";
 import PanelGradingRules from "../../components/admin/PanelGradingRules";
 import PanelThreshold from "../../components/admin/PanelThreshold";
 
 function KonfigurasiPenilaian() {
   const { data: session } = useSession();
+  const { Panel } = Collapse;
 
   const [dataThreshold, setDataThreshold] = useState([]);
   const [isDataThresholdLoaded, setIsDataThresholdLoaded] = useState(false);
@@ -45,11 +41,24 @@ function KonfigurasiPenilaian() {
       });
   }, [session]);
 
-  const { Panel } = Collapse;
-
   const onFinish = (values) => {
     console.log(values);
-    // handleSubmit(values);
+    if ("threshold" in values)
+      updateThreshold(session.user.tokenJWT, values)
+        .then(() => {
+          fetchDataThreshold();
+          message.success(
+            `Threshold telah diperbarui menjadi ${values.threshold}`
+          );
+        })
+        .catch(() => message.error("Threshold gagal diperbarui"));
+    else
+      postGradingRules(session.user.tokenJWT, values)
+        .then(() => {
+          fetchDataGradingRules();
+          message.success(`Grading Rules telah ditambahkan`);
+        })
+        .catch(() => message.error("Grading Rules gagal ditambahkan"));
   };
 
   const onchangePanel = (key) => {
@@ -76,6 +85,7 @@ function KonfigurasiPenilaian() {
                 onFinish={onFinish}
                 dataGradingRules={dataGradingRules}
                 isGradingRulesLoaded={isGradingRulesLoaded}
+                fetchDataGradingRules={fetchDataGradingRules}
               />
             </Panel>
             <Panel header="Pengaturan Threshold" key="threshold">

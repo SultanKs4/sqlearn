@@ -18,6 +18,13 @@ function PanelThreshold({
   isDataThresholdLoaded,
   ...props
 }) {
+  const [form] = Form.useForm();
+
+  const onSubmit = (values) => {
+    onFinish(values);
+    form.resetFields();
+  };
+
   return (
     <>
       <Alert
@@ -31,7 +38,7 @@ function PanelThreshold({
       </Typography.Title>
       <Divider />
 
-      <Form onFinish={onFinish} layout="vertical">
+      <Form form={form} onFinish={onSubmit} layout="vertical">
         <Row gutter={20} style={{ marginTop: "1em" }} align="middle">
           <Col>
             <Form.Item

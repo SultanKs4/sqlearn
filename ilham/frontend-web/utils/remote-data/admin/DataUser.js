@@ -1,4 +1,9 @@
-import { axiosWithBearer } from "../api";
+import { axiosWithBearer, URL_USERS_API } from "../api";
+
+const getUser = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(`${URL_USERS_API}`);
+  return response.data;
+};
 
 const getDosen = async (bearerToken) => {
   let response = await axiosWithBearer(bearerToken).get(
@@ -77,6 +82,7 @@ const mockGetDosen = async () => {
 };
 
 export {
+  getUser,
   getDosen,
   getDosenByID,
   postUser,

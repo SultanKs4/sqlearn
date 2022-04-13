@@ -1,13 +1,4 @@
-import axios from "axios";
 import { axiosWithBearer, URL_SESSION_API } from "../api";
-
-//  ? Mock data Soal
-
-const getAllSoal = async (studiKasusID) => {
-  // TODO : API Request GET : URL ?studiKasusID={studiKasus}
-  let response = await axios.get("");
-  return response.data;
-};
 
 const getUnansweredQuestion = async (
   bearerToken,
@@ -50,7 +41,6 @@ const submitJawaban = async (bearerToken, values) => {
 };
 
 export {
-  getAllSoal,
   getUnansweredQuestion,
   testQueryBackend,
   submitJawaban,

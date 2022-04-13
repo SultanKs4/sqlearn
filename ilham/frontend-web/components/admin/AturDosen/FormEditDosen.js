@@ -14,8 +14,8 @@ function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
 
   useEffect(() => {
     form.setFieldsValue({
-      nomor_induk: currentDosen?.nomor_induk,
-      nama_dosen: currentDosen?.nama_dosen,
+      no_induk: currentDosen?.no_induk,
+      name: currentDosen?.name,
       username: currentDosen?.username,
     });
   }, []);
@@ -25,7 +25,7 @@ function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
       <Row>
         <Col span={22}>
           <Form.Item
-            name="nomor_induk"
+            name="no_induk"
             label="Nomor Induk"
             rules={[
               {
@@ -45,7 +45,7 @@ function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="nama_dosen"
+            name="name"
             label="Nama Dosen"
             rules={[
               {

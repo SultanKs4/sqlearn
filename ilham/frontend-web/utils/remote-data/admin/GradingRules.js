@@ -14,17 +14,25 @@ const getGradingRulesByType = async (bearerToken, type) => {
   return response.data;
 };
 
-const postGradingRules = async (bearerToken, values, rulesID) => {
-  let response = await axiosWithBearer(bearerToken).get(
-    `${URL_SETTINGS_API}/rules/${rulesID}`
+const updateGradingRules = async (bearerToken, values, rulesID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_SETTINGS_API}/rules/${rulesID}`,
+    values
   );
   return response.data;
 };
 
-const updateGradingRules = async (bearerToken, values) => {
-  let response = await axiosWithBearer(bearerToken).put(
+const postGradingRules = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
     `${URL_SETTINGS_API}/rules`,
     values
+  );
+  return response.data;
+};
+
+const deleteGradingRules = async (bearerToken, rulesID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_SETTINGS_API}/rules/${rulesID}`
   );
   return response.data;
 };
@@ -34,4 +42,5 @@ export {
   getGradingRulesByType,
   postGradingRules,
   updateGradingRules,
+  deleteGradingRules,
 };

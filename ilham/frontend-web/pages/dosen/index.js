@@ -36,7 +36,6 @@ function Jadwal() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
 
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
@@ -129,7 +128,6 @@ function Jadwal() {
             entity="Jadwal"
             visible={isModalVisible}
             setVisible={setIsModalVisible}
-            modalText={modalText}
             modalContent={
               modalRole === "tambah" ? (
                 <FormTambahJadwal

@@ -6,9 +6,6 @@ import {
   getDataTableStudiKasus,
 } from "../../../utils/remote-data/dosen/StudiKasus";
 
-// TODO 24/03/2022 : Untuk Endpoint Get One (Status Code 500) dan Get One Detail Per Table (ER_ACCESS_DENIED_ERROR)
-// ? Ready
-
 function PreviewStudiKasus({ currentStudiKasus }) {
   const { data: session } = useSession();
 
