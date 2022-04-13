@@ -12,16 +12,14 @@ function EditProfile() {
   const { data: session } = useSession();
 
   const onFinish = (values) => {
-    console.log(values);
     editPassword(session?.user?.tokenJWT, session?.user?.id, values)
       .then((res) => {
         message.success(
-          `Password berhasil diubah. Anda akan logout dalam 3 detik`
+          `Password berhasil diubah. Mohon login kembali dalam 3 detik`
         );
         setTimeout(() => {
           signOut();
         }, 3000);
-        signOut();
       })
       .catch((err) => {
         console.log(err);

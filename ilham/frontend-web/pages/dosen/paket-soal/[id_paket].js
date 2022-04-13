@@ -78,7 +78,6 @@ function PreviewPaket() {
   };
 
   const aksiTambahSoal = (formPilihSoal) => {
-    // ! (Error BE) 409 Conflict: Habis bikin paket soal baru, mau nambah soal di paket tsb
     addQuestionToPaketSoal(
       session?.user?.tokenJWT,
       formPilihSoal,
@@ -93,7 +92,6 @@ function PreviewPaket() {
   };
 
   const aksiDeleteSoal = (pilihSoalObj) => {
-    console.log("pilihSoalObj", pilihSoalObj);
     deleteQuestionFromPaketSoal(
       session?.user?.tokenJWT,
       router?.query?.id_paket,

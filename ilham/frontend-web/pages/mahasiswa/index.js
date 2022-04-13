@@ -38,7 +38,6 @@ function Beranda() {
 
   // ? key = status : "tersedia" || "selesai"
   const switchTabPractice = (key) => {
-    console.log("key", key);
     if (key === "tersedia") fetchDataLatihan();
     else if (key === "selesai") fetchDataLatihanSelesai();
   };
@@ -49,7 +48,6 @@ function Beranda() {
         .then((res) => {
           setIsDataJadwalLoaded(true);
           setDataJadwal(res.data);
-          console.log("data jadwal", res.data);
         })
         .catch(() => console.error("Data Latihan tersedia kosong"));
   }, [session]);
@@ -64,7 +62,6 @@ function Beranda() {
       );
 
       try {
-        console.log(dataMhs?.data);
         classID = await dataMhs?.data?.classes.pop().id;
       } catch (error) {
         console.log(error);
@@ -74,7 +71,6 @@ function Beranda() {
         .then((res) => {
           setIsDataSelesaiLoaded(true);
           setDataLatihanSelesai(res.data);
-          console.log(res.data, "ini data latihan selesai");
         })
 
         .catch((err) =>

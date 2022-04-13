@@ -108,7 +108,6 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       ),
     };
 
-    console.log(submitObject);
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
     else if (!values.answer?.includes(values.tables?.toString()))
@@ -135,7 +134,6 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
   // Done
   useEffect(() => {
-    console.log(selectedStudiKasus, "selectedStudiKasus");
     if (selectedStudiKasus !== "")
       getStudiKasusByID(
         session?.user?.tokenJWT,
@@ -169,7 +167,6 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   }, [tagsKomponen, tagsPetunjuk]);
 
   useEffect(() => {
-    console.log("ini currentSoal", currentSoal);
     if (currentSoal !== undefined) {
       if (
         currentSoal.QuestionLabel?.name === "Close-Ended" &&
@@ -190,10 +187,6 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
       });
     }
   }, [currentSoal]);
-
-  useEffect(() => {
-    console.log("ini form", form.getFieldsValue());
-  }, [form]);
 
   const showInput = () => setInputTagsKomponenVisible(true);
   const showInputPetunjuk = () => setInputTagsPetunjukVisible(true);

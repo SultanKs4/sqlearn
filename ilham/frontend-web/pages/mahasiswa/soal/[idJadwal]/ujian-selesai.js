@@ -25,10 +25,6 @@ function UjianSelesai() {
     });
   }, []);
 
-  useEffect(() => {
-    console.log(dataPractice);
-  }, [dataPractice]);
-
   useEffect(() => {}, []);
   return (
     <>

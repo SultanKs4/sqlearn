@@ -2,7 +2,10 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined, UserOutlined } from "@ant-design/icons";
 
 function FormTambahDosen({ setVisible, handleSubmit, ...props }) {
-  const onFinish = (values) => handleSubmit(values);
+  const onFinish = (values) => {
+    setVisible(false);
+    handleSubmit({ level: "dosen", ...values });
+  };
 
   const handleCancel = () => setVisible(false);
 
@@ -11,7 +14,7 @@ function FormTambahDosen({ setVisible, handleSubmit, ...props }) {
       <Row>
         <Col span={22}>
           <Form.Item
-            name="nomor_induk"
+            name="no_induk"
             label="Nomor Induk"
             rules={[
               {
@@ -31,7 +34,7 @@ function FormTambahDosen({ setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="nama_dosen"
+            name="name"
             label="Nama Dosen"
             rules={[
               {

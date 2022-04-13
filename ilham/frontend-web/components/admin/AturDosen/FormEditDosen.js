@@ -5,12 +5,15 @@ import { useEffect } from "react";
 function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => handleSubmit(values);
-
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
+  const onFinish = (values) => {
     setVisible(false);
+    handleSubmit({
+      level: "dosen",
+      ...values,
+    });
   };
+
+  const handleCancel = () => setVisible(false);
 
   useEffect(() => {
     form.setFieldsValue({

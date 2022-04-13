@@ -1,4 +1,4 @@
-import { axiosWithBearer, URL_USERS_API } from "../api";
+import { axiosWithBearer, BASE_URL, URL_USERS_API } from "../api";
 
 const getUser = async (bearerToken) => {
   let response = await axiosWithBearer(bearerToken).get(`${URL_USERS_API}`);

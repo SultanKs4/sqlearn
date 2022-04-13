@@ -88,10 +88,7 @@ function FormEditJadwal({ currentJadwal, setVisible, handleSubmit, ...props }) {
     });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">

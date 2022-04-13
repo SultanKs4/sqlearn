@@ -12,10 +12,7 @@ function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
     });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   const onChangeKategori = (kategori) => setSelectedKategori(kategori);
 

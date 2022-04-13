@@ -7,7 +7,6 @@ function FormHapusJadwal({
   handleSubmit,
   ...props
 }) {
-  console.log(currentJadwal);
   return (
     <>
       <Row justify="center">

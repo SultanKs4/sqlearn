@@ -2,7 +2,6 @@ import { Col, Radio, Row, Typography } from "antd";
 
 function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
   const filterCategory = (e) => {
-    console.log(e.target.value);
     e.target.value === "Semua"
       ? setIsFilterActive(false)
       : setIsFilterActive(true);

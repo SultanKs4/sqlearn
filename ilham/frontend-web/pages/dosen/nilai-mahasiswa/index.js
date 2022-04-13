@@ -21,7 +21,6 @@ function HalamanNilai() {
 
   const onFinish = ({ jadwal, kelas }) => {
     setIsSearching(true);
-    console.log("Received values of form: ", jadwal.value, kelas.value);
     filterNilaiMhsByKelasAndJadwal(
       session?.user?.tokenJWT,
       jadwal.value,

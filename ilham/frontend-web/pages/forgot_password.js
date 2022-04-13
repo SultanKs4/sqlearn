@@ -21,7 +21,6 @@ const ForgotPassword = (props) => {
 
   const [form] = Form.useForm();
 
-  console.log(props);
   return (
     <>
       <Head>

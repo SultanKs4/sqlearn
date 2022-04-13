@@ -3,7 +3,7 @@
 import { React, useState, useEffect, useCallback } from "react";
 
 import Head from "next/head";
-import { Card, Typography, Row, Col, Button } from "antd";
+import { Card, Typography, Row, Col, Button, message } from "antd";
 import PageLayout from "../../components/PageLayout";
 import ModalCustom from "../../components/Modal";
 import FormTambahDosen from "../../components/admin/AturDosen/FormTambahDosen";
@@ -12,7 +12,12 @@ import ListComponent from "../../components/List";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import FormEditDosen from "../../components/admin/AturDosen/FormEditDosen";
 import FormHapusDosen from "../../components/admin/AturDosen/FormHapusDosen";
-import { getDosen } from "../../utils/remote-data/admin/DataUser";
+import {
+  deleteUser,
+  getDosen,
+  postUser,
+  updateUser,
+} from "../../utils/remote-data/admin/DataUser";
 import { useSession } from "next-auth/react";
 
 function DaftarDosen() {
@@ -28,10 +33,6 @@ function DaftarDosen() {
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
-  useEffect(() => {
-    fetchDataDosen();
-  }, [fetchDataDosen]);
-
   const fetchDataDosen = useCallback(() => {
     if (session !== undefined)
       getDosen(session?.user?.tokenJWT).then((res) => {
@@ -40,31 +41,53 @@ function DaftarDosen() {
       });
   }, [session]);
 
+  useEffect(() => {
+    fetchDataDosen();
+  }, [fetchDataDosen]);
+
   const tambahDosen = () => {
     setModalRole("tambah");
     handleToggleModal();
   };
 
   const editDosen = (dosenObj) => {
-    console.log(dosenObj, "di editDosen");
     setModalRole("edit");
     setCurrentDosen(dosenObj);
     handleToggleModal();
   };
 
   const deleteDosen = (dosenObj) => {
-    console.log(dosenObj, "di deleteDosen");
     setModalRole("delete");
     setCurrentDosen(dosenObj);
     handleToggleModal();
   };
 
-  // TODO : CRUD Dosen
-  const aksiTambahDosen = (formDosen) => {};
+  const aksiTambahDosen = (formDosen) => {
+    postUser(session?.user?.tokenJWT, formDosen)
+      .then((res) => {
+        message.success("Berhasil menambahkan dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal menambahkan dosen"));
+  };
 
-  const aksiEditDosen = (formDosen) => {};
+  const aksiEditDosen = (formDosen) => {
+    updateUser(session?.user?.tokenJWT, formDosen, currentDosen?.id)
+      .then((res) => {
+        message.success("Berhasil mengubah dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal mengubah dosen"));
+  };
 
-  const aksiDeleteDosen = (formDosen) => {};
+  const aksiDeleteDosen = (formDosen) => {
+    deleteUser(session?.user?.tokenJWT, currentDosen?.id)
+      .then((res) => {
+        message.success("Berhasil menghapus dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal menghapus dosen"));
+  };
 
   return (
     <>

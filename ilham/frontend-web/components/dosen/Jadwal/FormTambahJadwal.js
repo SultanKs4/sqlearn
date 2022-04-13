@@ -40,7 +40,6 @@ function FormTambahJadwal({ setVisible, handleSubmit, ...props }) {
   }, []);
 
   const onFinish = ({ classes, container_id, start, finish, ...values }) => {
-    console.log(classes, container_id);
     handleSubmit({
       classes: classes,
       start: start.toISOString(),

@@ -58,7 +58,6 @@ function PanelGradingRules({
   };
 
   const aksiEditGradingRules = (values) => {
-    console.log(values, "ini values");
     updateGradingRules(session.user.tokenJWT, values, selectedRules?.id)
       .then(() => {
         handleToggleModal();

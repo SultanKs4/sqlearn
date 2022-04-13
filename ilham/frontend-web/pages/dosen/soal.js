@@ -71,7 +71,6 @@ function HalamanSoal() {
   };
 
   const aksiTambahSoal = (formSoal) => {
-    console.log("formSoal", formSoal);
     // ? Close-ended udah bisa
     postSoal(session?.user?.tokenJWT, formSoal)
       .then(() => {
@@ -83,7 +82,6 @@ function HalamanSoal() {
   };
 
   const aksiEditSoal = (formSoal) => {
-    console.log("formSoal", formSoal);
     updateSoal(session?.user?.tokenJWT, formSoal)
       .then(() => {
         handleToggleModal(false);
@@ -94,8 +92,6 @@ function HalamanSoal() {
   };
 
   const aksiDeleteSoal = (formSoal) => {
-    console.log("formSoal", formSoal);
-
     deleteSoal(session?.user?.tokenJWT, formSoal.id)
       .then(() => {
         handleToggleModal(false);

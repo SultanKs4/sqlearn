@@ -9,7 +9,6 @@ function EditGradingRules({
   ...props
 }) {
   const [form] = Form.useForm();
-  console.log(currentRules);
 
   useEffect(() => {
     if (currentRules !== undefined) {

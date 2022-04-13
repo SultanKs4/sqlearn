@@ -6,10 +6,7 @@ function FormTambahMahasiswa({ setVisible, handleSubmit }) {
     handleSubmit(values);
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">

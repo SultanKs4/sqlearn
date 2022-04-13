@@ -44,7 +44,6 @@ function DaftarKelas() {
     if (session !== undefined)
       getKelas(session?.user?.tokenJWT)
         .then((response) => {
-          console.log(response.data);
           setDataKelas(response.data);
           setIsDataKelasLoaded(true);
         })
@@ -68,12 +67,10 @@ function DaftarKelas() {
   const displayModalDeleteKelas = (kelasObj) => {
     setModalRole("delete");
     setCurrentKelas(kelasObj);
-    console.log(kelasObj);
     handleToggleModal();
   };
 
   const aksiTambahKelas = (formKelas) => {
-    console.log("formKelas", formKelas);
     postKelas(session?.user?.tokenJWT, formKelas)
       .then(() => {
         handleToggleModal(false);

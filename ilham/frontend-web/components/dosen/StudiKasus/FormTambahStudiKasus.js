@@ -14,7 +14,6 @@ function FormTambahStudiKasus({ form, setVisible, handleSubmit, ...props }) {
   };
 
   const onFinish = (values) => {
-    console.log("Received values of form: ", { ...values, sql: fileList });
     handleSubmit({ ...values, sql: fileList });
   };
 

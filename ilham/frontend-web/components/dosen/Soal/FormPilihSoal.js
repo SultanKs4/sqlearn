@@ -44,16 +44,12 @@ function FormPilihSoal({ setVisible, handleSubmit, dataPaket, ...props }) {
   const onChangeStudiKasus = (studiKasusObj) => {
     getStudiKasusByID(session?.user?.tokenJWT, studiKasusObj)
       .then((res) => setSelectedNameStudiKasus(res?.data?.name))
-      .catch((e) => {
-        console.log(e);
-        setSelectedNameStudiKasus("");
-      });
+      .catch((e) => setSelectedNameStudiKasus(""));
     setSelectedIDStudiKasus(studiKasusObj);
   };
 
   const rowSelection = {
     onSelect: (record, selected, selectedRows, nativeEvent) => {
-      console.log("selectedRows", selectedRows);
       form.setFieldsValue({
         questions: [selectedRows[0]?.idSoal],
       });

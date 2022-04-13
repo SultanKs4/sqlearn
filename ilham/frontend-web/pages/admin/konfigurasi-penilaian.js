@@ -42,7 +42,6 @@ function KonfigurasiPenilaian() {
   }, [session]);
 
   const onFinish = (values) => {
-    console.log(values);
     if ("threshold" in values)
       updateThreshold(session.user.tokenJWT, values)
         .then(() => {
