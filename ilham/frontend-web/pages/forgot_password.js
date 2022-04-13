@@ -58,8 +58,8 @@ const ForgotPassword = (props) => {
                     onChange={onRequiredTypeChange}
                     style={{ width: "150px" }}
                   >
-                    <Option value="mahasiswa">Mahasiswa</Option>
-                    <Option value="dosen">Dosen</Option>
+                    <Select.Option value="mahasiswa">Mahasiswa</Select.Option>
+                    <Select.Option value="dosen">Dosen</Select.Option>
                   </Select>
                 </Form.Item>
               </Col>
