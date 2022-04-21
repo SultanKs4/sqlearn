@@ -9,7 +9,6 @@ import {
   Row,
   Select,
   Tag,
-  Tooltip,
   Upload,
 } from "antd";
 import {
@@ -26,7 +25,6 @@ import {
 } from "../../../utils/remote-data/dosen/StudiKasus";
 import { useSession } from "next-auth/react";
 import { propsUploadImage } from "../../../utils/remote-data/dosen/SoalCRUD";
-import { duration } from "moment";
 
 const formItemLayout = {
   labelCol: {
@@ -45,8 +43,6 @@ const formItemLayoutWithOutLabel = {
     sm: { span: 24, offset: 0 },
   },
 };
-
-// BE perlu nambah key "hint" dan "jawaban_benar" untuk endpoint Create Soal (sudah)
 
 function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   const { data: session } = useSession();
@@ -100,9 +96,10 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
   };
 
   const onFinish = (values) => {
+    console.log(values, "ini di onfinish");
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
-    else if (!values.answer?.includes(values.tables?.toString()))
+    else if (!values.answer?.toString().includes(values.tables?.toString()))
       // ? Pesan ini ditampilkan selama 6 detik
       message.error(
         "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",

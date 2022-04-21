@@ -1,7 +1,6 @@
 import { React, useState } from "react";
 
 import {
-  Alert,
   Button,
   Col,
   Divider,
@@ -18,7 +17,6 @@ import FormDeleteGradingRules from "./GradingRules/FormDeleteGradingRules";
 import FormEditGradingRules from "./GradingRules/FormEditGradingRules";
 import {
   deleteGradingRules,
-  postGradingRules,
   updateGradingRules,
 } from "../../utils/remote-data/admin/GradingRules";
 import { useSession } from "next-auth/react";
@@ -79,12 +77,6 @@ function PanelGradingRules({
 
   return (
     <>
-      <Alert
-        showIcon
-        type="info"
-        description="Additional description and information about copywriting."
-        style={{ marginBottom: "1em" }}
-      />
       <Form form={form} onFinish={onSubmit} layout="vertical">
         <Row gutter={20} align="middle">
           <Col>
