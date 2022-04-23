@@ -154,16 +154,6 @@ const Login = ({ providers, csrfToken }) => {
                     Log in
                   </Button>
                 </Col>
-                <Col>
-                  Or{" "}
-                  <a
-                    onClick={() => {
-                      router.push("/register");
-                    }}
-                  >
-                    Register now!
-                  </a>
-                </Col>
               </Row>
             </Form.Item>
           </Form>
