@@ -1,13 +1,19 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 
 import Head from "next/head";
 import {
+  deleteKelas,
+  downloadExcelTemplate,
   getKelas,
-  mockGetKelas,
+  postKelas,
+  updateKelas,
 } from "../../../utils/remote-data/dosen/KelasCRUD";
-import { Typography, Row, Col, Button, Alert } from "antd";
+import { Typography, Row, Col, Button, Alert, message } from "antd";
 
-import { PlusCircleOutlined } from "@ant-design/icons";
+import {
+  PlusCircleOutlined,
+  VerticalAlignBottomOutlined,
+} from "@ant-design/icons";
 
 import ModalCustom from "../../../components/Modal";
 import FormTambahKelas from "../../../components/dosen/Kelas/FormTambahKelas";
@@ -15,85 +21,85 @@ import FormHapusKelas from "../../../components/dosen/Kelas/FormHapusKelas";
 import FormEditKelas from "../../../components/dosen/Kelas/FormEditKelas";
 import ListComponent from "../../../components/List";
 import PageLayout from "../../../components/PageLayout";
+import { useSession } from "next-auth/react";
 
 function DaftarKelas() {
+  const { data: session } = useSession();
+
   const [dataKelas, setDataKelas] = useState([]);
   const [isDataKelasLoaded, setIsDataKelasLoaded] = useState(false);
 
   const [currentKelas, setCurrentKelas] = useState({});
-  const [formObj, setFormObj] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   useEffect(() => {
-    mockGetKelas()
-      .then((response) => {
-        console.log(response.data);
-        setDataKelas(response.data);
-        setIsDataKelasLoaded(true);
-      })
-      .catch(() => console.log("error"));
-  }, []);
+    fetchDataKelas();
+  }, [session]);
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+  const fetchDataKelas = useCallback(() => {
+    if (session !== undefined)
+      getKelas(session?.user?.tokenJWT)
+        .then((response) => {
+          setDataKelas(response.data);
+          setIsDataKelasLoaded(true);
+        })
+        .catch(() => console.log("Fetch Data Kelas gagal"));
+  }, [session, dataKelas]);
+
+  const handleToggleModal = (state = isModalVisible) =>
+    setIsModalVisible((prev) => state || !prev);
 
   const tambahKelas = () => {
     setModalRole("tambah");
     handleToggleModal();
   };
 
-  const editKelas = (kelasObj) => {
-    console.log("Selected, ", kelasObj);
+  const displayModalEditKelas = (kelasObj) => {
     setModalRole("edit");
     setCurrentKelas(kelasObj);
     handleToggleModal();
   };
 
-  const deleteKelas = (kelasObj) => {
+  const displayModalDeleteKelas = (kelasObj) => {
     setModalRole("delete");
     setCurrentKelas(kelasObj);
     handleToggleModal();
   };
 
   const aksiTambahKelas = (formKelas) => {
-    // TODO : Call POST API request dari KelasCRUD.js
-    // ...
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    handleToggleModal();
-    setAlertMessage(`Data ${formKelas.kelas_nama} berhasil ditambahkan`);
-    console.log("Hasil submit tambah", formKelas);
+    postKelas(session?.user?.tokenJWT, formKelas)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(`Data ${formKelas.name} berhasil ditambahkan`);
+      })
+      .then(() => fetchDataKelas())
+      .catch((err) =>
+        message.error(`Data ${formKelas.name} gagal ditambahkan`)
+      );
   };
 
   const aksiEditKelas = (formKelas) => {
-    // TODO : Call PUT API request dari KelasCRUD.js
-    // ...
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    handleToggleModal();
-    setAlertMessage(`Data Kelas ${formKelas.kelas_nama} berhasil diubah`);
-    handleToggleAlert();
-    console.log("Data berhasil diedit", formKelas);
+    updateKelas(session?.user?.tokenJWT, formKelas, currentKelas?.id)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(`Data ${formKelas.name} berhasil diubah`);
+      })
+      .then(() => fetchDataKelas())
+      .catch((err) => message.error(`Data ${formKelas.name} gagal diubah`));
   };
 
-  const aksiDeleteKelas = (formKelas) => {
-    // TODO : Call DELETE API request dari KelasCRUD.js
-    // ...
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-    handleToggleModal();
-    setAlertMessage(`Data Kelas ${formKelas.nama} berhasil dihapus`);
-    handleToggleAlert();
-    console.log("Data terhapus", formKelas);
+  const aksiDeleteKelas = (kelasObj) => {
+    deleteKelas(session?.user?.tokenJWT, kelasObj?.id)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(`Data ${kelasObj.name} berhasil dihapus`);
+      })
+      .then(() => fetchDataKelas())
+      .catch((err) => message.error(`Data ${kelasObj.name} gagal dihapus`));
   };
 
   return (
@@ -107,30 +113,29 @@ function DaftarKelas() {
             <Typography.Title level={2}>Daftar Kelas </Typography.Title>
           </Col>
           <Col>
-            <Button type="primary" onClick={tambahKelas}>
-              Tambah Kelas <PlusCircleOutlined />
-            </Button>
+            <Row justify="space-between" gutter={20}>
+              <Col>
+                <Button
+                  style={{ backgroundColor: "green", color: "white" }}
+                  onClick={() => downloadExcelTemplate()}
+                >
+                  Download Template Excel <VerticalAlignBottomOutlined />
+                </Button>
+              </Col>
+              <Col>
+                <Button type="primary" onClick={tambahKelas}>
+                  Tambah Kelas <PlusCircleOutlined />
+                </Button>
+              </Col>
+            </Row>
           </Col>
         </Row>
-
-        {isAlertActive && (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        )}
 
         <ModalCustom
           role={modalRole}
           entity="Kelas"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
           modalText={modalText}
           setModalText={setModalText}
           modalContent={
@@ -138,13 +143,11 @@ function DaftarKelas() {
               <FormTambahKelas
                 handleSubmit={aksiTambahKelas}
                 setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
               />
             ) : modalRole === "edit" ? (
               <FormEditKelas
                 handleSubmit={aksiEditKelas}
                 setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
                 currentKelas={currentKelas}
               />
             ) : (
@@ -160,8 +163,8 @@ function DaftarKelas() {
         <ListComponent
           isLoading={!isDataKelasLoaded}
           role="list-kelas-dosen"
-          editKelas={editKelas}
-          deleteKelas={deleteKelas}
+          displayModalEditKelas={displayModalEditKelas}
+          displayModalDeleteKelas={displayModalDeleteKelas}
           dataSource={dataKelas}
         />
       </PageLayout>

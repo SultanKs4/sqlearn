@@ -1,39 +1,30 @@
 import { Button, Col, Divider, Form, Input, message, Row, Upload } from "antd";
 import { InboxOutlined, DatabaseOutlined } from "@ant-design/icons";
+import { propsSQLUpload } from "../../../utils/remote-data/dosen/StudiKasus";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 
-function FormTambahStudiKasus({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
-  const normFile = (e) => console.log("Upload event:", e);
+function FormTambahStudiKasus({ form, setVisible, handleSubmit, ...props }) {
+  const { data: session } = useSession();
+  const [fileList, setFileList] = useState();
+
+  const normFile = (e) => {
+    if (!e.file.name.includes(".sql"))
+      message.error(`${e.file.name} is not a .sql file`);
+  };
 
   const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
+    handleSubmit({ ...values, sql: fileList });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
-
-  const validationSQLFile = (file) => {
-    if (!file.name.includes(".sql")) {
-      console.log("bukan sql");
-      message.error(`${file.name} is not a .sql file`);
-    }
-    return file.name.includes(".sql") ? true : Upload.LIST_IGNORE;
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
       <Row gutter={20}>
         <Col span={12}>
           <Form.Item
-            name="studi_kasus_nama"
+            name="name"
             label="Nama Studi Kasus"
             rules={[
               {
@@ -43,6 +34,7 @@ function FormTambahStudiKasus({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<DatabaseOutlined />}
               placeholder={` Studi Kasus . . .`}
             />
@@ -52,16 +44,13 @@ function FormTambahStudiKasus({
 
       <Form.Item label="Database">
         <Form.Item
-          name="database"
+          name="sql"
           valuePropName="fileList"
           getValueFromEvent={normFile}
           noStyle
         >
           <Upload.Dragger
-            multiple={false}
-            beforeUpload={(file) => validationSQLFile(file)}
-            name="files"
-            action="/upload.do"
+            {...propsSQLUpload(session?.user?.tokenJWT, setFileList)}
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />

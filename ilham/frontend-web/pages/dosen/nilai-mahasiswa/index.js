@@ -1,90 +1,41 @@
-import { React, useState, useEffect } from "react";
+import { React, useState } from "react";
 import Head from "next/head";
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Button,
-  Card,
-  Alert,
-  Avatar,
-  List,
-  Spin,
-} from "antd";
+import { Skeleton, Typography, Row, Col, Card, message, Empty } from "antd";
 
-import { mockKelasDiajar } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
 import PageLayout from "../../../components/PageLayout";
+import { useSession } from "next-auth/react";
 import ListComponent from "../../../components/List";
-import ModalCustom from "../../../components/Modal";
-import SearchBar from "../../../components/SearchBar";
-
-import { RightOutlined } from "@ant-design/icons";
-import { useRouter } from "next/router";
-
-const mockNilaiMhs = [
-  {
-    nama: "Muhammad Ilham Adhim",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Dharma Y",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Rasyid M",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Sultan A",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-  {
-    nama: "Ilham Rizky",
-    avgNilai: 88,
-    avgDurasi: 25.4,
-    jumlahLatihanDikerjakan: 20,
-  },
-];
+import SearchNilai from "../../../components/dosen/NilaiMhs/SearchNilai";
+import { filterNilaiMhsByKelasAndJadwal } from "../../../utils/remote-data/dosen/NilaiMahasiswaCRUD";
 
 function HalamanNilai() {
-  const router = useRouter();
+  const { data: session } = useSession();
 
-  const [data, setData] = useState([]);
-  const [searchResult, setSearchResult] = useState([]);
+  const [dataMahasiswa, setDataMahasiswa] = useState();
 
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isFetchingData, setIsFetchingData] = useState(true);
+
   const [isSearching, setIsSearching] = useState(false);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
-  const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
+  const [selectedKelas, setSelectedKelas] = useState("Test Kelas");
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-
-  const previewNilaiMhs = (nilaiMhsObj) => {
-    setModalRole("preview");
-    handleToggleModal();
-    setModalText(
-      `Nilai Rata rata ${nilaiMhsObj.nama} adalah ${nilaiMhsObj.avgNilai}`
-    );
+  const onFinish = ({ jadwal, kelas }) => {
+    setIsSearching(true);
+    filterNilaiMhsByKelasAndJadwal(
+      session?.user?.tokenJWT,
+      jadwal.value,
+      kelas.value
+    )
+      .then((res) => {
+        message.success("Nilai Mahasiswa berhasil diambil");
+        setDataMahasiswa(res.data);
+        setIsFetchingData(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        message.error("Terjadi kesalahan saat mengambil data");
+      });
   };
-
-  useEffect(() => {
-    mockKelasDiajar().then((response) => {
-      setData(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
 
   return (
     <>
@@ -98,69 +49,44 @@ function HalamanNilai() {
           </Col>
         </Row>
 
-        {/* Content asli... */}
-
-        <ModalCustom
-          role={modalRole}
-          entity="Nilai Mahasiswa"
-          visible={isModalVisible}
-          setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
-          modalText={modalText}
-          setModalText={setModalText}
-        />
-
-        {isDataLoaded ? (
-          <SearchBar
-            dataSource={data}
-            searchKey="nama"
-            role="kelas"
-            isSearching={isSearching}
-            setIsSearching={setIsSearching}
-            setSearchResult={setSearchResult}
+        <Card>
+          <SearchNilai
+            onFinish={onFinish}
+            setSelectedKelas={setSelectedKelas}
           />
-        ) : (
-          <Row justify="center">
-            <Spin />
-          </Row>
-        )}
+        </Card>
 
-        {isDataLoaded ? (
-          <List
-            itemLayout="horizontal"
-            dataSource={isSearching ? searchResult : data}
-            renderItem={(item) => (
-              <Card style={{ marginBottom: "1em" }}>
-                <Row justify="space-between">
-                  <Col>
-                    <Typography.Title level={3}> {item.nama} </Typography.Title>
-                  </Col>
-                  <Col>
-                    <Button
-                      type="primary"
-                      shape="round"
-                      icon={<RightOutlined />}
-                      onClick={() =>
-                        router.push(`/dosen/nilai-mahasiswa/kelas/${item.id}`)
-                      }
-                    >
-                      Preview Kelas
-                    </Button>{" "}
-                  </Col>
+        {isSearching ? (
+          <>
+            {!isFetchingData ? (
+              <div style={{ marginTop: "1em" }}>
+                <Row>
+                  <Typography.Title level={4}>
+                    Nilai untuk kelas {selectedKelas?.label}
+                  </Typography.Title>
                 </Row>
+
                 <ListComponent
                   role={"lihat-nilai"}
-                  kelas={item}
-                  isLoading={!isDataLoaded}
-                  dataSource={mockNilaiMhs}
-                  previewDetailNilai={previewNilaiMhs}
+                  isLoading={isFetchingData}
+                  dataSource={dataMahasiswa}
+                />
+              </div>
+            ) : (
+              <Card style={{ marginTop: "1em" }}>
+                <Skeleton
+                  style={{ marginTop: "2em" }}
+                  active
+                  paragraph="4"
+                  avatar
                 />
               </Card>
             )}
-          />
+          </>
         ) : (
-          <Skeleton active paragraph="4" avatar />
+          <Card style={{ marginTop: "1em" }}>
+            <Empty description={"Harap pilih nama kelas dan jadwal"} />
+          </Card>
         )}
       </PageLayout>
     </>

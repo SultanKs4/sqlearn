@@ -4,11 +4,7 @@ import { withAuth } from "next-auth/middleware";
 export default withAuth({
   callbacks: {
     authorized: ({ token }) => {
-      console.log("ini token di middleware, ", token);
       return token?.userRole === "mahasiswa";
     },
   },
 });
-
-// > Untuk mode dev
-// export { default } from "next-auth/middleware";

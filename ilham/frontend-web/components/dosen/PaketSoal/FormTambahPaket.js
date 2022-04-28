@@ -2,26 +2,17 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined } from "@ant-design/icons";
 import { useState } from "react";
 
-function FormTambahPaket({
-  form,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahPaket({ form, setVisible, handleSubmit, ...props }) {
   const [selectedKategori, setSelectedKategori] = useState("");
 
-  const onFinish = ({ kategori, ...values }) => {
+  const onFinish = ({ label_id, ...values }) => {
     handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
+      label_id: selectedKategori === "Close-Ended" ? 2 : 1,
       ...values,
     });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   const onChangeKategori = (kategori) => setSelectedKategori(kategori);
 
@@ -30,7 +21,7 @@ function FormTambahPaket({
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="paket_nama"
+            name="description"
             label="Nama Paket"
             rules={[
               {
@@ -40,6 +31,7 @@ function FormTambahPaket({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<CodeSandboxOutlined />}
               placeholder={` Contoh : Paket Soal E `}
             />
@@ -48,7 +40,7 @@ function FormTambahPaket({
         <Col>
           <Col span={12}>
             <Form.Item
-              name="kategori"
+              name="label_id"
               label="Kategori"
               rules={[
                 {

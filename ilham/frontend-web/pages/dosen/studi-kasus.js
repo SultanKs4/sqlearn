@@ -1,9 +1,9 @@
-import { React, useEffect, useState } from "react";
+import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
 
-import { Typography, Row, Col, Button, Card, Alert } from "antd";
+import { Typography, Row, Col, Button, Card, Alert, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -13,13 +13,20 @@ import ListComponent from "../../components/List";
 import FormHapusStudiKasus from "../../components/dosen/StudiKasus/FormHapusStudiKasus";
 import FormTambahStudiKasus from "../../components/dosen/StudiKasus/FormTambahStudiKasus";
 import PreviewStudiKasus from "../../components/dosen/StudiKasus/PreviewStudiKasus";
-import { mockGetAllStudiKasus } from "../../utils/remote-data/dosen/StudiKasus";
+import {
+  deleteStudiKasus,
+  getStudiKasus,
+  postStudiKasus,
+} from "../../utils/remote-data/dosen/StudiKasus";
+import { useSession } from "next-auth/react";
+import { removeHTML } from "../../utils/common";
 
 function StudiKasus() {
+  const { data: session } = useSession();
+
   const [data, setData] = useState([]);
   const [isDataLoaded, setDataLoaded] = useState(false);
 
-  const [formObj, setFormObj] = useState({});
   const [currentStudiKasus, setCurrentStudiKasus] = useState({});
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -27,21 +34,20 @@ function StudiKasus() {
   const [modalRole, setModalRole] = useState("");
   const [modalText, setModalText] = useState("");
 
-  const [isAlertActive, setIsAlertActive] = useState(false);
-
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
-
   useEffect(() => {
-    mockGetAllStudiKasus().then((response) => {
-      setData(response.data);
-      setDataLoaded(true);
-    });
-  }, []);
+    fetchDataStudiKasus();
+  }, [session]);
 
-  const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+  const fetchDataStudiKasus = useCallback(() => {
+    if (session !== undefined)
+      getStudiKasus(session?.user?.tokenJWT).then((response) => {
+        setData(response.data);
+        setDataLoaded(true);
+      });
+  }, [session, data]);
+
+  const handleToggleModal = (state = isModalVisible) =>
+    setIsModalVisible((prev) => state || !prev);
 
   const previewStudiKasus = (studiKasusObj) => {
     setCurrentStudiKasus(studiKasusObj);
@@ -54,40 +60,44 @@ function StudiKasus() {
     handleToggleModal();
   };
 
-  const editStudiKasus = (studiKasusObj) => {
-    setModalRole("edit");
-    setCurrentStudiKasus(studiKasusObj);
-    handleToggleModal();
-  };
-
-  const deleteStudiKasus = (studiKasusObj) => {
+  const displayModalDeleteStudiKasus = (studiKasusObj) => {
     setModalRole("delete");
     setCurrentStudiKasus(studiKasusObj);
     handleToggleModal();
   };
 
   const aksiTambahStudiKasus = (formStudiKasus) => {
-    // TODO : Call POST API request dari StudiKasusCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(
-      `Data ${formStudiKasus.studi_kasus_nama} berhasil ditambahkan`
-    );
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-
-    console.log("Hasil submit tambah", formStudiKasus);
+    postStudiKasus(session?.user?.tokenJWT, formStudiKasus)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(
+          `Data Pertanyaan 
+            ${formStudiKasus.name}
+          berhasil ditambahkan`
+        );
+      })
+      .then(() => fetchDataStudiKasus())
+      .catch((err) =>
+        message.error(
+          `Data Pertanyaan ${removeHTML(formStudiKasus.name)} gagal ditambahkan`
+        )
+      );
   };
 
   const aksiDeleteStudiKasus = (formStudiKasus) => {
-    // TODO : Call DELETE API request dari StudiKasusCRUD.js
-    // ...
-    handleToggleModal();
-    setAlertMessage(`Data ${formStudiKasus.studi_kasus_nama} berhasil dihapus`);
-    handleToggleAlert();
-    setTimeout(() => handleToggleAlert(false), 5000);
-
-    console.log("Data terhapus", formStudiKasus);
+    deleteStudiKasus(session?.user?.tokenJWT, formStudiKasus.id)
+      .then(() => {
+        handleToggleModal(false);
+        message.success(
+          `Data Pertanyaan ${removeHTML(formStudiKasus.name)} berhasil dihapus`
+        );
+      })
+      .then(() => fetchDataStudiKasus())
+      .catch((err) =>
+        message.error(
+          `Data Pertanyaan ${removeHTML(formStudiKasus.name)} gagal dihapus`
+        )
+      );
   };
 
   return (
@@ -107,31 +117,18 @@ function StudiKasus() {
           </Col>
         </Row>
 
-        {isAlertActive ? (
-          <Alert
-            message={alertMessage}
-            type={alertStatus}
-            closable
-            showIcon
-            banner
-            style={{ marginBottom: "1em" }}
-          />
-        ) : null}
-
         <ModalCustom
           role={modalRole}
           entity="Studi Kasus"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          confirmLoading={isModalLoading}
-          setConfirmLoading={setIsModalLoading}
+          modalText={modalText}
           setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (
               <FormTambahStudiKasus
                 handleSubmit={aksiTambahStudiKasus}
                 setVisible={setIsModalVisible}
-                setFormObj={setFormObj}
               />
             ) : modalRole === "preview" ? (
               <PreviewStudiKasus currentStudiKasus={currentStudiKasus} />
@@ -150,8 +147,7 @@ function StudiKasus() {
           dataSource={data}
           role={"studi-kasus"}
           previewStudiKasus={previewStudiKasus}
-          editStudiKasus={editStudiKasus}
-          deleteStudiKasus={deleteStudiKasus}
+          deleteStudiKasus={displayModalDeleteStudiKasus}
         />
       </PageLayout>
     </>

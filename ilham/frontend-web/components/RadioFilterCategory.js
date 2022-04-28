@@ -2,15 +2,20 @@ import { Col, Radio, Row, Typography } from "antd";
 
 function RadioFilterCategory({ setIsFilterActive, setEntityFiltered, data }) {
   const filterCategory = (e) => {
-    console.log(e.target.value);
     e.target.value === "Semua"
       ? setIsFilterActive(false)
       : setIsFilterActive(true);
 
     setEntityFiltered(
       data.filter((item) => {
-        if (e.target.value === "Tanpa Kategori") return item?.kategori === "-";
-        else return item?.kategori === e.target.value;
+        if (e.target.value === "Tanpa Kategori")
+          // ? Karena format dari backend ada 2 object untuk kategori close-ended / open-ended
+          return item?.QuestionLabel?.name === "-" || item?.label?.name === "-";
+        else
+          return (
+            item?.QuestionLabel?.name === e.target.value ||
+            item?.label?.name === e.target.value
+          );
       })
     );
   };

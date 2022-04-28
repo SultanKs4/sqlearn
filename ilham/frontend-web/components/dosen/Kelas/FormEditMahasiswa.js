@@ -2,12 +2,7 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 
-function FormEditMahasiswa({
-  currentMhs,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-}) {
+function FormEditMahasiswa({ currentMhs, setVisible, handleSubmit }) {
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -17,15 +12,9 @@ function FormEditMahasiswa({
     });
   }, [currentMhs]);
 
-  const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
-  };
+  const onFinish = (values) => handleSubmit(values);
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
@@ -42,6 +31,7 @@ function FormEditMahasiswa({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Contoh : Muhammad Ilham . . .`}
             />
@@ -59,6 +49,7 @@ function FormEditMahasiswa({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Contoh : 18417200xx   . . .`}
             />

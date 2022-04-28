@@ -1,38 +1,21 @@
-import {
-  Button,
-  Col,
-  Divider,
-  Form,
-  Input,
-  Row,
-  Select,
-  Typography,
-} from "antd";
+import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { LaptopOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 
-function FormTambahKelas({
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  currentKelas,
-  ...props
-}) {
+function FormEditKelas({ setVisible, handleSubmit, currentKelas, ...props }) {
   const [form] = Form.useForm();
+  const [fileList, setFileList] = useState();
 
   const onFinish = (values) => {
-    setFormObj(values);
     handleSubmit(values);
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   useEffect(() => {
     form.setFieldsValue({
-      kelas_nama: currentKelas?.nama,
+      id: currentKelas?.id,
+      name: currentKelas?.name,
       semester: currentKelas?.semester,
     });
   }, [currentKelas]);
@@ -42,7 +25,7 @@ function FormTambahKelas({
       <Row gutter={10}>
         <Col span={13}>
           <Form.Item
-            name="kelas_nama"
+            name="name"
             label="Nama Kelas"
             extra={
               <>
@@ -57,8 +40,9 @@ function FormTambahKelas({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<LaptopOutlined />}
-              placeholder={` Format [Prodi]-[Kelas]-[Tahun] . . .`}
+              placeholder={`Format [Prodi]-[Kelas]-[Tahun] . . .`}
             />
           </Form.Item>
         </Col>
@@ -102,4 +86,4 @@ function FormTambahKelas({
   );
 }
 
-export default FormTambahKelas;
+export default FormEditKelas;

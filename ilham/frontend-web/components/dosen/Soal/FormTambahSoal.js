@@ -1,7 +1,7 @@
 import {
+  Alert,
   Button,
   Col,
-  DatePicker,
   Divider,
   Form,
   Input,
@@ -17,9 +17,14 @@ import {
   PlusOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "antd/lib/form/Form";
-import { mockGetAllStudiKasus } from "../../../utils/remote-data/dosen/StudiKasus";
+import {
+  getStudiKasus,
+  getStudiKasusByID,
+} from "../../../utils/remote-data/dosen/StudiKasus";
+import { useSession } from "next-auth/react";
+import { propsUploadImage } from "../../../utils/remote-data/dosen/SoalCRUD";
 
 const formItemLayout = {
   labelCol: {
@@ -39,18 +44,18 @@ const formItemLayoutWithOutLabel = {
   },
 };
 
-function FormTambahSoal({
-  currentSoal,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
+  const { data: session } = useSession();
+
   const [form] = useForm();
 
+  const [fileList, setFileList] = useState([]);
+
   const [dataStudiKasus, setDataStudiKasus] = useState([]);
-  const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
+  const [dataTabel, setDataTabel] = useState([]);
+
   const [selectedKategori, setSelectedKategori] = useState(1);
+  const [selectedStudiKasus, setSelectedStudiKasus] = useState("");
 
   // ? State ini dipakai jika kategori nya adalah close-ended
   const refButton = useRef(null);
@@ -67,53 +72,71 @@ function FormTambahSoal({
   const [inputTagsPetunjukVisible, setInputTagsPetunjukVisible] =
     useState(false);
 
-  const onChangeStudiKasus = (kelas) => {
-    console.log(kelas);
-    setSelectedStudiKasus(kelas);
+  const onChangeKategori = (kategori) => setSelectedKategori(kategori);
+
+  const onChangeStudiKasus = (studiKasusID) =>
+    setSelectedStudiKasus(studiKasusID);
+
+  const fetchDataStudiKasus = useCallback(() => {
+    if (session !== undefined)
+      getStudiKasus(session?.user?.tokenJWT).then((response) =>
+        setDataStudiKasus(response.data)
+      );
+  }, [session]);
+
+  const handleCancel = () => setVisible(false);
+
+  const normFile = (e) => {
+    if (
+      !e.file.type === "image/jpeg" ||
+      !e.file.type === "image/png" ||
+      !e.file.type === "image/jpg"
+    )
+      message.error(`${e.file.name} is not an image`);
   };
 
-  const onChangeKategori = (kategori) => {
-    console.log(kategori);
-    setSelectedKategori(kategori);
+  const onFinish = (values) => {
+    console.log(values, "ini di onfinish");
+    if (fileList.length === 0)
+      message.error("Mohon memasukkan gambar preview hasil");
+    else if (!values.answer?.toString().includes(values.tables?.toString()))
+      // ? Pesan ini ditampilkan selama 6 detik
+      message.error(
+        "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
+        6
+      );
+    else
+      handleSubmit({
+        ...values,
+        label_id: selectedKategori === "Close-Ended" ? 2 : 1,
+        sql_parts: JSON.stringify(values?.sql_parts || []),
+        sql_hints: JSON.stringify(values?.sql_hints || []),
+        case_study: values?.case_study?.value,
+        answer: JSON.stringify(
+          selectedKategori === "Close-Ended" ? [values?.answer] : values?.answer
+        ),
+        tables: values.tables.toString(),
+        answer_pic: fileList,
+      });
   };
 
   useEffect(() => {
-    mockGetAllStudiKasus().then((response) => setDataStudiKasus(response.data));
-    form.setFieldsValue({
-      dosen_pembuat: "Dosen Coba",
-    });
-  }, []);
-
-  const onFinish = ({ kategori, ...values }) => {
-    setFormObj(values);
-    handleSubmit({
-      kategori: selectedKategori === "Close-Ended" ? 1 : 2,
-      ...values,
-    });
-  };
-
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
-
-  const normFile = (e) => console.log("Upload event:", e);
+    if (selectedStudiKasus !== "")
+      getStudiKasusByID(session?.user?.tokenJWT, selectedStudiKasus?.value)
+        .then((res) => setDataTabel(res.data?.tables))
+        .catch((err) => {
+          setDataTabel({});
+          message.error("Data Tabel tidak dapat dimuat");
+        });
+  }, [selectedStudiKasus]);
 
   useEffect(() => {
     form.setFieldsValue({
       ...form,
-      opsi_jawaban: tagsKomponen,
-      petunjuk_jawaban: tagsPetunjuk,
+      sql_parts: tagsKomponen,
+      sql_hints: tagsPetunjuk,
     });
   }, [tagsKomponen, tagsPetunjuk]);
-
-  const validateImageFile = (file) => {
-    if (!file.type.includes("image")) {
-      console.log("bukan gambar", file);
-      message.error(`${file.name} is not an image`);
-    }
-    return file.type.includes("image") ? true : Upload.LIST_IGNORE;
-  };
 
   const showInput = () => setInputTagsKomponenVisible(true);
   const showInputPetunjuk = () => setInputTagsPetunjukVisible(true);
@@ -125,6 +148,13 @@ function FormTambahSoal({
   useEffect(() => {
     refButtonPetunjuk?.current?.input.focus();
   }, [inputTagsPetunjukVisible]);
+
+  useEffect(() => {
+    fetchDataStudiKasus();
+    form.setFieldsValue({
+      dosen_pembuat: session?.user?.name,
+    });
+  }, [session]);
 
   const handleInputChange = (e) => setInputTagsKomponenValue(e.target.value);
   const handleInputPetunjukChange = (e) =>
@@ -160,31 +190,8 @@ function FormTambahSoal({
 
   return (
     <Form form={form} onFinish={onFinish} layout="vertical">
-      <Row justify="space-between" gutter={8}>
-        <Col span={24}>
-          <Form.Item
-            name="kategori"
-            label="Kategori"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan nama Kategori!",
-              },
-            ]}
-          >
-            <Select
-              placeholder="Pilih Kategori . . ."
-              onChange={onChangeKategori}
-            >
-              <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
-              <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
-            </Select>
-          </Form.Item>
-        </Col>
-      </Row>
-
       <Form.Item
-        name="teksSoal"
+        name="text"
         label="Teks Soal"
         rules={[
           {
@@ -194,14 +201,30 @@ function FormTambahSoal({
         ]}
       >
         <Input
+          autoComplete="off"
           prefix={<ConsoleSqlOutlined />}
           placeholder={` Teks Pertanyaan . . .`}
         />
       </Form.Item>
+      <Form.Item
+        name="label_id"
+        label="Kategori"
+        rules={[
+          {
+            required: true,
+            message: "Mohon masukkan nama Kategori!",
+          },
+        ]}
+      >
+        <Select placeholder="Pilih Kategori . . ." onChange={onChangeKategori}>
+          <Select.Option key={"Close-Ended"}>Close-Ended</Select.Option>
+          <Select.Option key={"Open-Ended"}>Open-Ended</Select.Option>
+        </Select>
+      </Form.Item>
       {selectedKategori === "Open-Ended" ? (
         <>
           <Form.List
-            name="opsi_jawaban"
+            name="answer"
             rules={[
               {
                 validator: async (_, names) => {
@@ -239,6 +262,7 @@ function FormTambahSoal({
                       noStyle
                     >
                       <Input
+                        autoComplete="off"
                         placeholder="Kunci SQL Query . . ."
                         style={{ width: "88%" }}
                       />
@@ -269,8 +293,13 @@ function FormTambahSoal({
           </Form.List>
         </>
       ) : (
+        // ? Close-Ended
         <>
-          <Form.Item name="opsi_jawaban" label="Opsi Jawaban">
+          <Form.Item
+            name="sql_parts"
+            label="Komponen SQL"
+            tooltip="Ini adalah komponen yang dapat di drag-and-drop ketika siswa mengerjakan soal"
+          >
             {tagsKomponen.map((item, idx) => (
               <Tag
                 key={idx}
@@ -282,6 +311,7 @@ function FormTambahSoal({
             ))}
             {inputTagsKomponenVisible && (
               <Input
+                autoComplete="off"
                 ref={refButton}
                 type="text"
                 size="small"
@@ -298,7 +328,22 @@ function FormTambahSoal({
               </Button>
             )}
           </Form.Item>
-          <Form.Item name="petunjuk_jawaban" label="Petunjuk Jawaban">
+          <Form.Item
+            name="sql_hints"
+            label="Petunjuk Jawaban"
+            tooltip={{
+              overlayStyle: { width: 600 },
+              title:
+                "Terdiri dari susunan query yang sudah benar. Komponen yang kosong akan diisi dengan bagian komponen SQL diatas",
+              placement: "left",
+            }}
+          >
+            <Alert
+              showIcon
+              type="info"
+              message="Untuk bagian komponen yang kosong dapat diisi dengan '__' (double-underscore) "
+              style={{ marginBottom: "1em" }}
+            />
             {tagsPetunjuk.map((item, idx) => (
               <Tag
                 key={idx}
@@ -310,6 +355,7 @@ function FormTambahSoal({
             ))}
             {inputTagsPetunjukVisible && (
               <Input
+                autoComplete="off"
                 ref={refButtonPetunjuk}
                 type="text"
                 size="small"
@@ -328,7 +374,7 @@ function FormTambahSoal({
           </Form.Item>
 
           <Form.Item
-            name="jawaban_benar"
+            name="answer"
             label="Jawaban Benar"
             rules={[
               {
@@ -338,8 +384,9 @@ function FormTambahSoal({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<ConsoleSqlOutlined />}
-              placeholder={` Jawaban Benar . . .`}
+              placeholder={`Jawaban Benar . . .`}
             />
           </Form.Item>
         </>
@@ -347,16 +394,14 @@ function FormTambahSoal({
 
       <Form.Item label="Preview Hasil">
         <Form.Item
-          name="preview_hasil"
+          name="answer_pic"
           valuePropName="fileList"
           getValueFromEvent={normFile}
           noStyle
         >
           <Upload.Dragger
+            {...propsUploadImage(session?.user?.tokenJWT, setFileList)}
             multiple={false}
-            beforeUpload={(file) => validateImageFile(file)}
-            name="files"
-            action="/upload.do"
           >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
@@ -371,25 +416,7 @@ function FormTambahSoal({
       <Row justify="space-between" gutter={8}>
         <Col span={12}>
           <Form.Item
-            name="dosen_pembuat"
-            label="Dibuat oleh"
-            rules={[
-              {
-                required: true,
-                message: "Mohon masukkan dosen pembuat!",
-              },
-            ]}
-          >
-            <Input
-              disabled
-              prefix={<ConsoleSqlOutlined />}
-              placeholder={` Dibuat Oleh . . .`}
-            />
-          </Form.Item>
-        </Col>
-        <Col span={12}>
-          <Form.Item
-            name="studi_kasus"
+            name="case_study"
             label="Studi Kasus"
             rules={[
               {
@@ -399,12 +426,38 @@ function FormTambahSoal({
             ]}
           >
             <Select
-              placeholder="Pilih Studi Kasus . . ."
+              labelInValue
               onChange={onChangeStudiKasus}
+              placeholder="Pilih Studi Kasus . . ."
             >
               {dataStudiKasus?.map((item) => (
-                <Select.Option key={item.nama}>{item.nama}</Select.Option>
+                <Select.Option key={item.id} value={item.id}>
+                  {item.name}
+                </Select.Option>
               ))}
+            </Select>
+          </Form.Item>
+        </Col>
+
+        <Col span={12}>
+          <Form.Item
+            name="tables"
+            label={`Gunakan Tabel dari ${selectedStudiKasus?.label || ""}`}
+            rules={[
+              {
+                required: true,
+                message: "Mohon pilih tabel yang akan digunakan!",
+              },
+            ]}
+          >
+            <Select placeholder="Pilih tabel . . ." allowClear>
+              {Object.keys(dataTabel) !== 0 &&
+                Object.keys(dataTabel)?.map((item, id) => (
+                  <Select.Option key={id || 0} value={item || ""}>
+                    {" "}
+                    {item || ""}{" "}
+                  </Select.Option>
+                ))}
             </Select>
           </Form.Item>
         </Col>

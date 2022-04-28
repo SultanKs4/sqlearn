@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { React } from "react";
 import { Draggable, Droppable } from "react-beautiful-dnd";
 
 const SQLQueryParts = ({ sqlParts }) => {
@@ -6,6 +6,7 @@ const SQLQueryParts = ({ sqlParts }) => {
     <>
       <h3>Komponen SQL</h3>
       <Droppable
+        isDropDisabled
         droppableId={"sql_parts"}
         key={"sql_parts"}
         direction="horizontal"
@@ -26,8 +27,8 @@ const SQLQueryParts = ({ sqlParts }) => {
             {sqlParts?.map((item, index) => {
               return (
                 <Draggable
-                  key={item.id.toString()}
-                  draggableId={item.id.toString()}
+                  key={index.toString()}
+                  draggableId={index.toString()}
                   index={index}
                 >
                   {(provided, snapshot) => {
@@ -49,7 +50,7 @@ const SQLQueryParts = ({ sqlParts }) => {
                           ...provided.draggableProps.style,
                         }}
                       >
-                        {item.content}
+                        {item}
                       </div>
                     );
                   }}

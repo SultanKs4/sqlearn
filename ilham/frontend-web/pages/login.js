@@ -13,23 +13,9 @@ import {
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { getProviders, getSession, signIn, useSession } from "next-auth/react";
+import { getProviders, signIn, useSession } from "next-auth/react";
 
 const { Option } = Select;
-
-const mockValidate = (valueInput) => {
-  if (valueInput.loginTypeValue === "mahasiswa")
-    return valueInput.username === "1841720076" &&
-      valueInput.password === "1841720076"
-      ? true
-      : false;
-  else {
-    return valueInput.username === "dosencoba" &&
-      valueInput.password === "dosencoba"
-      ? true
-      : false;
-  }
-};
 
 const Login = ({ providers, csrfToken }) => {
   const router = useRouter();
@@ -101,6 +87,7 @@ const Login = ({ providers, csrfToken }) => {
                   >
                     <Option value="mahasiswa">Mahasiswa</Option>
                     <Option value="dosen">Dosen</Option>
+                    <Option value="admin">Admin</Option>
                   </Select>
                 </Form.Item>
               </Col>
@@ -108,11 +95,6 @@ const Login = ({ providers, csrfToken }) => {
 
             <Form.Item
               name="username"
-              tooltip={{
-                title: `Bisa menggunakan ${
-                  loginType === "mahasiswa" ? "NIM" : "NIDN"
-                }`,
-              }}
               rules={[
                 {
                   required: true,
@@ -121,6 +103,7 @@ const Login = ({ providers, csrfToken }) => {
               ]}
             >
               <Input
+                autoComplete="off"
                 prefix={<UserOutlined />}
                 placeholder={`Username ${loginType} . . .`}
               />
@@ -171,16 +154,6 @@ const Login = ({ providers, csrfToken }) => {
                     Log in
                   </Button>
                 </Col>
-                <Col>
-                  Or{" "}
-                  <a
-                    onClick={() => {
-                      router.push("/register");
-                    }}
-                  >
-                    Register now!
-                  </a>
-                </Col>
               </Row>
             </Form.Item>
           </Form>
@@ -189,24 +162,5 @@ const Login = ({ providers, csrfToken }) => {
     </>
   );
 };
-
-// Login.getInitialProps = async (context) => {
-//   const { req, res } = context;
-//   const session = await getSession({ req });
-
-//   if (session && res && session.accessToken) {
-//     res.writeHead(302, {
-//       Location: "/dosen",
-//     });
-//     res.end();
-//     return;
-//   }
-
-//   return {
-//     session: undefined,
-//     providers: await providers(context),
-//     csrfToken: await csrfToken(context),
-//   };
-// };
 
 export default Login;

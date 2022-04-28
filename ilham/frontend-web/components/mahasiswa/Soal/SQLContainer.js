@@ -1,51 +1,43 @@
-import { Col, Divider, Row } from "antd";
-import { React, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { Col, Row } from "antd";
+import { React, useState } from "react";
+import { DragDropContext } from "react-beautiful-dnd";
 import SQLQueryParts from "../Soal/SQLQueryParts";
 import SQLAnswerBox from "./SQLAnswerBox";
 
-const SQLContainer = ({
-  boxes,
-  setBoxes,
-  jawaban,
-  sqlUncomplete,
-  setSqlUncomplete,
-  onDragEnd,
-}) => {
+const SQLContainer = ({ boxes, setBoxes, setCurrentPart }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [fetchClue, setFetchClue] = useState([]);
 
-  useEffect(() => {
-    if (boxes.length !== 0)
-      setFetchClue(
-        boxes?.sql_constructed?.items?.map((item) => item.content.toLowerCase())
-      );
-  }, [boxes]);
+  const onDragEnd = (result, boxes, setBoxes) => {
+    if (!result.destination) return;
+    const { source, destination } = result;
+    if (source.droppableId !== destination.droppableId) {
+      // ? Ini kalau drag dari komponen SQL dan drop ke Jawaban SQL
+      let destinationParts = destination.droppableId.split("_");
+      let destinationKey = `${destinationParts[0]}_${destinationParts[1]}`;
+      let idDest = destinationParts[2]; // ? Output : id
 
-  // ? Ini kalau mau hintnya statis (hint berubah ketika ganti soal)
-  useEffect(() => {
-    if (sqlUncomplete === undefined || sqlUncomplete?.length === 0)
-      setSqlUncomplete(
-        jawaban?.split(" ").map((partJawaban, idx) => {
-          if (fetchClue?.includes(partJawaban.toLowerCase()))
-            return partJawaban;
-          else return "___";
-        })
-      );
-  }, [fetchClue]);
+      let destColumn = boxes[destinationKey].items;
 
-  // // ? Ini kalau mau hintnya dinamis (menyesuaikan input drag and drop mahasiswa).
-  // useEffect(() => {
-  //   // ? Ini kalau mau hintnya dinamis (menyesuaikan input drag and drop mahasiswa).
-  //   setSqlUncomplete(
-  //     jawaban?.split(" ").map((partJawaban, idx) => {
-  //       if (fetchClue.includes(partJawaban.toLowerCase())) return partJawaban;
-  //       else return "___";
-  //     })
-  //   );
-  // }, [fetchClue]);
+      let sourceItems = [...boxes[source.droppableId].items];
 
+      let destItems = destColumn;
+
+      const [removed] = sourceItems.splice(source.index, 1);
+      destItems[idDest] = removed;
+
+      setBoxes({
+        ...boxes,
+        sql_parts: {
+          items: sourceItems,
+        },
+        sql_constructed: {
+          items: destItems,
+        },
+      });
+    }
+    // ? Set Log per Drag & Drop
+    setCurrentPart(result);
+  };
   return (
     <div>
       <DragDropContext
@@ -58,7 +50,7 @@ const SQLContainer = ({
         <Row justify="space-between" style={{ marginBottom: "1em" }}>
           <Col>SQL Hints : </Col>
           <Col>
-            {sqlUncomplete?.map((item, id) => (
+            {boxes?.sql_constructed?.items?.map((item, id) => (
               <span key={id} style={{ paddingLeft: ".5em" }}>
                 {item}
               </span>
@@ -67,8 +59,9 @@ const SQLContainer = ({
         </Row>
 
         <SQLQueryParts sqlParts={boxes?.sql_parts?.items} />
+
         {/* ========================================== */}
-        <SQLAnswerBox boxes={boxes} jawaban={jawaban} isDragging={isDragging} />
+        <SQLAnswerBox boxes={boxes} isDragging={isDragging} />
       </DragDropContext>
     </div>
   );

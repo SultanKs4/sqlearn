@@ -6,7 +6,6 @@ import {
   Row,
   Col,
   Button,
-  Avatar,
   Typography,
   Card,
   Tooltip,
@@ -14,10 +13,14 @@ import {
   Empty,
   Badge,
 } from "antd";
-import { countTimeDifference, getHours, ucfirst } from "../utils/common";
+import {
+  countTimeDifference,
+  formatToArray,
+  removeHTML,
+  ucfirst,
+} from "../utils/common";
 
 import {
-  PlusCircleOutlined,
   ConsoleSqlOutlined,
   IssuesCloseOutlined,
   SearchOutlined,
@@ -25,18 +28,27 @@ import {
   FieldTimeOutlined,
   DeleteOutlined,
   UserOutlined,
-  CheckOutlined,
+  RightOutlined,
   CalendarOutlined,
   LaptopOutlined,
   DatabaseOutlined,
   FileTextOutlined,
   CodeSandboxOutlined,
-  TeamOutlined,
   FormOutlined,
+  ExperimentOutlined,
+  TagsOutlined,
+  MonitorOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 
-function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
+function ListComponent({
+  isLoading,
+  dataSource,
+  dataSourceDemo,
+  role,
+  showDetail,
+  ...props
+}) {
   const router = useRouter();
 
   if (isLoading) {
@@ -105,17 +117,25 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         />
       );
       break;
+    case "lihat-nilai":
+      icon = null;
+      emptyDescription = "Nilai dalam kelas ini";
+      break;
+    case "grading-rules":
+      icon = null;
+      emptyDescription = "Grading Rules";
+      break;
     default:
       break;
   }
 
-  if (dataSource.length === 0)
+  if (dataSource?.length === 0)
     return (
       <Card>
         <Empty
-          image={icon}
+          image={icon || Empty.PRESENTED_IMAGE_DEFAULT}
           description={
-            <Typography.Text style={{ color: "gray", fontWeight: "bold" }}>
+            <Typography.Text style={{ color: "gray" }}>
               Tidak ada data {emptyDescription}
             </Typography.Text>
           }
@@ -138,14 +158,14 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                     <Row gutter={50}>
                       <Col>
                         <Typography.Text style={{ fontWeight: "bold" }}>
-                          {item.nama}
+                          {item?.name}
                         </Typography.Text>
                       </Col>
                       <Col>
                         <DatabaseOutlined
                           style={{ fontSize: "1.2em", marginRight: ".5em" }}
                         />
-                        Database {item.database}
+                        Database {item?.DbList?.db_name}
                       </Col>
                     </Row>
                   </Col>
@@ -195,12 +215,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           {item.name}
                         </Typography.Text>
                       </Col>
-                      <Col>
-                        <UserOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item?.jumlahMhs} orang
-                      </Col>
                     </Row>
                   </Col>
 
@@ -223,7 +237,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             type="primary"
                             icon={<EditOutlined />}
                             size={"medium"}
-                            onClick={() => props.editKelas(item)}
+                            onClick={() => props.displayModalEditKelas(item)}
                           />
                         </Tooltip>
                       </Col>
@@ -233,7 +247,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             type="danger"
                             icon={<DeleteOutlined />}
                             size={"medium"}
-                            onClick={() => props.deleteKelas(item)}
+                            onClick={() => props.displayModalDeleteKelas(item)}
                           />
                         </Tooltip>
                       </Col>
@@ -246,77 +260,55 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
         />
       );
     case "lihat-nilai":
-      let topThreeStudents = dataSource.slice().splice(0, 3);
-
       return (
-        <Card>
+        <>
           <List
             itemLayout="horizontal"
-            dataSource={props.displayAllData ? dataSource : topThreeStudents}
+            dataSource={dataSource}
             renderItem={(item) => (
-              <List.Item>
-                <Row justify="space-around" style={{ width: "100vw" }}>
-                  <Col span={18}>
-                    <Row gutter={[50]}>
-                      <Col span={8}>{item.nama}</Col>
-                      <Col span={6}>
-                        <ConsoleSqlOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item.jumlahLatihanDikerjakan} Pertanyaan
-                      </Col>
-                      <Col span={5}>
-                        <FieldTimeOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        {item.avgDurasi} menit
-                      </Col>
-                      <Col span={5}>
-                        <FormOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        Nilai :{item.avgNilai}
-                      </Col>
-                    </Row>
-                  </Col>
+              <Card>
+                <List.Item style={{ padding: 0, marginBottom: ".5em" }}>
+                  <Row justify="space-around" style={{ width: "100vw" }}>
+                    <Col span={18}>
+                      <Row gutter={[50]}>
+                        <Col span={8} style={{ fontWeight: "bold" }}>
+                          {item?.Student?.name}
+                        </Col>
+                        <Col span={6}>NIM {item?.Student?.nim}</Col>
+                        <Col span={6}>Score : {item?.score}</Col>
+                      </Row>
+                    </Col>
 
-                  <Col span={4}>
-                    <Row gutter={20} justify="end">
-                      <Col>
-                        <Tooltip title="Preview Nilai Mhs">
-                          <Button
-                            type="primary"
-                            icon={<SearchOutlined />}
-                            style={{
-                              color: "white",
-                              backgroundColor: "purple",
-                            }}
-                            size={"medium"}
-                            onClick={() => props.previewDetailNilai(item)}
-                          ></Button>
-                        </Tooltip>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-              </List.Item>
+                    <Col span={4}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          <Tooltip
+                            title={`Preview Nilai ${item?.Student?.name}`}
+                          >
+                            <Button
+                              type="primary"
+                              icon={<RightOutlined />}
+                              onClick={() =>
+                                router.push({
+                                  pathname: `/dosen/nilai-mahasiswa/mhs/${item?.Student?.id}`,
+                                  query: {
+                                    jadwalID: item?.schedule_id,
+                                  },
+                                })
+                              }
+                            >
+                              Lihat Detail
+                            </Button>{" "}
+                          </Tooltip>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </List.Item>
+              </Card>
             )}
           />
-          {!props.displayAllData && (
-            <Typography.Paragraph
-              underline
-              style={{ color: "grey", textAlign: "center", marginTop: "1em" }}
-            >
-              <Tooltip
-                title={`Preview Kelas untuk melihat daftar mahasiswa dalam kelas ${
-                  props?.kelas?.nama || "ini"
-                }`}
-              >
-                Terdapat total {dataSource.length} mahasiswa
-              </Tooltip>
-            </Typography.Paragraph>
-          )}
-        </Card>
+        </>
       );
     case "sesi-latihan-mahasiswa":
       return (
@@ -324,94 +316,115 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           itemLayout="horizontal"
           dataSource={dataSource}
           renderItem={(item) => (
-            <List.Item key={item.id}>
-              <Row justify="space-around" style={{ width: "100vw" }}>
-                <Col span={18}>
-                  <Row gutter={[10]}>
-                    <Col span={showDetail ? 4 : 6}>
-                      <Typography.Text
-                        style={{ fontWeight: "bold" }}
-                        children={item.nama}
-                      />
-                    </Col>
-                    <Col span={showDetail ? 6 : 9}>
-                      <ConsoleSqlOutlined
-                        style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                      />
-                      {item.jumlahSoal} Pertanyaan
-                    </Col>
-
-                    {item.hasOwnProperty("nilai") && showDetail && (
-                      <Col span={showDetail ? 6 : 9}>
-                        <FormOutlined
-                          style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                        />
-                        Skor : {item.nilai}
-                      </Col>
-                    )}
-
-                    <Col span={showDetail ? 6 : 9}>
-                      {item.hasOwnProperty("nilai") ? (
-                        <>
-                          <IssuesCloseOutlined
-                            style={{
-                              fontSize: "1.2em",
-                              marginRight: ".5em",
-                            }}
+            // ? Yang item?.label itu karena response dari BE langsung string, bukan object yang isinya ada name dan id
+            <Badge.Ribbon
+              text={
+                item?.label?.name === "-"
+                  ? "Kosong"
+                  : item?.label?.name || item?.label
+              }
+              color={
+                item?.label?.name === "Close-Ended" ? "geekblue" : "purple"
+              }
+              placement="start"
+              style={{
+                marginLeft: ".5em",
+                display: "label" in item ? "block" : "none",
+              }}
+            >
+              <List.Item style={{ padding: 0 }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                  <Row justify="space-around" style={{ marginTop: "1em" }}>
+                    <Col span={18}>
+                      <Row gutter={[50]}>
+                        <Col span={showDetail ? 4 : 6}>
+                          <Typography.Text
+                            style={{ fontWeight: "bold" }}
+                            children={
+                              item?.hasOwnProperty("score")
+                                ? item?.schedule?.description
+                                : item?.description
+                            }
                           />
-                          {`${item.totalPercobaan}x percobaan`}
-                        </>
-                      ) : (
-                        <div
-                          style={{
-                            color:
-                              countTimeDifference(
+                        </Col>
+                        <Col span={showDetail ? 6 : 9}>
+                          <ConsoleSqlOutlined
+                            style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                          />
+                          {item?.total_questions} Pertanyaan
+                        </Col>
+
+                        {item?.hasOwnProperty("score") && showDetail && (
+                          <Col span={showDetail ? 6 : 9}>
+                            <FormOutlined
+                              style={{ fontSize: "1.2em", marginRight: ".5em" }}
+                            />
+                            Skor : {item?.score}
+                          </Col>
+                        )}
+
+                        <Col span={showDetail ? 6 : 9}>
+                          {item?.hasOwnProperty("score") ? (
+                            <>
+                              <IssuesCloseOutlined
+                                style={{
+                                  fontSize: "1.2em",
+                                  marginRight: ".5em",
+                                }}
+                              />
+                              Score : {item?.score}
+                            </>
+                          ) : (
+                            <div
+                              style={{
+                                color:
+                                  countTimeDifference(
+                                    moment(),
+                                    moment(item?.finish)
+                                  )
+                                    .toLowerCase()
+                                    .includes("terlewat") && "red",
+                              }}
+                            >
+                              <FieldTimeOutlined
+                                style={{
+                                  fontSize: "1.2em",
+                                  marginRight: ".5em",
+                                }}
+                              />
+                              {countTimeDifference(
                                 moment(),
-                                moment(item?.tanggal_akhir)
-                              )
-                                .toLowerCase()
-                                .includes("terlewat") && "red",
-                          }}
-                        >
-                          <FieldTimeOutlined
-                            style={{
-                              fontSize: "1.2em",
-                              marginRight: ".5em",
-                            }}
-                          />
-                          {countTimeDifference(
-                            moment(),
-                            moment(item?.tanggal_akhir)
+                                moment(item?.finish)
+                              )}
+                            </div>
                           )}
-                        </div>
-                      )}
+                        </Col>
+                      </Row>
                     </Col>
-                  </Row>
-                </Col>
 
-                <Col span={6}>
-                  <Row gutter={20} justify="end">
-                    <Col>
-                      {item.hasOwnProperty("nilai") ? (
-                        <div style={{ color: "#52c41a" }}>
-                          {ucfirst(item.status)}
-                        </div>
-                      ) : (
-                        <Button
-                          ghost
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.kerjakanLatihan(item.id)}
-                        >
-                          Kerjakan
-                        </Button>
-                      )}
+                    <Col span={6}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          {item?.hasOwnProperty("score") ? (
+                            <div style={{ color: "#52c41a" }}>Selesai</div>
+                          ) : (
+                            <Button
+                              ghost
+                              type="primary"
+                              icon={<EditOutlined />}
+                              size={"medium"}
+                              onClick={() => props.kerjakanLatihan(item?.id)}
+                            >
+                              Kerjakan
+                            </Button>
+                          )}
+                        </Col>
+                      </Row>
                     </Col>
                   </Row>
-                </Col>
-              </Row>
-            </List.Item>
+                </Card>
+              </List.Item>
+            </Badge.Ribbon>
           )}
         />
       );
@@ -422,8 +435,10 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={item?.label?.name === "-" ? "Kosong" : item?.label?.name}
+              color={
+                item?.label?.name === "Close-Ended" ? "geekblue" : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -433,20 +448,20 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row gutter={[50]}>
                         <Col span={4}>
                           <Typography.Text style={{ fontWeight: "bold" }}>
-                            {item.jadwal_nama}
+                            {item.description}
                           </Typography.Text>
                         </Col>
                         <Col span={4}>
                           <LaptopOutlined
                             style={{ fontSize: "1.2em", marginRight: ".5em" }}
                           />
-                          {item.kelas_nama}
+                          {item.class[0]?.name}
                         </Col>
                         <Col span={6}>
-                          <DatabaseOutlined
+                          <CodeSandboxOutlined
                             style={{ fontSize: "1.2em", marginRight: ".5em" }}
                           />
-                          {item.studi_kasus_nama}
+                          {item.container?.description}
                         </Col>
                         <Col span={8}>
                           <FieldTimeOutlined
@@ -458,13 +473,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               color:
                                 countTimeDifference(
                                   moment(),
-                                  item?.tanggal_akhir
+                                  moment(item?.finish)
                                 )
                                   .toLowerCase()
                                   .includes("terlewat") && "red",
                             }}
                           >
-                            {countTimeDifference(moment(), item?.tanggal_akhir)}
+                            {countTimeDifference(
+                              moment(),
+                              moment(item?.finish)
+                            )}
                           </span>
                         </Col>
                       </Row>
@@ -478,7 +496,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<EditOutlined />}
                               size={"medium"}
-                              onClick={() => props.editJadwal(item)}
+                              onClick={() => props.displayModalEditJadwal(item)}
                             ></Button>
                           </Tooltip>
                         </Col>
@@ -488,7 +506,9 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="danger"
                               icon={<DeleteOutlined />}
                               size={"medium"}
-                              onClick={() => props.deleteJadwal(item)}
+                              onClick={() =>
+                                props.displayModalDeleteJadwal(item)
+                              }
                             ></Button>
                           </Tooltip>
                         </Col>
@@ -508,8 +528,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={
+                item?.QuestionLabel?.name === "-"
+                  ? "Kosong"
+                  : item?.QuestionLabel?.name
+              }
+              color={
+                item?.QuestionLabel?.name === "Close-Ended"
+                  ? "geekblue"
+                  : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -519,20 +547,8 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                       <Row gutter={[50]}>
                         <Col>
                           <Typography.Text style={{ fontWeight: "bold" }}>
-                            {item.nama}
+                            {item.description}
                           </Typography.Text>
-                        </Col>
-                        <Col>
-                          <ConsoleSqlOutlined
-                            style={{ fontSize: "1.2em", marginRight: ".5em" }}
-                          />
-                          <Typography.Text
-                            style={{
-                              color:
-                                item.pertanyaan.length > 0 ? "black" : "red",
-                            }}
-                            children={`${item.pertanyaan.length} Pertanyaan`}
-                          />
                         </Col>
                       </Row>
                     </Col>
@@ -545,7 +561,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<SearchOutlined />}
                               size={"medium"}
-                              onClick={() => props.previewPaket(item?.id_paket)}
+                              onClick={() => props.previewPaket(item?.id)}
                             ></Button>
                           </Tooltip>
                         </Col>
@@ -583,19 +599,19 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <DatabaseOutlined />
                         <Typography.Text
                           style={{ fontWeight: "bold", marginLeft: "1em" }}
-                          children={item.studi_kasus}
+                          children={item.CaseStudy?.name}
                         />
                       </Col>
                     </Row>
                     <Row justify="space-between" style={{ margin: "1em 0" }}>
-                      <Col> {item.teksSoal} </Col>
+                      <Col> {removeHTML(item.text)} </Col>
                     </Row>
                     <Row justify="space-between">
                       <Col>
                         <Typography.Text children={"Opsi Jawaban : "} />
                         <List
                           size="small"
-                          dataSource={item.jawaban}
+                          dataSource={formatToArray(item?.answer)}
                           locale={{ emptyText: "Opsi Jawaban belum dibuat" }}
                           renderItem={(opsi) => <List.Item>{opsi}</List.Item>}
                         />
@@ -605,17 +621,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
 
                   <Col>
-                    <Row>
-                      <Tooltip title="Edit Soal">
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editPilihSoal(item)}
-                        />
-                      </Tooltip>
-                    </Row>
-                    <Divider style={{ margin: 0, padding: 4 }} />
                     <Tooltip title="Hapus Soal">
                       <Button
                         type="danger"
@@ -646,12 +651,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <DatabaseOutlined />
                           <Typography.Text
                             style={{ fontWeight: "bold", marginLeft: "1em" }}
-                            children={item.studi_kasus}
+                            children={item?.CaseStudy?.name}
                           />
                         </Col>
                       </Row>
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
-                        <Col> {item.teksSoal} </Col>
+                        <Col> {removeHTML(item?.text) || item?.text} </Col>
                       </Row>
                     </Col>
                   </Row>
@@ -678,8 +683,16 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
           dataSource={dataSource}
           renderItem={(item) => (
             <Badge.Ribbon
-              text={item?.kategori === "-" ? "Kosong" : item?.kategori}
-              color={item?.kategori === "Close-Ended" ? "geekblue" : "purple"}
+              text={
+                item?.QuestionLabel?.name === "-"
+                  ? "Kosong"
+                  : item?.QuestionLabel?.name
+              }
+              color={
+                item?.QuestionLabel?.name === "Close-Ended"
+                  ? "geekblue"
+                  : "purple"
+              }
               placement="start"
             >
               <List.Item style={{ padding: 0 }}>
@@ -691,12 +704,12 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <DatabaseOutlined />
                           <Typography.Text
                             style={{ fontWeight: "bold", marginLeft: "1em" }}
-                            children={item.studi_kasus}
+                            children={item.CaseStudy?.name}
                           />
                         </Col>
                       </Row>
                       <Row justify="space-between" style={{ margin: "1em 0" }}>
-                        <Col> {item.teksSoal} </Col>
+                        <Col>{removeHTML(item.text)}</Col>
                       </Row>
                       {showDetail && (
                         <Row justify="space-between">
@@ -704,7 +717,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                             <Typography.Text children={"Jawaban Query : "} />
                             <List
                               size="small"
-                              dataSource={item.jawaban}
+                              dataSource={formatToArray(item.answer)}
                               locale={{
                                 emptyText: "Opsi Jawaban belum dibuat",
                               }}
@@ -724,7 +737,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                               type="primary"
                               icon={<EditOutlined />}
                               size={"medium"}
-                              onClick={() => props.editSoal(item)}
+                              onClick={() => props.displayModalEditSoal(item)}
                             />
                           </Tooltip>
                         </Row>
@@ -733,7 +746,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           <Button
                             type="danger"
                             icon={<DeleteOutlined />}
-                            onClick={() => props.deleteSoal(item)}
+                            onClick={() => props.displayModalDeleteSoal(item)}
                           />
                         </Tooltip>
                       </Col>
@@ -760,7 +773,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                         <UserOutlined />
                         <Typography.Text
                           style={{ marginLeft: "1em" }}
-                          children={item?.nama}
+                          children={item?.name}
                         />
                       </Col>
                       <Col span={6}>
@@ -770,14 +783,6 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                   </Col>
                   <Col span={6}>
                     <Row gutter={20} justify="end">
-                      <Col>
-                        <Button
-                          type="primary"
-                          icon={<EditOutlined />}
-                          size={"medium"}
-                          onClick={() => props.editMahasiswa(item)}
-                        ></Button>
-                      </Col>
                       <Col>
                         <Button
                           type="danger"
@@ -796,24 +801,86 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
       );
     case "admin-data-dosen":
       return (
+        <>
+          <Row gutter={20} style={{ marginLeft: "1em" }}>
+            <Col span={6}>Nama Dosen</Col>
+            <Col>No Induk</Col>
+          </Row>
+          <Divider />
+          <List
+            itemLayout="horizontal"
+            dataSource={dataSource}
+            renderItem={(item) => (
+              <List.Item style={{ padding: 0 }}>
+                <Card style={{ width: "100vw", marginBottom: ".4em" }}>
+                  <Row justify="space-around">
+                    <Col span={18}>
+                      <Row gutter={20}>
+                        <Col span={8}>
+                          <UserOutlined />
+                          <Typography.Text
+                            style={{ marginLeft: "1em" }}
+                            children={item?.name}
+                          />
+                        </Col>
+                        <Col>
+                          <Typography.Text children={item?.no_induk} />
+                        </Col>
+                      </Row>
+                    </Col>
+                    <Col span={6}>
+                      <Row gutter={20} justify="end">
+                        <Col>
+                          <Button
+                            type="primary"
+                            icon={<EditOutlined />}
+                            size={"medium"}
+                            onClick={() => props.editDosen(item)}
+                          ></Button>
+                        </Col>
+                        <Col>
+                          <Button
+                            type="danger"
+                            icon={<DeleteOutlined />}
+                            size={"medium"}
+                            onClick={() => props.deleteDosen(item)}
+                          ></Button>
+                        </Col>
+                      </Row>
+                    </Col>
+                  </Row>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </>
+      );
+    case "grading-rules":
+      return (
         <List
           itemLayout="horizontal"
           dataSource={dataSource}
-          renderItem={(item) => (
-            <List.Item style={{ padding: 0 }}>
+          renderItem={(item, id) => (
+            <List.Item key={id} style={{ padding: 0 }}>
               <Card style={{ width: "100vw", marginBottom: ".4em" }}>
                 <Row justify="space-around">
                   <Col span={18}>
                     <Row gutter={20}>
-                      <Col span={8}>
-                        <UserOutlined />
+                      <Col span={6}>
+                        <TagsOutlined />
                         <Typography.Text
                           style={{ marginLeft: "1em" }}
-                          children={item?.nama_dosen}
+                          children={ucfirst(item?.type)}
                         />
                       </Col>
+                      <Col span={8}>
+                        <Typography.Text style={{ marginRight: "1em" }}>
+                          Jumlah percobaan : {item?.attemps}
+                        </Typography.Text>
+                        <ExperimentOutlined />
+                      </Col>
                       <Col span={6}>
-                        <Typography.Text children={item?.nomor_induk} />
+                        <Typography.Text>Skor : {item?.value}</Typography.Text>
                       </Col>
                     </Row>
                   </Col>
@@ -824,7 +891,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           type="primary"
                           icon={<EditOutlined />}
                           size={"medium"}
-                          onClick={() => props.editDosen(item)}
+                          onClick={() => props.displayEditGradingRules(item)}
                         ></Button>
                       </Col>
                       <Col>
@@ -832,7 +899,7 @@ function ListComponent({ isLoading, dataSource, role, showDetail, ...props }) {
                           type="danger"
                           icon={<DeleteOutlined />}
                           size={"medium"}
-                          onClick={() => props.deleteDosen(item)}
+                          onClick={() => props.displayDeleteGradingRules(item)}
                         ></Button>
                       </Col>
                     </Row>

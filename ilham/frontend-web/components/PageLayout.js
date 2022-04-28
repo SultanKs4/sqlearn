@@ -1,3 +1,5 @@
+// ? Sebelum sync untuk deploy pastikan callbackUrl nya bener
+
 import SiderComponent from "./Sider";
 import { Layout, Menu, Dropdown, Row, Col } from "antd";
 import {
@@ -6,15 +8,15 @@ import {
   PoweroffOutlined,
 } from "@ant-design/icons";
 
-import { useRouter } from "next/router";
-import { useState } from "react";
-import { signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
 const { Content, Footer, Header } = Layout;
 
-function PageLayout({ children, role, username = "1841720076" }) {
-  const [collapsed, setCollapsed] = useState(false);
+function PageLayout({ children, role }) {
+  const { data: session } = useSession();
 
-  const router = useRouter();
+  const [collapsed, setCollapsed] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState({});
 
   const onClick = () => signOut({ callbackUrl: "http://localhost:3000/login" });
 
@@ -26,9 +28,9 @@ function PageLayout({ children, role, username = "1841720076" }) {
     </Menu>
   );
 
-  if (role === "mahasiswa") username = "1841720076";
-  else if (role === "admin") username = "admincoba";
-  else username = "Dosen Coba";
+  useEffect(() => {
+    if (session !== undefined) setLoggedInUser(session?.user?.name);
+  }, [session]);
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -46,7 +48,7 @@ function PageLayout({ children, role, username = "1841720076" }) {
             justify="space-between"
             style={{ padding: "0 3em", color: "white" }}
           >
-            <Col> {`Welcome, ${username} !`} </Col>
+            <Col> {`Welcome, ${loggedInUser} !`} </Col>
             <Col>
               <Dropdown overlay={menu} arrow>
                 <a

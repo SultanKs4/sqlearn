@@ -2,7 +2,7 @@ import { Button, Col, Form, Row } from "antd";
 
 function FormHapusMahasiswa({
   form,
-  currentMahasiswa,
+  currentMhs,
   setVisible,
   handleSubmit,
   ...props
@@ -19,11 +19,7 @@ function FormHapusMahasiswa({
           </Button>
         </Col>
         <Col>
-          <Button
-            type="danger"
-            ghost
-            onClick={() => handleSubmit(currentMahasiswa)}
-          >
+          <Button type="danger" ghost onClick={() => handleSubmit(currentMhs)}>
             Ya, Hapus
           </Button>
         </Col>

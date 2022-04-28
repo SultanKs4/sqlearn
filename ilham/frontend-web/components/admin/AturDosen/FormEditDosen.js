@@ -2,29 +2,23 @@ import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined, UserOutlined } from "@ant-design/icons";
 import { useEffect } from "react";
 
-function FormEditDosen({
-  currentDosen,
-  setFormObj,
-  setVisible,
-  handleSubmit,
-  ...props
-}) {
+function FormEditDosen({ currentDosen, setVisible, handleSubmit, ...props }) {
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
+    setVisible(false);
+    handleSubmit({
+      level: "dosen",
+      ...values,
+    });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   useEffect(() => {
     form.setFieldsValue({
-      nomor_induk: currentDosen?.nomor_induk,
-      nama_dosen: currentDosen?.nama_dosen,
+      no_induk: currentDosen?.no_induk,
+      name: currentDosen?.name,
       username: currentDosen?.username,
     });
   }, []);
@@ -34,7 +28,7 @@ function FormEditDosen({
       <Row>
         <Col span={22}>
           <Form.Item
-            name="nomor_induk"
+            name="no_induk"
             label="Nomor Induk"
             rules={[
               {
@@ -44,6 +38,7 @@ function FormEditDosen({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<CodeSandboxOutlined />}
               placeholder={` Nomor Induk Dosen . . . `}
             />
@@ -53,7 +48,7 @@ function FormEditDosen({
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="nama_dosen"
+            name="name"
             label="Nama Dosen"
             rules={[
               {
@@ -63,6 +58,7 @@ function FormEditDosen({
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Nama Dosen . . . `}
             />
@@ -79,7 +75,11 @@ function FormEditDosen({
               },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder={` Username . . . `} />
+            <Input
+              autoComplete="off"
+              prefix={<UserOutlined />}
+              placeholder={` Username . . . `}
+            />
           </Form.Item>
         </Col>
       </Row>

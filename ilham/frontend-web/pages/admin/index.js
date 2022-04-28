@@ -1,56 +1,49 @@
 // ? Ini daftar-dosen
 
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useCallback } from "react";
 
 import Head from "next/head";
-import { Alert, Card, Typography, Row, Col, Button } from "antd";
+import { Card, Typography, Row, Col, Button, message } from "antd";
 import PageLayout from "../../components/PageLayout";
 import ModalCustom from "../../components/Modal";
 import FormTambahDosen from "../../components/admin/AturDosen/FormTambahDosen";
 import ListComponent from "../../components/List";
 
-import {
-  PlusCircleOutlined,
-  EditTwoTone,
-  DeleteTwoTone,
-} from "@ant-design/icons";
+import { PlusCircleOutlined } from "@ant-design/icons";
 import FormEditDosen from "../../components/admin/AturDosen/FormEditDosen";
 import FormHapusDosen from "../../components/admin/AturDosen/FormHapusDosen";
-import { mockGetDosen } from "../../utils/remote-data/admin/DataDosen";
+import {
+  deleteUser,
+  getDosen,
+  postUser,
+  updateUser,
+} from "../../utils/remote-data/admin/DataUser";
+import { useSession } from "next-auth/react";
 
 function DaftarDosen() {
-  const [formObj, setFormObj] = useState({});
-
+  const { data: session } = useSession();
   const [currentDosen, setCurrentDosen] = useState({});
 
   const [dataDosen, setDataDosen] = useState([]);
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
+
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
-
-  const [isAlertActive, setIsAlertActive] = useState(false);
-
-  // ? Mock alert status dan message
-  const [alertStatus, setAlertStatus] = useState("success");
-  const [alertMessage, setAlertMessage] = useState("Alert muncul");
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
-  const handleToggleAlert = () => setIsAlertActive((prev) => !prev);
+
+  const fetchDataDosen = useCallback(() => {
+    if (session !== undefined)
+      getDosen(session?.user?.tokenJWT).then((res) => {
+        setDataDosen(res?.data);
+        setIsDataLoaded(true);
+      });
+  }, [session]);
 
   useEffect(() => {
-    // ? Ini mock api datadosen
-    mockGetDosen().then((response) => {
-      setDataDosen(response.data);
-      setIsDataLoaded(true);
-    });
-  }, []);
-
-  useEffect(() => {
-    console.log(isAlertActive);
-  }, [isAlertActive]);
+    fetchDataDosen();
+  }, [fetchDataDosen]);
 
   const tambahDosen = () => {
     setModalRole("tambah");
@@ -70,34 +63,30 @@ function DaftarDosen() {
   };
 
   const aksiTambahDosen = (formDosen) => {
-    // TODO : Call POST API request dari DosenCRUD.js
-    // ...
-    handleToggleModal();
-    handleToggleAlert();
-    setAlertMessage(`Data ${formDosen.nama_dosen} berhasil ditambahkan`);
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Hasil submit tambah", formDosen);
+    postUser(session?.user?.tokenJWT, formDosen)
+      .then((res) => {
+        message.success("Berhasil menambahkan dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal menambahkan dosen"));
   };
 
   const aksiEditDosen = (formDosen) => {
-    // TODO : Call DELETE API request dari DosenCRUD.js
-    // ...
-
-    handleToggleModal();
-    handleToggleAlert();
-    setAlertMessage(`Data ${formDosen.nama_dosen} berhasil diubah`);
-    setTimeout(() => handleToggleAlert(false), 5000);
-    console.log("Data berhasil diubah", formDosen);
+    updateUser(session?.user?.tokenJWT, formDosen, currentDosen?.id)
+      .then((res) => {
+        message.success("Berhasil mengubah dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal mengubah dosen"));
   };
 
   const aksiDeleteDosen = (formDosen) => {
-    // TODO : Call DELETE API request dari DosenCRUD.js
-    // ...
-    handleToggleModal();
-    handleToggleAlert();
-    setAlertMessage(`Data ${formDosen.nama_dosen} berhasil dihapus`);
-    setTimeout(() => handleToggleAlert(), 5000);
-    console.log("Data terhapus", formDosen);
+    deleteUser(session?.user?.tokenJWT, currentDosen?.id)
+      .then((res) => {
+        message.success("Berhasil menghapus dosen");
+        fetchDataDosen();
+      })
+      .catch(() => message.error("Gagal menghapus dosen"));
   };
 
   return (
@@ -118,39 +107,22 @@ function DaftarDosen() {
             </Col>
           </Row>
 
-          {isAlertActive && (
-            <Alert
-              message={alertMessage}
-              type={alertStatus}
-              closable
-              showIcon
-              banner
-              style={{ marginBottom: "1em" }}
-            />
-          )}
-
           {isModalVisible && (
             <ModalCustom
               role={modalRole}
               entity="Dosen"
               visible={isModalVisible}
               setVisible={setIsModalVisible}
-              confirmLoading={isModalLoading}
-              setConfirmLoading={setIsModalLoading}
-              modalText={modalText}
-              setModalText={setModalText}
               modalContent={
                 modalRole === "tambah" ? (
                   <FormTambahDosen
                     handleSubmit={aksiTambahDosen}
                     setVisible={setIsModalVisible}
-                    setFormObj={setFormObj}
                   />
                 ) : modalRole === "edit" ? (
                   <FormEditDosen
                     handleSubmit={aksiEditDosen}
                     setVisible={setIsModalVisible}
-                    setFormObj={setFormObj}
                     currentDosen={currentDosen}
                   />
                 ) : (

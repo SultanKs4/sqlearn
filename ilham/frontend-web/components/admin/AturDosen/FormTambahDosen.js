@@ -1,23 +1,20 @@
 import { Button, Col, Divider, Form, Input, Row, Select } from "antd";
 import { CodeSandboxOutlined, UserOutlined } from "@ant-design/icons";
 
-function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
+function FormTambahDosen({ setVisible, handleSubmit, ...props }) {
   const onFinish = (values) => {
-    setFormObj(values);
-    handleSubmit(values);
+    setVisible(false);
+    handleSubmit({ level: "dosen", ...values });
   };
 
-  const handleCancel = () => {
-    console.log("Clicked cancel button");
-    setVisible(false);
-  };
+  const handleCancel = () => setVisible(false);
 
   return (
     <Form onFinish={onFinish} layout="vertical">
       <Row>
         <Col span={22}>
           <Form.Item
-            name="nomor_induk"
+            name="no_induk"
             label="Nomor Induk"
             rules={[
               {
@@ -27,6 +24,7 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<CodeSandboxOutlined />}
               placeholder={` Nomor Induk Dosen . . . `}
             />
@@ -36,7 +34,7 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
       <Row gutter={20}>
         <Col>
           <Form.Item
-            name="nama_dosen"
+            name="name"
             label="Nama Dosen"
             rules={[
               {
@@ -46,6 +44,7 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
             ]}
           >
             <Input
+              autoComplete="off"
               prefix={<UserOutlined />}
               placeholder={` Nama Dosen . . . `}
             />
@@ -62,7 +61,11 @@ function FormTambahDosen({ setFormObj, setVisible, handleSubmit, ...props }) {
               },
             ]}
           >
-            <Input prefix={<UserOutlined />} placeholder={` Username . . . `} />
+            <Input
+              autoComplete="off"
+              prefix={<UserOutlined />}
+              placeholder={` Username . . . `}
+            />
           </Form.Item>
         </Col>
       </Row>

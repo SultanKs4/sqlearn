@@ -1,19 +1,4 @@
-import axios from "axios";
-
-import { mockAPIURL } from "../api";
-
-const getNilaiMhs = async (lecturerID) => {
-  let response = await axios.get("");
-  return response.data;
-};
-
-// Ini versi mockapi
-// const mockKelasDiajar = async lecturerID => {
-//   let response = await axios.get(
-//     `${mockAPIURL}/kelas?lecturerID=${lecturerID}`
-//   );
-//   return response.data;
-// };
+import { axiosWithBearer, URL_NILAI_MHS_API } from "../api";
 
 // ? Sementara kelas_id = 1
 const mockGetNilaiTiapKelas = (kelas_id = 1) => {
@@ -28,7 +13,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             jumlahLatihanDikerjakan: 20,
             detail: [
               {
-                jadwalID: 1,
+                mhsID: 1,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -55,7 +40,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
                 ],
               },
               {
-                jadwalID: 2,
+                mhsID: 2,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -90,7 +75,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             jumlahLatihanDikerjakan: 20,
             detail: [
               {
-                jadwalID: 1,
+                mhsID: 1,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -111,7 +96,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             jumlahLatihanDikerjakan: 20,
             detail: [
               {
-                jadwalID: 1,
+                mhsID: 1,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -132,7 +117,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             jumlahLatihanDikerjakan: 20,
             detail: [
               {
-                jadwalID: 1,
+                mhsID: 1,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -153,7 +138,7 @@ const mockGetNilaiTiapKelas = (kelas_id = 1) => {
             jumlahLatihanDikerjakan: 20,
             detail: [
               {
-                jadwalID: 1,
+                mhsID: 1,
                 paket_soal: "Paket B",
                 logData: [
                   {
@@ -214,26 +199,52 @@ const mockKelasDiajar = () => {
   });
 };
 
-const getNilaiMhsByID = async (username) => {
-  let response = await axios.get("");
+const getNilaiMhs = async (bearerToken) => {
+  let response = await axiosWithBearer(bearerToken).get(`${URL_NILAI_MHS_API}`);
   return response.data;
 };
 
-const postNilaiMhs = async () => {
-  let response = await axios.post("");
+const filterNilaiMhsByKelasAndJadwal = async (
+  bearerToken,
+  jadwalID,
+  kelasID
+) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_NILAI_MHS_API}/class/${kelasID}/schedule/${jadwalID}`
+  );
   return response.data;
 };
 
-const updateNilaiMhs = async () => {
-  let response = await axios.put("");
+const getNilaiMhsByID = async (bearerToken, mhsID, jadwalID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_NILAI_MHS_API}/student/${mhsID}/schedule/${jadwalID}`
+  );
   return response.data;
 };
 
-const deleteNilaiMhs = async () => {
-  let response = await axios.delete("");
+const postNilaiMhs = async (bearerToken, values) => {
+  let response = await axiosWithBearer(bearerToken).post(
+    URL_NILAI_MHS_API,
+    values
+  );
+
   return response.data;
 };
 
+const updateNilaiMhs = async (bearerToken, values, mhsID) => {
+  let response = await axiosWithBearer(bearerToken).put(
+    `${URL_NILAI_MHS_API}/${mhsID}`,
+    values
+  );
+  return response.data;
+};
+
+const deleteNilaiMhs = async (bearerToken, mhsID) => {
+  let response = await axiosWithBearer(bearerToken).delete(
+    `${URL_NILAI_MHS_API}/${mhsID}`
+  );
+  return response.data;
+};
 export {
   mockKelasDiajar,
   getNilaiMhs,
@@ -242,4 +253,5 @@ export {
   updateNilaiMhs,
   deleteNilaiMhs,
   mockGetNilaiTiapKelas,
+  filterNilaiMhsByKelasAndJadwal,
 };
