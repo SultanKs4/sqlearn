@@ -1,13 +1,23 @@
 import { useState } from "react";
 
-const useLogs = (boxes, dataPertanyaan, timerLeftCounter, setCurrentPart) => {
+const useLogs = (
+  boxes,
+  dataPertanyaan,
+  timerLeftCounter,
+  timerUp,
+  setCurrentPart
+) => {
   const [logData, setLogData] = useState([]);
 
   const saveLog = async (values, role) => {
     setLogData((tempLogData) => [
       ...tempLogData,
       {
-        timer: timerLeftCounter,
+        // ? Ini sebelum revisi
+        // timer: timerLeftCounter,
+        // ? Ini habis revisi pak Khairy tgl 21 April 2022
+        timer: timerUp,
+
         type: role,
         answer:
           dataPertanyaan?.QuestionLabel?.name === "Open-Ended"

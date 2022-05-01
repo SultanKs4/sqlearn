@@ -11,6 +11,7 @@ const SQLAnswerBox = ({ boxes }) => {
         style={{
           display: "flex",
           justifyContent: "space-between",
+          overflow: "auto",
           gap: 10,
         }}
       >
@@ -31,12 +32,11 @@ const SQLAnswerBox = ({ boxes }) => {
                       background: snapshot.isDraggingOver
                         ? "lightblue"
                         : "lightgrey",
-                      padding: 1,
-                      minHeight: 60,
-                      width: "100%",
-                      overflow: "auto",
+                      padding: 4,
+                      width: 200,
                     }}
                   >
+                    <div style={{ visibility: "hidden" }}> Just Empty</div>
                     {provided.placeholder}
                   </div>
                 )}
@@ -48,8 +48,6 @@ const SQLAnswerBox = ({ boxes }) => {
                   background: "lightgrey",
                   padding: 1,
                   height: "100%",
-                  width: "100%",
-                  overflow: "auto",
                 }}
               >
                 <div
