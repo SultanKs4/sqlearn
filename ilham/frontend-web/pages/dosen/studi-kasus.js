@@ -29,10 +29,8 @@ function StudiKasus() {
 
   const [currentStudiKasus, setCurrentStudiKasus] = useState({});
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useEffect(() => {
     fetchDataStudiKasus();
@@ -122,8 +120,6 @@ function StudiKasus() {
           entity="Studi Kasus"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          modalText={modalText}
-          setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (
               <FormTambahStudiKasus

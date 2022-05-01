@@ -25,7 +25,6 @@ const useLogs = (boxes, dataPertanyaan, timerLeftCounter, setCurrentPart) => {
   };
 
   const resetLog = () => {
-    console.log("resetted log");
     setLogData([]);
     setCurrentPart(null);
   };

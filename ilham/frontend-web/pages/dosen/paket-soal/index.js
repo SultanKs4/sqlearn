@@ -2,7 +2,7 @@ import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 
-import { Typography, Row, Col, Button, Alert, message } from "antd";
+import { Typography, Row, Col, Button, message } from "antd";
 
 import { PlusCircleOutlined } from "@ant-design/icons";
 
@@ -33,10 +33,8 @@ function PaketSoal() {
   const [paketFiltered, setPaketFiltered] = useState([]);
   const [isFilterActive, setIsFilterActive] = useState(false);
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleToggleModal = () => setIsModalVisible((prev) => !prev);
 
@@ -118,7 +116,6 @@ function PaketSoal() {
             entity="Paket Soal"
             visible={isModalVisible}
             setVisible={setIsModalVisible}
-            modalText={modalText}
             modalContent={
               modalRole === "tambah" ? (
                 <FormTambahPaket

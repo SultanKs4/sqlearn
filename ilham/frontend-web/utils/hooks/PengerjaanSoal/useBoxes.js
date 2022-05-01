@@ -25,7 +25,6 @@ const useBoxes = (isDataPertanyaanLoaded, dataPertanyaan) => {
   };
 
   useEffect(() => {
-    console.log(dataPertanyaan, "dataPertanyaan");
     if (isDataPertanyaanLoaded && dataPertanyaan !== undefined) setupBoxes();
   }, [isDataPertanyaanLoaded, dataPertanyaan]);
 

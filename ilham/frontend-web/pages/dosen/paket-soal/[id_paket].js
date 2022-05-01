@@ -38,10 +38,8 @@ function PreviewPaket() {
 
   const [currentSoal, setCurrentSoal] = useState({});
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleToggleModal = (state = isModalVisible) =>
     setIsModalVisible((prev) => state || !prev);
@@ -162,7 +160,6 @@ function PreviewPaket() {
           entity={`Soal untuk ${dataPaket?.description}`}
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (
               <FormPilihSoal

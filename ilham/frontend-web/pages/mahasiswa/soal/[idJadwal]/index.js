@@ -27,7 +27,6 @@ function Practice() {
 
   useEffect(() => {
     if (isTimerReady) {
-      console.log(timerFromServer, "timer from server");
       addTimer(({ text, format }) => {
         return {
           text: timerFromServer,
@@ -47,7 +46,6 @@ function Practice() {
         (res) => {
           setDataJadwal(res.data);
           setIsDataJadwalLoaded(true);
-          console.log(res.data, "data jadwal");
           setTimerFromServer(res.data?.timer);
           setIsTimerReady(true);
         }
@@ -60,13 +58,11 @@ function Practice() {
 
   useEffect(() => {
     console.clear();
-    message.info("Halaman ini masih dalam tahap pengembangan");
   }, []);
 
   const kerjakanLatihan = async () => {
     createSession(session?.user?.tokenJWT, router.query.idJadwal)
       .then((sesi) => {
-        console.log(sesi, "data sesi");
         getUnansweredQuestion(session?.user?.tokenJWT, sesi?.data?.id, [])
           .then((res) => {
             router.push({

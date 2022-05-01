@@ -8,7 +8,6 @@ import {
   TeamOutlined,
   FormOutlined,
   HomeOutlined,
-  BarChartOutlined,
   ContainerOutlined,
 } from "@ant-design/icons";
 

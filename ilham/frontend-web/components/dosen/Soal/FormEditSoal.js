@@ -23,7 +23,7 @@ import {
   getStudiKasus,
   getStudiKasusByID,
 } from "../../../utils/remote-data/dosen/StudiKasus";
-import { formatToArray, removeHTML } from "../../../utils/common";
+import { removeHTML } from "../../../utils/common";
 import { useSession } from "next-auth/react";
 import { propsUploadImage } from "../../../utils/remote-data/dosen/SoalCRUD";
 
