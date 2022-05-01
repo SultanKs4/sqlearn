@@ -30,11 +30,13 @@ import useNextQuestion from "../../../../../utils/hooks/PengerjaanSoal/useNextQu
 import useLogs from "../../../../../utils/hooks/PengerjaanSoal/useLogs";
 import useInitializeTimer from "../../../../../utils/hooks/PengerjaanSoal/useInitializeTimer";
 import ModalFinishSession from "../../../../../components/mahasiswa/Soal/ModalFinishSession";
+import useCountUpTimer from "../../../../../utils/hooks/PengerjaanSoal/useCountUpTimer";
 
 function LatihanSoal() {
   const router = useRouter();
 
   const { data: session } = useSession();
+  const [timerUp] = useCountUpTimer();
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [currentPart, setCurrentPart] = useState(null);
@@ -59,6 +61,8 @@ function LatihanSoal() {
     boxes,
     dataPertanyaan,
     timerLeftCounter,
+    timerUp,
+    // scheduleDate,
     setCurrentPart
   );
 
@@ -200,6 +204,8 @@ function LatihanSoal() {
                   {isTimeLoaded ? (
                     <CountdownTimer
                       expiryTimestamp={scheduleDate}
+                      // timerStartCounter={timerStartCounter}
+                      // setTimerStartCounter={setTimerStartCounter}
                       setTimerLeft={setTimerLeftCounter}
                     />
                   ) : (

@@ -8,7 +8,12 @@ function CountdownTimer({ expiryTimestamp, setTimerLeft, ...props }) {
   });
 
   const updateTimer = useCallback(() => {
-    setTimerLeft(`${hours}:${minutes}:${seconds}`);
+    setTimerLeft(
+      `${hours < 10 ? `0${hours}` : hours}:${
+        minutes < 10 ? `0${minutes}` : minutes
+      }:${seconds < 10 ? `0${seconds}` : seconds}`
+    );
+
     window.localStorage.setItem(
       "timerLeft",
       JSON.stringify({
@@ -26,7 +31,12 @@ function CountdownTimer({ expiryTimestamp, setTimerLeft, ...props }) {
   return (
     <div style={{ textAlign: "center" }}>
       <div style={{ fontSize: "1.2em" }}>
-        <span>{hours}</span>:<span>{minutes}</span>:<span>{seconds}</span>
+        <span>
+          {" "}
+          {`${hours < 10 ? `0${hours}` : hours}:${
+            minutes < 10 ? `0${minutes}` : minutes
+          }:${seconds < 10 ? `0${seconds}` : seconds}`}
+        </span>
       </div>
       <p>{!isRunning && "Waktu habis"}</p>
     </div>
