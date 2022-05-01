@@ -1,16 +1,7 @@
 import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
-import {
-  Typography,
-  Row,
-  Col,
-  Button,
-  Skeleton,
-  Tooltip,
-  Alert,
-  message,
-} from "antd";
+import { Typography, Row, Col, Button, Skeleton, Tooltip, message } from "antd";
 
 import { PlusCircleOutlined, LeftOutlined } from "@ant-design/icons";
 import PageLayout from "../../../components/PageLayout";
@@ -39,7 +30,6 @@ function MahasiswaByID() {
 
   const [currentMhs, setCurrentMhs] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
 
   useEffect(() => {

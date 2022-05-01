@@ -59,8 +59,6 @@ export default NextAuth({
         session.user = token;
         session.accessToken = token.accessToken;
       }
-      console.log("ini session", session);
-      console.log("kalau ini token", token);
       return session;
     },
   },

@@ -41,7 +41,6 @@ function EditProfile() {
   }, [fetchDataMhs]);
 
   const onFinish = (values) => {
-    console.log(values);
     editPasswordMahasiswa(session?.user?.tokenJWT, values, session?.user?.id)
       .then(() => message.success("Password berhasil diubah"))
       .catch(() => message.error("Password gagal diubah"));

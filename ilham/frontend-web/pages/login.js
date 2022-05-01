@@ -18,8 +18,6 @@ import { getProviders, signIn, useSession } from "next-auth/react";
 const { Option } = Select;
 
 const Login = ({ providers, csrfToken }) => {
-  const router = useRouter();
-  const { data: session } = useSession();
   const [form] = Form.useForm();
 
   const [loginType, setLoginType] = useState("mahasiswa");
@@ -28,12 +26,6 @@ const Login = ({ providers, csrfToken }) => {
   const onRequiredTypeChange = (activeRole) => setLoginType(activeRole);
 
   const onFinish = (values) => {
-    console.log("Received values of form: ", values);
-    console.log(
-      "redirect to : ",
-      `http://localhost:3000/${values.loginTypeValue}`
-    );
-
     signIn(providersAuth?.credentials?.id, {
       callbackUrl: `http://localhost:3000/${values.loginTypeValue}`,
       username: values.username,
@@ -129,16 +121,6 @@ const Login = ({ providers, csrfToken }) => {
                   <Form.Item name="remember" valuePropName="checked" noStyle>
                     <Checkbox>Remember me</Checkbox>
                   </Form.Item>
-                </Col>
-                <Col>
-                  <a
-                    className="login-form-forgot"
-                    onClick={() => {
-                      router.push("/forgot_password");
-                    }}
-                  >
-                    Forgot password
-                  </a>
                 </Col>
               </Row>
             </Form.Item>

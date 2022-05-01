@@ -1,25 +1,10 @@
-import {
-  Skeleton,
-  Typography,
-  Row,
-  Col,
-  Divider,
-  Button,
-  List,
-  Card,
-  Tabs,
-  Alert,
-  Avatar,
-} from "antd";
+import { Row, Col, Button, List } from "antd";
 
 import {
-  UserOutlined,
   ConsoleSqlOutlined,
   SearchOutlined,
   FieldTimeOutlined,
 } from "@ant-design/icons";
-
-import { getHours } from "../../utils/common";
 
 const mockPaketSoal = [
   {

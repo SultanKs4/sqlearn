@@ -37,7 +37,6 @@ import {
   FormOutlined,
   ExperimentOutlined,
   TagsOutlined,
-  MonitorOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 

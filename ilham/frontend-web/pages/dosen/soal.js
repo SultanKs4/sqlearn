@@ -33,9 +33,7 @@ function HalamanSoal() {
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [isModalLoading, setIsModalLoading] = useState(false);
   const [modalRole, setModalRole] = useState("");
-  const [modalText, setModalText] = useState("");
 
   useEffect(() => {
     fetchDataSoal();
@@ -124,7 +122,6 @@ function HalamanSoal() {
             entity="Soal"
             visible={isModalVisible}
             setVisible={setIsModalVisible}
-            modalText={modalText}
             modalContent={
               modalRole === "tambah" ? (
                 <FormTambahSoal
