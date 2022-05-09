@@ -134,7 +134,6 @@ function DaftarKelas() {
           entity="Kelas"
           visible={isModalVisible}
           setVisible={setIsModalVisible}
-          setModalText={setModalText}
           modalContent={
             modalRole === "tambah" ? (
               <FormTambahKelas
