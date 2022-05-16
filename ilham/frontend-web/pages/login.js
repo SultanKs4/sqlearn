@@ -12,8 +12,7 @@ import {
 } from "antd";
 import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import Head from "next/head";
-import { useRouter } from "next/router";
-import { getProviders, signIn, useSession } from "next-auth/react";
+import { getProviders, signIn } from "next-auth/react";
 
 const { Option } = Select;
 
@@ -46,6 +45,7 @@ const Login = ({ providers, csrfToken }) => {
         <title>SQLearn | Login </title>
       </Head>
       <Row align="middle" justify="center" style={{ minHeight: "100vh" }}>
+        {/* <EmptyData /> */}
         <Card
           style={{
             boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
