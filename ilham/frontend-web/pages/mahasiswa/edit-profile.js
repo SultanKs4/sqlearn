@@ -46,8 +46,6 @@ function EditProfile() {
       .catch(() => message.error("Password gagal diubah"));
   };
 
-  // TODO : Sync backend
-  // Field Yang bisa diubah cuma username dan password
   return (
     <>
       <Head>
@@ -99,25 +97,6 @@ function EditProfile() {
 
           <Form layout="vertical" onFinish={onFinish}>
             <Row gutter={20}>
-              <Col>
-                <Form.Item
-                  name="username"
-                  label="Username"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Mohon masukkan Username !",
-                    },
-                  ]}
-                >
-                  <Input
-                    style={{ width: "220px" }}
-                    autoComplete="off"
-                    prefix={<UserOutlined />}
-                    placeholder={` Username . . .`}
-                  />
-                </Form.Item>
-              </Col>
               <Col>
                 <Form.Item
                   name="password_old"

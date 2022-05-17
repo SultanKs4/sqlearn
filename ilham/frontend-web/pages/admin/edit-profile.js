@@ -42,25 +42,6 @@ function EditProfile() {
             <Row gutter={20}>
               <Col>
                 <Form.Item
-                  name="username"
-                  label="Username"
-                  rules={[
-                    {
-                      required: true,
-                      message: "Mohon masukkan Username !",
-                    },
-                  ]}
-                >
-                  <Input
-                    style={{ width: "220px" }}
-                    autoComplete="off"
-                    prefix={<UserOutlined />}
-                    placeholder={` Username . . .`}
-                  />
-                </Form.Item>
-              </Col>
-              <Col>
-                <Form.Item
                   name="password_old"
                   label="Password"
                   rules={[
