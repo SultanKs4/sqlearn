@@ -91,9 +91,12 @@ module.exports = {
             return createResponseObject(code, "error", message, data);
         }
     },
-    getOne: async (id) => {
+    getOne: async (id, user) => {
         try {
+            let attributes = {};
+            if (user.role == "mahasiswa") attributes = { exclude: ["answer"] };
             const question = await Question.findByPk(id, {
+                attributes: attributes,
                 include: [
                     {
                         model: User,
@@ -121,7 +124,7 @@ module.exports = {
                 const res = await axios.get(
                     `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question.CaseStudy.DbList.db_name}/${curr}`
                 );
-                obj[curr] = res.data;
+                obj[curr] = res.data.data;
                 return obj;
             }, Promise.resolve({}));
 

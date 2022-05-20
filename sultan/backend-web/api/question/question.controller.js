@@ -24,7 +24,7 @@ module.exports = {
         return res.status(httpCode).json(response);
     },
     show: async (req, res) => {
-        const resObj = await questionService.getOne(req.params.id);
+        const resObj = await questionService.getOne(req.params.id, req.user);
         const { httpCode, ...response } = resObj;
 
         return res.status(httpCode).json(response);
