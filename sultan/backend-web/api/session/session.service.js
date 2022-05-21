@@ -159,7 +159,7 @@ module.exports = {
                 return data;
             });
 
-            let similarityResponse = null;
+            let response = {};
             let dataLogReady = await Promise.all(
                 log.map(async (val, i) => {
                     let dataObj = {
@@ -174,7 +174,7 @@ module.exports = {
                     };
                     if (i == log.length - 1) {
                         if (val.type == "test" || val.type == "submit") {
-                            similarityResponse = await axios.post(
+                            const similarityResponse = await axios.post(
                                 `${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`,
                                 {
                                     dbList,
@@ -183,6 +183,9 @@ module.exports = {
                                     threshold: await dataThreshold().value,
                                 }
                             );
+                            response.status = similarityResponse.data.status;
+                            response.message = similarityResponse.data.message;
+                            Object.assign(response, { ...similarityResponse.data.data });
                             dataObj.similarity = similarityResponse.data.data.similarity;
                             dataObj.is_equal = similarityResponse.data.data.is_equal;
                         } else throw createHttpError(500, "end log doesn't test or submit type");
@@ -194,7 +197,7 @@ module.exports = {
 
             await LogSessionStudent.bulkCreate(dataLogReady);
 
-            return createResponseObject(200, "success", "Data jawaban berhasil ditambahkan", similarityResponse.data);
+            return createResponseObject(200, "success", "Data jawaban berhasil ditambahkan", response);
         } catch (error) {
             return errorHandling(error);
         }
