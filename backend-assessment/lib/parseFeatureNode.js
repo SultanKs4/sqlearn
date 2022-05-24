@@ -17,7 +17,7 @@ function typeCheck(obj, arr = []) {
         return "SubQuery";
     } else if (type == "param" || type == "null" || type == "bool" || type == "star") {
         // { type: 'param', value: 'my_param' }
-        return obj.value;
+        return String(obj.value);
     } else if (type.includes("string") || type == "number") {
         /* {
             "type": "number",
