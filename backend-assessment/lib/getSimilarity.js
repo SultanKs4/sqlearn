@@ -144,7 +144,7 @@ function parseSQL(query) {
         const countedWords = countWords(queryLowerCase, querySplitter);
         Object.keys(countedWords).forEach((key) => {
             for (let i = 0; i < countedWords[key]; i++) {
-                vectorizedFeatures = [...vectorizedFeatures, [key]];
+                vectorizedFeatures = [...vectorizedFeatures, key];
             }
         });
 
@@ -190,7 +190,7 @@ function getVectorizedFeatures(ast) {
     // } else {
     Object.keys(ast).forEach((key) => {
         if (ast[key]) {
-            const prefix = key.toLowerCase();
+            const prefix = key;
             ast[key].forEach((feature, index) => {
                 let strArr = [];
                 if (prefix == "values") {
