@@ -185,8 +185,8 @@ function parseFeatureNode(ast) {
             let from = getTable(ast.from);
             let where = ast.where ? [exprCheck(ast.where)].flat(Infinity) : null;
             let having = ast.having ? [exprCheck(ast.having)].flat(Infinity) : null;
-            let groupBy = getStatement(ast.groupby, "groupby");
-            let orderBy = getStatement(ast.orderby, "orderby");
+            let groupBy = getStatement(ast.groupby, "values");
+            let orderBy = getStatement(ast.orderby, "values");
             let limit = getLimit(ast.limit);
             obj = { from, where, groupBy, having, orderBy, limit };
             break;
