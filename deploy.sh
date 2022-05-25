@@ -9,8 +9,8 @@ sudo apt-get install -y $LIST_PACKAGES
 
 #mariadb config
 SECURE_DB=$(expect -c "
-set timeout 10
-spawn mysql_secure_installation
+set timeout 5
+spawn sudo mysql_secure_installation
 expect \"Enter current password for root (enter for none):\"
 send \"$MYSQL\r\"
 expect \"Change the root password?\"
@@ -28,18 +28,32 @@ expect eof
 
 echo "$SECURE_DB"
 
+# Create user db
+DB_USERNAME="skripsi"
+DB_PASSWORD="$(openssl rand -base64 12)"
+sudo mysql -e "CREATE USER '${DB_USERNAME}'@'localhost' IDENTIFIED BY '${DB_PASSWORD}';"
+sudo mysql -e "GRANT ALL PRIVILEGES ON *.* TO '${DB_USERNAME}'@'localhost' WITH GRANT OPTION;"
+sudo mysql -e "FLUSH PRIVILEGES;"
+
 #Install PM2
-npm install pm2 -g
+sudo npm install pm2 -g
+
+SED_DB_USER="s/DB_USER=root/DB_USER=$DB_USERNAME/g"
+SED_DB_PASS="s/DB_PASS=/DB_PASS=$DB_PASSWORD/g"
 
 # Preare BE Assessment
 cd backend-assessment/
 npm ci
 cp .env.example .env
+sed -i $SED_DB_USER .env
+sed -i $SED_DB_PASS .env
 
 # Prepare BE Web
 cd $WORKDIR/sultan/backend-web/
 npm ci
 cp .env.example .env
+sed -i $SED_DB_USER .env
+sed -i $SED_DB_PASS .env
 npm run seed
 
 # Prepare FE
