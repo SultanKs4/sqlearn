@@ -110,12 +110,12 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
 
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
-    else if (!values.answer?.includes(values.tables?.toString()))
-      // ? Pesan ini ditampilkan selama 6 detik
-      message.error(
-        "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
-        6
-      );
+    // else if (!values.answer?.includes(values.tables?.toString()))
+    //   // ? Pesan ini ditampilkan selama 6 detik
+    //   message.error(
+    //     "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
+    //     6
+    //   );
     else handleSubmit(submitObject);
   };
 
@@ -181,7 +181,10 @@ function FormEditSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
         label_id: selectedKategori,
         text: removeHTML(currentSoal?.text),
         tables: currentSoal?.tables,
-        answer: JSON.parse(currentSoal?.answer)[0] || "",
+        answer:
+          currentSoal.QuestionLabel?.name === "Close-Ended"
+            ? JSON.parse(currentSoal?.answer)[0]
+            : JSON.parse(currentSoal?.answer),
         dosen_pembuat: currentSoal?.User?.name,
         case_study: currentSoal?.CaseStudy?.id,
       });

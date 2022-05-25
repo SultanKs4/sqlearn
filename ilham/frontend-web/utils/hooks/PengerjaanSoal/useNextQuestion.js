@@ -2,13 +2,20 @@ import { message } from "antd";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect, useState, useCallback } from "react";
+import { ucfirst } from "../../common";
 
 import {
   getUnansweredQuestion,
   testQueryBackend,
 } from "../../remote-data/mahasiswa/Soal";
 
-const useNextQuestion = (logData, resetLog) => {
+const useNextQuestion = (
+  logData,
+  resetLog,
+  setCurrentTables,
+  setCurrentColumns,
+  setIsFeedbackDisplayed
+) => {
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -19,6 +26,8 @@ const useNextQuestion = (logData, resetLog) => {
   const [dataNextPertanyaan, setDataNextPertanyaan] = useState([]);
 
   useEffect(() => {
+    setCurrentTables([]);
+    setCurrentColumns([]);
     // ? Untuk Test Query dan submit jawaban itu sama
     if (isTestingQuery)
       testQueryBackend(session?.user?.tokenJWT, {
@@ -26,8 +35,31 @@ const useNextQuestion = (logData, resetLog) => {
         question_id: parseInt(router.query.idSoal),
         log: logData,
       })
-        .then(() => {
+        .then((item) => {
           message.success("Jawaban anda benar !");
+          setIsFeedbackDisplayed(true);
+
+          Object.keys(item?.data?.res_query[0]).map((column) =>
+            setCurrentColumns((prev) => [
+              ...prev,
+              {
+                key: column,
+                dataIndex: column,
+                title: ucfirst(column),
+              },
+            ])
+          );
+
+          item?.data?.res_query?.map((dataTable, id) =>
+            setCurrentTables((prev) => [
+              ...prev,
+              {
+                index: id,
+                ...dataTable,
+              },
+            ])
+          );
+
           resetLog();
           if (logData.pop().type === "submit") {
             setIsAnswerSaved(true);

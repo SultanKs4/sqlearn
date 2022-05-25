@@ -11,6 +11,9 @@ import {
   Divider,
   Form,
   Input,
+  Alert,
+  Table,
+  Collapse,
 } from "antd";
 
 import { ConsoleSqlOutlined } from "@ant-design/icons";
@@ -37,6 +40,14 @@ function LatihanSoal() {
 
   const { data: session } = useSession();
   const [timerUp] = useCountUpTimer();
+
+  const [availableTableFromQuestion, setAvailableTableFromQuestion] = useState(
+    []
+  );
+
+  const [currentTables, setCurrentTables] = useState([]);
+  const [currentColumns, setCurrentColumns] = useState([]);
+  const [isFeedbackDisplayed, setIsFeedbackDisplayed] = useState(false);
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [currentPart, setCurrentPart] = useState(null);
@@ -71,7 +82,13 @@ function LatihanSoal() {
     isAnswerSaved,
     setIsAnswerSaved,
     setIsTestingQuery,
-  ] = useNextQuestion(logData, resetLog);
+  ] = useNextQuestion(
+    logData,
+    resetLog,
+    setCurrentTables,
+    setCurrentColumns,
+    setIsFeedbackDisplayed
+  );
 
   // ? Untuk simpan jawaban kalau soal ini berQuestionLabel?.name open-ended
   const [form] = Form.useForm();
@@ -82,13 +99,36 @@ function LatihanSoal() {
         (response) => {
           setIsAnswerSaved(false);
           setBoxes([]);
+          form.setFieldsValue({ jawaban_siswa: "" });
           console.clear();
           setDataPertanyaan(response.data);
           setIsDataPertanyaanLoaded(true);
+
+          setCurrentTables([]);
+          setCurrentColumns([]);
+          setIsFeedbackDisplayed(false);
         }
       );
     }
   }, [session, router.query.idSoal]);
+
+  useEffect(() => {
+    if (
+      dataPertanyaan.length !== 0 &&
+      availableTableFromQuestion.length === 0
+    ) {
+      Object.keys(dataPertanyaan?.tables).map((item) =>
+        setAvailableTableFromQuestion((prev, id) => [
+          ...prev,
+          {
+            id: id,
+            table: item,
+            columns: Object.keys(dataPertanyaan?.tables[item][0]),
+          },
+        ])
+      );
+    }
+  }, [dataPertanyaan]);
 
   useEffect(() => {
     fetchDataPertanyaan();
@@ -132,6 +172,14 @@ function LatihanSoal() {
     console.groupEnd();
   }, [logData]);
 
+  const debugTableFeedback = useCallback(() => {
+    console.log(availableTableFromQuestion, "ini availableTableFromQuestion");
+  }, [availableTableFromQuestion]);
+
+  useEffect(() => {
+    debugTableFeedback();
+  }, [debugTableFeedback]);
+
   return (
     <>
       <Head>
@@ -160,10 +208,34 @@ function LatihanSoal() {
                 style={{ marginBottom: "1em" }}
               />
             )}
+
+            <Row>
+              {" "}
+              <h2> Daftar Tabel</h2>{" "}
+            </Row>
+            <Row
+              style={{
+                margin: "1em 0",
+              }}
+            >
+              <Col span="24">
+                {isDataPertanyaanLoaded &&
+                  availableTableFromQuestion?.map((item) => (
+                    <Collapse>
+                      <Collapse.Panel
+                        header={`Tabel ${item?.table}`}
+                        key={item.id}
+                      >
+                        Daftar Kolom : {item?.columns?.join()}
+                      </Collapse.Panel>
+                    </Collapse>
+                  ))}
+              </Col>
+            </Row>
+
             <Button type="primary" onClick={() => previewTable()}>
               Preview Hasil Query
             </Button>
-
             <Row
               style={{
                 marginTop: "1em",
@@ -178,7 +250,6 @@ function LatihanSoal() {
                 ></img>
               )}
             </Row>
-
             <Row style={{ marginTop: "1em" }}>
               <Button
                 disabled={isAnswerSaved ? false : true}
@@ -234,7 +305,6 @@ function LatihanSoal() {
                 setCurrentPart={setCurrentPart}
               />
             )}
-
             <Row style={{ marginTop: "1em" }} justify="space-between">
               <Col>
                 <Row gutter={10}>
@@ -298,6 +368,31 @@ function LatihanSoal() {
                 </Row>
               </Col>
             </Row>
+            {isFeedbackDisplayed && (
+              <Row style={{ marginTop: "1em" }}>
+                <Col span={24}>
+                  <Alert
+                    type="success"
+                    description={
+                      <>
+                        <h1 style={{ textAlign: "center" }}>
+                          {" "}
+                          Query berhasil dijalankan !{" "}
+                        </h1>
+                        Hasil Query :
+                        <Row justify="center">
+                          <Table
+                            columns={currentColumns}
+                            dataSource={currentTables}
+                            pagination={false}
+                          />
+                        </Row>{" "}
+                      </>
+                    }
+                  />
+                </Col>
+              </Row>
+            )}
             {isModalVisible && (
               <ModalCustom
                 role={modalRole}

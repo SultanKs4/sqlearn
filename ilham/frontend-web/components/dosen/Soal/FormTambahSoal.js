@@ -99,12 +99,12 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
     console.log(values, "ini di onfinish");
     if (fileList.length === 0)
       message.error("Mohon memasukkan gambar preview hasil");
-    else if (!values.answer?.toString().includes(values.tables?.toString()))
-      // ? Pesan ini ditampilkan selama 6 detik
-      message.error(
-        "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
-        6
-      );
+    // else if (!values.answer?.toString().includes(values.tables?.toString()))
+    //   // ? Pesan ini ditampilkan selama 6 detik
+    //   message.error(
+    //     "Terdapat perbedaan case untuk tabel dari jawaban benar dan nama tabel yang digunakan. Mohon disamakan terlebih dahulu",
+    //     6
+    //   );
     else
       handleSubmit({
         ...values,
@@ -450,7 +450,7 @@ function FormTambahSoal({ currentSoal, setVisible, handleSubmit, ...props }) {
               },
             ]}
           >
-            <Select placeholder="Pilih tabel . . ." allowClear>
+            <Select mode="multiple" placeholder="Pilih tabel . . ." allowClear>
               {Object.keys(dataTabel) !== 0 &&
                 Object.keys(dataTabel)?.map((item, id) => (
                   <Select.Option key={id || 0} value={item || ""}>

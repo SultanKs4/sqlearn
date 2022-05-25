@@ -13,7 +13,12 @@ import {
   Divider,
 } from "antd";
 
-import { LeftOutlined } from "@ant-design/icons";
+import {
+  LeftOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  CodeOutlined,
+} from "@ant-design/icons";
 
 import PageLayout from "../../../../components/PageLayout";
 
@@ -95,21 +100,49 @@ const PreviewNilaiTiapKelas = () => {
               <Panel header={removeHTML(item.text)} key={id}>
                 <Row style={{ textAlign: "center" }}>
                   <Col span={8}>Input Mahasiswa</Col>
-                  <Col span={8}>Tipe Log</Col>
-                  <Col span={8}>Timer</Col>
+                  <Col span={4}>Tipe Log</Col>
+                  <Col span={6}>Timer</Col>
+                  <Col span={6}>Jawaban Benar</Col>
                 </Row>
-                {item?.LogSessionStudents.map((itemLog) => (
-                  <Card>
-                    <Row
-                      gutter={10}
-                      style={{ marginTop: "1em", textAlign: "center" }}
-                    >
-                      <Col span={8}>{itemLog.answer}</Col>
-                      <Col span={8}>{itemLog.type}</Col>
-                      <Col span={8}>{itemLog.timer}</Col>
-                    </Row>
-                  </Card>
-                ))}
+                {item?.LogSessionStudents.map((itemLog) => {
+                  console.log(itemLog);
+                  return (
+                    <Card>
+                      <Row
+                        gutter={10}
+                        style={{ marginTop: "1em", textAlign: "center" }}
+                      >
+                        <Col span={8}>{itemLog.answer}</Col>
+                        <Col span={4}>{itemLog.type}</Col>
+                        <Col span={6}>{itemLog.timer}</Col>
+                        {itemLog.type !== "move" ? (
+                          <Col span={6}>
+                            {itemLog.is_equal ? (
+                              <div>
+                                <CheckCircleOutlined
+                                  style={{ color: "green", fontSize: "2em" }}
+                                />
+                                <div>Correct</div>
+                              </div>
+                            ) : (
+                              <div>
+                                <CloseCircleOutlined
+                                  style={{ color: "red", fontSize: "2em" }}
+                                />
+                                <div>False</div>
+                              </div>
+                            )}
+                          </Col>
+                        ) : (
+                          <Col span={6}>
+                            <CodeOutlined style={{ fontSize: "2em" }} />
+                            <div>Process</div>
+                          </Col>
+                        )}
+                      </Row>
+                    </Card>
+                  );
+                })}
               </Panel>
             ))}
           </Collapse>
