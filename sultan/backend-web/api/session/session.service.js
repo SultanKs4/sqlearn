@@ -144,28 +144,47 @@ module.exports = {
 
     answer: async (sessionId, questionId, log, user) => {
         try {
-            const dbList = await Session.findOne({
-                where: { id: sessionId, student_id: user.id },
-            }).then(async (data) => {
-                if (!data) throw createHttpError(404, "Tidak ada data sesi didapatkan");
-                let dbListData = await data.getDbLists();
-                return dbListData.map((e) => {
-                    return e.db_name;
-                });
-            });
-
-            const question = await Question.findByPk(questionId).then((data) => {
+            const question = await Question.findByPk(questionId, {
+                attributes: ["answer"],
+                include: {
+                    model: CaseStudy,
+                    attributes: ["db_list_id"],
+                    include: { model: DbList, attributes: ["db_name"] },
+                },
+            }).then((data) => {
                 if (!data) throw createHttpError(404, "Tidak ada data pertanyaan didapatkan");
                 return data;
+            });
+
+            const dbList = await Session.findOne({
+                where: { id: sessionId, student_id: user.id },
+                include: { model: Schedule },
+            }).then(async (data) => {
+                if (!data) throw createHttpError(404, "Tidak ada data sesi didapatkan");
+                if (data.is_finished) throw createHttpError(400, "session already finished");
+                const dateStart = new Date(data.Schedule.start).getTime();
+                const dateFinish = new Date(data.Schedule.finish).getTime();
+                const dateNow = new Date().getTime();
+                if (dateNow <= dateStart || dateNow >= dateFinish) throw createHttpError(400, "schedule date expired");
+                let dbListData = await data.getDbLists();
+                return dbListData.map((e) => {
+                    let re = new RegExp(`_${sessionId}_${user.id}_.*$`);
+                    let dbName = e.db_name.replace(re, "");
+                    if (dbName == question.CaseStudy.DbList.db_name) return e.db_name;
+                });
             });
 
             let response = {};
             let dataLogReady = await Promise.all(
                 log.map(async (val, i) => {
+                    let queryMhs = String(val.answer)
+                        .toLowerCase()
+                        .replaceAll(/[\n\t\r]/gm, " ")
+                        .replace(/[^a-zA-Z0-9|'|"|)]*$/gm, "");
                     let dataObj = {
                         session_id: sessionId,
                         question_id: questionId,
-                        answer: val.answer,
+                        answer: queryMhs,
                         answer_json: val.answer_json,
                         type: val.type,
                         similarity: -1.0,
@@ -174,20 +193,32 @@ module.exports = {
                     };
                     if (i == log.length - 1) {
                         if (val.type == "test" || val.type == "submit") {
-                            const similarityResponse = await axios.post(
-                                `${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`,
-                                {
-                                    dbList,
-                                    queryMhs: val.answer,
-                                    queryKey: JSON.parse(question.answer),
-                                    threshold: await dataThreshold().value,
-                                }
-                            );
-                            response.status = similarityResponse.data.status;
-                            response.message = similarityResponse.data.message;
-                            Object.assign(response, { ...similarityResponse.data.data });
-                            dataObj.similarity = similarityResponse.data.data.similarity;
-                            dataObj.is_equal = similarityResponse.data.data.is_equal;
+                            let similarityResponse = {};
+                            try {
+                                similarityResponse = await axios.post(
+                                    `${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`,
+                                    {
+                                        dbList,
+                                        queryMhs,
+                                        queryKey: JSON.parse(question.answer),
+                                        threshold: await dataThreshold().value,
+                                    }
+                                );
+                            } catch (error) {
+                                similarityResponse = error.response;
+                                if (
+                                    similarityResponse.data.message == "SyntaxError" ||
+                                    similarityResponse.data.message == "similarity below threshold"
+                                ) {
+                                    // Do Nothing
+                                } else throw createHttpError(similarityResponse.status, error);
+                            } finally {
+                                response.status = similarityResponse.data.status;
+                                response.message = similarityResponse.data.message;
+                                Object.assign(response, { ...similarityResponse.data.data });
+                                dataObj.similarity = similarityResponse.data.data.similarity;
+                                dataObj.is_equal = similarityResponse.data.data.is_equal;
+                            }
                         } else throw createHttpError(500, "end log doesn't test or submit type");
                     }
                     return dataObj;

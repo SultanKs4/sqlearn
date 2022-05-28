@@ -7,14 +7,19 @@ const compareQueryResult = require("../../../lib/compareQueryResult");
 const createHttpError = require("http-errors");
 
 function calculateSimilarity(queryMhs, queryKey) {
-    const { success, similarity } = getSimilarity(queryMhs, queryKey);
-    return success ? similarity : -1;
+    try {
+        const { success, similarity, message } = getSimilarity(queryMhs, queryKey);
+        if (!success) throw { similarity, message };
+        return similarity;
+    } catch (error) {
+        throw error;
+    }
 }
 
 async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
     try {
         if (similarity <= Number(threshold) && similarity >= 0)
-            throw createHttpError(406, "Query yang diinputkan tidak sesuai dengan kriteria soal");
+            throw createHttpError(406, "similarity below threshold");
         let dbStudent = null;
         let dbKey = null;
         if (dbname.length < 2) throw createHttpError(400, "db list lenght minimal 2");
@@ -47,36 +52,56 @@ async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
 
 module.exports = {
     multiKey: async (dbname, queryKey, queryMhs, threshold) => {
-        const similarities = queryKey.map((key) => {
-            return {
-                similarity: calculateSimilarity(queryMhs, key),
-                query: key,
-            };
-        });
+        try {
+            const similarities = queryKey.map((key) => {
+                return {
+                    similarity: calculateSimilarity(queryMhs, key),
+                    query: key,
+                };
+            });
 
-        function arrayMax(arr) {
-            let len = arr.length,
-                max = -Infinity;
-            let maxId = arr.length - 1;
-            while (len--) {
-                if (arr[len].similarity > max) {
-                    max = arr[len].similarity;
-                    maxId = len;
+            function arrayMax(arr) {
+                let len = arr.length,
+                    max = -Infinity;
+                let maxId = arr.length - 1;
+                while (len--) {
+                    if (arr[len].similarity > max) {
+                        max = arr[len].similarity;
+                        maxId = len;
+                    }
                 }
+
+                // console.log(maxId)
+                return {
+                    similarity: max,
+                    query: arr[maxId].query,
+                };
             }
 
-            // console.log(maxId)
-            return {
-                similarity: max,
-                query: arr[maxId].query,
-            };
+            const { similarity, query } = arrayMax(similarities);
+
+            return await assessment(dbname, similarity, queryMhs, query, threshold);
+        } catch (error) {
+            let similarity = error.similarity;
+            return responseObj(
+                error.statusCode ? error.statusCode : 500,
+                "error",
+                { similarity, is_equal: false },
+                error.message.name
+            );
         }
-
-        const { similarity, query } = arrayMax(similarities);
-
-        return await assessment(dbname, similarity, queryMhs, query, threshold);
     },
     singleKey: async (dbname, queryKey, queryMhs, threshold) => {
-        return await assessment(dbname, calculateSimilarity(queryMhs, queryKey), queryMhs, queryKey, threshold);
+        try {
+            return await assessment(dbname, calculateSimilarity(queryMhs, queryKey), queryMhs, queryKey, threshold);
+        } catch (error) {
+            let similarity = error.similarity;
+            return responseObj(
+                error.statusCode ? error.statusCode : 500,
+                "error",
+                { similarity, is_equal: false },
+                error.message.name
+            );
+        }
     },
 };
