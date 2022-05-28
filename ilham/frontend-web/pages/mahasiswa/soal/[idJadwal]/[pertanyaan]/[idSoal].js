@@ -14,6 +14,7 @@ import {
   Alert,
   Table,
   Collapse,
+  message,
 } from "antd";
 
 import { ConsoleSqlOutlined } from "@ant-design/icons";
@@ -34,6 +35,7 @@ import useLogs from "../../../../../utils/hooks/PengerjaanSoal/useLogs";
 import useInitializeTimer from "../../../../../utils/hooks/PengerjaanSoal/useInitializeTimer";
 import ModalFinishSession from "../../../../../components/mahasiswa/Soal/ModalFinishSession";
 import useCountUpTimer from "../../../../../utils/hooks/PengerjaanSoal/useCountUpTimer";
+import { finishSession } from "../../../../../utils/remote-data/mahasiswa/Session";
 
 function LatihanSoal() {
   const router = useRouter();
@@ -104,31 +106,29 @@ function LatihanSoal() {
           setDataPertanyaan(response.data);
           setIsDataPertanyaanLoaded(true);
 
+          // Ini reset daftar tabel ketika ganti soal
+          setAvailableTableFromQuestion([]);
+
+          // Ini reset tabel dan kolom untuk feedback ketika test query
           setCurrentTables([]);
           setCurrentColumns([]);
           setIsFeedbackDisplayed(false);
+
+          // Reassign daftar tabel yang ada di soal
+          Object.keys(response.data?.tables).map((item) =>
+            setAvailableTableFromQuestion((prev, id) => [
+              ...prev,
+              {
+                id: id,
+                table: item,
+                columns: Object.keys(response.data?.tables[item][0]),
+              },
+            ])
+          );
         }
       );
     }
   }, [session, router.query.idSoal]);
-
-  useEffect(() => {
-    if (
-      dataPertanyaan.length !== 0 &&
-      availableTableFromQuestion.length === 0
-    ) {
-      Object.keys(dataPertanyaan?.tables).map((item) =>
-        setAvailableTableFromQuestion((prev, id) => [
-          ...prev,
-          {
-            id: id,
-            table: item,
-            columns: Object.keys(dataPertanyaan?.tables[item][0]),
-          },
-        ])
-      );
-    }
-  }, [dataPertanyaan]);
 
   useEffect(() => {
     fetchDataPertanyaan();
@@ -166,19 +166,29 @@ function LatihanSoal() {
     }
   };
 
+  const handleAkhiriSesi = () => {
+    finishSession(session?.user?.tokenJWT, router.query?.session_id)
+      .then((res) => {
+        message.success("Anda telah menyelesaikan ujian ! ");
+        setTimeout(() => {
+          router.push(
+            `/mahasiswa/soal/${parseInt(router.query.idJadwal)}/ujian-selesai`
+          );
+        }, [3000]);
+      })
+      .catch((err) => message.error("Mohon coba beberapa saat lagi"));
+  };
+
+  // ? If the timer is over, ya end the session
+  useEffect(() => {
+    if (timerLeftCounter === "00:00:00") handleAkhiriSesi();
+  }, [timerLeftCounter]);
+
   useEffect(() => {
     console.group("info LogData");
     console.log(logData);
     console.groupEnd();
   }, [logData]);
-
-  const debugTableFeedback = useCallback(() => {
-    console.log(availableTableFromQuestion, "ini availableTableFromQuestion");
-  }, [availableTableFromQuestion]);
-
-  useEffect(() => {
-    debugTableFeedback();
-  }, [debugTableFeedback]);
 
   return (
     <>
@@ -226,7 +236,12 @@ function LatihanSoal() {
                         header={`Tabel ${item?.table}`}
                         key={item.id}
                       >
-                        Daftar Kolom : {item?.columns?.join()}
+                        Daftar Kolom :
+                        <ul>
+                          {item?.columns?.map((column) => (
+                            <li> {column}</li>
+                          ))}
+                        </ul>
                       </Collapse.Panel>
                     </Collapse>
                   ))}
@@ -382,6 +397,9 @@ function LatihanSoal() {
                         Hasil Query :
                         <Row justify="center">
                           <Table
+                            style={{
+                              overflowX: "scroll",
+                            }}
                             columns={currentColumns}
                             dataSource={currentTables}
                             pagination={false}
@@ -403,7 +421,10 @@ function LatihanSoal() {
                   modalRole === "edit" ? (
                     <FormResetDatabase setVisible={setIsModalVisible} />
                   ) : (
-                    <ModalFinishSession setVisible={setIsModalVisible} />
+                    <ModalFinishSession
+                      handleSubmit={handleAkhiriSesi}
+                      setVisible={setIsModalVisible}
+                    />
                   )
                 }
               />

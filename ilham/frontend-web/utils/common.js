@@ -8,9 +8,12 @@ export const countTimeDifference = (startDate = moment(), endDate) => {
   if (duration.asHours() < 0)
     return `Terlewat ${Math.abs(parseInt(duration.asHours()))} jam`;
 
-  return duration.asDays() < 1
-    ? `${parseInt(duration.asHours())} jam lagi`
-    : `${parseInt(duration.asDays())} hari lagi`;
+  if (duration.asHours() < 1)
+    return `${Math.floor(duration.asMinutes())} menit lagi`;
+  else
+    return duration.asDays() < 1
+      ? `${parseInt(duration.asHours())} jam lagi`
+      : `${parseInt(duration.asDays())} hari lagi`;
 };
 
 export const getHours = (minutes) => minutes / 60;

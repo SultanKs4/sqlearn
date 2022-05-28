@@ -30,7 +30,23 @@ function PanelThreshold({
       <Alert
         showIcon
         type="info"
-        description="Threshold merupakan ... , diharapkan untuk memasukkan value berupa float"
+        description={
+          <>
+            Threshold merupakan value minimal dari similarity level untuk proses
+            penilaian tiap soal.
+            <ul>
+              <li>
+                {"Jika similarity value <= dari Threshold value"}, maka soal
+                tersebut dianggap benar
+              </li>
+              <li>
+                {"Jika similarity value > dari Threshold value"}, maka soal
+                tersebut dianggap salah
+              </li>
+            </ul>
+            Diharapkan untuk memasukkan value berupa float
+          </>
+        }
       />
 
       <Typography.Title level={4} style={{ marginTop: "1em" }}>

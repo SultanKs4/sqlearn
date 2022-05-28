@@ -1,6 +1,7 @@
 import { React, useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import moment from "moment";
 
 import { Card, Row, Col, Skeleton, Typography, Badge, message } from "antd";
 
@@ -40,13 +41,20 @@ function Practice() {
     }
   }, [isTimerReady, timerFromServer]);
 
+  const calculateDifferenceForTimer = (startDate, endDate) => {
+    let diff = moment.duration(moment(endDate).diff(moment(startDate)));
+    return `${diff.hours()}:${diff.minutes()}:${diff.seconds()}`;
+  };
+
   const fetchDataLatihan = useCallback(() => {
     if (session !== undefined && router?.query?.idJadwal !== undefined)
       getJadwalByID(session?.user?.tokenJWT, router?.query?.idJadwal).then(
         (res) => {
           setDataJadwal(res.data);
           setIsDataJadwalLoaded(true);
-          setTimerFromServer(res.data?.timer);
+          setTimerFromServer(
+            calculateDifferenceForTimer(moment(), res.data?.finish)
+          );
           setIsTimerReady(true);
         }
       );
