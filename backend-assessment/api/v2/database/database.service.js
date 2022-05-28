@@ -30,4 +30,13 @@ module.exports = {
             return responseObj(500, "error", error, "select table failed");
         }
     },
+    checkDb: async (dbname) => {
+        try {
+            let resp = await dbFunctions.checkDb(dbname);
+            if (resp.length == 0) throw new Error();
+            return responseObj(200, "success", resp, "database found");
+        } catch (error) {
+            return responseObj(404, "error", error, "database not found");
+        }
+    },
 };
