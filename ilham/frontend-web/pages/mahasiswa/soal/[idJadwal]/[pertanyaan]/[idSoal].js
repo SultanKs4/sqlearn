@@ -419,11 +419,11 @@ function LatihanSoal() {
             {isModalVisible && (
               <ModalCustom
                 role={modalRole}
-                entity={modalRole === "edit" ? "Database" : "Ujian"}
+                entity={modalRole === "delete" ? "Database" : "Ujian"}
                 visible={isModalVisible}
                 setVisible={setIsModalVisible}
                 modalContent={
-                  modalRole === "edit" ? (
+                  modalRole === "delete" ? (
                     <FormResetDatabase setVisible={setIsModalVisible} />
                   ) : (
                     <ModalFinishSession
