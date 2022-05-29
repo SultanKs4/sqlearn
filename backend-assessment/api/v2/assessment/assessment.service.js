@@ -35,10 +35,13 @@ async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
             resQueryMhs = await dbFunctions.selectTable(dbStudent, typeAndTable.table);
             resQueryKey = await dbFunctions.selectTable(dbKey, typeAndTable.table);
         }
+        const is_equal = compareQueryResult(resQueryMhs, resQueryKey);
+        const message = is_equal ? "Jawaban benar" : "Jawaban salah";
         return responseObj(200, "success", {
             similarity,
-            is_equal: compareQueryResult(resQueryMhs, resQueryKey),
+            is_equal,
             res_query: resQueryMhs,
+            message,
         });
     } catch (error) {
         return responseObj(
