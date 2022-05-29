@@ -193,32 +193,24 @@ module.exports = {
                     };
                     if (i == log.length - 1) {
                         if (val.type == "test" || val.type == "submit") {
-                            let similarityResponse = {};
-                            try {
-                                similarityResponse = await axios.post(
-                                    `${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`,
-                                    {
-                                        dbList,
-                                        queryMhs,
-                                        queryKey: JSON.parse(question.answer),
-                                        threshold: await dataThreshold().value,
-                                    }
-                                );
-                            } catch (error) {
-                                similarityResponse = error.response;
-                                if (
-                                    similarityResponse.data.message == "SyntaxError" ||
-                                    similarityResponse.data.message == "similarity below threshold"
-                                ) {
-                                    // Do Nothing
-                                } else throw createHttpError(similarityResponse.status, error);
-                            } finally {
-                                response.status = similarityResponse.data.status;
-                                response.message = similarityResponse.data.message;
-                                Object.assign(response, { ...similarityResponse.data.data });
-                                dataObj.similarity = similarityResponse.data.data.similarity;
-                                dataObj.is_equal = similarityResponse.data.data.is_equal;
-                            }
+                            let similarityResponse = await axios
+                                .post(`${AUTO_ASSESS_BACKEND}/api/v2/assessment/multi_key`, {
+                                    dbList,
+                                    queryMhs,
+                                    queryKey: JSON.parse(question.answer),
+                                    threshold: await dataThreshold().value,
+                                })
+                                .then((data) => {
+                                    return data;
+                                })
+                                .catch((error) => {
+                                    return error.response;
+                                });
+                            response.status = similarityResponse.data.status;
+                            response.message = similarityResponse.data.message;
+                            Object.assign(response, { ...similarityResponse.data.data });
+                            dataObj.similarity = similarityResponse.data.data.similarity;
+                            dataObj.is_equal = similarityResponse.data.data.is_equal;
                         } else throw createHttpError(500, "end log doesn't test or submit type");
                     }
                     return dataObj;
