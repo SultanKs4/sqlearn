@@ -259,6 +259,7 @@ module.exports = {
                 ],
             });
             if (!sessionData) throw createHttpError(404, "session data not found");
+            if (sessionData.is_finished) return createHttpError(400, "this session already finished");
             if (sessionData.student_id != user.id)
                 return createHttpError(404, "this session don't belong to your credentials");
 
