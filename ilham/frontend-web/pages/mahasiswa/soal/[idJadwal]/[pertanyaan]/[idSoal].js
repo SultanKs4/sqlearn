@@ -99,8 +99,6 @@ function LatihanSoal() {
 
   const fetchDataPertanyaan = useCallback(() => {
     if (session !== undefined && router?.query?.idSoal !== undefined) {
-      setDataPertanyaan([]);
-
       getSoalByID(session?.user?.tokenJWT, router?.query?.idSoal).then(
         (response) => {
           setIsAnswerSaved(false);
