@@ -37,6 +37,10 @@ module.exports = {
     runQuery: async (dbname, query, timeout) => {
         return await executeDb(dbname, query, timeout);
     },
+    checkDb: async (dbname) => {
+        const query = `SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '${dbname}'`;
+        return await executeDb(null, query);
+    },
     destroyConnection: (dbname) => {
         return destroyConnection(dbname);
     },

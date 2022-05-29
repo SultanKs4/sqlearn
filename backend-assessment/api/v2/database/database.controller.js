@@ -26,4 +26,10 @@ module.exports = {
 
         return res.status(httpCode).json(resp);
     },
+    checkDb: async (req, res) => {
+        const responseObj = await databaseService.checkDb(req.params.dbname);
+        const { httpCode, ...resp } = responseObj;
+
+        return res.status(httpCode).json(resp);
+    },
 };
