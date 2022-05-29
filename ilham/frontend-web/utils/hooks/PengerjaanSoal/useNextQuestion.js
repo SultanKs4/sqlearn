@@ -14,7 +14,8 @@ const useNextQuestion = (
   resetLog,
   setCurrentTables,
   setCurrentColumns,
-  setIsFeedbackDisplayed
+  setIsFeedbackDisplayed,
+  setFeedbackContent
 ) => {
   const { data: session } = useSession();
   const router = useRouter();
@@ -36,8 +37,9 @@ const useNextQuestion = (
         log: logData,
       })
         .then((item) => {
-          message.success("Jawaban anda benar !");
+          message.success(item?.message);
           setIsFeedbackDisplayed(true);
+          setFeedbackContent(item);
 
           Object.keys(item?.data?.res_query[0]).map((column) =>
             setCurrentColumns((prev) => [

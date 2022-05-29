@@ -50,6 +50,7 @@ function LatihanSoal() {
   const [currentTables, setCurrentTables] = useState([]);
   const [currentColumns, setCurrentColumns] = useState([]);
   const [isFeedbackDisplayed, setIsFeedbackDisplayed] = useState(false);
+  const [feedbackContent, setFeedbackContent] = useState({});
 
   const [dataPertanyaan, setDataPertanyaan] = useState([]);
   const [currentPart, setCurrentPart] = useState(null);
@@ -89,7 +90,8 @@ function LatihanSoal() {
     resetLog,
     setCurrentTables,
     setCurrentColumns,
-    setIsFeedbackDisplayed
+    setIsFeedbackDisplayed,
+    setFeedbackContent
   );
 
   // ? Untuk simpan jawaban kalau soal ini berQuestionLabel?.name open-ended
@@ -189,6 +191,10 @@ function LatihanSoal() {
     console.log(logData);
     console.groupEnd();
   }, [logData]);
+
+  useEffect(() => {
+    console.log(feedbackContent, "ini feedbackContent");
+  }, [feedbackContent]);
 
   return (
     <>
@@ -387,12 +393,11 @@ function LatihanSoal() {
               <Row style={{ marginTop: "1em" }}>
                 <Col span={24}>
                   <Alert
-                    type="success"
+                    type={feedbackContent?.data?.status}
                     description={
                       <>
                         <h1 style={{ textAlign: "center" }}>
-                          {" "}
-                          Query berhasil dijalankan !{" "}
+                          {feedbackContent?.data?.message}
                         </h1>
                         Hasil Query :
                         <Row justify="center">
