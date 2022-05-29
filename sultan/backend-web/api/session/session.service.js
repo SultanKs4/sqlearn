@@ -178,7 +178,7 @@ module.exports = {
             let dataLogReady = await Promise.all(
                 log.map(async (val, i) => {
                     let queryMhs = String(val.answer)
-                        .toLowerCase()
+                        .trim()
                         .replaceAll(/[\n\t\r]/gm, " ")
                         .replace(/[^a-zA-Z0-9|'|"|)]*$/gm, "");
                     let dataObj = {
