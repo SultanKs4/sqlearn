@@ -99,6 +99,8 @@ function LatihanSoal() {
 
   const fetchDataPertanyaan = useCallback(() => {
     if (session !== undefined && router?.query?.idSoal !== undefined) {
+      setDataPertanyaan([]);
+
       getSoalByID(session?.user?.tokenJWT, router?.query?.idSoal).then(
         (response) => {
           setIsAnswerSaved(false);
@@ -192,10 +194,6 @@ function LatihanSoal() {
     console.groupEnd();
   }, [logData]);
 
-  useEffect(() => {
-    console.log(feedbackContent, "ini feedbackContent");
-  }, [feedbackContent]);
-
   return (
     <>
       <Head>
@@ -268,7 +266,7 @@ function LatihanSoal() {
                   width={380}
                   src={URL_IMAGES + dataPertanyaan?.answer_pic}
                   alt={`${URL_IMAGES}/${dataPertanyaan?.answer_pic}`}
-                ></img>
+                />
               )}
             </Row>
             <Row style={{ marginTop: "1em" }}>
@@ -393,7 +391,7 @@ function LatihanSoal() {
               <Row style={{ marginTop: "1em" }}>
                 <Col span={24}>
                   <Alert
-                    type={feedbackContent?.data?.status}
+                    type={feedbackContent?.data?.is_equal ? "success" : "error"}
                     description={
                       <>
                         <h1 style={{ textAlign: "center" }}>
