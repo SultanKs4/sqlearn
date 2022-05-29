@@ -68,7 +68,7 @@ npm run build
 cd $WORKDIR
 
 # PM2 Start services
-pm2 startOrRestart ecosystem.config.js --watch --ignore-watch="node_modules"
+pm2 startOrRestart ecosystem.config.js
 pm2 startup
 pm2 save
 
