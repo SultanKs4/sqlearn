@@ -22,6 +22,7 @@ function Practice() {
   const [dataJadwal, setDataJadwal] = useState([]);
 
   const [isDataJadwalLoaded, setIsDataJadwalLoaded] = useState(false);
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
 
   const [isTimerReady, setIsTimerReady] = useState(false);
   const [timerFromServer, setTimerFromServer] = useState("");
@@ -69,6 +70,7 @@ function Practice() {
   }, []);
 
   const kerjakanLatihan = async () => {
+    setIsButtonLoading(true);
     createSession(session?.user?.tokenJWT, router.query.idJadwal)
       .then((sesi) => {
         getUnansweredQuestion(session?.user?.tokenJWT, sesi?.data?.id, [])
@@ -139,8 +141,9 @@ function Practice() {
 
           {isDataJadwalLoaded && (
             <ListComponent
-              dataSource={dataJadwal?.Container?.questions}
               role="data-soal-mahasiswa"
+              dataSource={dataJadwal?.Container?.questions}
+              isButtonLoading={isButtonLoading}
               isLoading={!isDataJadwalLoaded}
               //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
               kerjakanLatihan={kerjakanLatihan}

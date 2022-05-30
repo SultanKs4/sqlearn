@@ -9,9 +9,10 @@ import {
 import { useSession } from "next-auth/react";
 import { getKelas } from "../../../utils/remote-data/dosen/KelasCRUD";
 import { useForm } from "antd/lib/form/Form";
-import { getJadwal } from "../../../utils/remote-data/dosen/JadwalCRUD";
+import { getJadwalByKelas } from "../../../utils/remote-data/dosen/JadwalCRUD";
 
 const SearchNilai = ({
+  selectedKelas,
   setSelectedKelas,
   setSelectedJadwal,
   onFinish,
@@ -37,19 +38,26 @@ const SearchNilai = ({
   }, [session]);
 
   const fetchDataJadwal = useCallback(() => {
-    if (session !== undefined)
-      getJadwal(session?.user?.tokenJWT)
+    console.log(selectedKelas);
+    if (session !== undefined && selectedKelas !== undefined)
+      getJadwalByKelas(session?.user?.tokenJWT, selectedKelas?.value)
         .then((res) => {
           setDataJadwal(res?.data);
           setIsFetchingDataJadwal(true);
         })
-        .catch(() => message.error("Terjadi kesalahan fetching data jadwal"));
-  }, [session]);
+        .catch(() => {
+          setDataJadwal([]);
+          message.error("Kelas ini tidak memiliki jadwal");
+        });
+  }, [session, selectedKelas]);
 
   useEffect(() => {
     fetchDataKelas();
-    fetchDataJadwal();
   }, [session]);
+
+  useEffect(() => {
+    fetchDataJadwal();
+  }, [selectedKelas]);
 
   return (
     <>

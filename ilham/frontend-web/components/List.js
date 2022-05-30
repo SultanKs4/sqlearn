@@ -667,6 +667,7 @@ function ListComponent({
             <Tooltip title="Kerjakan Soal">
               <Button
                 type="primary"
+                loading={props.isButtonLoading}
                 icon={<EditOutlined />}
                 children="Kerjakan"
                 onClick={() => props.kerjakanLatihan()}

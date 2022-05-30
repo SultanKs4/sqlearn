@@ -1,6 +1,11 @@
 import { Button, Col, Form, message, Row } from "antd";
 
-const ModalFinishSession = ({ setVisible, handleSubmit, ...props }) => {
+const ModalFinishSession = ({
+  setVisible,
+  handleSubmit,
+  isButtonLoading,
+  ...props
+}) => {
   return (
     <>
       <Row justify="center">Apakah Anda ingin mengakhiri ujian ini ?</Row>
@@ -11,8 +16,13 @@ const ModalFinishSession = ({ setVisible, handleSubmit, ...props }) => {
           </Button>
         </Col>
         <Col>
-          <Button ghost type="primary" onClick={() => handleSubmit()}>
-            Submit
+          <Button
+            ghost
+            type="primary"
+            loading={isButtonLoading}
+            onClick={() => handleSubmit()}
+          >
+            {isButtonLoading ? "Menghitung Skor Anda..." : "Ya, Akhiri"}
           </Button>
         </Col>
       </Row>

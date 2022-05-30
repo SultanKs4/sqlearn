@@ -47,6 +47,9 @@ function LatihanSoal() {
     []
   );
 
+  // Ketika akhiri sesi
+  const [isButtonLoading, setIsButtonLoading] = useState(false);
+
   const [currentTables, setCurrentTables] = useState([]);
   const [currentColumns, setCurrentColumns] = useState([]);
   const [isFeedbackDisplayed, setIsFeedbackDisplayed] = useState(false);
@@ -169,6 +172,7 @@ function LatihanSoal() {
   };
 
   const handleAkhiriSesi = () => {
+    setIsButtonLoading(true);
     finishSession(session?.user?.tokenJWT, router.query?.session_id)
       .then((res) => {
         message.success("Anda telah menyelesaikan ujian ! ");
@@ -423,6 +427,7 @@ function LatihanSoal() {
                     <FormResetDatabase setVisible={setIsModalVisible} />
                   ) : (
                     <ModalFinishSession
+                      isButtonLoading={isButtonLoading}
                       handleSubmit={handleAkhiriSesi}
                       setVisible={setIsModalVisible}
                     />

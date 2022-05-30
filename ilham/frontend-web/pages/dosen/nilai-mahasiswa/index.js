@@ -52,6 +52,7 @@ function HalamanNilai() {
         <Card>
           <SearchNilai
             onFinish={onFinish}
+            selectedKelas={selectedKelas}
             setSelectedKelas={setSelectedKelas}
           />
         </Card>

@@ -4,9 +4,9 @@ import { React, useCallback, useEffect, useState } from "react";
 
 import Head from "next/head";
 import PageLayout from "../../components/PageLayout";
-import { Typography, Row, Col, Button, message } from "antd";
+import { Typography, Row, Col, Button, message, DatePicker } from "antd";
 
-import { PlusCircleOutlined } from "@ant-design/icons";
+import { PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
 
 import ModalCustom from "../../components/Modal";
 import FormTambahJadwal from "../../components/dosen/Jadwal/FormTambahJadwal";
@@ -16,6 +16,7 @@ import ListComponent from "../../components/List";
 import {
   deleteJadwal,
   getJadwal,
+  getJadwalByDate,
   postJadwal,
   updateJadwal,
 } from "../../utils/remote-data/dosen/JadwalCRUD";
@@ -23,6 +24,8 @@ import RadioFilterCategory from "../../components/RadioFilterCategory";
 import { useSession } from "next-auth/react";
 
 function Jadwal() {
+  const { RangePicker } = DatePicker;
+
   const { data: session } = useSession();
 
   const [currentJadwal, setCurrentJadwal] = useState({});
@@ -31,6 +34,7 @@ function Jadwal() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   const [jadwalFiltered, setJadwalFiltered] = useState([]);
+  const [dateValues, setDateValues] = useState([]);
   const [isFilterActive, setIsFilterActive] = useState(false);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -105,6 +109,30 @@ function Jadwal() {
       );
   };
 
+  const handleDateFilter = (dateValues) => {
+    console.log(dateValues);
+    if (dateValues === null) {
+      message.info("Menampilkan data jadwal awal");
+      fetchDataJadwal();
+    } else setDateValues(dateValues);
+  };
+
+  const handleSearchByDate = () => {
+    setIsDataLoaded(false);
+
+    getJadwalByDate(session?.user?.tokenJWT, dateValues[0], dateValues[1])
+      .then((res) => {
+        setDataJadwal(res?.data);
+        setIsDataLoaded(true);
+        message.success("Data Jadwal berhasil didapatkan");
+      })
+      .catch(() => {
+        fetchDataJadwal();
+        message.error("Data Jadwal dengan tanggal tersebut tidak ditemukan");
+        message.info("Menampilkan data jadwal awal");
+      });
+  };
+
   return (
     <>
       <Head>
@@ -121,7 +149,6 @@ function Jadwal() {
             </Button>
           </Col>
         </Row>
-
         {isModalVisible && (
           <ModalCustom
             role={modalRole}
@@ -150,13 +177,29 @@ function Jadwal() {
             }
           />
         )}
-
         <RadioFilterCategory
           data={dataJadwal}
           setIsFilterActive={setIsFilterActive}
           setEntityFiltered={setJadwalFiltered}
         />
-
+        <Row gutter={[20]} justify="end" style={{ margin: "1em 0" }}>
+          <Col style={{ fontWeight: "bold", margin: "auto 0" }}>
+            Filter berdasarkan tanggal
+          </Col>
+          <Col>
+            <RangePicker showTime onChange={handleDateFilter} />
+          </Col>
+          <Col>
+            <Button
+              type="primary"
+              icon={<SearchOutlined />}
+              onClick={handleSearchByDate}
+            >
+              {" "}
+              Cari{" "}
+            </Button>
+          </Col>
+        </Row>
         {/* Content asli... */}
         <ListComponent
           isLoading={!isDataLoaded}

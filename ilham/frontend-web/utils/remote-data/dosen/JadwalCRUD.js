@@ -59,6 +59,20 @@ const getJadwal = async (bearerToken) => {
   return response.data;
 };
 
+const getJadwalByKelas = async (bearerToken, kelasID) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_SCHEDULE_API}?kelas=${kelasID}`
+  );
+  return response.data;
+};
+
+const getJadwalByDate = async (bearerToken, startDate, endDate) => {
+  let response = await axiosWithBearer(bearerToken).get(
+    `${URL_SCHEDULE_API}?start=${startDate.toISOString()}&finish=${endDate.toISOString()}`
+  );
+  return response.data;
+};
+
 const getJadwalByID = async (bearerToken, jadwalID) => {
   let response = await axiosWithBearer(bearerToken).get(
     `${URL_SCHEDULE_API}/${jadwalID}`
@@ -103,6 +117,8 @@ const mockGetJadwal = async () => {
 export {
   getJadwal,
   getJadwalByID,
+  getJadwalByKelas,
+  getJadwalByDate,
   postJadwal,
   updateJadwal,
   deleteJadwal,
