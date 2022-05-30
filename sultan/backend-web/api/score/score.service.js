@@ -109,19 +109,15 @@ module.exports = {
                 ],
             });
 
-            await Promise.all(
-                scores.map(async (e) => {
-                    await e.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
-                        if (data.length == 0)
-                            throw createHttpError(
-                                500,
-                                `student ${e.Student.name} not in class ${e.Schedule.classes[0].name}`
-                            );
-                    });
-                })
-            );
+            let response = await scores.reduce(async (prev, curr) => {
+                let arr = await prev;
+                await curr.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
+                    if (data.length == 1) arr.push(curr);
+                });
+                return arr;
+            }, Promise.all([]));
 
-            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", scores);
+            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", response);
         } catch (error) {
             return errorHandling(error);
         }
