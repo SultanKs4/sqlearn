@@ -114,7 +114,7 @@ module.exports = {
                     await e.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
                         if (data.length == 0)
                             throw createHttpError(
-                                500,
+                                404,
                                 `student ${e.Student.name} not in class ${e.Schedule.classes[0].name}`
                             );
                     });
