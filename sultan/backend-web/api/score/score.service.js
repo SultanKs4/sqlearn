@@ -113,9 +113,9 @@ module.exports = {
                 scores.map(async (e) => {
                     await e.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
                         if (data.length == 0)
-                            return createHttpError(
+                            throw createHttpError(
                                 500,
-                                `student ${e.Student.name} not in class ${e.Schedule.classes.name}`
+                                `student ${e.Student.name} not in class ${e.Schedule.classes[0].name}`
                             );
                     });
                 })
