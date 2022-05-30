@@ -82,14 +82,15 @@ module.exports = {
     getAllByDosen: async (kelas, jadwal) => {
         try {
             const scores = await Score.findAll({
+                attributes: ["id", "score"],
                 include: [
                     {
                         model: Schedule,
-                        attributes: [],
+                        attributes: ["description"],
                         include: [
                             {
                                 model: Class,
-                                attributes: [],
+                                attributes: ["name"],
                                 as: "classes",
                                 where: {
                                     id: kelas,
@@ -106,9 +107,19 @@ module.exports = {
                         attributes: ["id", "nim", "name"],
                     },
                 ],
-                raw: true,
-                nest: true,
             });
+
+            await Promise.all(
+                scores.map(async (e) => {
+                    await e.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
+                        if (data.length == 0)
+                            return createHttpError(
+                                500,
+                                `student ${e.Student.name} not in class ${e.Schedule.classes.name}`
+                            );
+                    });
+                })
+            );
 
             return createResponseObject(200, "success", "Data nilai berhasil didapatkan", scores);
         } catch (error) {
