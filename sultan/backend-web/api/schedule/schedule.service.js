@@ -20,8 +20,13 @@ async function getWhereDosen(query, userId) {
             { start: { [Op.gte]: new Date(query.start) } },
             { finish: { [Op.lte]: new Date(query.finish) } },
         ];
-    } else if (query.start) whereSchedule.finish = { [Op.gte]: new Date(query.start) };
-    else whereSchedule.finish = { [Op.gte]: new Date() };
+    } else if (query.start) whereSchedule.start = { [Op.gte]: new Date(query.start) };
+    else if (query.finish) whereSchedule.finish = { [Op.lte]: new Date(query.finish) };
+    else {
+        let date = new Date();
+        date.setDate(date.getDate() - 7);
+        whereSchedule.finish = { [Op.gte]: date };
+    }
 
     let whereClass = { user_id: userId };
     if (query.kelas) whereClass.id = query.kelas;
