@@ -664,10 +664,15 @@ function ListComponent({
             )}
           />
           <Row justify="center">
-            <Tooltip title="Kerjakan Soal">
+            <Tooltip
+              title={
+                props.isButtonDisabled ? "Sesi belum dimulai" : "Kerjakan Soal"
+              }
+            >
               <Button
                 type="primary"
                 loading={props.isButtonLoading}
+                disabled={props.isButtonDisabled}
                 icon={<EditOutlined />}
                 children="Kerjakan"
                 onClick={() => props.kerjakanLatihan()}

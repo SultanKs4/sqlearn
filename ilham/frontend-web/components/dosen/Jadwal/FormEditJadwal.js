@@ -62,14 +62,18 @@ function FormEditJadwal({ currentJadwal, setVisible, handleSubmit, ...props }) {
   }, [session, dataKelas]);
 
   useEffect(() => {
-    form.setFieldsValue({
-      description: currentJadwal?.description,
-      start: moment(currentJadwal?.start),
-      finish: moment(currentJadwal?.finish),
-      classes: [currentJadwal?.class[0]?.id ?? ""],
-      container_id: currentJadwal?.container?.id,
-      type: currentJadwal?.type,
-    });
+    if (currentJadwal !== undefined) {
+      let listKelas = currentJadwal?.class?.map((item) => item.id);
+
+      form.setFieldsValue({
+        description: currentJadwal?.description,
+        start: moment(currentJadwal?.start),
+        finish: moment(currentJadwal?.finish),
+        classes: listKelas,
+        container_id: currentJadwal?.container?.id,
+        type: currentJadwal?.type,
+      });
+    }
   }, [currentJadwal]);
 
   const onFinish = ({ classes, container_id, start, finish, ...values }) => {

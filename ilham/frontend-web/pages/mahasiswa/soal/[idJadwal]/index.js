@@ -23,6 +23,7 @@ function Practice() {
 
   const [isDataJadwalLoaded, setIsDataJadwalLoaded] = useState(false);
   const [isButtonLoading, setIsButtonLoading] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const [isTimerReady, setIsTimerReady] = useState(false);
   const [timerFromServer, setTimerFromServer] = useState("");
@@ -89,7 +90,11 @@ function Practice() {
             message.error("Tidak dapat ambil data pertanyaan");
           });
       })
-      .catch((e) => message.error("Tidak dapat membuat sesi"));
+      .catch((e) => {
+        message.error("Sesi ini belum dimulai");
+        setIsButtonLoading(false);
+        setIsButtonDisabled(true);
+      });
   };
 
   return (
@@ -144,6 +149,7 @@ function Practice() {
               role="data-soal-mahasiswa"
               dataSource={dataJadwal?.Container?.questions}
               isButtonLoading={isButtonLoading}
+              isButtonDisabled={isButtonDisabled}
               isLoading={!isDataJadwalLoaded}
               //  ? route : /mahasiswa/soal/:paketID/pertanyaan/:soalID
               kerjakanLatihan={kerjakanLatihan}
