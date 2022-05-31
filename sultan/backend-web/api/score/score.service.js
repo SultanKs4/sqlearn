@@ -82,14 +82,15 @@ module.exports = {
     getAllByDosen: async (kelas, jadwal) => {
         try {
             const scores = await Score.findAll({
+                attributes: ["id", "score"],
                 include: [
                     {
                         model: Schedule,
-                        attributes: [],
+                        attributes: ["description"],
                         include: [
                             {
                                 model: Class,
-                                attributes: [],
+                                attributes: ["name"],
                                 as: "classes",
                                 where: {
                                     id: kelas,
@@ -106,11 +107,17 @@ module.exports = {
                         attributes: ["id", "nim", "name"],
                     },
                 ],
-                raw: true,
-                nest: true,
             });
 
-            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", scores);
+            let response = await scores.reduce(async (prev, curr) => {
+                let arr = await prev;
+                await curr.Student.getClasses({ where: { id: kelas }, joinTableAttributes: [] }).then((data) => {
+                    if (data.length == 1) arr.push(curr);
+                });
+                return arr;
+            }, Promise.all([]));
+
+            return createResponseObject(200, "success", "Data nilai berhasil didapatkan", response);
         } catch (error) {
             return errorHandling(error);
         }

@@ -18,7 +18,7 @@ const checkDate = body(["start", "finish"], "cannot empty")
         const start = new Date(req.body.start).getTime();
         const finish = new Date(req.body.finish).getTime();
         const minutes = (finish - start) / 60e3;
-        if (minutes < 5) throw new Error("Start date and finish date difference must be 5 minutes or more");
+        if (minutes <= 5) throw new Error("Start date and finish date difference must be 5 minutes or more");
         return true;
     });
 const checkClasses = body("classes", "cannot empty")

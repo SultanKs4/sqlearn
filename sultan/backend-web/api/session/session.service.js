@@ -87,6 +87,7 @@ module.exports = {
             }).then((data) => {
                 if (!data) throw createHttpError(404, "schedule data not found");
                 if (data.classes.length == 0) throw createHttpError(409, "student don't belong to this schedule");
+                if (new Date() < new Date(data.start)) throw createHttpError(400, "schedule still closed");
                 return data;
             });
 
