@@ -36,11 +36,11 @@ function PanelThreshold({
             penilaian tiap soal.
             <ul>
               <li>
-                {"Jika similarity value <= dari Threshold value"}, maka soal
+                {"Jika similarity value >= dari Threshold value"}, maka soal
                 tersebut dianggap benar
               </li>
               <li>
-                {"Jika similarity value > dari Threshold value"}, maka soal
+                {"Jika similarity value < dari Threshold value"}, maka soal
                 tersebut dianggap salah
               </li>
             </ul>
