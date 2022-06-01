@@ -82,7 +82,7 @@ module.exports = {
     getAllByDosen: async (kelas, jadwal) => {
         try {
             const scores = await Score.findAll({
-                attributes: ["id", "score"],
+                attributes: ["id", "score", "schedule_id"],
                 include: [
                     {
                         model: Schedule,
