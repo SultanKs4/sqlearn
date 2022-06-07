@@ -126,7 +126,7 @@ function LatihanSoal() {
               {
                 id: id,
                 table: item,
-                columns: Object.keys(response.data?.tables[item][0]),
+                columns: Object.keys(response.data?.tables[item][0]) || [],
               },
             ])
           );
@@ -244,8 +244,8 @@ function LatihanSoal() {
                       >
                         Daftar Kolom :
                         <ul>
-                          {item?.columns?.map((column) => (
-                            <li> {column}</li>
+                          {item?.columns?.map((column, id) => (
+                            <li key={id}> {column}</li>
                           ))}
                         </ul>
                       </Collapse.Panel>
