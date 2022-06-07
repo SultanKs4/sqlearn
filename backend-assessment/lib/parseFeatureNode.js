@@ -4,7 +4,7 @@ function aliasString(prefix, aliases) {
 
 function typeCheck(obj, arr = []) {
     if (obj == null) return null;
-    const type = obj.type ? obj.type : null;
+    const type = obj.type ? obj.type : "undefined";
     const pattern = /[a-zA-Z]/g;
     if (type == "column_ref") {
         /* {
@@ -18,16 +18,6 @@ function typeCheck(obj, arr = []) {
     } else if (type == "param" || type == "null" || type == "bool" || type == "star") {
         // { type: 'param', value: 'my_param' }
         return String(obj.value);
-    } else if (type.includes("string") || type == "number") {
-        /* {
-            "type": "number",
-            "value": 1123144
-        }, OR 
-        {
-            "type": "single_quote_string",
-            "value": "tomi"
-        }*/
-        return "Constant";
     } else if (type == "binary_expr") {
         /* { 
             "type": "binary_expr",
@@ -41,8 +31,10 @@ function typeCheck(obj, arr = []) {
             "right": {}
         } */
         const operator = obj.operator;
-        const left = typeCheck(obj.left, []);
-        const right = typeCheck(obj.right, []);
+        const left = exprCheck(obj.left);
+        const right = exprCheck(obj.right);
+        // const left = typeCheck(obj.left, []);
+        // const right = typeCheck(obj.right, []);
         if (pattern.test(operator) && (operator == "AND" || operator == "OR")) {
             arr.push(operator, ...left, ...right);
         } else {
@@ -88,11 +80,21 @@ function typeCheck(obj, arr = []) {
           }
             */
         let result = exprCheck(obj.args);
-        if (Array.isArray(result)) result.unshift(obj.name);
+        if (Array.isArray(result)) result = `${obj.name}`;
         else result = `${obj.name}_${result}`;
         return result;
     } else if (type == "ASC" || type == "DESC") {
         return `${type}_${exprCheck(obj.expr)}`;
+    } else if (type.includes("string") || type == "number") {
+        /* {
+            "type": "number",
+            "value": 1123144
+        }, OR 
+        {
+            "type": "single_quote_string",
+            "value": "tomi"
+        }*/
+        return "Constant";
     } else {
         return type;
     }
@@ -100,15 +102,15 @@ function typeCheck(obj, arr = []) {
 
 function exprCheck(exprObj) {
     if (typeof exprObj == "object" && exprObj != null) {
-        let objPass = {};
         if ("type" in exprObj) {
-            objPass = exprObj;
+            return typeCheck(exprObj);
         } else if ("ast" in exprObj) {
-            objPass = exprObj.ast;
+            return typeCheck(exprObj.ast);
         } else if ("expr" in exprObj) {
-            objPass = exprObj.expr;
+            return exprCheck(exprObj.expr);
+        } else {
+            return exprObj;
         }
-        return typeCheck(objPass);
     }
     return exprObj;
 }
@@ -146,15 +148,18 @@ function getTable(tableArr) {
     return tableArr;
 }
 
-function getStatement(arr, statement = null) {
-    if (Array.isArray(arr)) {
-        arr = arr.map((e) => {
+function getStatement(data, statement = null) {
+    if (Array.isArray(data)) {
+        data = data.map((e) => {
             return exprCheck(e);
         });
-        if (statement != "values") arr = arr.flat(Infinity).join("_");
-        return arr;
+        if (statement != "values") data = data.flat(Infinity).join("_");
+        return data;
+    } else if (typeof data == "object" && data !== null) {
+        return [[exprCheck(data)]];
+    } else {
+        return data;
     }
-    return arr;
 }
 
 function getLimit(obj) {
@@ -169,7 +174,7 @@ function getLimit(obj) {
 function getOnDuplicateUpdate(obj) {
     if (typeof obj == "object" && obj != null) {
         return obj.set.map((e) => {
-            return `${e.column}_${exprCheck(e.obj)}`;
+            return `${e.column}_${exprCheck(e.value)}`;
         });
     }
     return obj;
@@ -199,10 +204,14 @@ function parseFeatureNode(ast) {
             obj = { values, partition, onDuplicateUpdate };
             break;
     }
-    return {
+    obj = {
         [statement]: column,
         ...obj,
     };
+    // let objRoot = Object.entries(obj).map((val) => {
+    //     console.log(val);
+    // });
+    return obj;
 }
 
 function getTypeAndTable(ast) {
