@@ -13,8 +13,15 @@ module.exports = {
 
         return res.status(httpCode).json(resp);
     },
+    descDb: async (req, res) => {
+        const responseObj = await databaseService.descDb(req.params.dbname);
+        const { httpCode, ...resp } = responseObj;
+
+        return res.status(httpCode).json(resp);
+    },
     descTable: async (req, res) => {
-        const responseObj = await databaseService.descTable(req.params.dbname);
+        const { dbname, table } = req.params;
+        const responseObj = await databaseService.descTable(dbname, table);
         const { httpCode, ...resp } = responseObj;
 
         return res.status(httpCode).json(resp);

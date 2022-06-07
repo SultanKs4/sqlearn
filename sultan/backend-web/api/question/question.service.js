@@ -122,7 +122,7 @@ module.exports = {
             question["tables"] = await tables.reduce(async (acc, curr) => {
                 const obj = await acc;
                 const res = await axios.get(
-                    `${AUTO_ASSESS_BACKEND}/api/v2/database/select/${question.CaseStudy.DbList.db_name}/${curr}`
+                    `${AUTO_ASSESS_BACKEND}/api/v2/database/describe/${question.CaseStudy.DbList.db_name}/${curr}`
                 );
                 obj[curr] = res.data.data;
                 return obj;
