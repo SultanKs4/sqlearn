@@ -126,7 +126,7 @@ function LatihanSoal() {
               {
                 id: id,
                 table: item,
-                columns: Object.keys(response.data?.tables[item][0]) || [],
+                columns: response.data?.tables[item] || [],
               },
             ])
           );
