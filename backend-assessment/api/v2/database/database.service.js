@@ -16,11 +16,18 @@ module.exports = {
             return responseObj(500, "error", error, "database not deleted");
         }
     },
-    descTable: async (dbname) => {
+    descDb: async (dbname) => {
         try {
-            return responseObj(200, "success", await dbFunctions.descTable(dbname));
+            return responseObj(200, "success", await dbFunctions.descDb(dbname));
         } catch (error) {
             return responseObj(500, "error", error, "desc table failed");
+        }
+    },
+    descTable: async (dbname, table) => {
+        try {
+            return responseObj(200, "success", await dbFunctions.descTable(dbname, table));
+        } catch (error) {
+            return responseObj(500, "error", error, "select table failed");
         }
     },
     selectTable: async (dbname, table) => {

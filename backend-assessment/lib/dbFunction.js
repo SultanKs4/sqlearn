@@ -26,9 +26,17 @@ module.exports = {
         response["message"] = "database deleted";
         return response;
     },
-    descTable: async (dbname) => {
+    descDb: async (dbname) => {
         const query = `SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.columns WHERE table_schema = '${dbname}' ORDER BY table_name, ordinal_position;`;
         return await executeDb(dbname, query);
+    },
+    descTable: async (dbname, table) => {
+        const query = `DESCRIBE ${table}`;
+        let res = await executeDb(dbname, query);
+        res = res.map((val) => {
+            return `${val.Field}-${val.Type}`;
+        });
+        return res;
     },
     selectTable: async (dbname, table) => {
         const query = `SELECT * FROM ${table};`;
