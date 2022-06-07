@@ -30,7 +30,8 @@ const useNextQuestion = (
     setCurrentTables([]);
     setCurrentColumns([]);
     // ? Untuk Test Query dan submit jawaban itu sama
-    if (isTestingQuery)
+    if (isTestingQuery) {
+      resetLog();
       testQueryBackend(session?.user?.tokenJWT, {
         session_id: parseInt(router.query.session_id),
         question_id: parseInt(router.query.idSoal),
@@ -62,7 +63,6 @@ const useNextQuestion = (
             ])
           );
 
-          resetLog();
           if (logData.pop().type === "submit") {
             setIsAnswerSaved(true);
             setQuestionAnswered((prev) => [prev, router?.query?.idSoal]);
@@ -71,6 +71,8 @@ const useNextQuestion = (
         .catch((e) =>
           message.error("Gagal test query, jawaban anda belum benar ")
         );
+    }
+
     setIsTestingQuery(false);
   }, [isTestingQuery]);
 

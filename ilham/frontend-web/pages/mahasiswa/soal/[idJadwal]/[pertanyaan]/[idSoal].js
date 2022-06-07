@@ -236,8 +236,8 @@ function LatihanSoal() {
             >
               <Col span="24">
                 {isDataPertanyaanLoaded &&
-                  availableTableFromQuestion?.map((item) => (
-                    <Collapse>
+                  availableTableFromQuestion?.map((item, idPanel) => (
+                    <Collapse key={idPanel}>
                       <Collapse.Panel
                         header={`Tabel ${item?.table}`}
                         key={item.id}
