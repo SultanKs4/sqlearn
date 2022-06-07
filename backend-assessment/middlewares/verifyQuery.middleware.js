@@ -2,12 +2,7 @@ const responseObj = require("../lib/responseObject");
 module.exports = (req, res, next) => {
     const queryMhsLowerCase = req.body.queryMhs.toLowerCase();
 
-    if (
-        queryMhsLowerCase.includes("update ") ||
-        queryMhsLowerCase.includes("delete ") ||
-        queryMhsLowerCase.includes("alter") ||
-        queryMhsLowerCase.includes("drop")
-    ) {
+    if (!/^insert|select/gim.test(queryMhsLowerCase)) {
         const { httpCode, ...resp } = responseObj(
             400,
             "fail",

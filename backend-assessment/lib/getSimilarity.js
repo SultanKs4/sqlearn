@@ -193,7 +193,7 @@ function getVectorizedFeatures(ast) {
             const prefix = key;
             ast[key].forEach((feature, index) => {
                 let strArr = [];
-                if (prefix == "values") {
+                if (prefix == "values" || Array.isArray(feature)) {
                     feature.forEach((val) => {
                         strArr.push(`${prefix}_${index + 1}_${val.toLowerCase()}`);
                     });
