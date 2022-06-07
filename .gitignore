@@ -12,6 +12,10 @@ node_modules/
 .nyc_output/
 coverage/
 
+#locks files
+package-lock.json
+yarn.lock
+
 # production
 build/
 
