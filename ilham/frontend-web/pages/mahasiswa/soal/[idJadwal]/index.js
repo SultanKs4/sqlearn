@@ -74,6 +74,7 @@ function Practice() {
     setIsButtonLoading(true);
     createSession(session?.user?.tokenJWT, router.query.idJadwal)
       .then((sesi) => {
+        localStorage.setItem("question_answered", []);
         getUnansweredQuestion(session?.user?.tokenJWT, sesi?.data?.id, [])
           .then((res) => {
             router.push({

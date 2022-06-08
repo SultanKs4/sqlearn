@@ -65,7 +65,14 @@ const useNextQuestion = (
 
           if (logData.pop().type === "submit") {
             setIsAnswerSaved(true);
-            setQuestionAnswered((prev) => [prev, router?.query?.idSoal]);
+            localStorage.setItem("question_answered", [
+              localStorage.getItem("question_answered"),
+              router?.query?.idSoal,
+            ]);
+            setQuestionAnswered((prev) => [
+              prev,
+              localStorage.getItem("question_answered"),
+            ]);
           }
         })
         .catch((e) =>
