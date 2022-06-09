@@ -11,5 +11,6 @@ router.post("/answer", permission("mahasiswa"), sessionSanitizer.checkAnswer, se
 router.post("/:scheduleid", permission("mahasiswa"), sessionSanitizer.checkStore, sessionController.store);
 router.post("/grade/:id", permission("mahasiswa"), sessionSanitizer.checkIdOnly, sessionController.grade);
 router.delete("/reset/:id", sessionSanitizer.checkIdOnly, sessionController.reset);
+router.delete("/clean", permission("admin"), sessionController.clean);
 
 module.exports = router;

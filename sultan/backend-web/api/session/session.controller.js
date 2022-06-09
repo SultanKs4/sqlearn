@@ -42,4 +42,11 @@ module.exports = {
 
         return res.status(httpCode).json(response);
     },
+
+    clean: async (req, res) => {
+        const resObj = await sessionService.clean();
+        const { httpCode, ...response } = resObj;
+
+        return res.status(httpCode).json(response);
+    },
 };
