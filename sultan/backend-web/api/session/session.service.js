@@ -18,6 +18,7 @@ const path = require("path");
 const createHttpError = require("http-errors");
 const { findByType, dataThreshold } = require("../setting/setting.service");
 const errorHandling = require("../../lib/errorHandling");
+const User = require("../user/user.model");
 
 module.exports = {
     getAll: async () => {
@@ -285,21 +286,68 @@ module.exports = {
 
             const grade = gradeAssessment(totalQuestion, attemptsObj, await findByType(type));
 
-            await Score.create({
-                student_id: user.id,
-                schedule_id: scheduleId,
-                score: grade,
+            const [score, _createdScore] = await Score.findOrCreate({
+                where: {
+                    student_id: user.id,
+                    schedule_id: scheduleId,
+                },
+                defaults: {
+                    score: grade,
+                },
             });
+
+            if (score.score != grade) {
+                score.score = grade;
+                await score.save();
+            }
 
             sessionData.is_finished = true;
             await sessionData.save();
+            await cleanDb(sessionData);
 
             return createResponseObject(200, "success", "Proses grading berhasil dilakukan", grade);
         } catch (error) {
             return errorHandling(error);
         }
     },
+
+    clean: async () => {
+        try {
+            const sessionDatas = await Session.findAll({ include: { model: Schedule, attributes: ["finish"] } });
+            for (const session of sessionDatas) {
+                const finish = new Date(session.Schedule.finish);
+                const now = new Date();
+                if (!session.is_finished && now >= finish) {
+                    await module.exports.grade(session.id, await Student.findByPk(session.student_id));
+                } else if (session.is_finished) {
+                    await cleanDb(session);
+                }
+                const dbLists = await session.getDbLists();
+                console.log(dbLists);
+            }
+            return createResponseObject(200, "success", "Proses cleaning berhasil dilakukan");
+        } catch (error) {
+            return errorHandling(error);
+        }
+    },
 };
+
+async function cleanDb(session) {
+    const dbLists = await session.getDbLists();
+    for (const dbList of dbLists) {
+        await axios
+            .get(`${AUTO_ASSESS_BACKEND}/api/v2/database/check/${dbList.db_name}`)
+            .then(async () => {
+                await axios.delete(`${AUTO_ASSESS_BACKEND}/api/v2/database/drop/${dbList.db_name}`);
+            })
+            .catch((error) => {
+                console.log(error);
+                // db not found in system, do nothing
+            });
+        await session.removeDbList(dbList);
+        await DbList.destroy({ where: { id: dbList.id } });
+    }
+}
 
 function gradeAssessment(totalQuestion, attempts, dataRules) {
     // const attempPerQuestion = attempts.map(attempt => attempt.count)
@@ -308,9 +356,11 @@ function gradeAssessment(totalQuestion, attempts, dataRules) {
 
     for (const key in attempts) {
         const submit = attempts[key]["submit"];
-        if (submit && submit[submit.length - 1]["isEqual"]) {
-            const attempsSum = attempts[key]["test"].length + attempts[key]["submit"].length;
-            tempScore += gradingRules(attempsSum, dataRules);
+        if (submit.length > 0) {
+            if (submit[submit.length - 1]["isEqual"]) {
+                const attempsSum = attempts[key]["test"].length + attempts[key]["submit"].length;
+                tempScore += gradingRules(attempsSum, dataRules);
+            }
         }
     }
 
