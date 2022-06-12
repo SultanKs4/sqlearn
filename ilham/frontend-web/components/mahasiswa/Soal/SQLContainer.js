@@ -48,11 +48,11 @@ const SQLContainer = ({ boxes, setBoxes, setCurrentPart }) => {
         }}
       >
         <Row justify="space-between" style={{ marginBottom: "1em" }}>
-          <Col>SQL Hints : </Col>
-          <Col>
+          <Col>Constructed SQL : </Col>
+          <Col span={24} style={{ textAlign: "justify" }}>
             {boxes?.sql_constructed?.items?.map((item, id) => (
-              <span key={id} style={{ paddingLeft: ".5em" }}>
-                {item}
+              <span key={id} style={{ overflowWrap: "break-word" }}>
+                {`${item} `}
               </span>
             ))}
           </Col>
