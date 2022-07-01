@@ -1,5 +1,5 @@
 const { describe } = require("mocha");
-const { createDb, dropDb, descTable, selectTable } = require("../lib/dbFunction");
+const { createDb, dropDb, descTable, selectTable, checkDb, descDb } = require("../lib/dbFunction");
 const chai = require("chai"),
     expect = chai.expect;
 
@@ -40,19 +40,17 @@ describe("Dynamic Database Test", () => {
     });
 
     describe("Describe Database Test", () => {
-        it("Should return Array", async () => {
-            const result = await descTable("auto_assess_tes");
-            expect(result).to.be.an("array");
-        });
         it("Should return Contain Object Like TABLE_NAME", async () => {
-            const result = await descTable("auto_assess_tes");
+            const result = await descDb("sqlearn_cs_auto_assess_tes");
             expect(result).to.be.an("array").that.contains.something.like({ TABLE_NAME: "mahasiswa" });
         });
         it("Should return error (non-existing db)", async () => {
             try {
-                const result = await descTable("tes_create_db");
+                const result = await descDb("tes_create_db");
             } catch (e) {
-                expect(e).to.be.an("error");
+                expect(e)
+                    .to.be.an("error")
+                    .that.deep.include({ message: "ER_BAD_DB_ERROR: Unknown database 'tes_create_db'" });
             }
         });
     });
@@ -73,10 +71,21 @@ describe("Dynamic Database Test", () => {
 
         it("Should return error (non-existing db)", async () => {
             try {
-                const result = await selectTable("tes_create_db");
+                const result = await selectTable("tes_create_db", "no_table");
             } catch (e) {
                 expect(e).to.be.an("error");
             }
+        });
+    });
+
+    describe("Check Database", () => {
+        it("Should return schema name with database name", async () => {
+            const result = await checkDb("auto_assess_tes");
+            expect(result).to.be.an("array").that.contains.something.like({ SCHEMA_NAME: "auto_assess_tes" });
+        });
+        it("should return empty array because no database found", async () => {
+            const result = await checkDb("db_null");
+            expect(result).to.be.an("array").length(0);
         });
     });
 });

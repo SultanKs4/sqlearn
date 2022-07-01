@@ -27,7 +27,7 @@ module.exports = {
         try {
             return responseObj(200, "success", await dbFunctions.descTable(dbname, table));
         } catch (error) {
-            return responseObj(500, "error", error, "select table failed");
+            return responseObj(500, "error", error, "describe table database failed");
         }
     },
     selectTable: async (dbname, table) => {
