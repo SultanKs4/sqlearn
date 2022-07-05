@@ -66,7 +66,8 @@ function PanelGradingRules({
   };
 
   const aksiDeleteGradingRules = (values) => {
-    deleteGradingRules(session?.user?.tokenJWT, values.id)
+    console.log(values);
+    deleteGradingRules(session?.user?.tokenJWT, values)
       .then(() => {
         handleToggleModal();
         fetchDataGradingRules();

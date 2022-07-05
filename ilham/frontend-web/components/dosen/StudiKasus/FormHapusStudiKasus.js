@@ -7,10 +7,11 @@ function FormHapusStudiKasus({
   handleSubmit,
   ...props
 }) {
+  console.log(currentStudiKasus);
   return (
     <>
       <Row justify="center">
-        {`Apakah Anda yakin ingin menghapus ${currentStudiKasus.nama} ?`}
+        {`Apakah Anda yakin ingin menghapus ${currentStudiKasus.name} ?`}
       </Row>
       <Row justify="center" style={{ marginTop: "1em" }} gutter={10}>
         <Col>
