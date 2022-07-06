@@ -1,29 +1,33 @@
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model } = require("sequelize");
 const sequelize = require("../../config/database");
-const Container = require('../container/container.model');
-const Question = require('../question/question.model');
+const Container = require("../container/container.model");
+const Question = require("../question/question.model");
 
-class QuestionContainer extends Model { }
+class QuestionContainer extends Model {}
 
-QuestionContainer.init({
-    question_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Question,
-            key: "id"
-        }
+QuestionContainer.init(
+    {
+        question_id: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: Question,
+                key: "id",
+            },
+        },
+        container_id: {
+            type: DataTypes.INTEGER,
+            references: {
+                model: Container,
+                key: "id",
+            },
+        },
     },
-    container_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: Container,
-            key: "id"
-        }
-    },
-}, {
-    sequelize,
-    modelName: 'QuestionContainer',
-    tableName: 'question_containers'
-});
+    {
+        sequelize,
+        paranoid: true,
+        modelName: "QuestionContainer",
+        tableName: "question_containers",
+    }
+);
 
-module.exports = QuestionContainer
+module.exports = QuestionContainer;

@@ -12,13 +12,15 @@ Setting.init(
         },
         attemps: {
             type: DataTypes.TINYINT,
-            allowNull: false,
+            allowNull: true,
+            defaultValue: null,
         },
         value: DataTypes.TEXT,
         type: DataTypes.ENUM("threshold", "latihan", "ujian"),
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "Setting",
         tableName: "settings",
     }

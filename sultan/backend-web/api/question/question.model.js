@@ -61,6 +61,7 @@ Question.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "Question",
         tableName: "questions",
     }

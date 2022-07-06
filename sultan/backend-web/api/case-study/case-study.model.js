@@ -33,6 +33,7 @@ CaseStudy.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "CaseStudy",
         tableName: "case_studies",
     }

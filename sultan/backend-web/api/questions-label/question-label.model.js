@@ -17,6 +17,7 @@ QuestionLabel.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "QuestionLabel",
         tableName: "questions_label",
     }

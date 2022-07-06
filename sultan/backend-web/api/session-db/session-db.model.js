@@ -24,6 +24,7 @@ SessionDb.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "SessionDb",
         tableName: "session_db",
     }
