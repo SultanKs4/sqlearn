@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
         const { httpCode, ...resp } = responseObj(
             400,
             "fail",
-            { similarity: -1, isEqual: false },
+            { similarity: -1, is_equal: false },
             "sistem hanya dapat menerima perintah SELECT dan INSERT"
         );
         return res.status(httpCode).json(resp);

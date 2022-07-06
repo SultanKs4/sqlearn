@@ -163,11 +163,19 @@ module.exports = {
             const label = await QuestionLabel.findByPk(data.label_id);
             if (!label) throw createHttpError(404, "label not found");
 
+            let answer = JSON.parse(data.answer);
+            answer = answer.map((val) => {
+                return String(val)
+                    .trim()
+                    .replaceAll(/[\n\t\r]/gm, " ")
+                    .replace(/[^a-zA-Z0-9|'|"|)]*$/gm, "");
+            });
+
             const newQuestion = await Question.create({
                 text: data.text,
                 sql_hints: JSON.parse(data.sql_hints),
                 sql_parts: JSON.parse(data.sql_parts),
-                answer: JSON.parse(data.answer),
+                answer,
                 answer_pic: fileName,
                 tables: data.tables,
                 case_study_id: caseStudy.id,

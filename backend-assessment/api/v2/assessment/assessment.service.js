@@ -19,7 +19,7 @@ function calculateSimilarity(queryMhs, queryKey) {
 async function assessment(dbname, similarity, queryMhs, queryKey, threshold) {
     try {
         if (similarity <= Number(threshold) && similarity >= 0)
-            throw createHttpError(406, "similarity below threshold");
+            throw createHttpError(406, "Query yang diinputkan tidak sesuai dengan kriteria soal");
         let dbStudent = null;
         let dbKey = null;
         if (dbname.length < 2) throw createHttpError(400, "db list lenght minimal 2");

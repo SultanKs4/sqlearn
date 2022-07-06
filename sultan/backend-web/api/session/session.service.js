@@ -116,27 +116,25 @@ module.exports = {
                     }
                     return prev;
                 }, []);
-                await dbArr.reduce(async (prevDbArr, currDbArr) => {
-                    await prevDbArr;
-                    await currDbArr.dbName.reduce(async (prevDbName, currDbName) => {
-                        await prevDbName;
+                for (const dbListArr of dbArr) {
+                    for (const dbName of dbListArr.dbName) {
                         await DbList.create({
-                            db_name: currDbName,
-                            db_filename: currDbArr.dbFilename,
+                            db_name: dbName,
+                            db_filename: dbListArr.dbFilename,
                         }).then(async (data) => {
                             await session.addDbLists(data);
+                            await axios
+                                .post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${dbName}`)
+                                .then(async () => {
+                                    const resRunSql = await runSql(
+                                        dbName,
+                                        path.join(__dirname, `../../uploads/sqls/${dbListArr.dbFilename}`)
+                                    );
+                                    if (!resRunSql) throw createHttpError(500, "Clone Database Gagal dilakukan");
+                                });
                         });
-                        await axios
-                            .post(`${AUTO_ASSESS_BACKEND}/api/v2/database/create/${currDbName}`)
-                            .then(async () => {
-                                const resRunSql = await runSql(
-                                    currDbName,
-                                    path.join(__dirname, `../../uploads/sqls/${currDbArr.dbFilename}`)
-                                );
-                                if (!resRunSql) throw createHttpError(500, "Clone Database Gagal dilakukan");
-                            });
-                    }, Promise.resolve());
-                }, Promise.resolve());
+                    }
+                }
             }
             return createResponseObject(200, "success", "Data session berhasil ditambahkan", session);
         } catch (error) {
@@ -207,6 +205,9 @@ module.exports = {
                                 })
                                 .catch((error) => {
                                     return error.response;
+                                })
+                                .finally(async () => {
+                                    await module.exports.reset(sessionId);
                                 });
                             response.status = similarityResponse.data.status;
                             response.message = similarityResponse.data.message;

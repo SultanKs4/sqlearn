@@ -38,6 +38,7 @@ Session.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "Session",
         tableName: "sessions",
     }

@@ -49,6 +49,7 @@ LogSessionStudent.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "LogSessionStudent",
         tableName: "log_session_student",
     }

@@ -24,7 +24,7 @@ async function getWhereDosen(query, userId) {
     else if (query.finish) whereSchedule.finish = { [Op.lte]: new Date(query.finish) };
     else {
         let date = new Date();
-        date.setDate(date.getDate() - 7);
+        date.setDate(date.getDate() - 14);
         whereSchedule.finish = { [Op.gte]: date };
     }
 
