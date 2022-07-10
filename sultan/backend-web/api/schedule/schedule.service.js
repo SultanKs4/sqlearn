@@ -10,11 +10,11 @@ const QuestionLabel = require("../questions-label/question-label.model");
 const Score = require("../score/score.model");
 const Session = require("../session/session.model");
 const Student = require("../student/student.model");
-const User = require("../user/user.model");
 const Schedule = require("./schedule.model");
 
 async function getWhereDosen(query, userId) {
     let whereSchedule = {};
+    let whereClass = { user_id: userId };
     if (query.start && query.finish) {
         whereSchedule[Op.and] = [
             { start: { [Op.gte]: new Date(query.start) } },
@@ -23,13 +23,13 @@ async function getWhereDosen(query, userId) {
     } else if (query.start) whereSchedule.start = { [Op.gte]: new Date(query.start) };
     else if (query.finish) whereSchedule.finish = { [Op.lte]: new Date(query.finish) };
     else {
-        let date = new Date();
-        date.setDate(date.getDate() - 7);
-        whereSchedule.finish = { [Op.gte]: date };
+        if (query.kelas) whereClass.id = query.kelas;
+        else {
+            let date = new Date();
+            date.setDate(date.getDate() - 14);
+            whereSchedule.finish = { [Op.gte]: date };
+        }
     }
-
-    let whereClass = { user_id: userId };
-    if (query.kelas) whereClass.id = query.kelas;
 
     return { whereSchedule, whereClass };
 }

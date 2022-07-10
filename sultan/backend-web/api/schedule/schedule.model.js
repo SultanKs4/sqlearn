@@ -44,6 +44,7 @@ Schedule.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "Schedule",
         tableName: "schedules",
     }

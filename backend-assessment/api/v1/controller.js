@@ -1,6 +1,6 @@
 const { createConnectionDB, getConnection, destroyConnection, MAX_TIMEOUT } = require("../../config/database");
 const compareQueryResult = require("../../lib/compareQueryResult");
-const { createDb, dropDb, descTable, selectTable } = require("../../lib/dbFunction");
+const { createDb, dropDb, descTable, selectTable, descDb } = require("../../lib/dbFunction");
 const getSimilarity = require("../../lib/getSimilarity");
 
 module.exports = {
@@ -52,7 +52,7 @@ module.exports = {
     desc_table: (req, res) => {
         const { dbname } = req.params;
 
-        descTable(dbname)
+        descDb(dbname)
             .then((result) => {
                 res.json(result);
             })

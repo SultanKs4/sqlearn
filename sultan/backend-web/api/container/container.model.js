@@ -32,6 +32,7 @@ Container.init(
     },
     {
         sequelize,
+        paranoid: true,
         modelName: "Container",
         tableName: "containers",
     }
