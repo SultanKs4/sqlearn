@@ -36,6 +36,7 @@ import useInitializeTimer from "../../../../../utils/hooks/PengerjaanSoal/useIni
 import ModalFinishSession from "../../../../../components/mahasiswa/Soal/ModalFinishSession";
 import useCountUpTimer from "../../../../../utils/hooks/PengerjaanSoal/useCountUpTimer";
 import { finishSession } from "../../../../../utils/remote-data/mahasiswa/Session";
+import TextArea from "antd/lib/input/TextArea";
 
 function LatihanSoal() {
   const router = useRouter();
@@ -310,8 +311,13 @@ function LatihanSoal() {
               <>
                 <Form form={form} layout="vertical">
                   <Form.Item name="jawaban_siswa">
-                    <Input
+                    <TextArea
                       autoComplete="off"
+                      style={{
+                        fontWeight: "bold",
+                        fontFamily:
+                          "Courier Bold, Courier New, Courier, monospace",
+                      }}
                       prefix={<ConsoleSqlOutlined />}
                       placeholder={` Masukkan Jawaban SQL Disini . . .`}
                     />
