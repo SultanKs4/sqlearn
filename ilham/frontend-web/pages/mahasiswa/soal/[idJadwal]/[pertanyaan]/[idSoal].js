@@ -10,7 +10,6 @@ import {
   Button,
   Divider,
   Form,
-  Input,
   Alert,
   Table,
   Collapse,
@@ -48,6 +47,8 @@ function LatihanSoal() {
     []
   );
 
+  const [counterTestQuery, setCounterTestQuery] = useState(0);
+
   // Ketika akhiri sesi
   const [isButtonLoading, setIsButtonLoading] = useState(false);
 
@@ -80,16 +81,18 @@ function LatihanSoal() {
     dataPertanyaan,
     timerLeftCounter,
     timerUp,
-    // scheduleDate,
+    //scheduleDate,
     setCurrentPart
   );
 
   const [
+    isTestingQuery,
     dataNextPertanyaan,
     isAnswerSaved,
     setIsAnswerSaved,
     setIsTestingQuery,
   ] = useNextQuestion(
+    counterTestQuery,
     logData,
     resetLog,
     setCurrentTables,
@@ -105,6 +108,7 @@ function LatihanSoal() {
     if (session !== undefined && router?.query?.idSoal !== undefined) {
       getSoalByID(session?.user?.tokenJWT, router?.query?.idSoal).then(
         (response) => {
+          setCounterTestQuery(0);
           setIsAnswerSaved(false);
           setBoxes([]);
           form.setFieldsValue({ jawaban_siswa: "" });
@@ -153,6 +157,7 @@ function LatihanSoal() {
   };
 
   const testQuery = (values) => {
+    setCounterTestQuery((prev) => prev + 1);
     saveLog(values, "test");
     setIsTestingQuery(true);
   };
@@ -337,6 +342,8 @@ function LatihanSoal() {
                 <Row gutter={10}>
                   <Col>
                     <Button
+                      loading={isTestingQuery}
+                      disabled={isTestingQuery || isAnswerSaved}
                       type="primary"
                       onClick={() =>
                         testQuery(
@@ -352,6 +359,8 @@ function LatihanSoal() {
                   {dataPertanyaan?.QuestionLabel?.name === "Open-Ended" && (
                     <Col>
                       <Button
+                        loading={isTestingQuery}
+                        disabled={isTestingQuery || isAnswerSaved}
                         type="danger"
                         onClick={() => {
                           setModalRole("delete");
@@ -369,6 +378,8 @@ function LatihanSoal() {
                   {dataPertanyaan?.QuestionLabel?.name === "Close-Ended" && (
                     <Col>
                       <Button
+                        loading={isTestingQuery}
+                        disabled={isTestingQuery || isAnswerSaved}
                         style={{ backgroundColor: "red", color: "white" }}
                         onClick={resetBox}
                       >
@@ -379,6 +390,8 @@ function LatihanSoal() {
 
                   <Col>
                     <Button
+                      loading={isTestingQuery}
+                      disabled={isTestingQuery || isAnswerSaved}
                       style={{ backgroundColor: "#003A8C", color: "white" }}
                       onClick={() =>
                         submitAnswer(

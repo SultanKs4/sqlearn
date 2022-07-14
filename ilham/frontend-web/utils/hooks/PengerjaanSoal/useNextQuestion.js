@@ -10,6 +10,7 @@ import {
 } from "../../remote-data/mahasiswa/Soal";
 
 const useNextQuestion = (
+  counterTestQuery,
   logData,
   resetLog,
   setCurrentTables,
@@ -26,11 +27,26 @@ const useNextQuestion = (
   const [questionAnswered, setQuestionAnswered] = useState([]);
   const [dataNextPertanyaan, setDataNextPertanyaan] = useState([]);
 
+  const saveQuestionAnswered = useCallback(() => {
+    setIsAnswerSaved(true);
+
+    localStorage.setItem("question_answered", [
+      localStorage.getItem("question_answered"),
+      router?.query?.idSoal,
+    ]);
+
+    setQuestionAnswered((prev) => [
+      prev,
+      localStorage.getItem("question_answered"),
+    ]);
+  }, [isTestingQuery]);
+
   useEffect(() => {
-    setCurrentTables([]);
-    setCurrentColumns([]);
     // ? Untuk Test Query dan submit jawaban itu sama
     if (isTestingQuery) {
+      setCurrentTables([]);
+      setCurrentColumns([]);
+
       resetLog();
       testQueryBackend(session?.user?.tokenJWT, {
         session_id: parseInt(router.query.session_id),
@@ -63,24 +79,23 @@ const useNextQuestion = (
             ])
           );
 
-          if (logData.pop().type === "submit") {
-            setIsAnswerSaved(true);
-            localStorage.setItem("question_answered", [
-              localStorage.getItem("question_answered"),
-              router?.query?.idSoal,
-            ]);
-            setQuestionAnswered((prev) => [
-              prev,
-              localStorage.getItem("question_answered"),
-            ]);
+          // Ini terjadi kalau jawabannya benar, di percobaan ke berapapun
+          if (logData.pop().type === "submit") saveQuestionAnswered();
+        })
+        .catch((e) => {
+          message.error("Gagal test query, jawaban anda belum benar ");
+
+          // Ini terjadi kalau sudah 17x coba test query tapi masih salah jawabannya
+          if (counterTestQuery >= 17) {
+            message.info(
+              "Anda sudah mencoba 17x, Silahkan menuju soal berikutnya",
+              5
+            );
+            saveQuestionAnswered();
           }
         })
-        .catch((e) =>
-          message.error("Gagal test query, jawaban anda belum benar ")
-        );
+        .finally(() => setIsTestingQuery(false));
     }
-
-    setIsTestingQuery(false);
   }, [isTestingQuery]);
 
   const fetchNextQuestion = useCallback(() => {
@@ -97,6 +112,7 @@ const useNextQuestion = (
   }, [fetchNextQuestion]);
 
   return [
+    isTestingQuery,
     dataNextPertanyaan,
     isAnswerSaved,
     setIsAnswerSaved,
