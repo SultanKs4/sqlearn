@@ -21,11 +21,16 @@ function PageLayout({ children, role }) {
   const onClick = () => signOut({ callbackUrl: "http://localhost:3000/login" });
 
   const menu = (
-    <Menu onClick={onClick}>
-      <Menu.Item key="1" style={{ padding: "1em" }}>
-        Logout <PoweroffOutlined />{" "}
-      </Menu.Item>
-    </Menu>
+    <Menu
+      onClick={onClick}
+      items={[
+        {
+          key: "logout",
+          icon: <PoweroffOutlined />,
+          label: "Logout",
+        },
+      ]}
+    />
   );
 
   useEffect(() => {
