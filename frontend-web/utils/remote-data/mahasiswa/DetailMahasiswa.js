@@ -1,4 +1,3 @@
-import { responseSymbol } from "next/dist/server/web/spec-compliant/fetch-event";
 import { axiosWithBearer, URL_STUDENTS_API } from "../api";
 
 const getDetailMahasiswa = async (bearerToken, idMhs) => {
