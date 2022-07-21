@@ -16,8 +16,8 @@
             "type": "node-terminal",
             "request": "launch",
             "name": "BE Dev Web",
-            "envFile": "${workspaceFolder}/sultan/backend-web/.env",
-            "cwd": "${workspaceFolder}/sultan/backend-web",
+            "envFile": "${workspaceFolder}/backend-web/.env",
+            "cwd": "${workspaceFolder}/backend-web",
             "command": "npm run dev",
         },
         {
@@ -31,7 +31,7 @@
             "type": "node-terminal",
             "request": "launch",
             "name": "BE Test Web",
-            "cwd": "${workspaceFolder}/sultan/backend-web",
+            "cwd": "${workspaceFolder}/backend-web",
             "command": "npm test",
         }
     ]
