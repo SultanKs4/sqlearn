@@ -18,6 +18,87 @@ import styles from "../styles/components/Sider.module.css";
 
 const { Sider } = Layout;
 
+const navItemListAdmin = [
+  {
+    key: "daftar-dosen",
+    icon: <TeamOutlined />,
+    onClick: () => router.push("/admin"),
+    label: "Daftar Dosen",
+  },
+  {
+    key: "konfigurasi-penilaian",
+    icon: <ContainerOutlined />,
+    onClick: () => router.push("/admin/konfigurasi-penilaian"),
+    label: "Konfigurasi Penilaian",
+  },
+  {
+    key: "edit-profile",
+    icon: <FormOutlined />,
+    onClick: () => router.push("/admin/edit-profile"),
+    label: "Edit Profile",
+  },
+];
+
+const navItemListDosen = [
+  {
+    key: "jadwal",
+    icon: <CalendarOutlined />,
+    onClick: () => router.push("/dosen"),
+    label: "Jadwal",
+  },
+  {
+    key: "kelas",
+    icon: <LaptopOutlined />,
+    onClick: () => router.push("/dosen/kelas"),
+    label: "Kelas",
+  },
+  {
+    key: "studi-kasus",
+    icon: <DatabaseOutlined />,
+    onClick: () => router.push("/dosen/studi-kasus"),
+    label: "Studi Kasus",
+  },
+  {
+    key: "paket-soal",
+    icon: <CodeSandboxOutlined />,
+    onClick: () => router.push("/dosen/paket-soal"),
+    label: "Paket Soal",
+  },
+  {
+    key: "soal",
+    icon: <FileTextOutlined />,
+    onClick: () => router.push("/dosen/soal"),
+    label: "Soal",
+  },
+  {
+    key: "nilai-mahasiswa",
+    icon: <TeamOutlined />,
+    onClick: () => router.push("/dosen/nilai-mahasiswa"),
+    label: "Nilai Mahasiswa",
+  },
+  {
+    key: "edit-profile",
+    icon: <FormOutlined />,
+    onClick: () => router.push("/dosen/edit-profile"),
+    label: "Ubah Profile",
+  },
+];
+
+const navItemListMhs = [
+  {
+    key: "beranda",
+    icon: <HomeOutlined />,
+    onClick: () => router.push("/mahasiswa"),
+    label: "Beranda",
+  },
+  {
+    key: "edit-profile",
+    icon: <FormOutlined />,
+    onClick: () => router.push("/mahasiswa/edit-profile"),
+    label: "Edit Profile",
+  },
+];
+
 function SiderComponent({ role, collapsed, setCollapsed }) {
   const router = useRouter();
 
@@ -31,73 +112,8 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           defaultSelectedKeys={["jadwal"]}
           selectedKeys={router.pathname.split("/")[2]}
           mode="inline"
-        >
-          <Menu.Item
-            key="jadwal"
-            icon={<CalendarOutlined />}
-            onClick={() => {
-              router.push("/dosen");
-            }}
-          >
-            Jadwal
-          </Menu.Item>
-          <Menu.Item
-            key="kelas"
-            icon={<LaptopOutlined />}
-            onClick={() => {
-              router.push("/dosen/kelas");
-            }}
-          >
-            Kelas
-          </Menu.Item>
-          <Menu.Item
-            key="studi-kasus"
-            icon={<DatabaseOutlined />}
-            onClick={() => {
-              router.push("/dosen/studi-kasus");
-            }}
-          >
-            Studi Kasus
-          </Menu.Item>
-          <Menu.Item
-            key="paket-soal"
-            icon={<CodeSandboxOutlined />}
-            onClick={() => {
-              router.push("/dosen/paket-soal");
-            }}
-          >
-            Paket Soal
-          </Menu.Item>
-          <Menu.Item
-            key="soal"
-            icon={<FileTextOutlined />}
-            onClick={() => {
-              router.push("/dosen/soal");
-            }}
-          >
-            Soal
-          </Menu.Item>
-
-          <Menu.Item
-            key="nilai-mahasiswa"
-            icon={<TeamOutlined />}
-            onClick={() => {
-              router.push("/dosen/nilai-mahasiswa");
-            }}
-          >
-            Nilai Mahasiswa
-          </Menu.Item>
-          <Menu.Item
-            key="edit-profile"
-            icon={<FormOutlined />}
-            onClick={() => {
-              router.push("/dosen/edit-profile");
-            }}
-          >
-            {" "}
-            Ubah Profile
-          </Menu.Item>
-        </Menu>
+          items={navItemListDosen}
+        />
       );
       break;
     case "mahasiswa":
@@ -107,26 +123,8 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           defaultSelectedKeys={["beranda"]}
           selectedKeys={router.pathname.split("/")[2]}
           mode="inline"
-        >
-          <Menu.Item
-            key="beranda"
-            icon={<HomeOutlined />}
-            onClick={() => {
-              router.push("/mahasiswa");
-            }}
-          >
-            {" "}
-            Beranda
-          </Menu.Item>
-          <Menu.Item
-            key="edit-profile"
-            icon={<FormOutlined />}
-            onClick={() => router.push("/mahasiswa/edit-profile")}
-          >
-            {" "}
-            Ubah Profile
-          </Menu.Item>
-        </Menu>
+          items={navItemListMhs}
+        />
       );
       break;
     case "admin":
@@ -136,37 +134,8 @@ function SiderComponent({ role, collapsed, setCollapsed }) {
           defaultSelectedKeys={["daftar-dosen"]}
           selectedKeys={router.pathname.split("/")[2]}
           mode="inline"
-        >
-          <Menu.Item
-            key="daftar-dosen"
-            icon={<TeamOutlined />}
-            onClick={() => {
-              router.push("/admin");
-            }}
-          >
-            Daftar Dosen
-          </Menu.Item>
-          <Menu.Item
-            key="konfigurasi-penilaian"
-            icon={<ContainerOutlined />}
-            onClick={() => {
-              router.push("/admin/konfigurasi-penilaian");
-            }}
-          >
-            {" "}
-            Konfigurasi Penilaian
-          </Menu.Item>
-          <Menu.Item
-            key="edit-profile"
-            icon={<FormOutlined />}
-            onClick={() => {
-              router.push("/admin/edit-profile");
-            }}
-          >
-            {" "}
-            Ubah Profile
-          </Menu.Item>
-        </Menu>
+          items={navItemListAdmin}
+        />
       );
       break;
 

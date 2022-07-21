@@ -33,3 +33,5 @@ yarn-error.log*
 
 # upload folder
 uploads/
+
+frontend-web/.next/
