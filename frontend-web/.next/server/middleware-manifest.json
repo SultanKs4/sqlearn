@@ -1,0 +1,69 @@
+{
+  "sortedMiddleware": [
+    "/admin",
+    "/dosen",
+    "/mahasiswa"
+  ],
+  "clientInfo": [
+    [
+      "/admin",
+      false
+    ],
+    [
+      "/dosen",
+      false
+    ],
+    [
+      "/mahasiswa",
+      false
+    ]
+  ],
+  "middleware": {
+    "/admin": {
+      "env": [
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET",
+        "VERCEL"
+      ],
+      "files": [
+        "server/middleware-runtime.js",
+        "server/middleware-chunks/726.js",
+        "server/pages/admin/_middleware.js"
+      ],
+      "name": "pages/admin/_middleware",
+      "page": "/admin",
+      "regexp": "^/admin(?:(/.*)?)$"
+    },
+    "/dosen": {
+      "env": [
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET",
+        "VERCEL"
+      ],
+      "files": [
+        "server/middleware-runtime.js",
+        "server/middleware-chunks/726.js",
+        "server/pages/dosen/_middleware.js"
+      ],
+      "name": "pages/dosen/_middleware",
+      "page": "/dosen",
+      "regexp": "^/dosen(?:(/.*)?)$"
+    },
+    "/mahasiswa": {
+      "env": [
+        "NEXTAUTH_URL",
+        "NEXTAUTH_SECRET",
+        "VERCEL"
+      ],
+      "files": [
+        "server/middleware-runtime.js",
+        "server/middleware-chunks/726.js",
+        "server/pages/mahasiswa/_middleware.js"
+      ],
+      "name": "pages/mahasiswa/_middleware",
+      "page": "/mahasiswa",
+      "regexp": "^/mahasiswa(?:(/.*)?)$"
+    }
+  },
+  "version": 1
+}
