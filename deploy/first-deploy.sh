@@ -43,25 +43,27 @@ SED_DB_PASS="s/DB_PASS=/DB_PASS=$DB_PASSWORD/g"
 
 # Preare BE Assessment
 cd backend-assessment/
-npm ci
+npm i
 cp .env.example .env
 sed -i $SED_DB_USER .env
 sed -i $SED_DB_PASS .env
 
 # Prepare BE Web
 cd $WORKDIR/backend-web/
-npm ci
+npm i
 cp .env.example .env
 sed -i $SED_DB_USER .env
 sed -i $SED_DB_PASS .env
 npm run seed
 
 # Prepare FE
+DOMAIN_FE="sqlearn.sultanachmad.me"
+DOMAIN_BE="api.sqlearn.sultanachmad.me"
 cd $WORKDIR/frontend-web/
-npm ci
-sed -i "s|http://localhost:3000|https://sqlearn.sultanachmad.me|g" pages/login.js
+npm i
+sed -i "s|http://localhost:3000|https://$DOMAIN_FE|g" pages/login.js
 cp .env.local.example .env.local
-sed -i "s|domain|https://sqlearn.sultanachmad.me|g" .env.local
+sed -i "s|domain|https://$DOMAIN_FE|g" .env.local
 sed -i "s|contohsecret|$(openssl rand -base64 32)|g" .env.local
 npm run build
 
@@ -73,8 +75,6 @@ pm2 startup
 pm2 save
 
 # create modsite
-DOMAIN_FE="sqlearn.sultanachmad.me"
-DOMAIN_BE="api.sqlearn.sultanachmad.me"
 FILE_PATH="/usr/local/bin/nginx-modsite"
 sudo curl https://raw.githubusercontent.com/ajsalkeld/nginx-modsite/master/nginx-modsite > $FILE_PATH
 sudo chmod +x $FILE_PATH
