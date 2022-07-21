@@ -199,6 +199,8 @@ module.exports = {
             const label = await QuestionLabel.findByPk(data.label_id);
             if (!label) throw createHttpError(404, "label not found");
 
+            let imageFile = questionData["answer_pic"];
+
             let dataUpdate = {
                 text: data.text,
                 sql_hints: JSON.parse(data.sql_hints),
@@ -215,6 +217,7 @@ module.exports = {
             });
             await questionData.save();
 
+            await deleteFile(path.join(__dirname, `../../uploads/images/${imageFile}`));
             return createResponseObject(200, "success", "Data pertanyaan berhasil diperbarui", questionData);
         } catch (error) {
             return errorHandling(error);
